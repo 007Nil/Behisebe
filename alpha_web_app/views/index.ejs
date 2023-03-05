@@ -1,34 +1,35 @@
 <%- include("header.ejs"); %>
+    <div class="container-fluid px-4">
+        <div class="container">
+            <div>
+                <h1>Expense From</h1>
+            </div>
+            <form>
+                <div class="mb-3">
+                    <label for="debited_from" class="form-label">Debited From</label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Open this select menu</option>
+                        <option value="1">SBI</option>
+                        <option value="2">CBI</option>
+                        <option value="3">ICIC FOOD CARD</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="amount" aria-describedby="emailHelp">
+                </div>
 
-    <div class="container">
-        <div>
-            <h1>Expense From</h1>
+                <div class='mb-3'>
+                    <p>Date: <input type="text" class="form-control" id="datepicker"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes</label>
+                    <input type="text" class="form-control" id="notes">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Data</button>
+            </form>
         </div>
-        <form>
-            <div class="mb-3">
-                <label for="debited_from" class="form-label">Debited From</label>
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Open this select menu</option>
-                    <option value="1">SBI</option>
-                    <option value="2">CBI</option>
-                    <option value="3">ICIC FOOD CARD</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="amount" class="form-label">Amount</label>
-                <input type="number" class="form-control" id="amount" aria-describedby="emailHelp">
-            </div>
-
-            <div class='mb-3'>
-                <p>Date: <input type="text" class="form-control" id="datepicker"></p>
-            </div>
-
-            <div class="mb-3">
-                <label for="notes" class="form-label">Notes</label>
-                <input type="text" class="form-control" id="notes">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Data</button>
-        </form>
     </div>
-
+    </main>
     <%- include("footer.ejs"); %>
