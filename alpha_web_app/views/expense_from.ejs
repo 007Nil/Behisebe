@@ -4,10 +4,10 @@
             <div>
                 <h1>Expense From</h1>
             </div>
-            <form>
+            <form id="expense_form">
                 <div class="mb-3">
                     <label for="debited_from" class="form-label">Debited From</label>
-                    <select class="form-select" aria-label="Default select example">
+                    <select id="bank_name" class="form-select" aria-label="Default select example">
                         <option selected>Open this select menu</option>
                         <option value="1">SBI</option>
                         <option value="2">CBI</option>
@@ -16,21 +16,22 @@
                 </div>
                 <div class="mb-3">
                     <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control" id="amount" aria-describedby="emailHelp">
+                    <input type="number" class="form-control" id="amount" required>
                 </div>
 
                 <div class='mb-3'>
-                    <p>Date: <input type="text" class="form-control" id="datepicker"></p>
+                    <label for="datepicker" class="form-label">Date</label>
+                    <input type="text" id="expense_date" class="form-control" id="datepicker" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="notes" class="form-label">Notes</label>
-                    <input type="text" class="form-control" id="notes">
+                    <input type="text" class="form-control" id="notes" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit Data</button>
             </form>
         </div>
     </div>
     </main>
-    <script src="js/custom/expense_from.js"></script>
+
     <%- include("footer.ejs"); %>
