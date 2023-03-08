@@ -7,8 +7,10 @@ $("#expense_form").submit(function(event){
     let date = $("#expense_date").val();
 
     if (bank_name === "Open this select menu"){
-        console.log("Need a value")
+        alert("Need a value")
+        return
     }
+    
 
     
   });
