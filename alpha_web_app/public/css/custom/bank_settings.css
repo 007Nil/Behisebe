@@ -1,0 +1,13 @@
+.center {
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.5s ease;
+  transition: background 0.5s ease;
+}
+
+.center:hover {
+  background-color: #90ee90;
+  color: #fff;
+}
+
+

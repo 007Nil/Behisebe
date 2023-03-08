@@ -1,37 +1,51 @@
-<%- include("header.ejs"); %>
-    <div class="container-fluid px-4">
-        <div class="container">
-            <div>
-                <h1>Expense From</h1>
+<%- include("html_boilerplate.ejs"); %>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/admin_panel/admin.css">
+
+    <%- include("header.ejs"); %>
+        <div class="container-fluid px-4">
+            <div class="container">
+                <div>
+                    <h1>Expense From</h1>
+                </div>
+                <form id="expense_form">
+                    <div class="mb-3">
+                        <label for="debited_from" class="form-label">Debited From</label>
+                        <select id="bank_name" class="form-select" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            <option value="1">SBI</option>
+                            <option value="2">CBI</option>
+                            <option value="3">ICIC FOOD CARD</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" required>
+                    </div>
+
+                    <div class='mb-3'>
+                        <label for="datepicker" class="form-label">Date</label>
+                        <input type="text" id="expense_date" class="form-control" id="datepicker" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <input type="text" class="form-control" id="notes" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Data</button>
+                </form>
             </div>
-            <form id="expense_form">
-                <div class="mb-3">
-                    <label for="debited_from" class="form-label">Debited From</label>
-                    <select id="bank_name" class="form-select" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <option value="1">SBI</option>
-                        <option value="2">CBI</option>
-                        <option value="3">ICIC FOOD CARD</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control" id="amount" required>
-                </div>
-
-                <div class='mb-3'>
-                    <label for="datepicker" class="form-label">Date</label>
-                    <input type="text" id="expense_date" class="form-control" id="datepicker" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="notes" class="form-label">Notes</label>
-                    <input type="text" class="form-control" id="notes" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Data</button>
-            </form>
         </div>
-    </div>
-    </main>
+        </main>
 
-    <%- include("footer.ejs"); %>
+        <script type="text/javascript" src="js/bootstrape/jquery-3.6.3.js"></script>
+        <!-- ✅ load jquery UI ✅ -->
+        <script type="text/javascript" src="js/bootstrape/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/bootstrape/popper.min.js"></script>
+        <script type="text/javascript" src="js/bootstrape/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/bootstrape/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="js/admin_panel/admin.js"></script>
+        <!-- For expense view js -->
+        <script src="js/custom/expense_from.js"></script>
+        <%- include("footer.ejs"); %>

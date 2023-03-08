@@ -2,3 +2,13 @@
 2. Database Design
 3. Database Code
 4. Implement Routing - InProgress
+
+Notes:
+
+1. Rest API look Like
+-------Bank Details--------------
+/v1/bank/getDetails
+/v1/bank/addDetails
+/v1/bank/makeDefaultAccount
+/v1/bank/makeInactive
+--------------------------------
