@@ -1,6 +1,8 @@
 const mysql = require('mysql2/promise');
-const mysqlParam =  require("./ReadConfig");
+const {readConfig} =  require("./ReadConfig");
 
+
+const mysqlParam = readConfig();
 const pool = mysql.createPool({
     connectionLimit: 100, //important
     host: mysqlParam.MysqlServer,
@@ -9,3 +11,5 @@ const pool = mysql.createPool({
     database: mysqlParam.MysqlDatabase,
     debug: false
 });
+
+module.exports = pool;
