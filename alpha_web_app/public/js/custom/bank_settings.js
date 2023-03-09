@@ -21,7 +21,7 @@ $("#edit_bank_details").on("click", ()=>{
     $("#add_bank_details").css('color', '#000000');
     $("#add_bank_details").css('background-color', '#FFFFFF');
     // emply the dynamic_bank_content div
-    $("#dynamic_bank_content").html("");
+    // $("#dynamic_bank_content").html("");
 
 });
 
@@ -29,21 +29,27 @@ $("#edit_bank_details").on("click", ()=>{
 
 function createAddBankDetailsForm(){
     return `
-    <form id="add_bank_details_form">
         <div class="mb-3">
             <label for="bank_name" class="form-label">Bank Name</label>
-            <input type="text" class="form-control" id="bank_name" required>
+            <input type="text" class="form-control" id="bank_name">
         </div>
         <div class="mb-3">
             <label for="total_amount" class="form-label">Total Amount In Account</label>
-            <input type="number" class="form-control" id="total_amount" required>
+            <input type="number" class="form-control" id="total_amount">
         </div>
-
+            
         <div class="mb-3">
             <label for="notes" class="form-label">Notes</label>
             <input type="text" class="form-control">
         </div>
-        <button type="submit" class="btn btn-primary">Add Bank</button>
-    </form>
+        <button id="add_bank_details_btn" onClick=add_bank_details() class="btn btn-primary">Add Bank</button>
     `;
+}
+// Call a rest API and add those data to database
+function add_bank_details(){
+    
+}
+
+function edit_bank_details(){
+    
 }
