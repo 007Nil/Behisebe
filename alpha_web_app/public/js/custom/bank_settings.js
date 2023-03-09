@@ -20,7 +20,7 @@ $("#edit_bank_details").on("click", () => {
   $("#add_bank_details").css("color", "#000000");
   $("#add_bank_details").css("background-color", "#FFFFFF");
   // emply the dynamic_bank_content div
-  // $("#dynamic_bank_content").html("");
+  $("#dynamic_bank_content").html("");
 });
 
 // ------ Functions ------------------//
