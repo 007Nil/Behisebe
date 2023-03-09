@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/007Nil/Behisebe#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "crypto": "^1.0.1",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "mysql2": "^3.2.0"
