@@ -1,6 +1,11 @@
+// $(document).ready(function() {
 // Click on Settings href and set Bank setting color white
+// console.log("HIT");
 $("#settings_id")[0].click();
 $("#bank_settings_id").css("color", "#FFFFFF");
+
+
+// });
 
 $("#add_bank_details").on("click", () => {
   $("#add_bank_details").css("color", "#FFFFFF");
@@ -8,9 +13,35 @@ $("#add_bank_details").on("click", () => {
   //
   $("#edit_bank_details").css("color", "#000000");
   $("#edit_bank_details").css("background-color", "#FFFFFF");
-  if (!$.trim($("#dynamic_bank_content").html()).length) {
-    $("#dynamic_bank_content").append(createAddBankDetailsForm());
-  }
+
+  fillDynamicDiv(createAddBankDetailsForm);
+  $("#bankAccountType").select2({
+    // placeholder: "Select an option",
+    tags: [],
+    ajax: {
+      url: "/v1/bank/getAccountTypes",
+      dataType: 'json',
+      type: "GET",
+      quietMillis: 50,
+      data: function (term) {
+        return {
+          term: term
+        };
+      },
+      processResults: function (data) {
+        console.log(data)
+        return {
+          results: $.map(data, function (item) {
+            return {
+                text: item.AccountType,
+                id: item.ID
+            }
+          })
+        };
+      }
+    }
+    // theme: "bootstrap"
+  });
 });
 
 $("#edit_bank_details").on("click", () => {
@@ -19,24 +50,36 @@ $("#edit_bank_details").on("click", () => {
   // Remove css from add_bank_details
   $("#add_bank_details").css("color", "#000000");
   $("#add_bank_details").css("background-color", "#FFFFFF");
-  // emply the dynamic_bank_content div
-  $("#dynamic_bank_content").html("");
+
+  fillDynamicDiv(createBankDetailsTable);
   getBankDetails();
 });
 
 // ------ Functions ------------------//
 
+function fillDynamicDiv(functionName) {
+  $("#dynamic_bank_content").html("");
+  if (!$.trim($("#dynamic_bank_content").html()).length) {
+    $("#dynamic_bank_content").append(functionName());
+  }
+}
+
 function createAddBankDetailsForm() {
   return `
         <div class="mb-3">
             <label for="new_bank_name" class="form-label">Bank Name</label>
-            <input type="text" class="form-control" id="new_bank_name">
+            <input type="text" class="form-control" id="new_bank_name" required>
         </div>
         <div class="mb-3">
             <label for="total_amount" class="form-label">Total Amount In Account</label>
-            <input type="number" class="form-control" id="total_amount">
+            <input type="number" class="form-control" id="total_amount" required>
         </div>
+        <div class="mb-3">
+        <label for="bankAccountType" class="form-label">Account Type</label>
+          <select id="bankAccountType" class="select2 form-control" required>
             
+          </select>
+        </div>
         <div class="mb-3">
             <label for="notes" class="form-label">Notes</label>
             <input type="text" id="notes" class="form-control">
@@ -50,8 +93,11 @@ function add_bank_details() {
   let jsonObj = {
     "bank_name": $("#new_bank_name").val(),
     "bank_balance": $("#total_amount").val(),
+    "bankAccountType": $('#bankAccountType').select2('data')[0].id,
     "notes": $("#notes").val()
   };
+  // console.log($('#bankAccountType').select2('data')[0].id)
+  // return;
 
   console.log(jsonObj);
   $.ajax({
@@ -71,16 +117,100 @@ function add_bank_details() {
 }
 
 function getBankDetails() {
-  
+
   $.ajax({
     type: "GET",
     "url": "/v1/bank/getBankDetails",
 
     success: function (response) {
-      console.log(response);
+      insertBankData(response);
+      // console.log(response);
     },
     error: function (error) {
       console.log(error);
     },
   });
+}
+
+function createBankDetailsTable() {
+  return `
+      <table id="bankDetailsTable" class="cell-border compact stripe">
+        <thead>
+            <tr>
+
+
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+  `
+}
+
+function insertBankData(bankDetailsObj) {
+  console.log(bankDetailsObj);
+  let tabel = $("#bankDetailsTable").DataTable({
+    data: bankDetailsObj,
+    columns: [
+      {
+        "title": "id",
+      },
+      {
+        "title": "Name",
+      },
+      {
+        "title": "Type",
+      },
+      {
+        "title": "Ammount",
+      },
+      {
+        "title": "Default",
+      }
+    ],
+    // Hide id column
+    "aoColumnDefs": [{ "bVisible": false, "aTargets": [0] }],
+    responsive: true,
+    columnDefs: [
+      {
+        targets: 0,
+        data: "BankID",
+        render: function (data) {
+          console.log(data)
+          return data;
+        },
+      },
+      {
+        targets: 1,
+        data: "BankName",
+        render: function (data) {
+          return data;
+        },
+      },
+      {
+        targets: 2,
+        data: "id",
+        render: function (data) {
+          return "";
+        },
+      },
+      {
+        targets: 3,
+        data: "id",
+        render: function (data, type, full, meta) {
+          return "";
+        },
+      },
+      {
+        targets: 4,
+        data: "IsDefault",
+        render: function (data, type, full, meta) {
+          return data;
+        },
+      }
+    ]
+  });
+
+  tabel.column(0).visible(false);
 }

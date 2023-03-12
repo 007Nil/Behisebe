@@ -1,12 +1,14 @@
+const { response } = require("express");
 const express = require("express");
 const router = express.Router();
-const { addBankDetails, fetchBankDetails } = require("../services/BankServices");
+const { addBankDetails, fetchBankDetails, getAccountType } = require("../services/BankServices");
 
 router.post("/addDetails", async function (req, res) {
     // console.log(req.body);
     let bankDetailsObject = {
-        "bankNmae": req.body.bank_name,
+        "bankName": req.body.bank_name,
         "bankBalance": req.body.bank_balance,
+        "bankAccountType": req.body.bankAccountType,
         "notes": req.body.notes
     };
     try {
@@ -27,6 +29,17 @@ router.get("/getBankDetails", async (request, response) => {
         res.status(500).send(new Error("Unablle to fetch Bank details. 500 Server Error!!!"));
     }
 
+})
+
+router.get("/getAccountTypes", async (request,response) => {
+    try{
+        let accountTypes = await getAccountType();
+        console.log(accountTypes);
+        response.status(200).send(accountTypes);
+    }catch (error){
+        console.log(error.message)
+        res.status(500).send(new Error("Unablle to fetch Account Type details. 500 Server Error!!!"));
+    }
 })
 
 module.exports = router;
