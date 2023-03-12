@@ -21,6 +21,7 @@ $("#edit_bank_details").on("click", () => {
   $("#add_bank_details").css("background-color", "#FFFFFF");
   // emply the dynamic_bank_content div
   $("#dynamic_bank_content").html("");
+  getBankDetails();
 });
 
 // ------ Functions ------------------//
@@ -64,9 +65,22 @@ function add_bank_details() {
       console.log(response);
     },
     error: function (error) {
-        console.log(error);
+      console.log(error);
     },
   });
 }
 
-function edit_bank_details() {}
+function getBankDetails() {
+  
+  $.ajax({
+    type: "GET",
+    "url": "/v1/bank/getBankDetails",
+
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (error) {
+      console.log(error);
+    },
+  });
+}

@@ -3,8 +3,12 @@ const mysqlPool = require("./MysqlConnectionPool");
 const crypto = require("crypto");
 // get a connection from the pool
 
-function fetchBankDetails(){
+async function fetchBankDetails(){
+    let selectBanksQuery = "SELECT * FROM ??";
+    let prepareSelectBankQuery = mysql.format(selectBanksQuery,["Bank"]);
 
+    let queryResult = await mysqlPool.execute(prepareSelectBankQuery);
+    return queryResult[0];
 }
 
 async function addBankDetails(bankDetailsObject){
