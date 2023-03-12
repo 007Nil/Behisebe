@@ -4,7 +4,7 @@
   "description": "Alpha Web Application for behisebe",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon --config configaration/nodemon.json index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +22,7 @@
     "crypto": "^1.0.1",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "js-yaml": "^4.1.0",
     "mysql2": "^3.2.0"
   }
 }
