@@ -1,9 +1,3 @@
-1. Write JS Logic - InProgress
-2. Database Design
-3. Database Code
-4. Implement Routing - InProgress
-
-
 // Docker command
 docker run -d --name mysql_devbox -p 3306:3306 -e MYSQL_ROOT_PASSWORD=sxycmfczbe2ru5v3 -e  mysql:latest
 
