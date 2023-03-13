@@ -99,7 +99,7 @@ function add_bank_details() {
   // console.log($('#bankAccountType').select2('data')[0].id)
   // return;
 
-  console.log(jsonObj);
+  // console.log(jsonObj);
   $.ajax({
     type: "POST",
     url: "/v1/bank/addDetails",

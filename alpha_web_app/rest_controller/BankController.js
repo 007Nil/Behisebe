@@ -1,15 +1,16 @@
-const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const { addBankDetails, fetchBankDetails, getAccountType } = require("../services/BankServices");
 
 router.post("/addDetails", async function (req, res) {
     // console.log(req.body);
+    // req.session.userData[0]["ID"];
     let bankDetailsObject = {
         "bankName": req.body.bank_name,
         "bankBalance": req.body.bank_balance,
         "bankAccountType": req.body.bankAccountType,
-        "notes": req.body.notes
+        "notes": req.body.notes,
+        "userID": req.session.userData["ID"]
     };
     try {
         await addBankDetails(bankDetailsObject);

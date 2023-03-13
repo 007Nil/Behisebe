@@ -1,7 +1,9 @@
 <%- include("html_boilerplate.ejs"); %>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="css/admin_panel/admin.css">
+    <link rel="stylesheet" href="css/custom/expense_form.css">
 
     <%- include("header.ejs"); %>
         <div class="container-fluid px-4">
@@ -12,11 +14,8 @@
                 <form id="expense_form">
                     <div class="mb-3">
                         <label for="debited_from" class="form-label">Debited From</label>
-                        <select id="bank_name" class="form-select" aria-label="Default select example">
-                            <option selected>Open this select menu</option>
-                            <option value="1">SBI</option>
-                            <option value="2">CBI</option>
-                            <option value="3">ICIC FOOD CARD</option>
+                        <select id="debited_from" class="select2 form-control" required>
+
                         </select>
                     </div>
                     <div class="mb-3">
@@ -42,8 +41,8 @@
         <script type="text/javascript" src="js/bootstrape/jquery-3.6.3.js"></script>
         <!-- ✅ load jquery UI ✅ -->
         <script type="text/javascript" src="js/bootstrape/jquery-ui.js"></script>
-        <script type="text/javascript" src="js/bootstrape/popper.min.js"></script>
-        <script type="text/javascript" src="js/bootstrape/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
         <script type="text/javascript" src="js/bootstrape/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src="js/admin_panel/admin.js"></script>
         <!-- For expense view js -->

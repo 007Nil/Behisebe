@@ -19,13 +19,18 @@ async function fetchBankDetails(){
     return queryResult[0];
 }
 
+function getAccountCurrentBalance(){
+
+}
+
 async function addBankDetails(bankDetailsObject){
     const bankID = crypto.randomBytes(10).toString("hex");
     // const bankID = "3fd735e42cc59b907539";
     // Insert values in Bank table
-    let bankDetailsInsertQuery = "INSERT INTO ?? (??,??,??,??,??) VALUES (?,?,?,?,?)";
-    let prepareBankQuery = mysql.format(bankDetailsInsertQuery,["Bank","BankID","BankName","AccountType","IsDefault","Notes",
-                                bankID,bankDetailsObject.bankName,bankDetailsObject.bankAccountType, 0, bankDetailsObject.notes ]);
+    let bankDetailsInsertQuery = "INSERT INTO ?? (??,??,??,??, ??,??) VALUES (?,?,?,?,?,?)";
+    let prepareBankQuery = mysql.format(bankDetailsInsertQuery,["Bank","BankID","BankName","AccountType","UserID","IsDefault","Notes",
+                                bankID,bankDetailsObject.bankName,bankDetailsObject.bankAccountType,bankDetailsObject.userID, 0, bankDetailsObject.notes ]);
+    // console.log(prepareBankQuery);
     await mysqlPool.execute(prepareBankQuery);
 
     // Add data to Creadit table
