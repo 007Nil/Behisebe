@@ -12,11 +12,13 @@ router.post("/addDetails",async function (req, res) {
         "notes": req.body.notes,
         "userID": req.session.userData["ID"]
     };
+    // console.log(req.session.userData["ID"])
     try {
         await addBankDetails(bankDetailsObject);
-        res.status(200).send("Data Saved Successfully");
+        console.log("HIt")
+        res.status(200).send({"message":"Data Saved Successfully"});
     } catch (error) {
-        // console.log(error.message);
+        console.log(error.message);
         res.status(500).send(new Error("Duplicate entry for Bank ID"));
     }
 });

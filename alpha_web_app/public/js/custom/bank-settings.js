@@ -3,6 +3,7 @@
 // console.log("HIT");
 $("#settings_id")[0].click();
 $("#bank_settings_id").css("color", "#FFFFFF");
+alertify.set('notifier','position', 'top-right');
 
 
 // });
@@ -108,9 +109,11 @@ function add_bank_details() {
     dataType: "json",
 
     success: function (response) {
-      // console.log(response);
+      console.log(response);
+      alertify.success('Bank information saved.',3); 
     },
     error: function (error) {
+      console.log(error)
       // console.log(error);
       // console.log("Error");
       alertify.error('Error while saving the data!!',3);
@@ -126,7 +129,6 @@ function getBankDetails() {
 
     success: function (response) {
       insertBankData(response);
-      // console.log(response);
     },
     error: function (error) {
       console.log(error);

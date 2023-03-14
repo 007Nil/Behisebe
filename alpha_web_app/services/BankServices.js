@@ -24,8 +24,8 @@ function getAccountCurrentBalance() {
 }
 
 async function addBankDetails(bankDetailsObject) {
-    // const bankID = crypto.randomBytes(10).toString("hex");
-    const bankID = "905f00d60f068b1f2e8b";
+    const bankID = crypto.randomBytes(10).toString("hex");
+    // const bankID = "905f00d60f068b1f2e8b";
     // Insert values in Bank table
     let bankDetailsInsertQuery = "INSERT INTO ?? (??,??,??,??, ??,??) VALUES (?,?,?,?,?,?)";
     let prepareBankQuery = mysql.format(bankDetailsInsertQuery, ["Bank", "BankID", "BankName", "AccountType", "UserID", "IsDefault", "Notes",
@@ -35,9 +35,9 @@ async function addBankDetails(bankDetailsObject) {
 
     // Add data to Creadit table
     const creditID = crypto.randomBytes(10).toString("hex");
-    let creaditInsertQuery = "INSERT INTO ?? (??, ??,??) VALUES (?,?,?)";
-    let prepareCerditQuery = mysql.format(creaditInsertQuery, ["Credit", "CreditID", "BankID", "Amount",
-        creditID, bankID, bankDetailsObject.bankBalance]);
+    let creaditInsertQuery = "INSERT INTO ?? (??, ??,??,??) VALUES (?,?,?,?)";
+    let prepareCerditQuery = mysql.format(creaditInsertQuery, ["Credit", "CreditID", "BankID", "Amount","Notes",
+        creditID, bankID, bankDetailsObject.bankBalance,"This is the initial amount when this Bank was added to system"]);
 
     await mysqlPool.execute(prepareCerditQuery);
 }
