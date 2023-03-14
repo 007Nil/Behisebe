@@ -108,10 +108,12 @@ function add_bank_details() {
     dataType: "json",
 
     success: function (response) {
-      console.log(response);
+      // console.log(response);
     },
     error: function (error) {
-      console.log(error);
+      // console.log(error);
+      // console.log("Error");
+      alertify.error('Error while saving the data!!',3);
     },
   });
 }

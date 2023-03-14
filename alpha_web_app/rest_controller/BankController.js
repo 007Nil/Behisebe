@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { addBankDetails, fetchBankDetails, getAccountType } = require("../services/BankServices");
 
-router.post("/addDetails", async function (req, res) {
+router.post("/addDetails",async function (req, res) {
     // console.log(req.body);
     // req.session.userData[0]["ID"];
     let bankDetailsObject = {
@@ -16,7 +16,7 @@ router.post("/addDetails", async function (req, res) {
         await addBankDetails(bankDetailsObject);
         res.status(200).send("Data Saved Successfully");
     } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
         res.status(500).send(new Error("Duplicate entry for Bank ID"));
     }
 });
