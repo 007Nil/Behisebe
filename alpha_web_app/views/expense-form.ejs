@@ -6,9 +6,8 @@
     <link rel="stylesheet" href="css/custom/expense_form.css">
 
     <%- include("header.ejs"); %>
-        <div class="container-fluid px-4">
-            <div class="container">
-                <div>
+        <div class="container" style="padding-top: 10px;">
+            <!-- <div>
                     <h1>Expense Form</h1>
                 </div>
                 <form id="expense_form">
@@ -33,7 +32,18 @@
                         <input type="text" class="form-control" id="notes" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit Data</button>
-                </form>
+                </form> -->
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="card mb-4">
+                        <div id="add_bank_details" class="card-body center">Add Bank Details</div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card mb-4">
+                        <div id="edit_bank_details" class="card-body center">Edit Bank Details</div>
+                    </div>
+                </div>
             </div>
         </div>
         </main>
@@ -41,10 +51,11 @@
         <script type="text/javascript" src="js/bootstrape/jquery-3.6.3.js"></script>
         <!-- ✅ load jquery UI ✅ -->
         <script type="text/javascript" src="js/bootstrape/jquery-ui.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script type="text/javascript" src="js/bootstrape/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src="js/admin_panel/admin.js"></script>
         <!-- For expense view js -->
-        <script src="js/custom/expense_from.js"></script>
+        <script src="js/custom/expense-form.js"></script>
         <%- include("footer.ejs"); %>

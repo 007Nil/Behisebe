@@ -3,7 +3,7 @@
 // console.log("HIT");
 $("#settings_id")[0].click();
 $("#bank_settings_id").css("color", "#FFFFFF");
-alertify.set('notifier','position', 'top-right');
+alertify.set('notifier', 'position', 'top-right');
 
 
 // });
@@ -34,14 +34,48 @@ $("#add_bank_details").on("click", () => {
         return {
           results: $.map(data, function (item) {
             return {
-                text: item.AccountType,
-                id: item.ID
+              text: item.AccountType,
+              id: item.ID
             }
           })
         };
       }
     }
     // theme: "bootstrap"
+  });
+
+  // Add bank details form submit
+  $("#add_bank_details_btn").submit(function (event) {
+    event.preventDefault();
+
+    let jsonObj = {
+      "bank_name": $("#new_bank_name").val(),
+      "bank_balance": $("#total_amount").val(),
+      "bankAccountType": $('#bankAccountType').select2('data')[0].id,
+      "notes": $("#notes").val()
+    };
+    // console.log($('#bankAccountType').select2('data')[0].id)
+    // return;
+
+    // console.log(jsonObj);
+    $.ajax({
+      type: "POST",
+      url: "/v1/bank/addDetails",
+      data: JSON.stringify(jsonObj),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+
+      success: function (response) {
+        console.log(response);
+        alertify.success('Bank information saved.', 3);
+      },
+      error: function (error) {
+        console.log(error)
+        // console.log(error);
+        // console.log("Error");
+        alertify.error('Error while saving the data!!', 3);
+      },
+    });
   });
 });
 
@@ -67,6 +101,7 @@ function fillDynamicDiv(functionName) {
 
 function createAddBankDetailsForm() {
   return `
+      <form id="add_bank_details_btn">
         <div class="mb-3">
             <label for="new_bank_name" class="form-label">Bank Name</label>
             <input type="text" class="form-control" id="new_bank_name" required>
@@ -85,42 +120,11 @@ function createAddBankDetailsForm() {
             <label for="notes" class="form-label">Notes</label>
             <input type="text" id="notes" class="form-control">
         </div>
-        <button id="add_bank_details_btn" onClick=add_bank_details() class="btn btn-primary">Add Bank</button>
+        <button class="btn btn-primary">Add Bank</button>
+      </form>
     `;
 }
 // Call a rest API and add those data to database
-function add_bank_details() {
-
-  let jsonObj = {
-    "bank_name": $("#new_bank_name").val(),
-    "bank_balance": $("#total_amount").val(),
-    "bankAccountType": $('#bankAccountType').select2('data')[0].id,
-    "notes": $("#notes").val()
-  };
-  // console.log($('#bankAccountType').select2('data')[0].id)
-  // return;
-
-  // console.log(jsonObj);
-  $.ajax({
-    type: "POST",
-    url: "/v1/bank/addDetails",
-    data: JSON.stringify(jsonObj),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-
-    success: function (response) {
-      console.log(response);
-      alertify.success('Bank information saved.',3); 
-    },
-    error: function (error) {
-      console.log(error)
-      // console.log(error);
-      // console.log("Error");
-      alertify.error('Error while saving the data!!',3);
-    },
-  });
-}
-
 function getBankDetails() {
 
   $.ajax({
