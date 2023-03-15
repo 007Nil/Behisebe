@@ -73,14 +73,15 @@ CREATE TABLE Lend (
 CREATE TABLE ExpenseReason (
 	ID VARCHAR(255) NOT NULL,
 	Reason VARCHAR(255) NOT NULL,
-	PRIMARY KEY (ID)
+	UserID VARCHAR(255) NULL,
+	PRIMARY KEY (ID),
+	Foreign Key (UserID) REFERENCES User (ID)
 );
 
 INSERT INTO ExpenseReason 
-(ID,Reason)
+(ID,Reason,UserID)
 VALUES
-("1234567890", "OnLine Shopping"),
-("0987654321","Lend Money");
+("0987654321","Lend Money",NULL);
 
 CREATE TABLE Expense (
 	ID VARCHAR(255) NOT NULL UNIQUE,
