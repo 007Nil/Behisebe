@@ -7,8 +7,11 @@ const expressSession = require('express-session');
 
 const staticRoutes = require("./view_controller/StaticRoutes.js");
 const settingsRouter = require("./view_controller/SettingRoutes");
-const bankRouter = require("./rest_controller/BankController");
 const loginRouter = require("./view_controller/LoginRouter");
+//  Rest Router
+const bankRouter = require("./rest_controller/BankController");
+const expenseRouter = require("./rest_controller/ExpenseController");
+
 
 const oneDay = 1000 * 60 * 60 * 24;
 
@@ -67,6 +70,7 @@ app.use("/", loginRouter);
 // ------------- Rest Routes -----------------
 
 app.use("/v1/bank", bankRouter);
+app.use("/v1/expense",expenseRouter);
 
 // Without middleware
 app.get('/', function (req, res) {
