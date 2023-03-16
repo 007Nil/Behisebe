@@ -3,6 +3,7 @@ docker run -d --name mysql_devbox -p 3306:3306 -e MYSQL_ROOT_PASSWORD=sxycmfczbe
 
 
 Notes:
+//  Pay of Debt
 
 1. Rest API look Like
 -------Bank Details--------------
