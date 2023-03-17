@@ -10,7 +10,7 @@ router.get("/login",async (req, res) => {
     // let session = req.session;
     // session.userData = userObject[0];
     // console.log(userObject[0]);
-    res.redirect('/dashboard');
+    res.redirect('/transaction/expense');
 });
 
 module.exports = router;
