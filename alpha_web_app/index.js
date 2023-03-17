@@ -5,7 +5,7 @@ var favicon = require('serve-favicon');
 const cookieParser = require("cookie-parser");
 const expressSession = require('express-session');
 
-const staticRoutes = require("./view_controller/StaticRoutes.js");
+const transactionRoutes = require("./view_controller/TransactionRoutes.js");
 const settingsRouter = require("./view_controller/SettingRoutes");
 const loginRouter = require("./view_controller/LoginRouter");
 //  Rest Router
@@ -63,7 +63,7 @@ app.use(cookieParser());
 // ------ For app development set demo values for session --------
 
 // ------ All Routes for pages -------------
-app.use("/", staticRoutes);
+app.use("/transaction", transactionRoutes);
 app.use("/settings", settingsRouter);
 app.use("/", loginRouter);
 
