@@ -142,7 +142,7 @@ function getBankDetails() {
 
 function createBankDetailsTable() {
   return `
-      <table id="bankDetailsTable" class="cell-border compact stripe">
+      <table id="bankDetailsTable" class="display nowrap" style="width:100%">
         <thead>
             <tr>
 
@@ -157,7 +157,6 @@ function createBankDetailsTable() {
 }
 
 function insertBankData(bankDetailsObj) {
-  console.log(bankDetailsObj);
   let tabel = $("#bankDetailsTable").DataTable({
     data: bankDetailsObj,
     columns: [
@@ -177,15 +176,16 @@ function insertBankData(bankDetailsObj) {
         "title": "Default",
       }
     ],
-    // Hide id column
-    "aoColumnDefs": [{ "bVisible": false, "aTargets": [0] }],
+    rowReorder: {
+      selector: 'td:nth-child(2)'
+    },
     responsive: true,
     columnDefs: [
       {
         targets: 0,
         data: "BankID",
         render: function (data) {
-          console.log(data)
+          // console.log(data)
           return data;
         },
       },
@@ -198,16 +198,16 @@ function insertBankData(bankDetailsObj) {
       },
       {
         targets: 2,
-        data: "id",
+        data: "UserID",
         render: function (data) {
-          return "";
+          return data;
         },
       },
       {
         targets: 3,
-        data: "id",
+        data: "Notes",
         render: function (data, type, full, meta) {
-          return "";
+          return data;
         },
       },
       {
