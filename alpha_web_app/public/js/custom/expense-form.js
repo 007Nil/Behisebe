@@ -1,4 +1,4 @@
-// $("#add-expense").trigger( "click" );
+$("#debit-id").css("color", "#FFFFFF");
 $("#add-expense").on("click", () => {
 
     $("#add-expense").css("color", "#FFFFFF");
@@ -111,7 +111,7 @@ $("#add-expense").on("click", () => {
                         return {
                             results: $.map(response.data, function (item) {
                                 return {
-                                    text: item.Reason,
+                                    text: item.Name,
                                     id: item.ID
                                 }
                             })
@@ -129,9 +129,9 @@ $("#add-expense").on("click", () => {
     $("#expense-form").submit(function (event) {
         event.preventDefault();
         let lendMoneyTo;
-        try{
+        try {
             lendMoneyTo = $("#lend-to").select2('data')[0].id;
-        }catch (error){
+        } catch (error) {
             lendMoneyTo = null;
         }
         // console.log($("#debited-from").select2('data'));
@@ -161,8 +161,50 @@ $("#add-expense").on("click", () => {
     });
 })
 
+$("#view-expense").on("click", () => {
 
+    $("#view-expense").css("color", "#FFFFFF");
+    $("#view-expense").css("background-color", "#90ee90");
+
+    $("#add-expense").css("color", "#000000");
+    $("#add-expense").css("background-color", "#FFFFFF");
+    fillDynamicDiv(createViewExpenseTable);
+    getExpenseDetails();
+})
 // ------ Functions ------------------//
+
+function getExpenseDetails() {
+
+    $.ajax({
+        type: "GET",
+        "url": "/v1/expense/getExpense",
+
+        success: function (response) {
+            // console.log(response.data);
+            insertExpenseDetails(response.data);
+        },
+        error: function (error) {
+            console.log(error);
+        },
+    });
+}
+
+function createViewExpenseTable() {
+    return `
+
+        <table id="ExpenseDetailsTable" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+    
+    
+                </tr>
+            </thead>
+            <tbody>
+    
+            </tbody>
+            </table>
+    `
+}
 
 function insertLendMoneyFields() {
     let lendFields = `
@@ -217,4 +259,80 @@ function generateAddExpenseForm() {
         <button type="submit" class="btn btn-primary">Submit Data</button>
     </form> 
     `;
+}
+
+function insertExpenseDetails(expenseData) {
+    let expenseTable = $("#ExpenseDetailsTable").DataTable({
+        data: expenseData,
+        columns: [
+            {
+                "title": "id",
+            },
+            {
+                "title": "Debited Form",
+            },
+            {
+                "title": "Amount",
+            },
+            {
+                "title": "Reason",
+            },
+            {
+                "title": "Date",
+            }
+        ],
+        rowReorder: {
+            selector: 'td:nth-child(2)'
+        },
+        responsive: true,
+        columnDefs: [
+            {
+                targets: 0,
+                data: "ID",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
+            {
+                targets: 1,
+                data: "BankName",
+                render: function (data) {
+
+                    return data;
+                },
+            },
+            {
+                targets: 2,
+                data: "Amount",
+                render: function (data) {
+
+                    return data;
+                },
+            },
+            {
+                targets: 3,
+                data: "Reason",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
+            {
+                targets: 4,
+                data: "Date",
+                render: function (data) {
+                    // console.log(data)
+                    let dateUTC = new Date(data);
+                    dateUTC = dateUTC.getTime()
+                    let dateIST = new Date(dateUTC);
+                    //date shifting for IST timezone (+5 hours and 30 minutes)
+                    dateIST.setHours(dateIST.getHours() + 5);
+                    dateIST.setMinutes(dateIST.getMinutes() + 30);
+                    return dateIST.toDateString();
+                },
+            }
+        ]
+    });
+    expenseTable.column(0).visible(false);
 }

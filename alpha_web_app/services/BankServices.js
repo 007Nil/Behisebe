@@ -11,12 +11,21 @@ async function getAccountType() {
     return queryResult[0];
 }
 
-async function fetchBankDetails() {
-    let selectBanksQuery = "SELECT * FROM ??";
-    let prepareSelectBankQuery = mysql.format(selectBanksQuery, ["Bank"]);
+async function fetchBankDetails(userID) {
+    let selectBanksQuery = "SELECT * FROM ?? WHERE ?? = ?";
+    let prepareSelectBankQuery = mysql.format(selectBanksQuery, ["Bank","UserID",userID]);
 
     let queryResult = await mysqlPool.execute(prepareSelectBankQuery);
     return queryResult[0];
+}
+
+async function getBankDetailsByID(bankID){
+    let selectBanksQuery = "SELECT ?? FROM ?? WHERE ?? = ?";
+    let prepareSelectBankQuery = mysql.format(selectBanksQuery, ["BankName","Bank","BankID",bankID]);
+    // console.log(prepareSelectBankQuery);
+    let bankName = await mysqlPool.execute(prepareSelectBankQuery);
+    // console.log(bankName[0])
+    return bankName[0];
 }
 
 function getAccountCurrentBalance() {
@@ -46,4 +55,4 @@ function makeBankInvalida() {
 
 }
 
-module.exports = { fetchBankDetails, addBankDetails, makeBankInvalida, getAccountType }
+module.exports = { fetchBankDetails, addBankDetails, makeBankInvalida, getAccountType, getBankDetailsByID }

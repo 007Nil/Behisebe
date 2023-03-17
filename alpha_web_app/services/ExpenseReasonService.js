@@ -24,5 +24,11 @@ async function addExpenseReason(reasonObejct){
     return expenseReasonID;
 }
 
-module.exports = {fetchExpenseReasonByUserID, addExpenseReason}
+async function getExpenseNameByID(expenseID){
+    selectQuery = "SELECT ?? FROM ?? WHERE ?? = ?";
+    prepareQuery = mysql.format(selectQuery,["Reason","ExpenseReason","ID",expenseID]);
+    return (await mysqlPool.execute(prepareQuery))[0][0].Reason;
+}
+
+module.exports = {fetchExpenseReasonByUserID, addExpenseReason,getExpenseNameByID}
 

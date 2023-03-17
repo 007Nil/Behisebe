@@ -15,7 +15,7 @@ router.post("/addDetails",async function (req, res) {
     // console.log(req.session.userData["ID"])
     try {
         await addBankDetails(bankDetailsObject);
-        console.log("HIt")
+        // console.log("HIt")
         res.status(200).send({"message":"Data Saved Successfully"});
     } catch (error) {
         console.log(error.message);
@@ -25,7 +25,7 @@ router.post("/addDetails",async function (req, res) {
 
 router.get("/getBankDetails", async (request, response) => {
     try {
-        let bankDetails = await fetchBankDetails();
+        let bankDetails = await fetchBankDetails(request.session.userData["ID"]);
         response.status(200).send(bankDetails);
     } catch (error) {
         console.log(error.message);

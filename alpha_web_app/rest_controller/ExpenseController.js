@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { fetchExpenseReasonByUserID, addExpenseReason } = require("../services/ExpenseReasonService");
 const { getPersonData } = require("../services/PersonService");
-const { addExpense } = require("../services/ExpenseService");
+const { addExpense, getExpenseDetailsByUserID } = require("../services/ExpenseService");
 
 router
     .get("/getExpenseReason", async (request, response) => {
@@ -49,6 +49,10 @@ router
             response.status(500).send(new Error(error.message));
         }
 
-    });
+    })
+    .get("/getExpense", async (request,response) => {
+        let expenseData = await getExpenseDetailsByUserID(request.session.userData["ID"]);
+        response.status(200).send({ "message": "Success","data": expenseData });
+    })
 
 module.exports = router;
