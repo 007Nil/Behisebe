@@ -1,3 +1,4 @@
+alertify.set('notifier', 'position', 'top-right');
 $("#debit-id").css("color", "#FFFFFF");
 $("#add-expense").on("click", () => {
 
@@ -64,7 +65,7 @@ $("#add-expense").on("click", () => {
         }
     });
 
-    $("#lend-to").select2({
+    $("#spacial-debit").select2({
         tags: [],
         ajax: {
             url: "/v1/expense/getPersonData",
@@ -94,7 +95,7 @@ $("#add-expense").on("click", () => {
         // console.log($('#expense-reason').select2('data')[0].text);
         if ($('#expense-reason').select2('data')[0].text === "Lend Money") {
             insertLendMoneyFields();
-            $("#lend-to").select2({
+            $("#spacial-debit").select2({
                 tags: [],
                 ajax: {
                     url: "/v1/expense/getPersonData",
@@ -128,11 +129,16 @@ $("#add-expense").on("click", () => {
 
     $("#expense-form").submit(function (event) {
         event.preventDefault();
-        let lendMoneyTo;
+        let spacialDebit;
         try {
-            lendMoneyTo = $("#lend-to").select2('data')[0].id;
+            if ($('#expense-reason').select2('data')[0].text === "Lend Money") {
+                spacialDebit = `${$("#spacial-debit").select2('data')[0].id}-lendMoney`;
+            } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
+                spacialDebit = `${$("#spacial-debit").select2('data')[0].id}-payOfDebt`;
+            }
+            // spacialDebit = $("#spacial-debit").select2('data')[0].id;
         } catch (error) {
-            lendMoneyTo = null;
+            spacialDebit = null;
         }
         // console.log($("#debited-from").select2('data'));
         let expenseObject = {
@@ -140,7 +146,7 @@ $("#add-expense").on("click", () => {
             "amount": $("#amount").val(),
             "date": $("#expense_date").val(),
             "expenseReason": $('#expense-reason').select2('data')[0].id,
-            "lendMoneyTo": lendMoneyTo,
+            "spacialDebit": spacialDebit,
             "Notes": $("#notes").val()
         }
 
@@ -152,10 +158,12 @@ $("#add-expense").on("click", () => {
             dataType: "json",
 
             success: function (response) {
-                console.log(response);
+                // console.log(response);
+                alertify.success('Expense information saved.', 3);
             },
             error: function (error) {
-                console.log(error);
+                // console.log(error);
+                alertify.error('Error while saving the data!!', 3);
             },
         });
     });
@@ -209,8 +217,8 @@ function createViewExpenseTable() {
 function insertLendMoneyFields() {
     let lendFields = `
         <div class="mb-3">
-            <label for="lend-to" class="form-label">Lend to</label>
-            <select id="lend-to" class="select2 form-control" required>
+            <label for="spacial-debit" class="form-label">Lend to</label>
+            <select id="spacial-debit" class="select2 form-control" required>
 
             </select>
         </div>

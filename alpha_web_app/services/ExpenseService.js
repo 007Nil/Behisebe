@@ -25,20 +25,28 @@ async function addExpense(expenseObject) {
         expenseObject.expenseReason = await addExpenseReason(reasonObj);
     }
     // Money Lend logic
-    if (expenseObject.lendMoneyTo) {
+    if (expenseObject.spacialDebit) {
         let getPersonDetails = await getPersonData(userID);
         let personID = getPersonDetails.map(each => each.ID);
-        if (!personID.includes(expenseObject.lendMoneyTo)) {
-            // Add Person to Person table
-            let personObj = {
-                "name": expenseObject.lendMoneyTo,
-                "userID": userID
-            };
-            expenseObject.lendMoneyTo = await addPersonData(personObj);
-        }
 
+        console.log((expenseObject.spacialDebit).split("-")[1]);
+        // I lend some mony to someone
+        if ((expenseObject.spacialDebit).split("-")[1] === "lendMoney") {
+            if (!personID.includes(expenseObject.spacialDebit)) {
+                // Add Person to Person table
+                let personObj = {
+                    "name": (expenseObject.spacialDebit).split("-")[0],
+                    "userID": userID
+                };
+                expenseObject.LendTo = await addPersonData(personObj);
+                expenseObject.LendFrom = null;
+            }
+        }
         // Now insert data to Lend table
-        expenseObject.lendID = await addLendDetails(expenseObject.lendMoneyTo);
+        expenseObject.lendID = await addLendDetails(expenseObject);
+        // return;
+        
+        
         // console.log(personNames);
         console.log(expenseObject);
     }

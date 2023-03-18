@@ -38,10 +38,11 @@ router
                 "amount": request.body.amount,
                 "date": request.body.date,
                 "expenseReason": request.body.expenseReason,
-                "lendMoneyTo": request.body.lendMoneyTo,
+                "spacialDebit": request.body.spacialDebit,
                 "Notes": request.body.Notes,
                 "userID": request.session.userData["ID"]
             }
+            // console.log(expenseObj)
             await addExpense(expenseObj);
             response.status(200).send({ "message": "Add Success" });
         } catch (error) {
