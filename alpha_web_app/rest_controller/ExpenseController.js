@@ -18,7 +18,7 @@ router
 
     })
     .post("/addExpenseReason", async (request, response) => {
-        console.log("HIT POST");
+        // console.log("HIT POST");
         response.status(200).send({ "message": "Add Success" });
     }).get("/getPersonData", async (request, response) => {
         try {

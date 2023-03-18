@@ -93,7 +93,7 @@ $("#add-expense").on("click", () => {
 
     $('#expense-reason').on("change", () => {
         // console.log($('#expense-reason').select2('data')[0].text);
-        if ($('#expense-reason').select2('data')[0].text === "Lend Money") {
+        if ($('#expense-reason').select2('data')[0].text === "Lend") {
             insertLendMoneyFields();
             $("#spacial-debit").select2({
                 tags: [],
@@ -131,7 +131,7 @@ $("#add-expense").on("click", () => {
         event.preventDefault();
         let spacialDebit;
         try {
-            if ($('#expense-reason').select2('data')[0].text === "Lend Money") {
+            if ($('#expense-reason').select2('data')[0].text === "Lend") {
                 spacialDebit = `${$("#spacial-debit").select2('data')[0].id}-lendMoney`;
             } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
                 spacialDebit = `${$("#spacial-debit").select2('data')[0].id}-payOfDebt`;

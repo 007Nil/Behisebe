@@ -30,9 +30,9 @@ async function addExpense(expenseObject) {
         let personID = getPersonDetails.map(each => each.ID);
 
         console.log((expenseObject.spacialDebit).split("-")[1]);
-        // I lend some mony to someone
+        // Someone lend some mony from Me
         if ((expenseObject.spacialDebit).split("-")[1] === "lendMoney") {
-            if (!personID.includes(expenseObject.spacialDebit)) {
+            if (!personID.includes((expenseObject.spacialDebit).split("-")[0])) {
                 // Add Person to Person table
                 let personObj = {
                     "name": (expenseObject.spacialDebit).split("-")[0],
@@ -40,6 +40,9 @@ async function addExpense(expenseObject) {
                 };
                 expenseObject.LendTo = await addPersonData(personObj);
                 expenseObject.LendFrom = null;
+            }else{
+                // We hve the person in DB
+                expenseObject.LendTo = (expenseObject.spacialDebit).split("-")[0];
             }
         }
         // Now insert data to Lend table
@@ -48,7 +51,7 @@ async function addExpense(expenseObject) {
         
         
         // console.log(personNames);
-        console.log(expenseObject);
+        // console.log(expenseObject);
     }
     const expenseID = crypto.randomBytes(10).toString("hex");
     let insertExpenseQuery = "INSERT INTO ?? (??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'),?,?)";

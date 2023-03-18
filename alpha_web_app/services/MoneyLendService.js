@@ -7,7 +7,7 @@ async function addLendDetails(expenseObject) {
     insertQuery = "INSERT INTO ?? (??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
     prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo","LendFrom", "FullPayment", "PartialPayID", "PaymentOnDate",
         lendID, expenseObject.LendTo,expenseObject.LendFrom, 0, null, null]);
-
+    // console.log(prepareQuery)
     await mysqlPool.execute(prepareQuery);
 
     return lendID;

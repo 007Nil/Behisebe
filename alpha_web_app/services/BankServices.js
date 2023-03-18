@@ -45,9 +45,9 @@ async function addBankDetails(bankDetailsObject) {
 
     let creditObj = {
         "bankID": bankID,
-        "userID": bankDetailsObject.userID,
-        "borrowID": bankDetailsObject.borrowFrom,
-        "reason": bankDetailsObject.creditCause,
+        "UserID": bankDetailsObject.userID,
+        "spacialCreditID": bankDetailsObject.borrowFrom,
+        "creditReasonID": bankDetailsObject.creditCause,
         "date": bankDetailsObject.date,
         "notes": "This is the initial amount when this Bank was added to system",
         "amount": bankDetailsObject.bankBalance
