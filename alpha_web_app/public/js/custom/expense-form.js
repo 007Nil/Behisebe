@@ -14,6 +14,7 @@ $("#add-expense").on("click", () => {
 
     $('#expense_date').datepicker();
     $("#debited-from").select2({
+        placeholder: "Select a Bank Account",
         tags: [],
         ajax: {
             url: "/v1/bank/getBankDetails",
@@ -40,6 +41,7 @@ $("#add-expense").on("click", () => {
     });
 
     $("#expense-reason").select2({
+        placeholder: "Select a Reason",
         tags: [],
         ajax: {
             url: "/v1/expense/getExpenseReason",
@@ -66,6 +68,7 @@ $("#add-expense").on("click", () => {
     });
 
     $("#spacial-debit").select2({
+        placeholder: "Select an Option",
         tags: [],
         ajax: {
             url: "/v1/expense/getPersonData",
@@ -92,39 +95,42 @@ $("#add-expense").on("click", () => {
     });
 
     $('#expense-reason').on("change", () => {
-        // console.log($('#expense-reason').select2('data')[0].text);
-        if ($('#expense-reason').select2('data')[0].text === "Lend") {
-            insertLendMoneyFields();
-            $("#spacial-debit").select2({
-                tags: [],
-                ajax: {
-                    url: "/v1/expense/getPersonData",
-                    dataType: 'json',
-                    type: "GET",
-                    quietMillis: 50,
-                    response: function (term) {
-                        return {
-                            term: term
-                        };
-                    },
-                    processResults: function (response) {
-                        // console.log(data.data)
-                        return {
-                            results: $.map(response.data, function (item) {
-                                return {
-                                    text: item.Name,
-                                    id: item.ID
-                                }
-                            })
-                        };
+        try {
+            // console.log($('#expense-reason').select2('data')[0].text);
+            if ($('#expense-reason').select2('data')[0].text === "Lend") {
+                insertLendMoneyFields();
+                $("#spacial-debit").select2({
+                    tags: [],
+                    ajax: {
+                        url: "/v1/expense/getPersonData",
+                        dataType: 'json',
+                        type: "GET",
+                        quietMillis: 50,
+                        response: function (term) {
+                            return {
+                                term: term
+                            };
+                        },
+                        processResults: function (response) {
+                            // console.log(data.data)
+                            return {
+                                results: $.map(response.data, function (item) {
+                                    return {
+                                        text: item.Name,
+                                        id: item.ID
+                                    }
+                                })
+                            };
+                        }
                     }
-                }
-            });
-        } else {
-            // console.log("HIT ELSE")
-            $("#expense-cause-form").html("");
+                });
+            } else {
+                // console.log("HIT ELSE")
+                $("#expense-cause-form").html("");
+            }
+        } catch {
+            // Nothing to catch, works just fine
         }
-
     });
 
     $("#expense-form").submit(function (event) {
@@ -159,6 +165,7 @@ $("#add-expense").on("click", () => {
 
             success: function (response) {
                 // console.log(response);
+                resetExpenseForm()
                 alertify.success('Expense information saved.', 3);
             },
             error: function (error) {
@@ -227,6 +234,14 @@ function insertLendMoneyFields() {
     $("#expense-cause-form").append(lendFields);
 }
 
+function resetExpenseForm() {
+    $("#debited-from").empty().trigger('change');
+    $("#amount").val("");
+    $("#expense_date").val("");
+    $("#notes").val("");
+    $("#expense-reason").empty().trigger('change');
+}
+
 function fillDynamicDiv(functionName) {
     $("#dynamic_bank_content").html("");
     if (!$.trim($("#dynamic_bank_content").html()).length) {
@@ -249,8 +264,8 @@ function generateAddExpenseForm() {
         </div>
 
         <div class='mb-3'>
-            <label for="datepicker" class="form-label">Date</label>
-            <input type="text" id="expense_date" class="form-control" id="datepicker" required>
+            <label for="expense_date" class="form-label">Date</label>
+            <input type="text" id="expense_date" class="form-control" required>
         </div>
 
         <div class="mb-3">

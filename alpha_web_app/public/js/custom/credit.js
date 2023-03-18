@@ -1,3 +1,4 @@
+alertify.set('notifier', 'position', 'top-right');
 $("#credit_id").css("color", "#FFFFFF");
 
 $("#add-credit-details").on("click", () => {
@@ -11,6 +12,7 @@ $("#add-credit-details").on("click", () => {
 
     $("#credit-date").datepicker();
     $("#credited-to").select2({
+        placeholder: "Select a Bank Account",
         tags: [],
         ajax: {
             url: "/v1/bank/getBankDetails",
@@ -37,6 +39,7 @@ $("#add-credit-details").on("click", () => {
     });
 
     $("#credit-reason").select2({
+        placeholder: "Select a Credit Reason",
         tags: [],
         ajax: {
             url: "/v1/credit/getCreditReason",
@@ -63,39 +66,44 @@ $("#add-credit-details").on("click", () => {
     });
 
     $('#credit-reason').on("change", () => {
-        // console.log($('#expense-reason').select2('data')[0].text);
-        if ($('#credit-reason').select2('data')[0].text === "Borrow") {
-            insertCreditExtendFields();
-            $("#spacial-credit").select2({
-                tags: [],
-                ajax: {
-                    url: "/v1/expense/getPersonData",
-                    dataType: 'json',
-                    type: "GET",
-                    quietMillis: 50,
-                    response: function (term) {
-                        return {
-                            term: term
-                        };
-                    },
-                    processResults: function (response) {
-                        // console.log(data.data)
-                        return {
-                            results: $.map(response.data, function (item) {
-                                return {
-                                    text: item.Name,
-                                    id: item.ID
-                                }
-                            })
-                        };
+        try {
+            // console.log($('#expense-reason').select2('data')[0].text);
+            if ($('#credit-reason').select2('data')[0].text === "Borrow") {
+                insertCreditExtendFields();
+                $("#spacial-credit").select2({
+                    placeholder: "Select an Option",
+                    tags: [],
+                    ajax: {
+                        url: "/v1/expense/getPersonData",
+                        dataType: 'json',
+                        type: "GET",
+                        quietMillis: 50,
+                        response: function (term) {
+                            return {
+                                term: term
+                            };
+                        },
+                        processResults: function (response) {
+                            // console.log(data.data)
+                            return {
+                                results: $.map(response.data, function (item) {
+                                    return {
+                                        text: item.Name,
+                                        id: item.ID
+                                    }
+                                })
+                            };
+                        }
                     }
-                }
-            });
-        } else {
-            // console.log("HIT ELSE")
-            $("#credit-cause-div").html("");
-        }
+                });
+            } else {
+                // console.log("HIT ELSE")
+                $("#credit-cause-div").html("");
+            }
 
+        } catch {
+
+        }
     });
 
 
@@ -129,10 +137,13 @@ $("#add-credit-details").on("click", () => {
             dataType: "json",
 
             success: function (response) {
-                console.log(response);
+                // console.log(response);
+                resetCreditForm();
+                alertify.success('Credit information saved.', 3);
             },
             error: function (error) {
-                console.log(error);
+                // console.log(error);
+                alertify.error('Error while saving the data!!', 3);
             },
         });
 
@@ -147,6 +158,16 @@ $("#view-credit-details").on("click", () => {
     $("#add-credit-details").css("background-color", "#FFFFFF");
 
 })
+
+function resetCreditForm() {
+    $("#credited-to").empty().trigger('change');
+    $("#amount").val("");
+    $("#credit-date").val("");
+    $("#notes").val("");
+    $("#credit-reason").empty().trigger('change');
+
+}
+
 
 function insertCreditExtendFields() {
     let spacialCreditFileds = `
