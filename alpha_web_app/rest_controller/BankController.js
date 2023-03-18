@@ -10,6 +10,9 @@ router.post("/addDetails",async function (req, res) {
         "bankBalance": req.body.bank_balance,
         "bankAccountType": req.body.bankAccountType,
         "notes": req.body.notes,
+        "creditCause": req.body.creditCause,
+        "borrowFrom": req.body.borrowFrom,
+        "date": req.body.date,
         "userID": req.session.userData["ID"]
     };
     // console.log(req.session.userData["ID"])

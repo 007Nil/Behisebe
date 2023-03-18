@@ -17,7 +17,8 @@ $("#add_bank_details").on("click", () => {
 
   fillDynamicDiv(createAddBankDetailsForm);
   $("#bankAccountType").select2({
-    // placeholder: "Select an option",
+    placeholder: "Select an Account Type",
+    allowClear: true,
     tags: [],
     ajax: {
       url: "/v1/bank/getAccountTypes",
@@ -47,12 +48,18 @@ $("#add_bank_details").on("click", () => {
   // Add bank details form submit
   $("#add_bank_details_btn").submit(function (event) {
     event.preventDefault();
-
+    let date = new Date();
+    let currentDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`
+    // console.log(`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`);
+    // return;
     let jsonObj = {
       "bank_name": $("#new_bank_name").val(),
       "bank_balance": $("#total_amount").val(),
       "bankAccountType": $('#bankAccountType').select2('data')[0].id,
-      "notes": $("#notes").val()
+      "notes": $("#notes").val(),
+      "creditCause": "565434329",
+      "borrowFrom": null,
+      "date": currentDate
     };
     // console.log($('#bankAccountType').select2('data')[0].id)
     // return;
@@ -66,7 +73,8 @@ $("#add_bank_details").on("click", () => {
       dataType: "json",
 
       success: function (response) {
-        console.log(response);
+        // console.log(response);
+        resetAddBankForm()
         alertify.success('Bank information saved.', 3);
       },
       error: function (error) {
@@ -91,6 +99,13 @@ $("#edit_bank_details").on("click", () => {
 });
 
 // ------ Functions ------------------//
+
+function resetAddBankForm() {
+  $("#new_bank_name").val("");
+  $("#total_amount").val("");
+  $("#bankAccountType").empty().trigger('change')
+  $("#notes").val("");
+}
 
 function fillDynamicDiv(functionName) {
   $("#dynamic_bank_content").html("");
