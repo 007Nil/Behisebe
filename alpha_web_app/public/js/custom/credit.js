@@ -156,6 +156,7 @@ $("#view-credit-details").on("click", () => {
 
     $("#add-credit-details").css("color", "#000000");
     $("#add-credit-details").css("background-color", "#FFFFFF");
+    fillDynamicDiv(createViewCreditTable);
 
 })
 
@@ -168,6 +169,21 @@ function resetCreditForm() {
 
 }
 
+function createViewCreditTable() {
+    return `
+
+        <table id="CreditDetailsTable" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+    
+                </tr>
+            </thead>
+            <tbody>
+    
+            </tbody>
+            </table>
+    `
+}
 
 function insertCreditExtendFields() {
     let spacialCreditFileds = `

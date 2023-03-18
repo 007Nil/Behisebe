@@ -2,7 +2,7 @@ const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const { getCreditReason } = require("../services/CreditReasonService");
-const {addCreditDetails} = require("../services/CreditServices");
+const { addCreditDetails } = require("../services/CreditServices");
 
 router
     .get("/getCreditReason", async (request, response) => {
@@ -17,13 +17,18 @@ router
 
 
     })
-    // .post("/addCreditReason", async (request, response) => {
-    //     console.log(request.body);
-    //     response.status(200).send({ "message": "success" });
-    // })
-    .post("/addCredit", async (request,response) => {
-        request.body.UserID = request.session.userData["ID"];
-        await addCreditDetails(request.body);
+    .post("/addCredit", async (request, response) => {
+        try {
+            request.body.UserID = request.session.userData["ID"];
+            await addCreditDetails(request.body);
+            response.status(200).send({ "message": "success" });
+        } catch (error) {
+            console.log(error.message);
+            response.status(500).send({ "message": "error", "errorData": error.message });
+        }
+
+    })
+    .get("getCreditInfo", async (request, response) => {
         response.status(200).send({ "message": "success" });
     })
 
