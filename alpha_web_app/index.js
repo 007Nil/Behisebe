@@ -11,6 +11,7 @@ const loginRouter = require("./view_controller/LoginRouter");
 //  Rest Router
 const bankRouter = require("./rest_controller/BankController");
 const expenseRouter = require("./rest_controller/ExpenseController");
+const creditRouter = require("./rest_controller/CreditController");
 
 
 const oneDay = 1000 * 60 * 60 * 24;
@@ -71,7 +72,7 @@ app.use("/", loginRouter);
 
 app.use("/v1/bank", bankRouter);
 app.use("/v1/expense",expenseRouter);
-
+app.use("/v1/credit",creditRouter);
 // Without middleware
 app.get('/', function (req, res) {
   res.redirect('/login');

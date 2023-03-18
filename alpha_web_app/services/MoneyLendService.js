@@ -2,11 +2,11 @@ const mysql = require("mysql2/promise");
 const mysqlPool = require("./MysqlConnectionPool");
 const crypto = require("crypto");
 
-async function addLendDetails(lendToID) {
+async function addLendDetails(expenseObject) {
     const lendID = crypto.randomBytes(10).toString("hex");
-    insertQuery = "INSERT INTO ?? (??,??,??,??,??) VALUES (?,?,?,?,?)";
-    prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo", "FullPayment", "PartialPayID", "PaymentOnDate",
-        lendID, lendToID, 0, null, null]);
+    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
+    prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo","LendFrom", "FullPayment", "PartialPayID", "PaymentOnDate",
+        lendID, expenseObject.LendTo,expenseObject.LendFrom, 0, null, null]);
 
     await mysqlPool.execute(prepareQuery);
 
