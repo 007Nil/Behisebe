@@ -86,7 +86,7 @@ CREATE TABLE ExpenseReason (
 INSERT INTO ExpenseReason 
 (ID,Reason,UserID)
 VALUES
-("0987654321","Lend Money",NULL),
+("0987654321","Lend",NULL),
 ("1234567098","Pay Of Debt",NULL);
 
 CREATE TABLE Expense (
@@ -118,7 +118,7 @@ CREATE TABLE CreditReason (
 INSERT INTO CreditReason 
 (ID,Reason,UserID)
 VALUES
-("765654343","Lend Money",NULL),
+("765654343","Borrow",NULL),
 ("098787651","Pay Of Debt",NULL),
 ("565434329","Added Bank Details",NULL);
 
