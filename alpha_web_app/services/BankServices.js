@@ -1,7 +1,8 @@
 const mysql = require("mysql2/promise");
 const mysqlPool = require("./MysqlConnectionPool");
 const crypto = require("crypto");
-// get a connection from the pool
+
+const {addCreditDetails} = require("./CreditServices");
 
 async function getAccountType() {
     let selectAccountTypeQuery = "SELECT * FROM ??";
@@ -36,19 +37,23 @@ async function addBankDetails(bankDetailsObject) {
     const bankID = crypto.randomBytes(10).toString("hex");
     // const bankID = "905f00d60f068b1f2e8b";
     // Insert values in Bank table
-    let bankDetailsInsertQuery = "INSERT INTO ?? (??,??,??,??, ??,??) VALUES (?,?,?,?,?,?)";
-    let prepareBankQuery = mysql.format(bankDetailsInsertQuery, ["Bank", "BankID", "BankName", "AccountType", "UserID", "IsDefault", "Notes",
-        bankID, bankDetailsObject.bankName, bankDetailsObject.bankAccountType, bankDetailsObject.userID, 0, bankDetailsObject.notes]);
+    let bankDetailsInsertQuery = "INSERT INTO ?? (??,??,??,??, ??,??,??) VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'))";
+    let prepareBankQuery = mysql.format(bankDetailsInsertQuery, ["Bank", "BankID", "BankName", "AccountType", "UserID", "IsDefault", "Notes","AddedOn",
+        bankID, bankDetailsObject.bankName, bankDetailsObject.bankAccountType, bankDetailsObject.userID, 0, bankDetailsObject.notes,bankDetailsObject.date]);
     // console.log(prepareBankQuery);
     await mysqlPool.execute(prepareBankQuery);
 
-    // Add data to Creadit table
-    const creditID = crypto.randomBytes(10).toString("hex");
-    let creaditInsertQuery = "INSERT INTO ?? (??, ??,??,??) VALUES (?,?,?,?)";
-    let prepareCerditQuery = mysql.format(creaditInsertQuery, ["Credit", "CreditID", "BankID", "Amount","Notes",
-        creditID, bankID, bankDetailsObject.bankBalance,"This is the initial amount when this Bank was added to system"]);
-
-    await mysqlPool.execute(prepareCerditQuery);
+    let creditObj = {
+        "bankID": bankID,
+        "userID": bankDetailsObject.userID,
+        "borrowID": bankDetailsObject.borrowFrom,
+        "reason": bankDetailsObject.creditCause,
+        "date": bankDetailsObject.date,
+        "notes": "This is the initial amount when this Bank was added to system",
+        "amount": bankDetailsObject.bankBalance
+    }
+    console.log(creditObj)
+    await addCreditDetails(creditObj);
 }
 
 function makeBankInvalida() {
