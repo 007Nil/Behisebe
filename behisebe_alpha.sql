@@ -67,10 +67,12 @@ CREATE TABLE Lend (
 	FullPayment TINYINT(1) DEFAULT 0,
 	PartialPayID VARCHAR(255) NULL,
 	PaymentOnDate DATE NULL,
+	UserID VARCHAR(255) NOT NOT,
 	PRIMARY KEY (ID),
 	FOREIGN KEY (LendTo) REFERENCES Person (ID) ON DELETE CASCADE,
 	FOREIGN KEY (LendFrom) REFERENCES Person (ID) ON DELETE CASCADE,
-	Foreign Key (PartialPayID) REFERENCES PartialPaymemnt (ID) ON DELETE CASCADE
+	Foreign Key (PartialPayID) REFERENCES PartialPaymemnt (ID) ON DELETE CASCADE,
+	Foreign Key (UserID) REFERENCES Person (ID) ON DELETE CASCADE
 );
 -- Expense related statements
 
