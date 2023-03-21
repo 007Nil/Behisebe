@@ -98,6 +98,7 @@ $("#add-expense").on("click", () => {
         try {
             // console.log($('#expense-reason').select2('data')[0].text);
             if ($('#expense-reason').select2('data')[0].text === "Lend") {
+                $("#expense-cause-form").html("");
                 insertLendMoneyFields();
                 $("#spacial-debit").select2({
                     tags: [],
@@ -124,7 +125,37 @@ $("#add-expense").on("click", () => {
                         }
                     }
                 });
-            } else {
+            } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
+                $("#expense-cause-form").html("");
+                insertLendMoneyFields();
+                // console.log("HIT")
+                $("#spacial-debit").select2({
+                    tags: [],
+                    ajax: {
+                        url: "/v1/expense/getLendFromPersons",
+                        dataType: 'json',
+                        type: "GET",
+                        quietMillis: 50,
+                        response: function (term) {
+                            return {
+                                term: term
+                            };
+                        },
+                        processResults: function (response) {
+                            // console.log(data.data)
+                            return {
+                                results: $.map(response.data, function (item) {
+                                    return {
+                                        text: item.Name,
+                                        id: item.ID
+                                    }
+                                })
+                            };
+                        }
+                    }
+                });
+            }
+            else {
                 // console.log("HIT ELSE")
                 $("#expense-cause-form").html("");
             }

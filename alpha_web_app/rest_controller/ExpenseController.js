@@ -55,5 +55,10 @@ router
         let expenseData = await getExpenseDetailsByUserID(request.session.userData["ID"]);
         response.status(200).send({ "message": "Success","data": expenseData });
     })
+    .get("/getLendFromPersons", async (request,response) => {
+        console.log("HIT");
+        response.status(200).send({ "message": "Success" });
+
+    })
 
 module.exports = router;

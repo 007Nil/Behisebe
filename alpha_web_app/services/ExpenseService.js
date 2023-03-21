@@ -45,6 +45,7 @@ async function addExpense(expenseObject) {
                 expenseObject.LendTo = (expenseObject.spacialDebit).split("-")[0];
             }
         }
+        console.log(expenseObject.userID);
         // Now insert data to Lend table
         expenseObject.lendID = await addLendDetails(expenseObject);
         // return;
@@ -53,6 +54,7 @@ async function addExpense(expenseObject) {
         // console.log(personNames);
         // console.log(expenseObject);
     }
+    
     const expenseID = crypto.randomBytes(10).toString("hex");
     let insertExpenseQuery = "INSERT INTO ?? (??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'),?,?)";
     let prepareInsertExpenseQuery = mysql.format(insertExpenseQuery, ["Expense", "ID", "BankID", "UserID", "LendID", "Reason", "Date", "Notes", "Amount",
