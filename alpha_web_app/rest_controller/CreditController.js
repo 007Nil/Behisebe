@@ -1,8 +1,8 @@
-const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const { getCreditReason } = require("../services/CreditReasonService");
 const { addCreditDetails } = require("../services/CreditServices");
+const { prepareLendToData } = require("../services/MoneyLendService");
 
 router
     .get("/getCreditReason", async (request, response) => {
@@ -28,8 +28,13 @@ router
         }
 
     })
-    .get("getCreditInfo", async (request, response) => {
-        response.status(200).send({ "message": "success" });
+    // .get("getCreditInfo", async (request, response) => {
+    //     response.status(200).send({ "message": "success" });
+    // })
+    .get("/getLendToPersons", async (request, response) => {
+
+        let lendToData = await prepareLendToData(request.session.userData["ID"]);
+        response.status(200).send({ "message": "success","data": lendToData });
     })
 
 module.exports = router;

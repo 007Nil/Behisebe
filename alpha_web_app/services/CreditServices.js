@@ -45,6 +45,7 @@ async function addCreditDetails(creditObj) {
                 creditObj.LendTo = null;
             }
             // Now insert data to Lend table
+            creditObj.userID = userID;
             creditObj.lendID = await addLendDetails(creditObj);
             // console.log(creditObj.lendID);
         }

@@ -69,6 +69,7 @@ $("#add-credit-details").on("click", () => {
         try {
             // console.log($('#expense-reason').select2('data')[0].text);
             if ($('#credit-reason').select2('data')[0].text === "Borrow") {
+                $("#credit-cause-div").html("");
                 insertCreditExtendFields();
                 $("#spacial-credit").select2({
                     placeholder: "Select an Option",
@@ -96,6 +97,36 @@ $("#add-credit-details").on("click", () => {
                         }
                     }
                 });
+            } else if ($('#credit-reason').select2('data')[0].text === "Pay Of Debt") {
+                $("#credit-cause-div").html("");
+                insertCreditExtendFields();
+                $("#spacial-credit").select2({
+                    placeholder: "Select an Option",
+                    tags: [],
+                    ajax: {
+                        url: "/v1/credit/getLendToPersons",
+                        dataType: 'json',
+                        type: "GET",
+                        quietMillis: 50,
+                        response: function (term) {
+                            return {
+                                term: term
+                            };
+                        },
+                        processResults: function (response) {
+                            // console.log(data.data)
+                            return {
+                                results: $.map(response.data, function (item) {
+                                    return {
+                                        text: item.LendToName,
+                                        personID: item.LendTo,
+                                        id: item.ID
+                                    }
+                                })
+                            };
+                        }
+                    }
+                });
             } else {
                 // console.log("HIT ELSE")
                 $("#credit-cause-div").html("");
@@ -105,6 +136,7 @@ $("#add-credit-details").on("click", () => {
 
         }
     });
+
 
 
     $("#credit-form").submit((event) => {
@@ -128,6 +160,9 @@ $("#add-credit-details").on("click", () => {
             "spacialCreditID": spacialCredit,
             "notes": $("#notes").val()
         }
+        console.log($("#spacial-credit").select2('data')[0].personID);
+        console.log(spacialCredit);
+        return;
 
         $.ajax({
             type: "POST",
