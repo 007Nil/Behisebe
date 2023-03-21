@@ -4,9 +4,9 @@ const crypto = require("crypto");
 
 async function addLendDetails(expenseObject) {
     const lendID = crypto.randomBytes(10).toString("hex");
-    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
-    prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo","LendFrom", "FullPayment", "PartialPayID", "PaymentOnDate",
-        lendID, expenseObject.LendTo,expenseObject.LendFrom, 0, null, null]);
+    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?)";
+    prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo","LendFrom", "FullPayment", "PartialPayID", "PaymentOnDate","UserID",
+        lendID, expenseObject.LendTo,expenseObject.LendFrom, 0, null, null,expenseObject.UserID]);
     // console.log(prepareQuery)
     await mysqlPool.execute(prepareQuery);
 

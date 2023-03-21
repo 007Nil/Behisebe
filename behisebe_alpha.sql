@@ -72,7 +72,7 @@ CREATE TABLE Lend (
 	FOREIGN KEY (LendTo) REFERENCES Person (ID) ON DELETE CASCADE,
 	FOREIGN KEY (LendFrom) REFERENCES Person (ID) ON DELETE CASCADE,
 	Foreign Key (PartialPayID) REFERENCES PartialPaymemnt (ID) ON DELETE CASCADE,
-	Foreign Key (UserID) REFERENCES Person (ID) ON DELETE CASCADE
+	Foreign Key (UserID) REFERENCES User (ID) ON DELETE CASCADE
 );
 -- Expense related statements
 
