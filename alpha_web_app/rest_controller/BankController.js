@@ -32,7 +32,7 @@ router.get("/getBankDetails", async (request, response) => {
         response.status(200).send(bankDetails);
     } catch (error) {
         console.log(error.message);
-        res.status(500).send(new Error("Unablle to fetch Bank details. 500 Server Error!!!"));
+        response.status(500).send(new Error("Unablle to fetch Bank details. 500 Server Error!!!"));
     }
 
 })
@@ -44,7 +44,7 @@ router.get("/getAccountTypes", async (request,response) => {
         response.status(200).send(accountTypes);
     }catch (error){
         console.log(error.message)
-        res.status(500).send(new Error("Unablle to fetch Account Type details. 500 Server Error!!!"));
+        response.status(500).send(new Error("Unablle to fetch Account Type details. 500 Server Error!!!"));
     }
 })
 

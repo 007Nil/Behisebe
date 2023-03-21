@@ -81,5 +81,10 @@ async function getExpenseDetailsByUserID(userID) {
     }
     return expenseList[0];
 }
+// Pay Of Debt
+async function getLendToData(userID){
+    let personInfo = await getPersonData(userID);
+    let  
+}
 
 module.exports = { addExpense, getExpenseDetailsByUserID }

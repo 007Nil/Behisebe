@@ -16,8 +16,14 @@ async function addLendDetails(expenseObject) {
 async function getLendByID(lendID) {
     selectQuery = "SELECT ?? FROM ?? WHERE ?? = ? ";
     prepareQuery = mysql.format(selectQuery, ["LendTo", "Lend", "ID", lendID]);
-    return (await mysqlPool.execute(prepareQuery))[0][0].LendTo
+    return (await mysqlPool.execute(prepareQuery))[0][0].LendTo;
 
 }
 
-module.exports = { addLendDetails, getLendByID };
+async function getLendFromByUserID(){
+    selectQuery = "SELECT ?? FROM ?? WHERE ?? <> ?";
+    prepareQuery = mysql.format(selectQuery,["LendFrom","Lend","LendFrom",null]);
+    return (await mysqlPool.execute(prepareQuery))[0][0].LendFrom;
+}
+
+module.exports = { addLendDetails, getLendByID, };
