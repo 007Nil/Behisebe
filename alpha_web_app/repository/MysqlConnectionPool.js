@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const {readConfig} =  require("./ReadConfig");
+const {readConfig} =  require("../services/ReadConfig");
 
 
 const mysqlParam = readConfig();

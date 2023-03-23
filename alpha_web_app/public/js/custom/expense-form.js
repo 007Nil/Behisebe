@@ -15,19 +15,20 @@ $("#add-expense").on("click", () => {
     $('#expense_date').datepicker();
     $("#debited-from").select2({
         placeholder: "Select a Bank Account",
-        tags: [],
+        // tags: false,
         ajax: {
             url: "/v1/bank/getBankDetails",
             dataType: 'json',
             type: "GET",
-            quietMillis: 50,
-            data: function (term) {
+            quietMillis: 1000,
+
+            data: function (params) {
                 return {
-                    term: term
+                    searchTerm: params.term
                 };
             },
             processResults: function (data) {
-                console.log(data)
+                // console.log(data)
                 return {
                     results: $.map(data, function (item) {
                         return {
@@ -36,7 +37,8 @@ $("#add-expense").on("click", () => {
                         }
                     })
                 };
-            }
+            },
+            cache: true
         }
     });
 
@@ -218,6 +220,10 @@ $("#view-expense").on("click", () => {
     getExpenseDetails();
 })
 // ------ Functions ------------------//
+
+// function noResultsButtonClicked() {
+//     alert('You clicked the "No Result Found" button.');
+// }
 
 function getExpenseDetails() {
 

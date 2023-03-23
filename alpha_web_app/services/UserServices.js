@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise");
-const mysqlPool = require("./MysqlConnectionPool");
+const mysqlPool = require("../repository/MysqlConnectionPool");
 
 async function findUserByEmail(userEmail){
     let selectUserQuery = "SELECT * FROM ?? WHERE Email = ?";

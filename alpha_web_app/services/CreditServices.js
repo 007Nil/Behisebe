@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise");
-const mysqlPool = require("./MysqlConnectionPool");
+const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
 const { getCreditReason, addCreditReason } = require("./CreditReasonService");
 const { getPersonData, addPersonData, getPersonNamebyID } = require("./PersonService");

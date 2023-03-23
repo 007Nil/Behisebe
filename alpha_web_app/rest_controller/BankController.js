@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { addBankDetails, fetchBankDetails, getAccountType } = require("../services/BankServices");
 
+
 router.post("/addDetails",async function (req, res) {
     // console.log(req.body);
     // req.session.userData[0]["ID"];
