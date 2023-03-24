@@ -12,13 +12,6 @@ async function getAccountType() {
     return queryResult[0];
 }
 
-async function getBankDetailsByID(bankID){
-    let selectBanksQuery = "SELECT ?? FROM ?? WHERE ?? = ?";
-    let prepareSelectBankQuery = mysql.format(selectBanksQuery, ["BankName","Bank","BankID",bankID]);
-    // console.log(prepareSelectBankQuery);
-    let bankName = await mysqlPool.execute(prepareSelectBankQuery);
-    // console.log(bankName[0])
-    return bankName[0];
-}
 
-module.exports = {getAccountType,getBankDetailsByID};
+
+module.exports = {getAccountType};

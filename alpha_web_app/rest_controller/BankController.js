@@ -6,19 +6,35 @@ const { addBankDetails, fetchBankDetails, getAccountType } = require("../service
 router.post("/addDetails",async function (req, res) {
     // console.log(req.body);
     // req.session.userData[0]["ID"];
-    let bankDetailsObject = {
-        "bankName": req.body.bank_name,
-        "bankBalance": req.body.bank_balance,
-        "bankAccountType": req.body.bankAccountType,
-        "notes": req.body.notes,
-        "creditCause": req.body.creditCause,
-        "borrowFrom": req.body.borrowFrom,
-        "date": req.body.date,
-        "userID": req.session.userData["ID"]
-    };
+    // let bankObj
+    let requestObj = req.body;
+    requestObj.userID = req.session.userData["ID"];
+    // let bankObj = new BankModel();
+    // let creditObj = new CreditModel();
+
+    // bankObj.bankName = req.body.bank_name;
+    // bankObj.acccountType = req.body.bankAccountType;
+    // bankObj.notes = req.body.notes;
+    // bankObj.userID = req.session.userData["ID"];
+    // bankObj.isDefault = 0;
+    // bankObj.addedOn = req.body.date;
+
+    // creditObj.reason = req.body.creditCause;
+    // creditObj.lendId = req.body.borrowFrom;
+    // // bankObj.a
+    // let bankDetailsObject = {
+    //     "bankName": req.body.bank_name,
+    //     "bankBalance": req.body.bank_balance,
+    //     "acccountType": req.body.bankAccountType,
+    //     "notes": req.body.notes,
+    //     "creditCause": req.body.creditCause,
+    //     "borrowFrom": req.body.borrowFrom,
+    //     "addedOn": req.body.date,
+    //     "userID": req.session.userData["ID"]
+    // };
     // console.log(req.session.userData["ID"])
     try {
-        await addBankDetails(bankDetailsObject);
+        await addBankDetails(requestObj);
         // console.log("HIt")
         res.status(200).send({"message":"Data Saved Successfully"});
     } catch (error) {

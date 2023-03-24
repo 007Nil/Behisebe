@@ -13,6 +13,7 @@ const Bank = class {
         this.acccountType = acccountType;
         this.userID = userID;
         this.isDefault = isDefault;
+        this.addedOn = addedOn;
         this.notes = notes;
     }
 }
