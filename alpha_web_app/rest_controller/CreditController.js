@@ -19,7 +19,7 @@ router
     })
     .post("/addCredit", async (request, response) => {
         try {
-            request.body.UserID = request.session.userData["ID"];
+            request.body.userId = request.session.userData["ID"];
             await addCreditDetails(request.body);
             response.status(200).send({ "message": "success" });
         } catch (error) {

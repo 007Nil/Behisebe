@@ -1,32 +1,23 @@
-const mysql = require("mysql2/promise");
-const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
+// Repos
+const personRepo = require("../repository/PersonRepo");
 
-async function getPersonData(userID){
-    selectPersonQuery = "SELECT * FROM ?? WHERE ?? = ?";
-    prepareSelectPersonQuery = mysql.format(selectPersonQuery,["Person","UserID",userID]);
-
-    let results = await mysqlPool.execute(prepareSelectPersonQuery);
-
-    return results[0];
+async function getPersonDataByUserId(userID) {
+    return (await personRepo.getPersonByUserId(userID));
 }
 
-async function addPersonData(personObj){
-    const personID = crypto.randomBytes(10).toString("hex");
-    insetPersonQuery = "INSERT INTO ?? (??,??,??) VALUES (?,?,?)"
-    prepareInsertPersonQuery = mysql.format(insetPersonQuery,["Person","ID","Name","UserID",
-                                            personID,personObj.name,personObj.userID]);
-    
-    await mysqlPool.execute(prepareInsertPersonQuery);
-    return personID;
+async function addPersonData(personObj) {
+    personObj.id = crypto.randomBytes(10).toString("hex");
+    await personRepo.savePerson(personObj)
+    return personObj.id;
 }
 
-async function getPersonNamebyID(personID){
+async function getPersonNamebyID(personID) {
     selectQuery = "SELECT ?? FROM ?? WHERE ?? = ?";
-    prepareQuery = mysql.format(selectQuery,["Name","Person","ID", personID]);
+    prepareQuery = mysql.format(selectQuery, ["Name", "Person", "ID", personID]);
     // console.log(prepareQuery)
     return (await mysqlPool.execute(prepareQuery))[0][0].Name;
 }
 
 
-module.exports = {getPersonData,addPersonData,getPersonNamebyID};
+module.exports = { getPersonDataByUserId, addPersonData, getPersonNamebyID };

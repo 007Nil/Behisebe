@@ -53,8 +53,8 @@ $("#add_bank_details").on("click", () => {
     // console.log(`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`);
     // return;
     let jsonObj = {
-      "bank_name": $("#new_bank_name").val(),
-      "bank_balance": $("#total_amount").val(),
+      "bankName": $("#new_bank_name").val(),
+      "bankBalance": $("#total_amount").val(),
       "bankAccountType": $('#bankAccountType').select2('data')[0].id,
       "notes": $("#notes").val(),
       "creditCause": "565434329",

@@ -1,13 +1,13 @@
 const Expense = class {
     constructor(id,bankID,userID,lendID,reason,date,notes,amount){
-        self.id = id;
-        self.bankID = bankID;
-        self.userID = userID;
-        self.lendID = lendID;
-        self.reason = reason;
-        self.date = date;
-        self.notes = notes;
-        self.amount = amount;
+        this.id = id;
+        this.bankID = bankID;
+        this.userID = userID;
+        this.lendID = lendID;
+        this.reason = reason;
+        this.date = date;
+        this.notes = notes;
+        this.amount = amount;
     }
 }
 

@@ -1,17 +1,11 @@
-const mysql = require("mysql2/promise");
-const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
 const { getPersonNamebyID } = require("./PersonService");
+const lendRepo = require("../repository/LendRepo");
+async function addLendDetails(lendObj) {
+    lendObj.id = crypto.randomBytes(10).toString("hex");
 
-async function addLendDetails(expenseObject) {
-    const lendID = crypto.randomBytes(10).toString("hex");
-    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?)";
-    prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo", "LendFrom", "FullPayment", "PartialPayID", "PaymentOnDate", "UserID",
-        lendID, expenseObject.LendTo, expenseObject.LendFrom, 0, null, null, expenseObject.userID]);
-    // console.log(prepareQuery)
-    await mysqlPool.execute(prepareQuery);
-
-    return lendID;
+    await lendRepo.addLend(lendObj)
+    return lendObj.id;
 }
 
 async function getLendByID(lendID) {

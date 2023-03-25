@@ -6,7 +6,7 @@ const Lend = class {
         fullPayment,
         partialPaymentID,
         paymentOnDate,
-        userID
+        userId
     ){
         this.id = id;
         this.lendTo = lendTo;
@@ -14,7 +14,7 @@ const Lend = class {
         this.fullPayment = fullPayment;
         this.partialPaymentID = partialPaymentID;
         this.paymentOnDate = paymentOnDate;
-        this.userID = userID;
+        this.userId = userId;
     }
 }
 

@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { fetchExpenseReasonByUserID, addExpenseReason } = require("../services/ExpenseReasonService");
-const { getPersonData } = require("../services/PersonService");
+const { getPersonDataByUserId } = require("../services/PersonService");
 const { addExpense, getExpenseDetailsByUserID } = require("../services/ExpenseService");
 
 router
     .get("/getExpenseReason", async (request, response) => {
-        // console.log("HIT");
         try {
             let userID = request.session.userData["ID"];
             let queryData = await fetchExpenseReasonByUserID(userID)
@@ -18,11 +17,10 @@ router
 
     })
     .post("/addExpenseReason", async (request, response) => {
-        // console.log("HIT POST");
         response.status(200).send({ "message": "Add Success" });
     }).get("/getPersonData", async (request, response) => {
         try {
-            let result = await getPersonData(request.session.userData["ID"]);
+            let result = await getPersonDataByUserId(request.session.userData["ID"]);
             console.log(result);
             response.status(200).send({ "message": "Success", "data": result });
         } catch (error) {

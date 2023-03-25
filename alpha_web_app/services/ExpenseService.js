@@ -26,7 +26,7 @@ async function addExpense(expenseObject) {
     }
     // Money Lend logic
     if (expenseObject.spacialDebit) {
-        let getPersonDetails = await getPersonData(userID);
+        let getPersonDetails = await getPersonDataByUserId(userID);
         let personID = getPersonDetails.map(each => each.ID);
 
         console.log((expenseObject.spacialDebit).split("-")[1]);

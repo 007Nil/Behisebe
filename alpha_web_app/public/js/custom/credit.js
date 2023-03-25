@@ -153,16 +153,16 @@ $("#add-credit-details").on("click", () => {
             spacialCredit = null;
         }
         let creditObject = {
-            "bankID": $("#credited-to").select2('data')[0].id,
+            "bankId": $("#credited-to").select2('data')[0].id,
             "amount": $("#amount").val(),
             "date": $("#credit-date").val(),
-            "creditReasonID": $('#credit-reason').select2('data')[0].id,
+            "reason": $('#credit-reason').select2('data')[0].id,
             "spacialCreditID": spacialCredit,
             "notes": $("#notes").val()
         }
-        console.log($("#spacial-credit").select2('data')[0].personID);
-        console.log(spacialCredit);
-        return;
+        // console.log($("#spacial-credit").select2('data')[0].personID);
+        console.log(creditObject);
+        // return;
 
         $.ajax({
             type: "POST",

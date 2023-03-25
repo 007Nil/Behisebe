@@ -1,22 +1,16 @@
-const mysql = require("mysql2/promise");
-const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
+// Repo
+const creditReasonRepo = require("../repository/CreditReasonRepo");
 
 async function getCreditReason(userID) {
-    selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ?";
-    prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["CreditReason", "UserID", userID, "UserID", null]);
-    // console.log(prepareSelectReasonQuery);
-    return (await mysqlPool.execute(prepareSelectReasonQuery))[0];
+    return (await creditReasonRepo.getCreditReason(userID));
 }
 
-async function addCreditReason(reasonObj){
-    const reasonID = crypto.randomBytes(10).toString("hex");
-    insertQuery = "INSERT INTO ?? (??,??,??) VALUES (?,?,?)";
-    preapreQuery = mysql.format(insertQuery,["CreditReason","ID","Reason","UserID",reasonID,reasonObj.creditReason,reasonObj.userID]);
-    console.log(preapreQuery);
-    await mysqlPool.execute(preapreQuery);
-
-    return reasonID;
+async function addCreditReason(creditReasonObj) {
+    creditReasonObj.id = crypto.randomBytes(10).toString("hex");
+    creditReasonRepo.saveCreditReason(creditReasonObj);
+    
+    return creditReasonObj.id;
 }
 
 module.exports = { getCreditReason, addCreditReason }
