@@ -30,32 +30,29 @@ router
 
     })
     .post("/addExpense", async (request, response) => {
+
         try {
-            let expenseObj = {
-                "bankName": request.body.bankName,
-                "amount": request.body.amount,
-                "date": request.body.date,
-                "expenseReason": request.body.expenseReason,
-                "spacialDebit": request.body.spacialDebit,
-                "Notes": request.body.Notes,
-                "userID": request.session.userData["ID"]
-            }
-            // console.log(expenseObj)
-            await addExpense(expenseObj);
+            request.body.userId = request.session.userData["ID"];
+            await addExpense(request.body);
             response.status(200).send({ "message": "Add Success" });
         } catch (error) {
-            console.log(error.message);
+            console.log(error);
             response.status(500).send(new Error(error.message));
         }
 
     })
-    .get("/getExpense", async (request,response) => {
+    .get("/getExpense", async (request, response) => {
         let expenseData = await getExpenseDetailsByUserID(request.session.userData["ID"]);
-        response.status(200).send({ "message": "Success","data": expenseData });
+        response.status(200).send({ "message": "Success", "data": expenseData });
     })
-    .get("/getLendFromPersons", async (request,response) => {
-        console.log("HIT");
-        response.status(200).send({ "message": "Success" });
+    .get("/getLendFromPersons", async (request, response) => {
+        try {
+            console.log("HIT");
+            response.status(200).send({ "message": "Success" });
+        } catch (error) {
+            console.log(error);
+            response.status(500).send(new Error(error.message));
+        }
 
     })
 

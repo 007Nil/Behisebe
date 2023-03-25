@@ -1,9 +1,9 @@
 const Expense = class {
-    constructor(id,bankID,userID,lendID,reason,date,notes,amount){
+    constructor(id,bankId,userId,lendId,reason,date,notes,amount){
         this.id = id;
-        this.bankID = bankID;
-        this.userID = userID;
-        this.lendID = lendID;
+        this.bankId = bankId;
+        this.userId = userId;
+        this.lendId = lendId;
         this.reason = reason;
         this.date = date;
         this.notes = notes;

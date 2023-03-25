@@ -40,7 +40,7 @@ async function addCreditDetails(creditObj) {
             if (!personID.includes((creditObj.spacialCreditID).split("-")[0])) {
                 let personObj = new PersonModel();
                 personObj.name = (creditObj.spacialCreditID).split("-")[0];
-                personObj.userID = userID;
+                personObj.userId = userID;
 
                 lendObj.lendFrom = await addPersonData(personObj);
                 lendObj.lendTo = null;

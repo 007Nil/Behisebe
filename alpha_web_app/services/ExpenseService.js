@@ -2,71 +2,98 @@ const mysql = require("mysql2/promise");
 const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
 const { fetchExpenseReasonByUserID, addExpenseReason, getExpenseNameByID } = require("./ExpenseReasonService");
-const { getPersonData, addPersonData, getPersonNamebyID } = require("./PersonService");
+const { getPersonDataByUserId, addPersonData, getPersonNamebyID } = require("./PersonService");
 const { addLendDetails, getLendByID } = require("./MoneyLendService");
 const { getBankDetailsByID } = require("./BankServices");
 
-async function addExpense(expenseObject) {
-    // console.log(expenseObject);
-    let userID = expenseObject.userID;
-    let expenseReasonResult = await fetchExpenseReasonByUserID(userID);
+//  Model
+const ExpenseModel = require("../model/ExpenseModel");
+const ExpenseReasonModel = require("../model/ExpenseReasonModel");
+const LendModel = require("../model/LendModel");
+const PersonModel = require("../model/PersonModel");
+
+// Repos
+
+const expenseRepo = require("../repository/ExpenseRepo");
+
+async function addExpense(requestData) {
+    console.log(requestData);
+    let expenseModel = new ExpenseModel();
+    expenseModel.userId = requestData.userId;
+
+    let expenseReasonResult = await fetchExpenseReasonByUserID(expenseModel.userId);
 
     let expenseReason = expenseReasonResult.map(each => each.ID);
     // throw new Error("Duplicate entry for Bank ID")
-    if (!expenseReason.includes(expenseObject.expenseReason)) {
+    if (!expenseReason.includes(requestData.expenseReason)) {
         // New expense reason. Need to add to database
-        // expenseObject.expenseReason is the text if not found
+        // requestData.expenseReason is the text if not found
         // in expenseReason list
-        // console.log("HIT");
-        let reasonObj = {
-            "expenseReason": expenseObject.expenseReason,
-            "userID": userID
-        }
-        expenseObject.expenseReason = await addExpenseReason(reasonObj);
+        let expenseReasonModel = new ExpenseReasonModel();
+        expenseReasonModel.reason = requestData.expenseReason;
+        expenseReasonModel.userId = expenseModel.userId;
+        // let reasonObj = {
+        //     "expenseReason": requestData.expenseReason,
+        //     "userId": userId
+        // }
+        expenseModel.reason = await addExpenseReason(expenseReasonModel);
+        // console.log(expenseModel.reason);
+    } else {
+        expenseModel.reason = requestData.expenseReason;
     }
     // Money Lend logic
-    if (expenseObject.spacialDebit) {
-        let getPersonDetails = await getPersonDataByUserId(userID);
+    if (requestData.spacialDebit) {
+        let lendModel = new LendModel();
+
+        let getPersonDetails = await getPersonDataByUserId(expenseModel.userId);
         let personID = getPersonDetails.map(each => each.ID);
 
-        console.log((expenseObject.spacialDebit).split("-")[1]);
+        // console.log((requestData.spacialDebit).split("-")[1]);
         // Someone lend some mony from Me
-        if ((expenseObject.spacialDebit).split("-")[1] === "lendMoney") {
-            if (!personID.includes((expenseObject.spacialDebit).split("-")[0])) {
+        if ((requestData.spacialDebit).split("-")[1] === "lendMoney") {
+            if (!personID.includes((requestData.spacialDebit).split("-")[0])) {
                 // Add Person to Person table
-                let personObj = {
-                    "name": (expenseObject.spacialDebit).split("-")[0],
-                    "userID": userID
-                };
-                expenseObject.LendTo = await addPersonData(personObj);
-                expenseObject.LendFrom = null;
-            }else{
+                let personModel = new PersonModel();
+                personModel.name = (requestData.spacialDebit).split("-")[0];
+                personModel.userId = expenseModel.userId;
+                lendModel.lendTo = await addPersonData(personModel);
+                lendModel.lendFrom = null;
+            } else {
                 // We hve the person in DB
-                expenseObject.LendTo = (expenseObject.spacialDebit).split("-")[0];
+                lendModel.lendTo = (requestData.spacialDebit).split("-")[0];
+                lendModel.lendFrom = null;
             }
         }
-        console.log(expenseObject.userID);
+        lendModel.fullPayment = 0;
+        lendModel.partialPaymentID = null;
+        lendModel.paymentOnDate = null;
+        lendModel.userId = expenseModel.userId;
+
         // Now insert data to Lend table
-        expenseObject.lendID = await addLendDetails(expenseObject);
-        // return;
-        
-        
+        expenseModel.lendId = await addLendDetails(lendModel);
+
+
+
         // console.log(personNames);
-        // console.log(expenseObject);
+        // console.log(requestData);
+    }else{
+        expenseModel.lendId = null;
     }
+
+    expenseModel.id = crypto.randomBytes(10).toString("hex");;
     
-    const expenseID = crypto.randomBytes(10).toString("hex");
-    let insertExpenseQuery = "INSERT INTO ?? (??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'),?,?)";
-    let prepareInsertExpenseQuery = mysql.format(insertExpenseQuery, ["Expense", "ID", "BankID", "UserID", "LendID", "Reason", "Date", "Notes", "Amount",
-        expenseID, expenseObject.bankName, userID, expenseObject.lendID,
-        expenseObject.expenseReason, expenseObject.date.replaceAll("/", "-"), expenseObject.Notes, expenseObject.amount]);
-    // console.log(prepareInsertExpenseQuery);
-    await mysqlPool.execute(prepareInsertExpenseQuery);
+    expenseModel.bankId = requestData.bankId;
+    expenseModel.date = requestData.date;
+    expenseModel.notes = requestData.notes;
+    expenseModel.amount = requestData.amount;
+
+    await expenseRepo.saveExpense(expenseModel);
+
 }
 
-async function getExpenseDetailsByUserID(userID) {
+async function getExpenseDetailsByuserId(userId) {
     let selectQuery = "SELECT * FROM ?? WHERE ?? = ?";
-    let prepareSelectQuery = mysql.format(selectQuery, ["Expense", "UserID", userID]);
+    let prepareSelectQuery = mysql.format(selectQuery, ["Expense", "userId", userId]);
 
     expenseList = await mysqlPool.execute(prepareSelectQuery);
 
@@ -84,9 +111,9 @@ async function getExpenseDetailsByUserID(userID) {
     return expenseList[0];
 }
 // Pay Of Debt
-async function getLendToData(userID){
-    let personInfo = await getPersonData(userID);
-    let  
+async function getLendToData(userId) {
+    let personInfo = await getPersonData(userId);
+    let
 }
 
-module.exports = { addExpense, getExpenseDetailsByUserID }
+module.exports = { addExpense, getExpenseDetailsByuserId }

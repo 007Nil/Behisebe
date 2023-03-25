@@ -11,7 +11,7 @@ async function getPersonByUserId(userID) {
 async function savePerson(personObj) {
     insetPersonQuery = "INSERT INTO ?? (??,??,??) VALUES (?,?,?)"
     prepareInsertPersonQuery = mysql.format(insetPersonQuery, ["Person", "ID", "Name", "UserID",
-        personObj.id, personObj.name, personObj.userID]);
+        personObj.id, personObj.name, personObj.userId]);
 
     await mysqlPool.execute(prepareInsertPersonQuery);
 }

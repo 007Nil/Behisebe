@@ -1,8 +1,8 @@
 const Person = class {
-    constructor(id,name,userID){
+    constructor(id,name,userId){
         this.id = id;
         this.name = name;
-        this.userID = userID;
+        this.userId = userId;
     }
 }
 

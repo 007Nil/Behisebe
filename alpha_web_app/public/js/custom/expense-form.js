@@ -181,12 +181,12 @@ $("#add-expense").on("click", () => {
         }
         // console.log($("#debited-from").select2('data'));
         let expenseObject = {
-            "bankName": $("#debited-from").select2('data')[0].id,
+            "bankId": $("#debited-from").select2('data')[0].id,
             "amount": $("#amount").val(),
             "date": $("#expense_date").val(),
             "expenseReason": $('#expense-reason').select2('data')[0].id,
             "spacialDebit": spacialDebit,
-            "Notes": $("#notes").val()
+            "notes": $("#notes").val()
         }
 
         $.ajax({
@@ -198,7 +198,7 @@ $("#add-expense").on("click", () => {
 
             success: function (response) {
                 // console.log(response);
-                resetExpenseForm()
+                // resetExpenseForm()
                 alertify.success('Expense information saved.', 3);
             },
             error: function (error) {

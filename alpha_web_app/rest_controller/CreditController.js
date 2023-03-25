@@ -11,7 +11,7 @@ router
             console.log(reasonData);
             response.status(200).send({ "message": "success", "data": reasonData });
         } catch (error) {
-            console.log(error.message);
+            console.log(error);
             response.status(500).send({ "message": "error", "errorData": error.message });
         }
 
@@ -23,18 +23,19 @@ router
             await addCreditDetails(request.body);
             response.status(200).send({ "message": "success" });
         } catch (error) {
-            console.log(error.message);
+            console.log(error);
             response.status(500).send({ "message": "error", "errorData": error.message });
         }
 
     })
-    // .get("getCreditInfo", async (request, response) => {
-    //     response.status(200).send({ "message": "success" });
-    // })
     .get("/getLendToPersons", async (request, response) => {
-
-        let lendToData = await prepareLendToData(request.session.userData["ID"]);
-        response.status(200).send({ "message": "success","data": lendToData });
+        try {
+            let lendToData = await prepareLendToData(request.session.userData["ID"]);
+            response.status(200).send({ "message": "success", "data": lendToData });
+        } catch (error) {
+            console.log(error);
+            response.status(500).send({ "message": "error", "errorData": error.message });
+        }
     })
 
 module.exports = router;

@@ -1,27 +1,18 @@
-const mysql = require("mysql2/promise");
-const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
 
-async function fetchExpenseReasonByUserID(userID){
-    // console.log(userID);
-    selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ?";
-    prepareSelectReasonQuery = mysql.format(selectReasonQuery,["ExpenseReason","UserID",userID,"UserID",null]);
-    // console.log(prepareSelectReasonQuery);
-    queryResult = await mysqlPool.execute(prepareSelectReasonQuery);
-    // console.log(queryResult[0]);
-    return queryResult[0];
+// Repos
+const expenseRepo = require("../repository/ExpenseReasonRepo"); 
+
+async function fetchExpenseReasonByUserID(userId){
+    return expenseRepo.fetchExpenseReasonByUserID(userId);
+ 
 }
 
-async function addExpenseReason(reasonObejct){
-    console.log(reasonObejct);
-    const expenseReasonID = crypto.randomBytes(10).toString("hex");
-    // const expenseReasonID = "ec163a877dcee66fed49";
-    insertQuery = "INSERT INTO ?? (??,??,??) VALUES (?,?,?)";
-    prepareInsertQuery = mysql.format(insertQuery,["ExpenseReason","ID","Reason","UserID",
-                                        expenseReasonID,reasonObejct.expenseReason,reasonObejct.userID]);
-    // console.log(prepareInsertQuery);
-    await mysqlPool.execute(prepareInsertQuery);
-    return expenseReasonID;
+async function addExpenseReason(expenseReasonObj){
+    expenseReasonObj.id = crypto.randomBytes(10).toString("hex");
+    await expenseRepo.saveExpenseReason(expenseReasonObj);
+
+    return expenseReasonObj.id;
 }
 
 async function getExpenseNameByID(expenseID){

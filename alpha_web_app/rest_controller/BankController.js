@@ -10,7 +10,7 @@ router.post("/addDetails",async function (req, res) {
         await addBankDetails(requestObj);
         res.status(200).send({"message":"Data Saved Successfully"});
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         res.status(500).send(new Error({"message": "error", "error-code": error.message}));
     }
 });
@@ -20,7 +20,7 @@ router.get("/getBankDetails", async (request, response) => {
         let bankDetails = await fetchBankDetails(request.session.userData["ID"]);
         response.status(200).send(bankDetails);
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         response.status(500).send(new Error("Unablle to fetch Bank details. 500 Server Error!!!"));
     }
 
@@ -32,7 +32,7 @@ router.get("/getAccountTypes", async (request,response) => {
         // console.log(accountTypes);
         response.status(200).send(accountTypes);
     }catch (error){
-        console.log(error.message)
+        console.log(error)
         response.status(500).send(new Error("Unablle to fetch Account Type details. 500 Server Error!!!"));
     }
 })
