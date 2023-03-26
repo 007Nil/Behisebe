@@ -134,7 +134,7 @@ $("#add-expense").on("click", () => {
                 $("#spacial-debit").select2({
                     tags: [],
                     ajax: {
-                        url: "/v1/expense/getLendFromPersons",
+                        url: "/v1/expense/getPayOfDebt", 
                         dataType: 'json',
                         type: "GET",
                         quietMillis: 50,
@@ -198,7 +198,7 @@ $("#add-expense").on("click", () => {
 
             success: function (response) {
                 // console.log(response);
-                // resetExpenseForm()
+                resetExpenseForm()
                 alertify.success('Expense information saved.', 3);
             },
             error: function (error) {
@@ -261,7 +261,7 @@ function createViewExpenseTable() {
 function insertLendMoneyFields() {
     let lendFields = `
         <div class="mb-3">
-            <label for="spacial-debit" class="form-label">Lend to</label>
+            <label for="spacial-debit" class="form-label">To</label>
             <select id="spacial-debit" class="select2 form-control" required>
 
             </select>
