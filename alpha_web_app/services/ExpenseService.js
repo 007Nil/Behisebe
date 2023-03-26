@@ -76,12 +76,12 @@ async function addExpense(requestData) {
 
         // console.log(personNames);
         // console.log(requestData);
-    }else{
+    } else {
         expenseModel.lendId = null;
     }
 
     expenseModel.id = crypto.randomBytes(10).toString("hex");;
-    
+
     expenseModel.bankId = requestData.bankId;
     expenseModel.date = requestData.date;
     expenseModel.notes = requestData.notes;
@@ -111,9 +111,9 @@ async function getExpenseDetailsByuserId(userId) {
     return expenseList[0];
 }
 // Pay Of Debt
-async function getLendToData(userId) {
-    let personInfo = await getPersonData(userId);
-    let
-}
+// async function getLendToData(userId) {
+//     let personInfo = await getPersonData(userId);
+//     let
+// }
 
 module.exports = { addExpense, getExpenseDetailsByuserId }

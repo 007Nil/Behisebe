@@ -16,7 +16,14 @@ async function savePerson(personObj) {
     await mysqlPool.execute(prepareInsertPersonQuery);
 }
 
+async function getPersonNamebyID(personId,userId) {
+    selectQuery = "SELECT ?? FROM ?? WHERE ?? = ? AND ?? = ?";
+    prepareQuery = mysql.format(selectQuery, ["Name", "Person", "ID", personId,"userID",userId]);
+    // console.log(prepareQuery);
+    return (await mysqlPool.execute(prepareQuery))[0][0].Name;
+}
 module.exports = {
     getPersonByUserId,
-    savePerson
+    savePerson,
+    getPersonNamebyID
 }

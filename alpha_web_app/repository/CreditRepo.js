@@ -11,6 +11,14 @@ async function saveCredit(creditObj) {
 
 }
 
+async function getCreditLendData(userId){
+    let query = "SELECT * FROM ?? WHERE ?? = ? AND ?? IS NOT NULL";
+    let prepareQuery = mysql.format(query,["Credit","UserID",userId,"LendID"]);
+    // console.log(prepareQuery);
+    return (await mysqlPool.execute(prepareQuery))[0];
+}
+
 module.exports = {
-    saveCredit
+    saveCredit,
+    getCreditLendData
 }

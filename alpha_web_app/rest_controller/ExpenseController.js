@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { fetchExpenseReasonByUserID, addExpenseReason } = require("../services/ExpenseReasonService");
 const { getPersonDataByUserId } = require("../services/PersonService");
-const { addExpense, getExpenseDetailsByUserID } = require("../services/ExpenseService");
+const { addExpense } = require("../services/ExpenseService");
+const { getLendFromData } = require("../services/MoneyLendService");
 
 router
     .get("/getExpenseReason", async (request, response) => {
@@ -21,7 +22,7 @@ router
     }).get("/getPersonData", async (request, response) => {
         try {
             let result = await getPersonDataByUserId(request.session.userData["ID"]);
-            console.log(result);
+            // console.log(result);
             response.status(200).send({ "message": "Success", "data": result });
         } catch (error) {
             console.log(error.message);
@@ -45,10 +46,10 @@ router
         let expenseData = await getExpenseDetailsByUserID(request.session.userData["ID"]);
         response.status(200).send({ "message": "Success", "data": expenseData });
     })
-    .get("/getLendFromPersons", async (request, response) => {
+    .get("/getPayOfDebt", async (request, response) => {
         try {
-            console.log("HIT");
-            response.status(200).send({ "message": "Success" });
+            let lendFromData = await getLendFromData(request.session.userData["ID"]);
+            response.status(200).send({ "message": "Success", "data":  lendFromData});
         } catch (error) {
             console.log(error);
             response.status(500).send(new Error(error.message));

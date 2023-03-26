@@ -12,11 +12,8 @@ async function addPersonData(personObj) {
     return personObj.id;
 }
 
-async function getPersonNamebyID(personID) {
-    selectQuery = "SELECT ?? FROM ?? WHERE ?? = ?";
-    prepareQuery = mysql.format(selectQuery, ["Name", "Person", "ID", personID]);
-    // console.log(prepareQuery)
-    return (await mysqlPool.execute(prepareQuery))[0][0].Name;
+async function getPersonNamebyID(personID,userId) {
+ return (await personRepo.getPersonNamebyID(personID,userId));
 }
 
 

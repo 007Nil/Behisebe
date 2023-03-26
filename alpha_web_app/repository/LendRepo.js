@@ -9,6 +9,22 @@ async function addLend(lendObj){
     await mysqlPool.execute(prepareQuery);
 }
 
+async function getLendFromByUserID(userID) {
+    selectQuery = "SELECT * FROM ?? WHERE ?? = ? AND ?? IS NOT ?";
+    prepareQuery = mysql.format(selectQuery, ["Lend", "UserID", userID, "LendFrom", null]);
+    // console.log(prepareQuery);
+    return (await mysqlPool.execute(prepareQuery))[0];
+}
+
+async function getLendToByUserID(userID) {
+    selectQuery = "SELECT ??, ?? FROM ?? WHERE ?? = ? AND ?? IS NOT ?";
+    prepareQuery = mysql.format(selectQuery, ["ID", "LendTo", "Lend", "UserID", userID, "LendTo", null]);
+    // console.log(prepareQuery);
+    return (await mysqlPool.execute(prepareQuery))[0];
+}
+
 module.exports = {
-    addLend
+    addLend,
+    getLendFromByUserID,
+    getLendToByUserID
 }

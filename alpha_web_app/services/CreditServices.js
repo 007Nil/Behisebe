@@ -1,9 +1,8 @@
-const mysql = require("mysql2/promise");
-const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
 const { getCreditReason, addCreditReason } = require("./CreditReasonService");
-const { getPersonDataByUserId, addPersonData, getPersonNamebyID } = require("./PersonService");
-const { addLendDetails, getLendByID } = require("./MoneyLendService");
+const { getPersonDataByUserId, addPersonData} = require("./PersonService");
+// delete require.cache[require.resolve("./MoneyLendService")];
+const lendService = require("./MoneyLendService");
 
 //  Repo
 const creditRepo = require("../repository/CreditRepo");
@@ -55,11 +54,20 @@ async function addCreditDetails(creditObj) {
             lendObj.paymentOnDate = null;
             lendObj.userId = userID;
 
-            creditObj.lendId = await addLendDetails(lendObj);
+            creditObj.lendId = await lendService.addLendDetails(lendObj);
         }
     }
     await creditRepo.saveCredit(creditObj);
 
 }
 
-module.exports = { addCreditDetails };
+
+
+async function getCreditLendData(userId){
+    // console.log("HIT")
+    // console.log((await creditRepo.getCreditLendData(userId))[0])
+    return (await creditRepo.getCreditLendData(userId));
+}
+
+module.exports.getCreditLendData = getCreditLendData;
+module.exports.addCreditDetails = addCreditDetails;

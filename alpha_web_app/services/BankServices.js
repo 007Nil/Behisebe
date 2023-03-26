@@ -33,7 +33,7 @@ function getAccountCurrentBalance() {
 async function addBankDetails(requestData) {
 
     // try {
-    console.log(requestData.creditCause);
+    // console.log(requestData.creditCause);
     let bankObj = new BankModel();
 
     // console.log(requestData);
@@ -59,6 +59,7 @@ async function addBankDetails(requestData) {
     creditObj.amount = requestData.bankBalance;
     creditObj.notes = "This is the initial amount when this Bank was added to system";
     await addCreditDetails(creditObj);
+    // await getCreditLendData();
 }
 
 function makeBankInvalida() {
