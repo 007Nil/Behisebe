@@ -6,6 +6,7 @@ const creditServices = require("./CreditServices");
 
 // Repos
 const lendRepo = require("../repository/LendRepo");
+const { copyFileSync } = require("fs");
 
 
 
@@ -34,7 +35,7 @@ async function getLendFromData(userId) {
 
     // addCreditDetails();
     let creditData = await creditServices.getCreditLendData(userId)
-    console.log(creditData);
+    // console.log(creditData);
 
     let lendFromData = await lendRepo.getLendFromByUserID(userId);
 
@@ -48,21 +49,38 @@ async function getLendFromData(userId) {
         let detailedLendDetails = []
 
         let lendFromPerosn = lendFromArray[index]
-
+        let totalAmount = 0;
         for (lendDataindex in lendFromData) {
 
             if (lendFromPerosn === lendFromData[lendDataindex].LendFrom) {
+
                 lendDetails = {
                     "LendFrom": await getPersonNamebyID(lendFromPerosn, userId),
-                    "amount": 0
+                    "totalAmount": 0
                 };
+                let bankId = getLendDetails(creditData, lendFromData[lendDataindex].ID, "bankId");
+                let amount = getLendDetails(creditData, lendFromData[lendDataindex].ID, "amount");
+                let date = getLendDetails(creditData, lendFromData[lendDataindex].ID, "date");
+                let notes = getLendDetails(creditData, lendFromData[lendDataindex].ID, "notes");
+                let reasonId = getLendDetails(creditData, lendFromData[lendDataindex].ID, "reason");
+                // let reasonName = getLendDetails(creditData, lendFromData[lendDataindex].ID, "reason");
+                totalAmount += amount;
                 let detailsObj = {
                     "lendId": lendFromData[lendDataindex].ID,
-                    "amount": 0,
-                    "date": ""
+                    "bankID": bankId,
+                    "bankName": "",
+                    "amount": amount,
+                    "date": date,
+                    "notes": notes,
+                    "reasonId": reasonId,
+                    "reasonName": ""
                 };
                 detailedLendDetails.push(detailsObj);
+
             }
+            lendDetails.totalAmount = totalAmount;
+
+
 
         }
         lendDetails.borrowDetails = detailedLendDetails
@@ -70,7 +88,32 @@ async function getLendFromData(userId) {
         // lendFromArray.pop()
         // lendFromData.pop(lendDataindex)
     }
+    // console.log("HIT");
     return returnData;
+}
+
+function getchBankName() {
+
+}
+
+function getLendDetails(transactionData, lendID, key) {
+    // console.log(transactionData)
+    for (indexData in transactionData) {
+        // console.log(creditData[indexData]);
+        if (transactionData[indexData].LendID === lendID) {
+            if (key === "amount") {
+                return transactionData[indexData].Amount;
+            } else if (key === "date") {
+                return transactionData[indexData].Date;
+            } else if (key === "bankId") {
+                return transactionData[indexData].BankID;
+            } else if (key === "notes") {
+                return transactionData[indexData].Notes;
+            } else if (key === "reason") {
+                return transactionData[indexData].Reason;
+            }
+        }
+    }
 }
 
 async function prepareLendToData(userID) {
