@@ -53,19 +53,16 @@ async function getLendFromData(userId) {
         for (lendDataindex in lendFromData) {
 
             if (lendFromPerosn === lendFromData[lendDataindex].LendFrom) {
-
+                console.log(lendFromData[lendDataindex])
                 lendDetails = {
+                    "personId": lendFromPerosn,
                     "LendFrom": await getPersonNamebyID(lendFromPerosn, userId),
                     "totalAmount": 0
                 };
-                let bankId = getLendDetails(creditData, lendFromData[lendDataindex].ID, "bankId");
-                let amount = getLendDetails(creditData, lendFromData[lendDataindex].ID, "amount");
-                let date = getLendDetails(creditData, lendFromData[lendDataindex].ID, "date");
-                let notes = getLendDetails(creditData, lendFromData[lendDataindex].ID, "notes");
-                let reasonId = getLendDetails(creditData, lendFromData[lendDataindex].ID, "reason");
-                // let reasonName = getLendDetails(creditData, lendFromData[lendDataindex].ID, "reason");
+                let [creditId,amount, date, bankId, notes, reasonId] = getLendDetails(creditData, lendFromData[lendDataindex].ID);
                 totalAmount += amount;
                 let detailsObj = {
+                    "transacationId": creditId,
                     "lendId": lendFromData[lendDataindex].ID,
                     "bankID": bankId,
                     "bankName": "",
@@ -96,22 +93,25 @@ function getchBankName() {
 
 }
 
-function getLendDetails(transactionData, lendID, key) {
+function getLendDetails(transactionData, lendID) {
     // console.log(transactionData)
     for (indexData in transactionData) {
         // console.log(creditData[indexData]);
         if (transactionData[indexData].LendID === lendID) {
-            if (key === "amount") {
-                return transactionData[indexData].Amount;
-            } else if (key === "date") {
-                return transactionData[indexData].Date;
-            } else if (key === "bankId") {
-                return transactionData[indexData].BankID;
-            } else if (key === "notes") {
-                return transactionData[indexData].Notes;
-            } else if (key === "reason") {
-                return transactionData[indexData].Reason;
-            }
+            // console.log(transactionData[indexData]);
+            let creditId = transactionData[indexData].CreditID;
+            // if (key === "amount") {
+            let amount = transactionData[indexData].Amount;
+            // } else if (key === "date") {
+            let date = transactionData[indexData].Date;
+            // } else if (key === "bankId") {
+            let bankId = transactionData[indexData].BankID;
+            // } else if (key === "notes") {
+            let notes = transactionData[indexData].Notes;
+            // } else if (key === "reason") {
+            let reason = transactionData[indexData].Reason;
+            // }
+            return [creditId,amount, date, bankId, notes, reason]
         }
     }
 }
