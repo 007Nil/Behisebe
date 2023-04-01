@@ -11,11 +11,33 @@
     <link rel="stylesheet" href="../css/admin_panel/admin.css" />
     <%- include("../common/header.ejs"); %>
 
+        <!-- Modal -->
+        <div class="modal fade" id="makePaymentModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close btn-cls" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="paymentModalBody" class="modal-body">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-cls" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Table -->
         <div class="container table-responsive" style="padding-top: 10px;">
             <table id="pay-your-debt-table" class="table display nowrap" style="width:100%">
                 <thead>
                     <tr>
-                        
+
                     </tr>
                 </thead>
                 <tbody>

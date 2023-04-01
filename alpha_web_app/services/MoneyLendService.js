@@ -6,7 +6,7 @@ const creditServices = require("./CreditServices");
 
 // Repos
 const lendRepo = require("../repository/LendRepo");
-const { copyFileSync } = require("fs");
+const bankRepo = require("../repository/BankRepo");
 
 
 
@@ -36,7 +36,7 @@ async function getLendFromData(userId) {
     // addCreditDetails();
     let creditData = await creditServices.getCreditLendData(userId)
     // console.log(creditData);
-
+    let bankDetails = await bankRepo.fetchBankDetails(userId);
     let lendFromData = await lendRepo.getLendFromByUserID(userId);
 
     lendFromData.forEach(element => {
@@ -53,24 +53,25 @@ async function getLendFromData(userId) {
         for (lendDataindex in lendFromData) {
 
             if (lendFromPerosn === lendFromData[lendDataindex].LendFrom) {
-                console.log(lendFromData[lendDataindex])
+                // console.log(lendFromData[lendDataindex])
                 lendDetails = {
                     "personId": lendFromPerosn,
                     "LendFrom": await getPersonNamebyID(lendFromPerosn, userId),
                     "totalAmount": 0
                 };
-                let [creditId,amount, date, bankId, notes, reasonId] = getLendDetails(creditData, lendFromData[lendDataindex].ID);
+                let [creditId, amount, date, bankId, notes, reasonId] = getLendDetails(creditData, lendFromData[lendDataindex].ID);
+                let bankName = getBankName(bankDetails, bankId);
+                console.log(bankName)
                 totalAmount += amount;
                 let detailsObj = {
                     "transacationId": creditId,
                     "lendId": lendFromData[lendDataindex].ID,
                     "bankID": bankId,
-                    "bankName": "",
+                    "bankName": bankName,
                     "amount": amount,
                     "date": date,
                     "notes": notes,
                     "reasonId": reasonId,
-                    "reasonName": ""
                 };
                 detailedLendDetails.push(detailsObj);
 
@@ -89,8 +90,12 @@ async function getLendFromData(userId) {
     return returnData;
 }
 
-function getchBankName() {
-
+function getBankName(bankObj, bankId) {
+    for (index in bankObj) {
+        if (bankObj[index].BankID === bankId) {
+            return bankObj[index].BankName;
+        }
+    }
 }
 
 function getLendDetails(transactionData, lendID) {
@@ -111,7 +116,7 @@ function getLendDetails(transactionData, lendID) {
             // } else if (key === "reason") {
             let reason = transactionData[indexData].Reason;
             // }
-            return [creditId,amount, date, bankId, notes, reason]
+            return [creditId, amount, date, bankId, notes, reason]
         }
     }
 }
