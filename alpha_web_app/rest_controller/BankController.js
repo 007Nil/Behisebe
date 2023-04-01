@@ -18,6 +18,7 @@ router.post("/addDetails",async function (req, res) {
 router.get("/getBankDetails", async (request, response) => {
     try {
         let bankDetails = await fetchBankDetails(request.session.userData["ID"]);
+        console.log("HIT")
         response.status(200).send(bankDetails);
     } catch (error) {
         console.log(error);

@@ -43,6 +43,9 @@ function generatePayYourDebtTable(transactionData) {
             {
                 "title": "Total Amount",
             },
+            {
+                "title": "Full Payment",
+            },
         ],
         responsive: false,
         columnDefs: [
@@ -67,6 +70,11 @@ function generatePayYourDebtTable(transactionData) {
                     // console.log(data)
                     return data;
                 },
+            },
+            {
+                targets: 4,
+                data: null,
+                defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Make Payment</button>`
             },
         ],
         order: [1, 'asc']
@@ -127,7 +135,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
             },
             {
                 "title": "Make Payment",
-                className: "make-payment"
             },
             {
                 "title": "Borrow On",
@@ -194,7 +201,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 render: function (data) {
                     return data;
                 },
-            }
+            },
         ]
     });
 
@@ -202,9 +209,14 @@ function generateBorrowDetailsDatatable(detailsObj) {
     detailsTable.column(1).visible(false);
     detailsTable.column(2).visible(false);
     // console.log(`#payDebtDetails-${detailsObj.personId} tbody`)
+
+
+
+
+
     $(`#payDebtDetails-${detailsObj.personId} tbody`).on('click', '.btn-sm', function () {
-        console.log(detailsObj)
-        
+        // console.log(detailsObj)
+
         $("#paymentModalBody").empty();
         let tr = $(this).closest("tr");
         // console.log(tr)
@@ -243,24 +255,63 @@ function generateBorrowDetailsDatatable(detailsObj) {
             </div>
 
             <div class="form-group row">
+                <label for="debited-from" class="col-sm-4 col-form-label">Debited From</label>
+                <div class="col-sm-6">
+                <select id="debited-from" class="select2 form-control" required>
+                </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label for="payNow" class="col-sm-4 col-form-label">Pay Now</label>
                 <div class="col-sm-6">
-                <input type="text" class="form-control" id="payNow" value="0">
+                <input type="number" class="form-control" id="payNow" value=0>
                 </div>
             <div>
         `
         $("#paymentModalBody").append(modalBody);
         $('#makePaymentModal').modal("show");
-        
+
+        $("#debited-from").select2({
+            dropdownParent: $('#makePaymentModal'),
+            placeholder: "Select a Bank Account",
+            // tags: false,
+            ajax: {
+                url: "/v1/bank/getBankDetails",
+                dataType: 'json',
+                type: "GET",
+                // quietMillis: 1000,
+
+                data: function (params) {
+                    return {
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data)
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.BankName,
+                                id: item.BankID
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+
+    $(".btn-cls").on("click", function () {
+        $('#makePaymentModal').modal("toggle");
+
     })
 
-    $(".btn-cls").on("click", function(){
-        $('#makePaymentModal').modal("toggle");
-        
-    })
+
 }
 
-function convertDate(date){
+function convertDate(date) {
     let dateUTC = new Date(date);
     dateUTC = dateUTC.getTime()
     let dateIST = new Date(dateUTC);
@@ -270,3 +321,18 @@ function convertDate(date){
     // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }
+
+$("#processBorrowPayment").on("click", ()=>{
+    let payAmount = $("#payNow").val();
+    let borrowAmount = $("#amount").val();
+    let alreadyPaid = $("#alreadyPaid").val();
+
+    console.log(payAmount)
+    if ( payAmount == 0 ) {
+        alert("Pay Now is 0");
+    } else if (amount > borrowAmount - alreadyPaid ) {
+        
+    }else if ( amount < 0){
+        
+    }
+})
