@@ -20,7 +20,16 @@ async function saveBank(bankObj) {
     await mysqlPool.execute(prepareBankQuery);
 }
 
+async function fetchBankDetails(userID) {
+    let selectBanksQuery = "SELECT * FROM ?? WHERE ?? = ?";
+    let prepareSelectBankQuery = mysql.format(selectBanksQuery, ["Bank", "UserID", userID]);
+
+    let queryResult = await mysqlPool.execute(prepareSelectBankQuery);
+    return queryResult[0];
+}
+
 module.exports = {
     getBankDetailsByID,
-    saveBank
+    saveBank,
+    fetchBankDetails
 }

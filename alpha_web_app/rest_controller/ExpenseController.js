@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { fetchExpenseReasonByUserID, addExpenseReason } = require("../services/ExpenseReasonService");
-const { getPersonDataByUserId } = require("../services/PersonService");
 const { addExpense } = require("../services/ExpenseService");
 const { getLendFromData } = require("../services/MoneyLendService");
 
@@ -19,16 +18,6 @@ router
     })
     .post("/addExpenseReason", async (request, response) => {
         response.status(200).send({ "message": "Add Success" });
-    }).get("/getPersonData", async (request, response) => {
-        try {
-            let result = await getPersonDataByUserId(request.session.userData["ID"]);
-            // console.log(result);
-            response.status(200).send({ "message": "Success", "data": result });
-        } catch (error) {
-            console.log(error.message);
-            response.status(500).send(new Error("Duplicate entry for Bank ID"));
-        }
-
     })
     .post("/addExpense", async (request, response) => {
 

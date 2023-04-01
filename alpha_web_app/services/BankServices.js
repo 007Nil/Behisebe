@@ -15,11 +15,7 @@ async function getAccountType() {
 }
 
 async function fetchBankDetails(userID) {
-    let selectBanksQuery = "SELECT * FROM ?? WHERE ?? = ?";
-    let prepareSelectBankQuery = mysql.format(selectBanksQuery, ["Bank", "UserID", userID]);
-
-    let queryResult = await mysqlPool.execute(prepareSelectBankQuery);
-    return queryResult[0];
+    return bankRepo.fetchBankDetails(userID);
 }
 
 async function getBankDetailsByID(bankID) {

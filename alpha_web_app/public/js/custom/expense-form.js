@@ -105,7 +105,7 @@ $("#add-expense").on("click", () => {
                 $("#spacial-debit").select2({
                     tags: [],
                     ajax: {
-                        url: "/v1/expense/getPersonData",
+                        url: "/v1/persons/getPersonData",
                         dataType: 'json',
                         type: "GET",
                         quietMillis: 50,
