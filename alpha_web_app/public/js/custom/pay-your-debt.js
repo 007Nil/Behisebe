@@ -236,7 +236,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
             <div class="form-group row">
                 <label for="amount" class="col-sm-4 col-form-label">Amount</label>
                 <div class="col-sm-6">
-                <input type="text" readonly class="form-control" id="amount" value="${rowData.amount}">
+                <input type="number" readonly class="form-control" id="amount" value="${rowData.amount}">
                 </div>
              </div>
 
@@ -268,6 +268,12 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 <input type="number" class="form-control" id="payNow" value=0>
                 </div>
             <div>
+
+            <input type="hidden" id="personId" value=${detailsObj.personId}/>
+            <input type="hidden" id="transacationId" value=${rowData.transacationId}/>
+            <input type="hidden" id="lendId" value=${rowData.lendId}/>
+            <input type="hidden" id="bankID" value=${rowData.bankID}/>
+
         `
         $("#paymentModalBody").append(modalBody);
         $('#makePaymentModal').modal("show");
@@ -322,17 +328,17 @@ function convertDate(date) {
     return dateIST.toDateString();
 }
 
-$("#processBorrowPayment").on("click", ()=>{
+$("#processBorrowPayment").on("click", () => {
     let payAmount = $("#payNow").val();
     let borrowAmount = $("#amount").val();
     let alreadyPaid = $("#alreadyPaid").val();
 
     console.log(payAmount)
-    if ( payAmount == 0 ) {
+    if (payAmount == 0 || payAmount > (borrowAmount - alreadyPaid) || payAmount < 0) {
         alert("Pay Now is 0");
-    } else if (amount > borrowAmount - alreadyPaid ) {
-        
-    }else if ( amount < 0){
-        
+        return;
     }
+
+    // le
+
 })
