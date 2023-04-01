@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const { getPersonNamebyID } = require("./PersonService");
 // delete require.cache[require.resolve("./CreditServices")];
 const creditServices = require("./CreditServices");
+const partialPaymentService = require("./PartialPaymemntService");
 
 // Repos
 const lendRepo = require("../repository/LendRepo");
@@ -47,13 +48,14 @@ async function getLendFromData(userId) {
     for (index in lendFromArray) {
         let lendDetails = {}
         let detailedLendDetails = []
-
+        
         let lendFromPerosn = lendFromArray[index]
         let totalAmount = 0;
         for (lendDataindex in lendFromData) {
-
+            // console.log(lendFromData[lendDataindex].ID)
             if (lendFromPerosn === lendFromData[lendDataindex].LendFrom) {
-                // console.log(lendFromData[lendDataindex])
+                let partialPaymentDetails = await partialPaymentService.getPartialPayment(lendFromData[lendDataindex].ID);
+                // console.log(partialPaymentDetails);
                 lendDetails = {
                     "personId": lendFromPerosn,
                     "LendFrom": await getPersonNamebyID(lendFromPerosn, userId),
@@ -61,7 +63,7 @@ async function getLendFromData(userId) {
                 };
                 let [creditId, amount, date, bankId, notes, reasonId] = getLendDetails(creditData, lendFromData[lendDataindex].ID);
                 let bankName = getBankName(bankDetails, bankId);
-                console.log(bankName)
+                // console.log(bankName)
                 totalAmount += amount;
                 let detailsObj = {
                     "transacationId": creditId,
@@ -72,9 +74,9 @@ async function getLendFromData(userId) {
                     "date": date,
                     "notes": notes,
                     "reasonId": reasonId,
+                    "partialPayment": partialPaymentDetails
                 };
                 detailedLendDetails.push(detailsObj);
-
             }
             lendDetails.totalAmount = totalAmount;
 
@@ -83,6 +85,7 @@ async function getLendFromData(userId) {
         }
         lendDetails.borrowDetails = detailedLendDetails
         returnData.push(lendDetails)
+        // break;
         // lendFromArray.pop()
         // lendFromData.pop(lendDataindex)
     }

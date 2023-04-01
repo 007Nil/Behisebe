@@ -50,7 +50,6 @@ async function addCreditDetails(creditObj) {
             }
             // Now insert data to Lend table
             lendObj.fullPayment = 0;
-            lendObj.partialPaymentID = null;
             lendObj.paymentOnDate = null;
             lendObj.userId = userID;
 

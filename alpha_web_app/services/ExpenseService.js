@@ -65,7 +65,6 @@ async function addExpense(requestData) {
             }
         }
         lendModel.fullPayment = 0;
-        lendModel.partialPaymentID = null;
         lendModel.paymentOnDate = null;
         lendModel.userId = expenseModel.userId;
 
