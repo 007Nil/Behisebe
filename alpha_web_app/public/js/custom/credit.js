@@ -244,6 +244,24 @@ function fillDynamicDiv(functionName) {
 function addCreditForm() {
     return `
     <form id="credit-form">
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Default checkbox
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                    <label class="form-check-label" for="flexCheckChecked">
+                        Checked checkbox
+                    </label>
+                </div>
+            </div>
+        </div>
         <div class="mb-3">
             <label for="credited-to" class="form-label">Credit To</label>
             <select id="credited-to" class="select2 form-control" required>

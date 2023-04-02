@@ -52,6 +52,7 @@ async function addCreditDetails(creditObj) {
             lendObj.fullPayment = 0;
             lendObj.paymentOnDate = null;
             lendObj.userId = userID;
+            
 
             creditObj.lendId = await lendService.addLendDetails(lendObj);
         }

@@ -23,6 +23,10 @@ async function getLendToByUserID(userID) {
     return (await mysqlPool.execute(prepareQuery))[0];
 }
 
+async function udpateLendTable(){
+    
+}
+
 module.exports = {
     addLend,
     getLendFromByUserID,

@@ -10,6 +10,10 @@ $("#add-expense").on("click", () => {
 
     fillDynamicDiv(generateAddExpenseForm);
 
+
+
+    // $('#cashCheckBox')[0].checked = true;
+
     // Added form jquery
 
     $('#expense_date').datepicker();
@@ -134,7 +138,7 @@ $("#add-expense").on("click", () => {
                 $("#spacial-debit").select2({
                     tags: [],
                     ajax: {
-                        url: "/v1/expense/getPayOfDebt", 
+                        url: "/v1/expense/getPayOfDebt",
                         dataType: 'json',
                         type: "GET",
                         quietMillis: 50,
@@ -208,6 +212,29 @@ $("#add-expense").on("click", () => {
         });
     });
 })
+
+
+
+$(document).on('change', "#cashCheckBox", function () {
+    // console.log($('#bankCheckBox').attr('checked'))
+    if ($('#cashCheckBox').is(":checked")) {
+        $('#bankCheckBox').prop('checked', false);
+        // console.log("HIT");
+        $("#debited-from-div").css("display", "none");
+        // $('#debited-from').removeAttr('required');​​​​​
+        $('#debited-from').removeAttr('required');
+    }
+});
+
+$(document).on('change', "#bankCheckBox", function () {
+    if ($('#bankCheckBox').is(":checked")) {
+        $('#cashCheckBox').prop('checked', false);
+        console.log("HIT");
+        $("#debited-from-div").css("display", "block");
+        $('#debited-from').prop('required',true);
+        
+    }
+});
 
 $("#view-expense").on("click", () => {
 
@@ -289,7 +316,26 @@ function fillDynamicDiv(functionName) {
 function generateAddExpenseForm() {
     return `
     <form id="expense-form">
-        <div class="mb-3">
+        <div class="row">
+            <div class="col">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="bankCheckBox" checked>
+                    <label class="form-check-label" for="bankCheckBox">
+                        Debited From Bank
+                    </label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cashCheckBox">
+                    <label class="form-check-label" for="cashCheckBox">
+                        Expense By Cash
+                    </label>
+                    <input class="" type="text"readonly>
+                </div>
+            </div>
+        </div>
+        <div id="debited-from-div" class="mb-3">
             <label for="debited-from" class="form-label">Debited From</label>
             <select id="debited-from" class="select2 form-control" required>
 

@@ -25,7 +25,9 @@ async function getLendByID(lendID) {
 
 }
 
-
+async function udpateLendData(){
+    
+}
 
 async function getLendFromData(userId) {
     let lendIDArray = new Array();
@@ -68,7 +70,7 @@ async function getLendFromData(userId) {
                 let detailsObj = {
                     "transacationId": creditId,
                     "lendId": lendFromData[lendDataindex].ID,
-                    "bankID": bankId,
+                    "bankId": bankId,
                     "bankName": bankName,
                     "amount": amount,
                     "date": date,
@@ -85,11 +87,7 @@ async function getLendFromData(userId) {
         }
         lendDetails.borrowDetails = detailedLendDetails
         returnData.push(lendDetails)
-        // break;
-        // lendFromArray.pop()
-        // lendFromData.pop(lendDataindex)
     }
-    // console.log("HIT");
     return returnData;
 }
 

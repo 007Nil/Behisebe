@@ -13,13 +13,14 @@ const bankRouter = require("./rest_controller/BankController");
 const expenseRouter = require("./rest_controller/ExpenseController");
 const creditRouter = require("./rest_controller/CreditController");
 const personRouter = require("./rest_controller/PersonController");
+let lendRouter = require("./rest_controller/LendController");
 
 const oneDay = 1000 * 60 * 60 * 24;
 
 var app = express();
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
-app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(__dirname + '/public'));
@@ -69,11 +70,11 @@ app.use("/settings", settingsRouter);
 app.use("/", loginRouter);
 
 // ------------- Rest Routes -----------------
-
+app.use("/v1/lend", lendRouter);
 app.use("/v1/persons", personRouter);
 app.use("/v1/bank", bankRouter);
-app.use("/v1/expense",expenseRouter);
-app.use("/v1/credit",creditRouter);
+app.use("/v1/expense", expenseRouter);
+app.use("/v1/credit", creditRouter);
 // Without middleware
 app.get('/', function (req, res) {
   res.redirect('/login');

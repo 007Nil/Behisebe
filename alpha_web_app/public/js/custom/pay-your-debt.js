@@ -167,7 +167,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
             },
             {
                 targets: 2,
-                data: "bankID",
+                data: "bankId",
                 render: function (data) {
                     // console.log(data)
                     return data;
@@ -272,7 +272,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
             <input type="hidden" id="personId" value=${detailsObj.personId}/>
             <input type="hidden" id="transacationId" value=${rowData.transacationId}/>
             <input type="hidden" id="lendId" value=${rowData.lendId}/>
-            <input type="hidden" id="bankID" value=${rowData.bankID}/>
+            <input type="hidden" id="bankId" value=${rowData.bankId}/>
 
         `
         $("#paymentModalBody").append(modalBody);
@@ -304,7 +304,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                         })
                     };
                 },
-                cache: true
             }
         });
     });
@@ -332,13 +331,70 @@ $("#processBorrowPayment").on("click", () => {
     let payAmount = $("#payNow").val();
     let borrowAmount = $("#amount").val();
     let alreadyPaid = $("#alreadyPaid").val();
+    let fullPayment = 0;
 
     console.log(payAmount)
     if (payAmount == 0 || payAmount > (borrowAmount - alreadyPaid) || payAmount < 0) {
         alert("Pay Now is 0");
         return;
     }
+    console.log(alreadyPaid + payAmount)
+    console.log(borrowAmount)
+    if (parseInt(alreadyPaid) + parseInt(payAmount) == parseInt(borrowAmount)) {
+        fullPayment = 1;
+    }
+
+    let personId = $("#personId").val();
+    let transacationId = $("#transacationId").val();
+    let lendId = $("#lendId").val();
+    // let bankId = $("#bankId").val();
+    let date = getDate();
+
+
+    let payObject = {
+        "transacationId": transacationId,
+        "lendId": lendId,
+        "debitedBankId": `${$("#debited-from").select2('data')[0].id}`,
+        "date": date,
+        "payAmount": payAmount,
+        "fullPayment": fullPayment,
+        "personId": personId,
+
+    }
+
+    console.log(payObject)
+
+    $.ajax({
+        type: "POST",
+        url: "/v1/lend/payDebt",
+        data: JSON.stringify(payObject),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+
+        success: function (response) {
+            console.log(response)
+            // console.log(response);
+            // resetExpenseForm()
+            // alertify.success('Expense information saved.', 3);
+        },
+        error: function (error) {
+            // console.log(error);
+            // alertify.error('Error while saving the data!!', 3);
+        },
+    });
 
     // le
 
 })
+
+function getDate() {
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    // This arrangement can be altered based on how we want the date's format to appear.
+    return `${day}-${month}-${year}`;
+    // console.log(currentDate); // "17-6-2022"
+}
