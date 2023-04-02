@@ -63,13 +63,12 @@ CREATE TABLE
         ID VARCHAR(255) NOT NULL UNIQUE,
         LendTo VARCHAR(255) NULL,
         LendFrom VARCHAR(255) NULL,
-        FullPayment TINYINT(1) DEFAULT 0,,
+        FullPayment TINYINT(1) DEFAULT 0,
         PaymentOnDate DATE NULL,
         UserID VARCHAR(255) NOT NULL,
         PRIMARY KEY (ID),
         FOREIGN KEY (LendTo) REFERENCES Person (ID) ON DELETE CASCADE,
         FOREIGN KEY (LendFrom) REFERENCES Person (ID) ON DELETE CASCADE,
-        Foreign Key (PartialPayID) REFERENCES PartialPaymemnt (ID) ON DELETE CASCADE,
         Foreign Key (UserID) REFERENCES User (ID) ON DELETE CASCADE
     );
 
@@ -78,7 +77,7 @@ CREATE TABLE
         ID VARCHAR(255) NOT NULL UNIQUE,
         OnDate DATE NOT NULL,
         Amount INT NOT NULL,
-        LendId VARCHAR(255) NOT NOT,
+        LendId VARCHAR(255) NOT NULL,
         PRIMARY KEY (ID),
         FOREIGN KEY (LendId) REFERENCES Lend (ID) ON DELETE CASCADE
     );
@@ -100,12 +99,17 @@ VALUES ("0987654321", "Lend", NULL), (
         "1234567098",
         "Pay Of Debt",
         NULL
+    ), (
+        "6565454378",
+        "Cash Withdrawal",
+        NULL
     );
 
 CREATE TABLE
     Expense (
         ID VARCHAR(255) NOT NULL UNIQUE,
-        BankID VARCHAR(255) NOT NULL,
+        BankID VARCHAR(255) NULL,
+        ByCash TINYINT(1) DEFAULT 0,
         UserID VARCHAR(255) NOT NULL,
         LendID VARCHAR(255) NULL,
         Reason VARCHAR(255) NOT NULL,
@@ -145,9 +149,10 @@ VALUES ("765654343", "Borrow", NULL), (
 CREATE TABLE
     Credit (
         CreditID VARCHAR(255) NOT NULL UNIQUE,
-        BankID VARCHAR(255) NOT NULL,
+        BankID VARCHAR(255) NULL,
         UserID VARCHAR(255) NOT NULL,
         LendID VARCHAR(255) NULL,
+        ByCash TINYINT(1) DEFAULT 0,
         Reason VARCHAR(255) NOT NULL,
         Date DATE NOT NULL,
         Amount INT NOT NULL,
@@ -158,5 +163,63 @@ CREATE TABLE
         FOREIGN KEY (LendID) REFERENCES Lend (ID) ON DELETE CASCADE,
         FOREIGN KEY (Reason) REFERENCES CreditReason(ID) ON DELETE CASCADE
     );
+
+-- Closing Balance
+-- Daily Closing
+-- Monthly Closing
+-- Yearly Closing
+
+CREATE TABLE Months (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Name VARCHAR(255) NOT NULL,
+    PRIMARY KEY(ID)
+);
+
+INSERT INTO Months
+(Name)
+VALUES
+("Jan"),
+("Feb"),
+("Mar"),
+("Apr"),
+("May"),
+("Jun"),
+("Jul"),
+("Aug"),
+("Sep"),
+("Oct"),
+("Nov"),
+("Dec");
+
+
+CREATE TABLE DailyClosing (
+    ID VARCHAR(255) NOT NULL UNIQUE,
+    DATE DATE,
+    Amount INT,
+    BankId VARCHAR(255) NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (BankId) REFERENCES Bank(BankID) ON DELETE CASCADE
+);
+
+CREATE TABLE MonthlyClosing (
+    ID VARCHAR(255) NOT NULL UNIQUE,
+    MonthId INT NOT NULL,
+    Amount INT NOT NULL,
+    Year VARCHAR(20),
+    BankId VARCHAR(255) NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (MonthId) REFERENCES Months(ID) ON DELETE CASCADE,
+    FOREIGN KEY (BankId) REFERENCES Bank(BankID) ON DELETE CASCADE
+);
+
+CREATE TABLE YearlyClosing (
+    ID VARCHAR(255) NOT NULL UNIQUE,
+    Amount INT NOT NULL,
+    Year VARCHAR(20),
+    BankId VARCHAR(255) NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (BankId) REFERENCES Bank(BankID) ON DELETE CASCADE
+);
+
 
 -- DROP DATABASE Behisebe;
