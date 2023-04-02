@@ -221,5 +221,30 @@ CREATE TABLE YearlyClosing (
     FOREIGN KEY (BankId) REFERENCES Bank(BankID) ON DELETE CASCADE
 );
 
+-- For Cash transaction
+CREATE TABLE DailyClosingCash (
+    ID VARCHAR(255) NOT NULL UNIQUE,
+    DATE DATE,
+    Amount INT,
+    PRIMARY KEY (ID)
+);
+
+CREATE TABLE MonthlyClosingCash (
+    ID VARCHAR(255) NOT NULL UNIQUE,
+    MonthId INT NOT NULL,
+    Amount INT NOT NULL,
+    Year VARCHAR(20),
+    PRIMARY KEY (ID),
+    FOREIGN KEY (MonthId) REFERENCES Months(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE YearlyClosingCash (
+    ID VARCHAR(255) NOT NULL UNIQUE,
+    Amount INT NOT NULL,
+    Year VARCHAR(20),
+    PRIMARY KEY (ID)
+);
+
+
 
 -- DROP DATABASE Behisebe;
