@@ -194,7 +194,7 @@ VALUES
 
 CREATE TABLE DailyClosing (
     ID VARCHAR(255) NOT NULL UNIQUE,
-    DATE DATE,
+    Date DATE,
     Amount INT,
     BankId VARCHAR(255) NOT NULL,
     PRIMARY KEY (ID),
@@ -224,7 +224,7 @@ CREATE TABLE YearlyClosing (
 -- For Cash transaction
 CREATE TABLE DailyClosingCash (
     ID VARCHAR(255) NOT NULL UNIQUE,
-    DATE DATE,
+    Date DATE,
     Amount INT,
     PRIMARY KEY (ID)
 );

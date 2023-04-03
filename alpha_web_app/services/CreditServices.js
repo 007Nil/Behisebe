@@ -1,7 +1,8 @@
 const crypto = require("crypto");
+// Servcies
 const { getCreditReason, addCreditReason } = require("./CreditReasonService");
 const { getPersonDataByUserId, addPersonData} = require("./PersonService");
-// delete require.cache[require.resolve("./MoneyLendService")];
+const dailyClosingService = require("./DailyClosingService");
 const lendService = require("./MoneyLendService");
 
 //  Repo
@@ -10,6 +11,7 @@ const creditRepo = require("../repository/CreditRepo");
 const LendModel = require("../model/LendModel");
 const PersonModel = require("../model/PersonModel");
 const CreditReasonModel = require("../model/CreditReasonModel");
+const DailyClosingModel = require("../model/DailyClosingModel");
 
 async function addCreditDetails(creditObj) {
 
@@ -57,8 +59,15 @@ async function addCreditDetails(creditObj) {
             creditObj.lendId = await lendService.addLendDetails(lendObj);
         }
     }
-    await creditRepo.saveCredit(creditObj);
+    await creditRepo.saveCredit(creditObj); 
+    console.log(creditObj);
 
+    let dailyClosingObj = new DailyClosingModel();
+    dailyClosingObj.amount = creditObj.amount;
+    dailyClosingObj.bankId = creditObj.bankId;
+    dailyClosingObj.date = creditObj.date;
+    console.log(dailyClosingObj);
+    dailyClosingService.addDailyCloisng(dailyClosingObj);
 }
 
 
