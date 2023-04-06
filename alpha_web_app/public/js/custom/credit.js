@@ -173,7 +173,7 @@ $("#add-credit-details").on("click", () => {
 
             success: function (response) {
                 // console.log(response);
-                resetCreditForm();
+                // resetCreditForm();
                 alertify.success('Credit information saved.', 3);
             },
             error: function (error) {

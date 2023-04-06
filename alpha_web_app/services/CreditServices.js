@@ -60,14 +60,15 @@ async function addCreditDetails(creditObj) {
         }
     }
     await creditRepo.saveCredit(creditObj); 
-    console.log(creditObj);
+    // console.log(creditObj);
 
     let dailyClosingObj = new DailyClosingModel();
+    dailyClosingObj.userId = userID;
     dailyClosingObj.amount = creditObj.amount;
     dailyClosingObj.bankId = creditObj.bankId;
-    dailyClosingObj.date = creditObj.date;
-    console.log(dailyClosingObj);
-    dailyClosingService.addDailyCloisng(dailyClosingObj);
+    dailyClosingObj.date = creditObj.date.replaceAll("/","-");
+    // console.log(dailyClosingObj);
+    dailyClosingService.updateDailyClosing(dailyClosingObj);
 }
 
 

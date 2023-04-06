@@ -6,7 +6,7 @@ async function saveCredit(creditObj) {
     let creaditInsertQuery = "INSERT INTO ?? (??, ??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'),?,?)";
     let prepareCerditQuery = mysql.format(creaditInsertQuery, ["Credit", "CreditID", "BankID", "UserID","ByCash", "LendID", "Reason", "Date", "Amount", "Notes",
         creditObj.creditId, creditObj.bankId, creditObj.userId, creditObj.byCash, creditObj.lendId, creditObj.reason, (creditObj.date).replaceAll("/", "-"), creditObj.amount, creditObj.notes]);
-
+    console.log(prepareCerditQuery);
     await mysqlPool.execute(prepareCerditQuery);
 
 }
