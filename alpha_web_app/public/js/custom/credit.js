@@ -66,22 +66,19 @@ $("#add-credit-details").on("click", () => {
     });
 
     $("#credited-to").on("change", () => {
-        $.ajax({
-            type: "GET",
-            url: "/v1/bank/getAccountBalance",
-            data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${new Date().toLocaleDateString()}`, // date: DD/MM/YY
-            success: function (response) {
-                $("#bankAmount").val(response.data);
-                // console.log(response);
-                // console.log(response);
-                // resetCreditForm();
-                // alertify.success('Credit information saved.', 3);
-            },
-            error: function (error) {
-                // console.log(error);
-                // alertify.error('Error while saving the data!!', 3);
-            },
-        });
+        try {
+            $.ajax({
+                type: "GET",
+                url: "/v1/bank/getAccountBalance",
+                data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${new Date().toLocaleDateString()}`, // date: DD/MM/YY
+                success: function (response) {
+                    $("#bankAmount").val(response.data);
+                }
+            });
+
+        } catch {
+            $("#bankAmount").val("");
+        }
     });
 
     $('#credit-reason').on("change", () => {
@@ -192,7 +189,7 @@ $("#add-credit-details").on("click", () => {
 
             success: function (response) {
                 // console.log(response);
-                // resetCreditForm();
+                resetCreditForm();
                 alertify.success('Credit information saved.', 3);
             },
             error: function (error) {

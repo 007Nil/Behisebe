@@ -8,9 +8,16 @@ async function saveCreditReason(creditReasonObj) {
     await mysqlPool.execute(preapreQuery);
 }
 
+async function getAllCreditReasonByUserId(userId){
+    let selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ?";
+    let prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["CreditReason", "UserID", userId, "UserID", null]);
+
+    return (await mysqlPool.execute(prepareSelectReasonQuery))[0];
+}
+
 async function getCreditReason(userID) {
-    selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ?";
-    prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["CreditReason", "UserID", userID, "UserID", null]);
+    let selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ? AND ?? <>? AND ?? <> ?";
+    let prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["CreditReason", "UserID", userID, "UserID", null,"ID","098787651","ID","565434329"]);
 
     return (await mysqlPool.execute(prepareSelectReasonQuery))[0];
 }
@@ -24,5 +31,6 @@ async function saveCreditReason(creditObj) {
 
 module.exports = {
     saveCreditReason,
-    getCreditReason
+    getCreditReason,
+    getAllCreditReasonByUserId
 }

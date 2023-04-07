@@ -57,7 +57,6 @@ $("#add_bank_details").on("click", () => {
       "bankBalance": $("#total_amount").val(),
       "bankAccountType": $('#bankAccountType').select2('data')[0].id,
       "notes": $("#notes").val(),
-      "creditCause": "565434329",
       "borrowFrom": null,
       "date": currentDate
     };

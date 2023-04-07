@@ -100,6 +100,23 @@ $("#add-expense").on("click", () => {
         }
     });
 
+    $("#debited-from").on("change", () => {
+        
+        try {
+            $.ajax({
+                type: "GET",
+                url: "/v1/bank/getAccountBalance",
+                data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${new Date().toLocaleDateString()}`, // date: DD/MM/YY
+                success: function (response) {
+                    $("#bankAmount").val(response.data);
+                }
+            });
+        } catch {
+            // console.log("HIT")
+            $("#bankAmount").val("");
+        }
+    })
+
     $('#expense-reason').on("change", () => {
         try {
             // console.log($('#expense-reason').select2('data')[0].text);
@@ -172,6 +189,11 @@ $("#add-expense").on("click", () => {
 
     $("#expense-form").submit(function (event) {
         event.preventDefault();
+        let bankBalance = $("#bankAmount").val();
+        if ( parseInt($("#amount").val()) > parseInt(bankBalance)){
+            alert("NOT POSSIBLE")
+            return;
+        }
         let spacialDebit;
         try {
             if ($('#expense-reason').select2('data')[0].text === "Lend") {
@@ -231,8 +253,8 @@ $(document).on('change', "#bankCheckBox", function () {
         $('#cashCheckBox').prop('checked', false);
         console.log("HIT");
         $("#debited-from-div").css("display", "block");
-        $('#debited-from').prop('required',true);
-        
+        $('#debited-from').prop('required', true);
+
     }
 });
 
@@ -323,6 +345,8 @@ function generateAddExpenseForm() {
                     <label class="form-check-label" for="bankCheckBox">
                         Debited From Bank
                     </label>
+                    
+                    <input id="bankAmount" class="" type="text"readonly>
                 </div>
             </div>
             <div class="col">

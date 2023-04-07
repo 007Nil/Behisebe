@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 // Servcies
-const { getCreditReason, addCreditReason } = require("./CreditReasonService");
+const { getAllCreditReasonByUserId, addCreditReason } = require("./CreditReasonService");
 const { getPersonDataByUserId, addPersonData} = require("./PersonService");
 const dailyClosingService = require("./DailyClosingService");
 const lendService = require("./MoneyLendService");
@@ -17,7 +17,7 @@ async function addCreditDetails(creditObj) {
 
     creditObj.creditId = crypto.randomBytes(10).toString("hex");
     let userID = creditObj.userId;
-    let creditReasonResult = await getCreditReason(userID);
+    let creditReasonResult = await getAllCreditReasonByUserId(userID);
 
 
     let creditResult = creditReasonResult.map(each => each.ID);

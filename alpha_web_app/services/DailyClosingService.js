@@ -14,12 +14,12 @@ async function addDailyCloisng(dailyClosingObj) {
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
         // console.log(queryResult);
         // console.log("I am HIT FROM IF");
-        if (dailyClosingObj.isCredit){
+        if (dailyClosingObj.isCredit) {
             dailyClosingObj.amount = parseInt(queryResult[0].Amount) + parseInt(dailyClosingObj.amount);
-        }else{
-            // logic for debit
+        } else {
+            dailyClosingObj.amount = parseInt(queryResult[0].Amount) - parseInt(dailyClosingObj.amount);
         }
-        
+
     }
     // console.log("AFter HIT")
     console.log(dailyClosingObj);
@@ -35,11 +35,11 @@ async function updateDailyClosing(dailyClosingObj) {
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
         // We have data
         // console.log(queryResult);
-        if (dailyClosingObj.isCredit){
-            dailyClosingObj.id = queryResult[0].ID;
+        dailyClosingObj.id = queryResult[0].ID;
+        if (dailyClosingObj.isCredit) {
             dailyClosingObj.amount = parseInt(queryResult[0].Amount) + parseInt(dailyClosingObj.amount);
-        }else{
-            // logic for debit
+        } else {
+            dailyClosingObj.amount = parseInt(queryResult[0].Amount) - parseInt(dailyClosingObj.amount);
         }
 
         dailyClosingRepo.updateDailyClosing(dailyClosingObj);
@@ -49,10 +49,10 @@ async function updateDailyClosing(dailyClosingObj) {
 
 }
 
-async function getDailyClosing(requestData){
+async function getDailyClosing(requestData) {
     let dailyCloisngObj = new dailyClosingModel();
     dailyCloisngObj.bankId = requestData.bankId;
-    dailyCloisngObj.date = requestData.date.replaceAll("/","-");
+    dailyCloisngObj.date = requestData.date.replaceAll("/", "-");
     dailyCloisngObj.userId = requestData.userId;
 
     return await dailyClosingRepo.getDailyClosing(dailyCloisngObj);

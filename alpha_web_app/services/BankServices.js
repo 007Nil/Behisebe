@@ -50,7 +50,7 @@ async function addBankDetails(requestData) {
     creditObj.bankId = bankObj.bankID;
     creditObj.userId = requestData.userID;
     creditObj.lendId = null;
-    creditObj.reason = requestData.creditCause;
+    creditObj.reason = "565434329";
     creditObj.date = bankObj.addedOn;
     creditObj.amount = requestData.bankBalance;
     creditObj.notes = "This is the initial amount when this Bank was added to system";

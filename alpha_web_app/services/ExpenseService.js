@@ -5,12 +5,16 @@ const { fetchExpenseReasonByUserID, addExpenseReason, getExpenseNameByID } = req
 const { getPersonDataByUserId, addPersonData, getPersonNamebyID } = require("./PersonService");
 const { addLendDetails, getLendByID } = require("./MoneyLendService");
 const { getBankDetailsByID } = require("./BankServices");
+const dailyClosingService = require("./DailyClosingService");
+const { updateDailyClosingCash } = require("./DailyClosingCashService");
 
 //  Model
 const ExpenseModel = require("../model/ExpenseModel");
 const ExpenseReasonModel = require("../model/ExpenseReasonModel");
 const LendModel = require("../model/LendModel");
 const PersonModel = require("../model/PersonModel");
+const DailyClosingModel = require("../model/DailyClosingModel");
+const DailyClosingCashModel = require("../model/DailyClosingCashModel");
 
 // Repos
 
@@ -85,8 +89,29 @@ async function addExpense(requestData) {
     expenseModel.date = requestData.date;
     expenseModel.notes = requestData.notes;
     expenseModel.amount = requestData.amount;
-
+    console.log(expenseModel);
     await expenseRepo.saveExpense(expenseModel);
+
+    let dailyClosingObj = new DailyClosingModel();
+    dailyClosingObj.userId = expenseModel.userId;
+    dailyClosingObj.amount = expenseModel.amount;
+    dailyClosingObj.bankId = expenseModel.bankId;
+    dailyClosingObj.date = expenseModel.date.replaceAll("/", "-");
+    dailyClosingObj.isCredit = false;
+    // console.log(dailyClosingObj)
+    // console.log(dailyClosingObj);
+    dailyClosingService.updateDailyClosing(dailyClosingObj);
+
+    if (expenseModel.reason === "6565454378") {
+        // Cash withdrawal
+        // console.log("HIT CASG")
+        let dailyCloisngCashObj = new DailyClosingCashModel();
+        dailyCloisngCashObj.amount = expenseModel.amount;
+        dailyCloisngCashObj.date = expenseModel.date.replaceAll("/", "-");
+        dailyCloisngCashObj.isCredit = true;
+        dailyCloisngCashObj.userId = expenseModel.userId;
+        updateDailyClosingCash(dailyCloisngCashObj);
+    }
 
 }
 

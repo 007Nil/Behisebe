@@ -45,7 +45,7 @@ router.get("/getAccountBalance", async (request, response) => {
         let requestBody = request.query;
         requestBody.userId = request.session.userData["ID"];
         let bankAmount = await getDailyClosing(requestBody);
-        // console.log(bankAmount);
+        console.log(bankAmount);
         response.status(200).send({"message": "successful","data": bankAmount.Amount});
     } catch (error) {
         console.log(error)
