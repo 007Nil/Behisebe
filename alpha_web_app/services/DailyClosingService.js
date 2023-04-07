@@ -1,5 +1,7 @@
 const crypto = require("crypto");
 const dailyClosingRepo = require("../repository/DailyClosingRepo");
+// Models
+const dailyClosingModel = require("../model/DailyClosingModel");
 
 async function addDailyCloisng(dailyClosingObj) {
     dailyClosingObj.id = crypto.randomBytes(10).toString("hex");
@@ -12,7 +14,12 @@ async function addDailyCloisng(dailyClosingObj) {
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
         // console.log(queryResult);
         // console.log("I am HIT FROM IF");
-        dailyClosingObj.amount = parseInt(queryResult[0].Amount) + parseInt(dailyClosingObj.amount);
+        if (dailyClosingObj.isCredit){
+            dailyClosingObj.amount = parseInt(queryResult[0].Amount) + parseInt(dailyClosingObj.amount);
+        }else{
+            // logic for debit
+        }
+        
     }
     // console.log("AFter HIT")
     console.log(dailyClosingObj);
@@ -24,11 +31,17 @@ async function updateDailyClosing(dailyClosingObj) {
     // If any result found the udpate the row
     // Else call addDailyCloisng
     queryResult = await dailyClosingRepo.findByValues(dailyClosingObj);
+    console.log(queryResult)
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
         // We have data
         // console.log(queryResult);
-        dailyClosingObj.id = queryResult.ID;
-        dailyClosingObj.amount = queryResult.amount + dailyClosingObj.amount;
+        if (dailyClosingObj.isCredit){
+            dailyClosingObj.id = queryResult[0].ID;
+            dailyClosingObj.amount = parseInt(queryResult[0].Amount) + parseInt(dailyClosingObj.amount);
+        }else{
+            // logic for debit
+        }
+
         dailyClosingRepo.updateDailyClosing(dailyClosingObj);
     } else {
         addDailyCloisng(dailyClosingObj);
@@ -36,6 +49,16 @@ async function updateDailyClosing(dailyClosingObj) {
 
 }
 
+async function getDailyClosing(requestData){
+    let dailyCloisngObj = new dailyClosingModel();
+    dailyCloisngObj.bankId = requestData.bankId;
+    dailyCloisngObj.date = requestData.date.replaceAll("/","-");
+    dailyCloisngObj.userId = requestData.userId;
+
+    return await dailyClosingRepo.getDailyClosing(dailyCloisngObj);
+}
+
 module.exports = {
-    updateDailyClosing
+    updateDailyClosing,
+    getDailyClosing
 }

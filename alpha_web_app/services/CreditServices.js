@@ -67,6 +67,7 @@ async function addCreditDetails(creditObj) {
     dailyClosingObj.amount = creditObj.amount;
     dailyClosingObj.bankId = creditObj.bankId;
     dailyClosingObj.date = creditObj.date.replaceAll("/","-");
+    dailyClosingObj.isCredit = true;
     // console.log(dailyClosingObj);
     dailyClosingService.updateDailyClosing(dailyClosingObj);
 }

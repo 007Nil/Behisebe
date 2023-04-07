@@ -1,4 +1,5 @@
 const mysql = require("mysql2/promise");
+const { prependListener } = require("./MysqlConnectionPool");
 const mysqlPool = require("./MysqlConnectionPool");
 
 function addDailyCloisng(dailyClosingObj){
@@ -9,7 +10,11 @@ function addDailyCloisng(dailyClosingObj){
 }
 
 function updateDailyClosing (dailyClosingObj){
-    console.log("I am HIT");
+    // console.log(dailyClosingObj);
+    let query = "UPDATE ?? SET ?? = ? WHERE ?? = ?"
+    let prepareQuery = mysql.format(query,["DailyClosing","Amount",dailyClosingObj.amount,"ID",dailyClosingObj.id]);
+
+    mysqlPool.execute(prepareQuery);
 
 }
 
@@ -31,10 +36,18 @@ async function findByPreviosDate(dailyClosingObj){
     return (await mysqlPool.execute(preapreQuery))[0];
 }
 
+async function getDailyClosing(dailyClosingObj){
+    let query = "SELECT ?? FROM ?? WHERE ?? = ? AND ?? = ? AND ?? = STR_TO_DATE(?,'%d-%m-%Y')";
+    let prepareQuery = mysql.format(query,["Amount","DailyClosing","BankId",dailyClosingObj.bankId,"UserId",dailyClosingObj.userId,"Date",dailyClosingObj.date]);
+    console.log(prepareQuery);
+    return (await mysqlPool.execute(prepareQuery))[0][0];
+}
+
 
 module.exports = {
     addDailyCloisng,
     updateDailyClosing,
     findByValues,
-    findByPreviosDate
+    findByPreviosDate,
+    getDailyClosing
 };

@@ -65,6 +65,25 @@ $("#add-credit-details").on("click", () => {
         }
     });
 
+    $("#credited-to").on("change", () => {
+        $.ajax({
+            type: "GET",
+            url: "/v1/bank/getAccountBalance",
+            data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${new Date().toLocaleDateString()}`, // date: DD/MM/YY
+            success: function (response) {
+                $("#bankAmount").val(response.data);
+                // console.log(response);
+                // console.log(response);
+                // resetCreditForm();
+                // alertify.success('Credit information saved.', 3);
+            },
+            error: function (error) {
+                // console.log(error);
+                // alertify.error('Error while saving the data!!', 3);
+            },
+        });
+    });
+
     $('#credit-reason').on("change", () => {
         try {
             // console.log($('#expense-reason').select2('data')[0].text);
@@ -247,22 +266,24 @@ function addCreditForm() {
         <div class="row">
             <div class="col-sm">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Default checkbox
+                    <input class="form-check-input" type="checkbox" value="" id="bankCheckBox" checked>
+                    <label class="form-check-label" for="bankCheckBox">
+                        Credited to Bank
                     </label>
+                    <input id="bankAmount" class="" type="text" value="" readonly>
                 </div>
             </div>
             <div class="col-sm">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-                    <label class="form-check-label" for="flexCheckChecked">
-                        Checked checkbox
+                    <input class="form-check-input" type="checkbox" value="" id="cashCheckBox">
+                    <label class="form-check-label" for="cashCheckBox">
+                        Credit by cash
                     </label>
+                    <input id="cashAmount" class="" type="text" value="" readonly>
                 </div>
             </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-3" id="credit-from-div">
             <label for="credited-to" class="form-label">Credit To</label>
             <select id="credited-to" class="select2 form-control" required>
 
@@ -293,3 +314,24 @@ function addCreditForm() {
     </form> 
     `
 }
+
+$(document).on('change', "#cashCheckBox", function () {
+    // console.log($('#bankCheckBox').attr('checked'))
+    if ($('#cashCheckBox').is(":checked")) {
+        $('#bankCheckBox').prop('checked', false);
+        // console.log("HIT");
+        $("#credit-from-div").css("display", "none");
+        // $('#debited-from').removeAttr('required');​​​​​
+        $('#credit-from-div').removeAttr('required');
+    }
+});
+
+$(document).on('change', "#bankCheckBox", function () {
+    if ($('#bankCheckBox').is(":checked")) {
+        $('#cashCheckBox').prop('checked', false);
+        // console.log("HIT");
+        $("#credit-from-div").css("display", "block");
+        $('#credit-from-div').prop('required', true);
+
+    }
+});
