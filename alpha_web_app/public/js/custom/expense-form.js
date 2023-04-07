@@ -9,6 +9,7 @@ $("#add-expense").on("click", () => {
     $("#view-expense").css("background-color", "#FFFFFF");
 
     fillDynamicDiv(generateAddExpenseForm);
+    getCashBalance()
 
 
 
@@ -101,7 +102,7 @@ $("#add-expense").on("click", () => {
     });
 
     $("#debited-from").on("change", () => {
-        
+
         try {
             $.ajax({
                 type: "GET",
@@ -190,7 +191,7 @@ $("#add-expense").on("click", () => {
     $("#expense-form").submit(function (event) {
         event.preventDefault();
         let bankBalance = $("#bankAmount").val();
-        if ( parseInt($("#amount").val()) > parseInt(bankBalance)){
+        if (parseInt($("#amount").val()) > parseInt(bankBalance)) {
             alert("NOT POSSIBLE")
             return;
         }
@@ -389,6 +390,16 @@ function generateAddExpenseForm() {
         <button type="submit" class="btn btn-primary">Submit Data</button>
     </form> 
     `;
+}
+
+function getCashBalance() {
+    $.ajax({
+        type: "GET",
+        url: "/v1/cash/getCashBalance",
+        success: function (response) {
+            $("#bankAmount").val(response.data);
+        }
+    });
 }
 
 function insertExpenseDetails(expenseData) {

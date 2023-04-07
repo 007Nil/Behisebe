@@ -14,6 +14,7 @@ const expenseRouter = require("./rest_controller/ExpenseController");
 const creditRouter = require("./rest_controller/CreditController");
 const personRouter = require("./rest_controller/PersonController");
 let lendRouter = require("./rest_controller/LendController");
+let cashRouter = require("./rest_controller/CashController");
 
 const oneDay = 1000 * 60 * 60 * 24;
 
@@ -73,6 +74,7 @@ app.use("/", loginRouter);
 app.use("/v1/lend", lendRouter);
 app.use("/v1/persons", personRouter);
 app.use("/v1/bank", bankRouter);
+app.use("/v1/cash",cashRouter);
 app.use("/v1/expense", expenseRouter);
 app.use("/v1/credit", creditRouter);
 // Without middleware
