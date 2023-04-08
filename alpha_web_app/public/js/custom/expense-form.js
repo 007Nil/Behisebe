@@ -9,7 +9,7 @@ $("#add-expense").on("click", () => {
     $("#view-expense").css("background-color", "#FFFFFF");
 
     fillDynamicDiv(generateAddExpenseForm);
-    getCashBalance()
+    getCashBalance();
 
 
 

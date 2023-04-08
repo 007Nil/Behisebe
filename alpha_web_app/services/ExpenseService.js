@@ -107,7 +107,7 @@ async function addExpense(requestData) {
         dailyCloisngCashObj.userId = expenseModel.userId;
         updateDailyClosingCash(dailyCloisngCashObj);
     } else {
-        console.log("HIT ELSE")
+        // console.log("HIT ELSE")
         let dailyClosingObj = new DailyClosingModel();
         dailyClosingObj.userId = expenseModel.userId;
         dailyClosingObj.amount = expenseModel.amount;

@@ -168,12 +168,25 @@ $("#add-credit-details").on("click", () => {
         } catch {
             spacialCredit = null;
         }
+        let bankId;
+        try{
+            bankId = $("#credited-to").select2('data')[0].id;
+        }catch {
+            bankId = null;
+        }
+        let reason;
+        try{
+            reason = $('#credit-reason').select2('data')[0].id;
+        }catch {
+            reason = null;
+        }
         let creditObject = {
-            "bankId": $("#credited-to").select2('data')[0].id,
+            "bankId": bankId,
             "amount": $("#amount").val(),
             "date": $("#credit-date").val(),
-            "reason": $('#credit-reason').select2('data')[0].id,
+            "reason": reason,
             "spacialCreditID": spacialCredit,
+            "byCash": $("#cashCheckBox").is(":checked"),
             "notes": $("#notes").val()
         }
         // console.log($("#spacial-credit").select2('data')[0].personID);
@@ -334,8 +347,8 @@ $(document).on('change', "#cashCheckBox", function () {
         $("#credit-from-div").css("display", "none");
         $("#cerdit-reason-div").css("display", "none");
         // $('#debited-from').removeAttr('required');​​​​​
-        $('#credit-from-div').removeAttr('required');
-        $("#cerdit-reason-div").removeAttr('required')
+        $('#credited-to').removeAttr('required');
+        $("#credit-reason").removeAttr('required')
     }
 });
 
@@ -345,8 +358,8 @@ $(document).on('change', "#bankCheckBox", function () {
         // console.log("HIT");
         $("#credit-from-div").css("display", "block");
         $("#cerdit-reason-div").css("display", "block");
-        $('#credit-from-div').prop('required', true);
-        $("#cerdit-reason-div").prop('required', true);
+        $('#credited-to').prop('required', true);
+        $("#credit-reason").prop('required', true);
 
     }
 });
