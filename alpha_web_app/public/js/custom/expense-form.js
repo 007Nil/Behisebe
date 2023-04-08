@@ -107,7 +107,7 @@ $("#add-expense").on("click", () => {
             $.ajax({
                 type: "GET",
                 url: "/v1/bank/getAccountBalance",
-                data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${new Date().toLocaleDateString()}`, // date: DD/MM/YY
+                data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
                 success: function (response) {
                     $("#bankAmount").val(response.data);
                 }
@@ -356,7 +356,7 @@ function generateAddExpenseForm() {
                     <label class="form-check-label" for="cashCheckBox">
                         Expense By Cash
                     </label>
-                    <input class="" type="text"readonly>
+                    <input id="cashBalance" type="text"readonly>
                 </div>
             </div>
         </div>
@@ -392,12 +392,28 @@ function generateAddExpenseForm() {
     `;
 }
 
+function getDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const formattedToday = dd + '/' + mm + '/' + yyyy;
+    return formattedToday
+}
+
 function getCashBalance() {
     $.ajax({
         type: "GET",
         url: "/v1/cash/getCashBalance",
+        data: `date=${getDate()}`,
         success: function (response) {
-            $("#bankAmount").val(response.data);
+            // console.log(response)
+            $("#cashBalance").val(response.data.Amount);
+            // $("#bankAmount").val(response.data);
         }
     });
 }
