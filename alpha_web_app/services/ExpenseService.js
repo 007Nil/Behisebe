@@ -84,23 +84,41 @@ async function addExpense(requestData) {
     }
 
     expenseModel.id = crypto.randomBytes(10).toString("hex");;
+    if (requestData.byCash) {
+        expenseModel.bankId = null;
+        expenseModel.byCash = 1; // true
+    } else {
+        expenseModel.bankId = requestData.bankId;
+        expenseModel.byCash = 0;
 
-    expenseModel.bankId = requestData.bankId;
+    }
+
     expenseModel.date = requestData.date;
     expenseModel.notes = requestData.notes;
     expenseModel.amount = requestData.amount;
     console.log(expenseModel);
     await expenseRepo.saveExpense(expenseModel);
+    console.log(expenseModel.byCash)
+    if (requestData.byCash) {
+        let dailyCloisngCashObj = new DailyClosingCashModel();
+        dailyCloisngCashObj.amount = expenseModel.amount;
+        dailyCloisngCashObj.date = expenseModel.date.replaceAll("/", "-");
+        dailyCloisngCashObj.isCredit = false;
+        dailyCloisngCashObj.userId = expenseModel.userId;
+        updateDailyClosingCash(dailyCloisngCashObj);
+    } else {
+        console.log("HIT ELSE")
+        let dailyClosingObj = new DailyClosingModel();
+        dailyClosingObj.userId = expenseModel.userId;
+        dailyClosingObj.amount = expenseModel.amount;
+        dailyClosingObj.bankId = expenseModel.bankId;
+        dailyClosingObj.date = expenseModel.date.replaceAll("/", "-");
+        dailyClosingObj.isCredit = false;
+        // console.log(dailyClosingObj)
+        // console.log(dailyClosingObj);
+        dailyClosingService.updateDailyClosing(dailyClosingObj);
+    }
 
-    let dailyClosingObj = new DailyClosingModel();
-    dailyClosingObj.userId = expenseModel.userId;
-    dailyClosingObj.amount = expenseModel.amount;
-    dailyClosingObj.bankId = expenseModel.bankId;
-    dailyClosingObj.date = expenseModel.date.replaceAll("/", "-");
-    dailyClosingObj.isCredit = false;
-    // console.log(dailyClosingObj)
-    // console.log(dailyClosingObj);
-    dailyClosingService.updateDailyClosing(dailyClosingObj);
 
     if (expenseModel.reason === "6565454378") {
         // Cash withdrawal

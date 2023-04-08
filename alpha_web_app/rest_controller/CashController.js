@@ -11,7 +11,12 @@ router
             requestBody.userId = request.session.userData["ID"];
             // console.log(requestBody);
             let cashBalance = await getCashBalance(requestBody);
-            console.log(cashBalance);
+            if (cashBalance == undefined) {
+                cashBalance = {
+                    "Amount": 0
+                };
+            }
+            // console.log(cashBalance);
             response.status(200).send({ "message": "successful","data": cashBalance });
         } catch (error) {
             console.log(error.message)

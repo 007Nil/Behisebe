@@ -9,7 +9,7 @@ $("#add-credit-details").on("click", () => {
     $("#view-credit-details").css("background-color", "#FFFFFF");
 
     fillDynamicDiv(addCreditForm);
-
+    getCashBalance();
     $("#credit-date").datepicker();
     $("#credited-to").select2({
         placeholder: "Select a Bank Account",
@@ -191,6 +191,7 @@ $("#add-credit-details").on("click", () => {
                 // console.log(response);
                 resetCreditForm();
                 alertify.success('Credit information saved.', 3);
+                getCashBalance()
             },
             error: function (error) {
                 // console.log(error);
@@ -257,6 +258,19 @@ function fillDynamicDiv(functionName) {
     }
 }
 
+function getCashBalance() {
+    $.ajax({
+        type: "GET",
+        url: "/v1/cash/getCashBalance",
+        data: `date=${getDate()}`,
+        success: function (response) {
+            console.log(response)
+            $("#cashBalance").val(response.data.Amount);
+            // $("#bankAmount").val(response.data);
+        }
+    });
+}
+
 function addCreditForm() {
     return `
     <form id="credit-form">
@@ -274,9 +288,9 @@ function addCreditForm() {
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="cashCheckBox">
                     <label class="form-check-label" for="cashCheckBox">
-                        Credit by cash
+                        Credit by Cash
                     </label>
-                    <input id="cashAmount" class="" type="text" value="" readonly>
+                    <input id="cashBalance" class="" type="text" value="" readonly>
                 </div>
             </div>
         </div>
@@ -296,7 +310,7 @@ function addCreditForm() {
             <input type="text" id="credit-date" class="form-control" required>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" id="cerdit-reason-div">
             <label for="credit-reason" class="form-label">Credit Cause</label>
             <select id="credit-reason" class="select2 form-control" required>
 
@@ -318,8 +332,10 @@ $(document).on('change', "#cashCheckBox", function () {
         $('#bankCheckBox').prop('checked', false);
         // console.log("HIT");
         $("#credit-from-div").css("display", "none");
+        $("#cerdit-reason-div").css("display", "none");
         // $('#debited-from').removeAttr('required');​​​​​
         $('#credit-from-div').removeAttr('required');
+        $("#cerdit-reason-div").removeAttr('required')
     }
 });
 
@@ -328,7 +344,22 @@ $(document).on('change', "#bankCheckBox", function () {
         $('#cashCheckBox').prop('checked', false);
         // console.log("HIT");
         $("#credit-from-div").css("display", "block");
+        $("#cerdit-reason-div").css("display", "block");
         $('#credit-from-div').prop('required', true);
+        $("#cerdit-reason-div").prop('required', true);
 
     }
 });
+
+function getDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const formattedToday = dd + '/' + mm + '/' + yyyy;
+    return formattedToday
+}

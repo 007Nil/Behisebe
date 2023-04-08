@@ -206,15 +206,27 @@ $("#add-expense").on("click", () => {
         } catch (error) {
             spacialDebit = null;
         }
+        let bankId;
+        try{
+            bankId = $("#debited-from").select2('data')[0].id;
+        }catch {
+            bankId = null;
+        }
+        // let isByCash = $("#cashCheckBox").is(":checked");
         // console.log($("#debited-from").select2('data'));
         let expenseObject = {
-            "bankId": $("#debited-from").select2('data')[0].id,
+            "bankId": bankId,
             "amount": $("#amount").val(),
             "date": $("#expense_date").val(),
             "expenseReason": $('#expense-reason').select2('data')[0].id,
             "spacialDebit": spacialDebit,
+            "byCash": $("#cashCheckBox").is(":checked"),
             "notes": $("#notes").val()
         }
+        // console.log(isByCash)
+        console.log(expenseObject);
+        // return;
+
 
         $.ajax({
             type: "POST",
@@ -227,6 +239,7 @@ $("#add-expense").on("click", () => {
                 // console.log(response);
                 resetExpenseForm()
                 alertify.success('Expense information saved.', 3);
+                getCashBalance();
             },
             error: function (error) {
                 // console.log(error);
@@ -411,7 +424,7 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            // console.log(response)
+            console.log(response)
             $("#cashBalance").val(response.data.Amount);
             // $("#bankAmount").val(response.data);
         }

@@ -16,9 +16,6 @@ router
         }
 
     })
-    .post("/addExpenseReason", async (request, response) => {
-        response.status(200).send({ "message": "Add Success" });
-    })
     .post("/addExpense", async (request, response) => {
 
         try {
