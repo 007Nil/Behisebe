@@ -148,7 +148,7 @@ VALUES ("765654343", "Borrow", NULL), (
         "6765454367",
         "As Gift",
         NULL
-    ),
+    );
 
 CREATE TABLE
     Credit (
