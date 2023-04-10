@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const { fetchExpenseReasonByUserID, addExpenseReason, getExpenseNameByID } = require("./ExpenseReasonService");
 const { getPersonDataByUserId, addPersonData, getPersonNamebyID } = require("./PersonService");
 const { addLendDetails, getLendByID } = require("./MoneyLendService");
-const { getBankDetailsByID } = require("./BankServices");
+const { getUserBankDetails } = require("./BankServices");
 const dailyClosingService = require("./DailyClosingService");
 const { updateDailyClosingCash } = require("./DailyClosingCashService");
 
@@ -134,23 +134,25 @@ async function addExpense(requestData) {
 }
 
 async function getExpenseDetailsByuserId(userId) {
-    let selectQuery = "SELECT * FROM ?? WHERE ?? = ?";
-    let prepareSelectQuery = mysql.format(selectQuery, ["Expense", "userId", userId]);
 
-    expenseList = await mysqlPool.execute(prepareSelectQuery);
-
-    for (let eachDetails of expenseList[0]) {
-        eachDetails.BankName = (await getBankDetailsByID(eachDetails.BankID))[0].BankName;
-        delete eachDetails.BankID;
-        eachDetails.Reason = await getExpenseNameByID(eachDetails.Reason);
-
-        if (eachDetails.LendID) {
-            // console.log(eachDetails.LendID);
-            eachDetails.LendID = await getPersonNamebyID(await getLendByID(eachDetails.LendID));
-            // delete eachDetails.LendID;
-        }
+    let returnData = []
+    let bankList = await getUserBankDetails(userId);
+    for (let eachBank of bankList){
+        console.log(eachBank)
     }
-    return expenseList[0];
+    // console.log(expenseList)
+    // for (let eachDetails of expenseList[0]) {
+    //     eachDetails.BankName = (await getBankDetailsByID(eachDetails.BankID))[0].BankName;
+    //     delete eachDetails.BankID;
+    //     eachDetails.Reason = await getExpenseNameByID(eachDetails.Reason);
+
+    //     if (eachDetails.LendID) {
+    //         // console.log(eachDetails.LendID);
+    //         eachDetails.LendID = await getPersonNamebyID(await getLendByID(eachDetails.LendID));
+    //         // delete eachDetails.LendID;
+    //     }
+    // }
+    // return expenseList[0];
 }
 // Pay Of Debt
 // async function getLendToData(userId) {

@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { fetchExpenseReasonByUserID, addExpenseReason } = require("../services/ExpenseReasonService");
-const { addExpense } = require("../services/ExpenseService");
+const { addExpense, getExpenseDetailsByuserId } = require("../services/ExpenseService");
 const { getLendFromData } = require("../services/MoneyLendService");
+
 
 router
     .get("/getExpenseReason", async (request, response) => {
@@ -29,8 +30,9 @@ router
 
     })
     .get("/getExpense", async (request, response) => {
-        let expenseData = await getExpenseDetailsByUserID(request.session.userData["ID"]);
-        response.status(200).send({ "message": "Success", "data": expenseData });
+        // let expenseData = await getExpenseDetailsByuserId(request.session.userData["ID"]);
+        await getExpenseDetailsByuserId(request.session.userData["ID"]);
+        response.status(200).send({ "message": "Success", "data": "test" });
     })
     .get("/getPayOfDebt", async (request, response) => {
         try {

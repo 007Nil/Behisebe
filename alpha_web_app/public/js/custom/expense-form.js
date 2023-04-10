@@ -295,8 +295,8 @@ function getExpenseDetails() {
         "url": "/v1/expense/getExpense",
 
         success: function (response) {
-            // console.log(response.data);
-            insertExpenseDetails(response.data);
+            console.log(response.data);
+            // insertExpenseDetails(response.data);
         },
         error: function (error) {
             console.log(error);

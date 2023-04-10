@@ -22,6 +22,10 @@ async function getBankDetailsByID(bankID) {
     return bankRepo.getBankDetailsByID(bankID);
 }
 
+async function getUserBankDetails(userId) {
+    return bankRepo.getUserBankDetails(userId);
+}
+
 function getAccountCurrentBalance() {
 
 }
@@ -62,4 +66,11 @@ function makeBankInvalida() {
 
 }
 
-module.exports = { fetchBankDetails, addBankDetails, makeBankInvalida, getAccountType, getBankDetailsByID }
+module.exports = {
+    fetchBankDetails,
+    addBankDetails,
+    makeBankInvalida,
+    getAccountType,
+    getBankDetailsByID,
+    getUserBankDetails
+}
