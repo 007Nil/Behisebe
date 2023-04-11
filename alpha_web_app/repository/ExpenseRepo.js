@@ -11,6 +11,14 @@ async function saveExpense(expenseObj) {
     await mysqlPool.execute(prepareInsertExpenseQuery);
 }
 
+async function getExpenseByBankId(expenseObj){
+    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ?";
+    let preapreQuery = mysql.format(query,["Expense","BankID",expenseObj.bankId,"userId",expenseObj.userId]);
+    // console.log(preapreQuery)
+    return (await mysqlPool.execute(preapreQuery))[0]
+}
+
 module.exports = {
-    saveExpense
+    saveExpense,
+    getExpenseByBankId
 }

@@ -15,7 +15,7 @@ async function getAccountType() {
 }
 
 async function fetchBankDetails(userID) {
-    return bankRepo.fetchBankDetails(userID);
+    return bankRepo.getUserBankDetails(userID);
 }
 
 async function getBankDetailsByID(bankID) {

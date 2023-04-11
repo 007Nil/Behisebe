@@ -137,9 +137,37 @@ async function getExpenseDetailsByuserId(userId) {
 
     let returnData = []
     let bankList = await getUserBankDetails(userId);
-    for (let eachBank of bankList){
-        console.log(eachBank)
+    let reasonList = await fetchExpenseReasonByUserID(userId);
+    let personList = await getPersonDataByUserId(userId);
+    for (let eachBank of bankList) {
+        let expenseData = new ExpenseModel()
+        expenseData.bankId = eachBank.BankID;
+        expenseData.userId = eachBank.UserID;
+        eachBank.expenseDetails = await expenseRepo.getExpenseByBankId(expenseData);
+        for (let eachExpDetails of eachBank.expenseDetails) {
+            for (let reason of reasonList) {
+                if (reason.ID === eachExpDetails.Reason) {
+                    eachExpDetails.Reason = reason.Reason;
+                    break;
+                }
+            }
+            if (eachExpDetails.LendID) {
+                // console.log("HIT")
+                for (let person of personList) {
+                    console.log(person)
+                    if (person.ID === eachExpDetails.LendID) {
+                        eachExpDetails.LendID = person.Name;
+                        break;
+                    }
+                }
+            }
+        }
+        returnData.push(eachBank);
+        console.log(eachBank);
+        // break;
     }
+
+    // console.log(returnData)
     // console.log(expenseList)
     // for (let eachDetails of expenseList[0]) {
     //     eachDetails.BankName = (await getBankDetailsByID(eachDetails.BankID))[0].BankName;
@@ -159,5 +187,6 @@ async function getExpenseDetailsByuserId(userId) {
 //     let personInfo = await getPersonData(userId);
 //     let
 // }
+
 
 module.exports = { addExpense, getExpenseDetailsByuserId }

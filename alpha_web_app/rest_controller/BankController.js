@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 // Services
-const { addBankDetails, fetchBankDetails, getAccountType } = require("../services/BankServices");
+const { addBankDetails, getUserBankDetails, getAccountType } = require("../services/BankServices");
 const { getDailyClosing } = require("../services/DailyClosingService");
 
 
@@ -19,7 +19,7 @@ router.post("/addDetails", async function (req, res) {
 
 router.get("/getBankDetails", async (request, response) => {
     try {
-        let bankDetails = await fetchBankDetails(request.session.userData["ID"]);
+        let bankDetails = await getUserBankDetails(request.session.userData["ID"]);
         console.log("HIT")
         response.status(200).send(bankDetails);
     } catch (error) {
