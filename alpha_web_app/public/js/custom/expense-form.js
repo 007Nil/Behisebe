@@ -284,6 +284,9 @@ $("#view-expense").on("click", () => {
     $("#start-date").val(getOneMonthPreviosDate())
     $("#end-date").datepicker().datepicker('setDate', 'today');
     getExpenseDetails();
+    $("#start-date").on('change', () => {
+        getExpenseDetails();
+    })
 })
 // ------ Functions ------------------//
 
@@ -300,7 +303,7 @@ function getExpenseDetails() {
 
         success: function (response) {
             console.log(response.data);
-            // insertExpenseDetails(response.data);
+            insertExpenseDetails(response.data);
         },
         error: function (error) {
             console.log(error);
@@ -464,36 +467,36 @@ function insertExpenseDetails(expenseData) {
         data: expenseData,
         columns: [
             {
-                "title": "id",
+                className: 'dt-control',
+                orderable: false,
+                data: null,
+                defaultContent: '',
             },
             {
-                "title": "Debited Form",
+                "title": "bankId",
+            },
+            {
+                "title": "Bank",
             },
             {
                 "title": "Amount",
             },
-            {
-                "title": "Reason",
-            },
-            {
-                "title": "Date",
-            }
         ],
-        rowReorder: {
-            selector: 'td:nth-child(2)'
-        },
-        responsive: true,
+        // rowReorder: {
+        //     selector: 'td:nth-child(2)'
+        // },
+        responsive: false,
         columnDefs: [
             {
-                targets: 0,
-                data: "ID",
+                targets: 1,
+                data: "BankID",
                 render: function (data) {
                     // console.log(data)
                     return data;
                 },
             },
             {
-                targets: 1,
+                targets: 2,
                 data: "BankName",
                 render: function (data) {
 
@@ -501,15 +504,100 @@ function insertExpenseDetails(expenseData) {
                 },
             },
             {
-                targets: 2,
-                data: "Amount",
+                targets: 3,
+                data: "totalExpense",
                 render: function (data) {
 
                     return data;
                 },
+            }
+            // {
+            //     targets: 3,
+            //     data: "Reason",
+            //     render: function (data) {
+            //         // console.log(data)
+            //         return data;
+            //     },
+            // }
+            // {
+            //     targets: 4,
+            //     data: "Date",
+            //     render: function (data) {
+            //         // console.log(data)
+            //         let dateUTC = new Date(data);
+            //         dateUTC = dateUTC.getTime()
+            //         let dateIST = new Date(dateUTC);
+            //         //date shifting for IST timezone (+5 hours and 30 minutes)
+            //         dateIST.setHours(dateIST.getHours() + 5);
+            //         dateIST.setMinutes(dateIST.getMinutes() + 30);
+            //         return dateIST.toDateString();
+            //     },
+            // }
+        ],
+        order: [1, 'asc']
+    });
+    expenseTable.column(1).visible(false);
+
+    $("#ExpenseDetailsTable").on('click', 'td.dt-control', function () {
+        let tr = $(this).closest('tr');
+        let row = expenseTable.row(tr);
+        // console.log(row)
+        console.log(row.child.isShown())
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            // console.log("HIT")
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            row.child(expenseDetails(row.data().BankID)).show();
+            tr.addClass('shown');
+            console.log(row.data());
+            generateExpenseDetailsDatatable(row.data());
+        }
+    });
+}
+
+function expenseDetails(bankId) {
+    return `
+    <table id="expense-details-${bankId}" class="table display nowrap" style="width:100%">
+        <thead>
+            <tr>
+
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    </div>
+    `
+}
+
+function generateExpenseDetailsDatatable(expenseObj) {
+    let detailsExpTable = $(`#expense-details-${expenseObj.BankID}`).DataTable({
+        data: expenseObj.expenseDetails,
+        columns: [
+            {
+                "title": "Reason",
             },
             {
-                targets: 3,
+                "title": "Amount",
+            },
+            {
+                "title": "Date",
+            },
+            {
+                "title": "Note"
+            }
+        ],
+        responsive: true,
+        searching: false,
+        paging: false,
+        info: false,
+
+        columnDefs: [
+            {
+                targets: 0,
                 data: "Reason",
                 render: function (data) {
                     // console.log(data)
@@ -517,20 +605,41 @@ function insertExpenseDetails(expenseData) {
                 },
             },
             {
-                targets: 4,
+                targets: 1,
+                data: "Amount",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
+            {
+                targets: 2,
                 data: "Date",
                 render: function (data) {
                     // console.log(data)
-                    let dateUTC = new Date(data);
-                    dateUTC = dateUTC.getTime()
-                    let dateIST = new Date(dateUTC);
-                    //date shifting for IST timezone (+5 hours and 30 minutes)
-                    dateIST.setHours(dateIST.getHours() + 5);
-                    dateIST.setMinutes(dateIST.getMinutes() + 30);
-                    return dateIST.toDateString();
+                    return convertDate(data);
                 },
-            }
+            },
+            {
+                targets: 3,
+                data: "Notes",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
         ]
+
     });
-    expenseTable.column(0).visible(false);
+}
+
+function convertDate(date) {
+    let dateUTC = new Date(date);
+    dateUTC = dateUTC.getTime()
+    let dateIST = new Date(dateUTC);
+    //date shifting for IST timezone (+5 hours and 30 minutes)
+    dateIST.setHours(dateIST.getHours() + 5);
+    dateIST.setMinutes(dateIST.getMinutes() + 30);
+    // console.log(dateIST.toDateString())
+    return dateIST.toDateString();
 }
