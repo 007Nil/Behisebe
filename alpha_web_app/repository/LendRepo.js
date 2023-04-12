@@ -27,8 +27,16 @@ async function udpateLendTable(){
     
 }
 
+async function getLendToByID(lendID) {
+    selectQuery = "SELECT ?? FROM ?? WHERE ?? = ? ";
+    prepareQuery = mysql.format(selectQuery, ["LendTo", "Lend", "ID", lendID]);
+    return (await mysqlPool.execute(prepareQuery))[0][0].LendTo;
+
+}
+
 module.exports = {
     addLend,
     getLendFromByUserID,
-    getLendToByUserID
+    getLendToByUserID,
+    getLendToByID
 }

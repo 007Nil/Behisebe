@@ -4,6 +4,10 @@
   transition: color 0.5s ease;
   transition: background 0.5s ease;
 }
+.center2 {
+  text-align: center;
+  cursor: pointer;
+}
 
 .center:hover {
   background-color: #90ee90;

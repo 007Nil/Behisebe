@@ -30,14 +30,21 @@ router
 
     })
     .get("/getExpense", async (request, response) => {
-        // let expenseData = await getExpenseDetailsByuserId(request.session.userData["ID"]);
-        await getExpenseDetailsByuserId(request.session.userData["ID"]);
-        response.status(200).send({ "message": "Success", "data": "test" });
+        try {
+            let requestObj = request.query
+            requestObj.userId = request.session.userData["ID"];
+            // let expenseData = await getExpenseDetailsByuserId(request.session.userData["ID"]);
+            let expenseData = await getExpenseDetailsByuserId(requestObj);
+            response.status(200).send({ "message": "Success", "data": expenseData });
+        } catch (error) {
+            console.log(error);
+            response.status(500).send({ "message": "Error", "data": new Error(error.message) });
+        }
     })
     .get("/getPayOfDebt", async (request, response) => {
         try {
             let lendFromData = await getLendFromData(request.session.userData["ID"]);
-            response.status(200).send({ "message": "Success", "data":  lendFromData});
+            response.status(200).send({ "message": "Success", "data": lendFromData });
         } catch (error) {
             console.log(error);
             response.status(500).send(new Error(error.message));

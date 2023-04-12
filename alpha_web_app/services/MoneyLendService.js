@@ -18,10 +18,8 @@ async function addLendDetails(lendObj) {
     return lendObj.id;
 }
 
-async function getLendByID(lendID) {
-    selectQuery = "SELECT ?? FROM ?? WHERE ?? = ? ";
-    prepareQuery = mysql.format(selectQuery, ["LendTo", "Lend", "ID", lendID]);
-    return (await mysqlPool.execute(prepareQuery))[0][0].LendTo;
+async function getLendToByID(lendID) {
+    return lendRepo.getLendToByID(lendID)
 
 }
 
@@ -138,7 +136,7 @@ async function prepareLendToData(userID) {
 // export.getLendFromData = getLendFromData;
 
 module.exports.addLendDetails = addLendDetails;
-module.exports.getLendByID = getLendByID;
+module.exports.getLendToByID = getLendToByID;
 module.exports.prepareLendToData = prepareLendToData;
-module.exports.getLendFromData = getLendByID;
 module.exports.getLendFromData = getLendFromData;
+// module.exports.getLendFromData = getLendFromData;

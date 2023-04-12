@@ -1,5 +1,3 @@
-const mysql = require("mysql2/promise");
-const mysqlPool = require("../repository/MysqlConnectionPool");
 const crypto = require("crypto");
 const { fetchExpenseReasonByUserID, addExpenseReason, getExpenseNameByID } = require("./ExpenseReasonService");
 const { getPersonDataByUserId, addPersonData, getPersonNamebyID } = require("./PersonService");
@@ -7,6 +5,7 @@ const { addLendDetails, getLendByID } = require("./MoneyLendService");
 const { getUserBankDetails } = require("./BankServices");
 const dailyClosingService = require("./DailyClosingService");
 const { updateDailyClosingCash } = require("./DailyClosingCashService");
+const {getLendToByID} = require("./MoneyLendService");
 
 //  Model
 const ExpenseModel = require("../model/ExpenseModel");
@@ -133,8 +132,12 @@ async function addExpense(requestData) {
 
 }
 
-async function getExpenseDetailsByuserId(userId) {
-
+async function getExpenseDetailsByuserId(requestObj) {
+    let userId = requestObj.userId;
+    // console.log(requestObj)
+    requestObj.startDate =  requestObj.startDate.replaceAll("/","-");
+    requestObj.endDate =  requestObj.endDate.replaceAll("/","-");
+    // console.log(requestObj)
     let returnData = []
     let bankList = await getUserBankDetails(userId);
     let reasonList = await fetchExpenseReasonByUserID(userId);
@@ -143,6 +146,8 @@ async function getExpenseDetailsByuserId(userId) {
         let expenseData = new ExpenseModel()
         expenseData.bankId = eachBank.BankID;
         expenseData.userId = eachBank.UserID;
+        expenseData.startDate = requestObj.startDate;
+        expenseData.endDate = requestObj.endDate;
         eachBank.expenseDetails = await expenseRepo.getExpenseByBankId(expenseData);
         for (let eachExpDetails of eachBank.expenseDetails) {
             for (let reason of reasonList) {
@@ -153,34 +158,23 @@ async function getExpenseDetailsByuserId(userId) {
             }
             if (eachExpDetails.LendID) {
                 // console.log("HIT")
+                let personId = await getLendToByID(eachExpDetails.LendID);
+                // console.log(personId)
                 for (let person of personList) {
-                    console.log(person)
-                    if (person.ID === eachExpDetails.LendID) {
-                        eachExpDetails.LendID = person.Name;
+                    // console.log(person)
+                    if (person.ID === personId) {
+                        eachExpDetails.LendTo = person.Name;
                         break;
                     }
                 }
             }
         }
         returnData.push(eachBank);
-        console.log(eachBank);
+        // console.log(eachBank);
         // break;
     }
 
-    // console.log(returnData)
-    // console.log(expenseList)
-    // for (let eachDetails of expenseList[0]) {
-    //     eachDetails.BankName = (await getBankDetailsByID(eachDetails.BankID))[0].BankName;
-    //     delete eachDetails.BankID;
-    //     eachDetails.Reason = await getExpenseNameByID(eachDetails.Reason);
-
-    //     if (eachDetails.LendID) {
-    //         // console.log(eachDetails.LendID);
-    //         eachDetails.LendID = await getPersonNamebyID(await getLendByID(eachDetails.LendID));
-    //         // delete eachDetails.LendID;
-    //     }
-    // }
-    // return expenseList[0];
+    return returnData;
 }
 // Pay Of Debt
 // async function getLendToData(userId) {

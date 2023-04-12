@@ -207,9 +207,9 @@ $("#add-expense").on("click", () => {
             spacialDebit = null;
         }
         let bankId;
-        try{
+        try {
             bankId = $("#debited-from").select2('data')[0].id;
-        }catch {
+        } catch {
             bankId = null;
         }
         // let isByCash = $("#cashCheckBox").is(":checked");
@@ -280,6 +280,9 @@ $("#view-expense").on("click", () => {
     $("#add-expense").css("color", "#000000");
     $("#add-expense").css("background-color", "#FFFFFF");
     fillDynamicDiv(createViewExpenseTable);
+    $("#start-date").datepicker();
+    $("#start-date").val(getOneMonthPreviosDate())
+    $("#end-date").datepicker().datepicker('setDate', 'today');
     getExpenseDetails();
 })
 // ------ Functions ------------------//
@@ -293,6 +296,7 @@ function getExpenseDetails() {
     $.ajax({
         type: "GET",
         "url": "/v1/expense/getExpense",
+        "data": `startDate=${$("#start-date").val()}&endDate=${$("#end-date").val()}`,
 
         success: function (response) {
             console.log(response.data);
@@ -306,7 +310,24 @@ function getExpenseDetails() {
 
 function createViewExpenseTable() {
     return `
-
+        <div class="row center2">
+            <div class="col-sm" style="padding: 10px;">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="start-date" class="col-xs-3">Start Date:</label>
+                        <input type="text" id="start-date" style="padding: 5px;">
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm" style="padding: 10px;">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="end-date" class="col-xs-2" style="text-align: left;">End Date:</label>
+                        <input type="text" id="end-date" style="padding: 5px;">
+                    </div>
+                </form>
+            </div>
+        </div>
         <table id="ExpenseDetailsTable" class="display nowrap" style="width:100%">
             <thead>
                 <tr>
@@ -429,6 +450,13 @@ function getCashBalance() {
             // $("#bankAmount").val(response.data);
         }
     });
+}
+
+function getOneMonthPreviosDate() {
+    let date = new Date();
+    date.setDate(date.getDate() - 30);
+    let previosDateSplit = date.toISOString().split('T')[0].split("-");
+    return `${previosDateSplit[1]}/${previosDateSplit[2]}/${previosDateSplit[0]}`;
 }
 
 function insertExpenseDetails(expenseData) {
