@@ -39,7 +39,7 @@ async function getLendFromData(userId) {
     // addCreditDetails();
     let creditData = await creditServices.getCreditLendData(userId)
     // console.log(creditData);
-    let bankDetails = await bankRepo.fetchBankDetails(userId);
+    let bankDetails = await bankRepo.getUserBankDetails(userId);
     let lendFromData = await lendRepo.getLendFromByUserID(userId);
 
     lendFromData.forEach(element => {
