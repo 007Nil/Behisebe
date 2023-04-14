@@ -5,7 +5,7 @@ const { addLendDetails, getLendByID } = require("./MoneyLendService");
 const { getUserBankDetails } = require("./BankServices");
 const dailyClosingService = require("./DailyClosingService");
 const { updateDailyClosingCash } = require("./DailyClosingCashService");
-const {getLendToByID} = require("./MoneyLendService");
+const { getLendToByID } = require("./MoneyLendService");
 
 //  Model
 const ExpenseModel = require("../model/ExpenseModel");
@@ -135,14 +135,14 @@ async function addExpense(requestData) {
 async function getExpenseDetailsByuserId(requestObj) {
     let userId = requestObj.userId;
     // console.log(requestObj)
-    requestObj.startDate =  requestObj.startDate.replaceAll("/","-");
-    requestObj.endDate =  requestObj.endDate.replaceAll("/","-");
+    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
+    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
     // console.log(requestObj)
     let returnData = []
     let bankList = await getUserBankDetails(userId);
     let reasonList = await fetchExpenseReasonByUserID(userId);
     let personList = await getPersonDataByUserId(userId);
-    
+
     for (let eachBank of bankList) {
         let totalAmount = 0;
         let expenseData = new ExpenseModel()
@@ -180,11 +180,42 @@ async function getExpenseDetailsByuserId(requestObj) {
 
     return returnData;
 }
-// Pay Of Debt
-// async function getLendToData(userId) {
-//     let personInfo = await getPersonData(userId);
-//     let
-// }
+
+async function getCashExpenseDetailsByUserId(requestObj) {
+
+    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
+    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
+    let reasonList = await fetchExpenseReasonByUserID(requestObj.userId);
+    let personList = await getPersonDataByUserId(requestObj.userId);
+    // console.log(reasonList);
+    let cashExpObj = await expenseRepo.getCashExpenseByUserId(requestObj)
+    for (eachCashExp of cashExpObj) {
+        for (let reason of reasonList){
+            if (reason.ID === eachCashExp.Reason){
+                // console.log("HIT")
+                eachCashExp.Reason = reason.Reason;
+                break;
+            }
+        }
+        if (eachCashExp.LendID) {
+            for (let person of personList){
+                let personId = await getLendToByID(eachCashExp.LendID);
+                if (person.ID === personId){
+                    eachCashExp.Reason += ` To ${person.Name}` 
+                }
+            }
+        }
+
+    }
+    // return ();
+    // console.log(cashExpObj)
+    return cashExpObj;
+
+}
 
 
-module.exports = { addExpense, getExpenseDetailsByuserId }
+module.exports = {
+    addExpense,
+    getExpenseDetailsByuserId,
+    getCashExpenseDetailsByUserId
+}

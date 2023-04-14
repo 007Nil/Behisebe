@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { fetchExpenseReasonByUserID, addExpenseReason } = require("../services/ExpenseReasonService");
-const { addExpense, getExpenseDetailsByuserId } = require("../services/ExpenseService");
+const { addExpense, getExpenseDetailsByuserId, getCashExpenseDetailsByUserId } = require("../services/ExpenseService");
 const { getLendFromData } = require("../services/MoneyLendService");
 
 
@@ -52,7 +52,10 @@ router
 
     })
     .get("/getCashExpense", async (request, response) => {
-        console.log("HIT");
-        response.status(200).send({ "message": "successful","data": "TEST" });
+        // console.log("HIT");
+        let requestBody = request.query;
+        requestBody.userId = request.session.userData["ID"];
+        let cashExpense =  await getCashExpenseDetailsByUserId(requestBody);
+        response.status(200).send({ "message": "successful","data": cashExpense });
     })
 module.exports = router;

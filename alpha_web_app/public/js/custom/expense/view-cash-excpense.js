@@ -33,12 +33,12 @@ function getOneMonthPreviosDate() {
     return `${previosDateSplit[1]}/${previosDateSplit[2]}/${previosDateSplit[0]}`;
 }
 
-function getCashExpense(){
+function getCashExpense() {
     let startDate = $("#start-date").val();
     let endDate = $("#end-date").val();
     // console.log(new Date(startDate).getTime());
     // console.log(new Date(endDate).getTime());
-    if (new Date(startDate).getTime() > new Date(endDate).getTime()){
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         alert("NOT POSSIBLE")
         return
     }
@@ -49,15 +49,15 @@ function getCashExpense(){
 
         success: function (response) {
             console.log(response.data);
-            // if ($.fn.dataTable.isDataTable('#ExpenseDetailsTable')) {
-            //     console.log("HIT")
-            //     let expTable = $('#ExpenseDetailsTable').DataTable();
-            //     expTable.clear().draw();
-            //     expTable.rows.add(response.data);
-            //     expTable.columns.adjust().draw();
-            // } else {
-            //     insertExpenseDetails(response.data);
-            // }
+            if ($.fn.dataTable.isDataTable('#ExpenseCashDetailsTable')) {
+                console.log("HIT")
+                let cashExpTable = $('#ExpenseCashDetailsTable').DataTable();
+                cashExpTable.clear().draw();
+                cashExpTable.rows.add(response.data);
+                cashExpTable.columns.adjust().draw();
+            } else {
+                generateCashExpenseTable(response.data);
+            }
 
         },
         error: function (error) {
@@ -66,6 +66,74 @@ function getCashExpense(){
     });
 }
 
-function generateCashExpenseTable(){
-
+function convertDate(date) {
+    let dateUTC = new Date(date);
+    dateUTC = dateUTC.getTime()
+    let dateIST = new Date(dateUTC);
+    //date shifting for IST timezone (+5 hours and 30 minutes)
+    dateIST.setHours(dateIST.getHours() + 5);
+    dateIST.setMinutes(dateIST.getMinutes() + 30);
+    // console.log(dateIST.toDateString())
+    return dateIST.toDateString();
 }
+
+function generateCashExpenseTable(expenseData) {
+    let expenseTable = $("#ExpenseCashDetailsTable").DataTable({
+        data: expenseData,
+        columns: [
+            {
+                "title": "Amount",
+            },
+            {
+                "title": "Date",
+            },
+            {
+                "title": "Reason",
+            },
+            {
+                "title": "Note",
+            }
+        ],
+        responsive: true,
+        destroy: true,
+        retrieve: true,
+        columnDefs: [
+            {
+                targets: 0,
+                data: "Amount",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
+            {
+                targets: 1,
+                data: "Date",
+                render: function (data) {
+                    // console.log(data)
+                    return convertDate(data);
+                },
+            },
+            {
+                targets: 2,
+                data: "Reason",
+                render: function (data,row) {
+                    console.log(row)
+                    if (data === "Lend"){
+                        return `${data} To ${expenseData.LendID}`
+                    }
+                    return data;
+                },
+            },
+            {
+                targets: 3,
+                data: "Notes",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
+        ]
+    })
+}
+

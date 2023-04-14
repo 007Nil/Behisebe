@@ -26,8 +26,15 @@ async function getExpenseByDate(expenseData) {
     return (await mysqlPool.execute(preapreQuery))[0]
 }
 
+async function getCashExpenseByUserId(requestObj){
+    let query = "SELECT * FROM ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN STR_TO_DATE(?,'%m-%d-%Y') AND STR_TO_DATE(?,'%m-%d-%Y'))"
+    let preapreQuery = mysql.format(query,["Expense","ByCash",1,"UserID",requestObj.userId,"Date",requestObj.startDate,requestObj.endDate]);
+    // console.log(preapreQuery)
+    return (await mysqlPool.execute(preapreQuery))[0];    
+}
 module.exports = {
     saveExpense,
     getExpenseByBankId,
-    getExpenseByDate
+    getExpenseByDate,
+    getCashExpenseByUserId
 }
