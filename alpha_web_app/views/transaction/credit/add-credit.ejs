@@ -1,0 +1,85 @@
+<%- include("../../common/html_boilerplate.ejs"); %>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/jquery-ui.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <link rel="stylesheet" href="../../css/jquery_datatables/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.3.3/css/rowReorder.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css" />
+    <link rel="stylesheet" href="../../css/admin_panel/admin.css">
+    <link rel="stylesheet" href="../../css/custom/expense_form.css">
+
+    <%- include("../../common/header.ejs"); %>
+        <div class="container" style="padding-top: 10px;">
+
+            <form id="credit-form">
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="bankCheckBox" checked>
+                            <label class="form-check-label" for="bankCheckBox">
+                                Credited to Bank
+                            </label>
+                            <input id="bankAmount" class="" type="text" value="" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="cashCheckBox">
+                            <label class="form-check-label" for="cashCheckBox">
+                                Credit by Cash
+                            </label>
+                            <input id="cashBalance" class="" type="text" value="" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3" id="credit-from-div">
+                    <label for="credited-to" class="form-label">Credit To</label>
+                    <select id="credited-to" class="select2 form-control" required>
+
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="amount" required>
+                </div>
+
+                <div class='mb-3'>
+                    <label for="credit-date" class="form-label">Date</label>
+                    <input type="text" id="credit-date" class="form-control" required>
+                </div>
+
+                <div class="mb-3" id="cerdit-reason-div">
+                    <label for="credit-reason" class="form-label">Credit Cause</label>
+                    <select id="credit-reason" class="select2 form-control" required>
+
+                    </select>
+                </div>
+                <div id="credit-cause-div"></div>
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes</label>
+                    <input type="text" class="form-control" id="notes" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Data</button>
+            </form>
+
+        </div>
+        </main>
+
+        <script type="text/javascript" src="../../js/bootstrape/jquery-3.6.3.js"></script>
+        <!-- ✅ load jquery UI ✅ -->
+        <script type="text/javascript" src="../../js/bootstrape/jquery-ui.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <script type="text/javascript" src="../../js/bootstrape/bootstrap.bundle.min.js"></script>
+
+        <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.datatables.net/rowreorder/1.3.3/js/dataTables.rowReorder.min.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <script type="text/javascript" src="../../js/admin_panel/admin.js"></script>
+        <script type="text/javascript" src="../../js/custom/credit/add-credit.js"></script>
+        <%- include("../../common/footer.ejs"); %>

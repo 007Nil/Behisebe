@@ -48,19 +48,43 @@
                         <div class="collapse" id="expenseLayouts" aria-labelledby="headingOne"
                             data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a id="add-expense-nav" class="nav-link" href="/transaction/expense/add-expense">Add Expense</a>
+                                <a id="add-expense-nav" class="nav-link" href="/transaction/expense/add-expense">Add
+                                    Expense</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a id="view-bank-expense-nav" class="nav-link" href="/transaction/expense/view-bank-expense">View Bank Expense</a>
+                                <a id="view-bank-expense-nav" class="nav-link"
+                                    href="/transaction/expense/view-bank-expense">View Bank Expense</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a id="view-cash-expense-nav" class="nav-link" href="/transaction/expense/view-cash-expense">View Cash Expense</a>
+                                <a id="view-cash-expense-nav" class="nav-link"
+                                    href="/transaction/expense/view-cash-expense">View Cash Expense</a>
                             </nav>
                         </div>
-                        <a id="credit_id" class="nav-link" href="/transaction/credit">
+                        <!-- <a id="credit_id" class="nav-link" href="/transaction/credit">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Credit
+                        </a> -->
+                        <a id="credit-nav" class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                            data-bs-target="#creditLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Credit
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
+                        <div class="collapse" id="creditLayouts" aria-labelledby="headingOne"
+                            data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a id="add-credit-nav" class="nav-link" href="/transaction/credit/add-expense">Add
+                                    Credit</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a id="view-credit-expense-nav" class="nav-link"
+                                    href="/transaction/expense/view-bank-expense">View Bank Credit</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a id="view-cash-credit-nav" class="nav-link"
+                                    href="/transaction/expense/view-cash-expense">View Cash Credit</a>
+                            </nav>
+                        </div>
                         <a id="pay-your-debt-id" class="nav-link" href="/transaction/pay-your-debts">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Pay Your Debt
