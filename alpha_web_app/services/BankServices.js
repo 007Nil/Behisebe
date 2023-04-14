@@ -66,11 +66,18 @@ function makeBankInvalida() {
 
 }
 
-module.exports = {
-    fetchBankDetails,
-    addBankDetails,
-    makeBankInvalida,
-    getAccountType,
-    getBankDetailsByID,
-    getUserBankDetails
-}
+module.exports.fetchBankDetails = fetchBankDetails;
+module.exports.addBankDetails = addBankDetails;
+module.exports.makeBankInvalida = makeBankInvalida;
+module.exports.getAccountType = getAccountType;
+module.exports.getBankDetailsByID = getBankDetailsByID;
+module.exports.getUserBankDetails = getUserBankDetails;
+
+// module.exports = {
+//     fetchBankDetails,
+//     addBankDetails,
+//     makeBankInvalida,
+//     getAccountType,
+//     getBankDetailsByID,
+//     getUserBankDetails
+// }

@@ -34,9 +34,18 @@ async function getLendToByID(lendID) {
 
 }
 
+async function getLendFromByID(lendID) {
+    selectQuery = "SELECT ?? FROM ?? WHERE ?? = ? ";
+    prepareQuery = mysql.format(selectQuery, ["LendFrom", "Lend", "ID", lendID]);
+    // console.log(prepareQuery)
+    return (await mysqlPool.execute(prepareQuery))[0][0].LendFrom;
+
+}
+
 module.exports = {
     addLend,
     getLendFromByUserID,
     getLendToByUserID,
-    getLendToByID
+    getLendToByID,
+    getLendFromByID
 }

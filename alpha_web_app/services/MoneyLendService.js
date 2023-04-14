@@ -23,6 +23,11 @@ async function getLendToByID(lendID) {
 
 }
 
+async function getLendFromByID(lendID) {
+    return lendRepo.getLendFromByID(lendID)
+
+}
+
 async function udpateLendData(){
     
 }
@@ -139,4 +144,5 @@ module.exports.addLendDetails = addLendDetails;
 module.exports.getLendToByID = getLendToByID;
 module.exports.prepareLendToData = prepareLendToData;
 module.exports.getLendFromData = getLendFromData;
+module.exports.getLendFromByID = getLendFromByID;
 // module.exports.getLendFromData = getLendFromData;

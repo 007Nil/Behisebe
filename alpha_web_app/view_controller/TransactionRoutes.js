@@ -19,8 +19,11 @@ router
 //   response.render("transaction/credit-form",{"title": "Credit Section"});
 // })
 // credit/add-expense
-.get("/credit/add-expense", (request,response) =>{
-  response.render("transaction/credit/add-credit",{"title": "Credit Section"});
+.get("/credit/add-credit", (request,response) =>{
+  response.render("transaction/credit/add-credit",{"title": "Add Credit"});
+})
+.get("/credit/view-bank-credit", (request,response) =>{
+  response.render("transaction/credit/view-bank-credit",{"title": "View Bank Credit"});
 })
 .get("/pay-your-debts",(request,response) => {
   response.render("transaction/pay-your-debt",{"title": "Pay Your Debts"});

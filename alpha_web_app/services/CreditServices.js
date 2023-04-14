@@ -5,6 +5,7 @@ const { getPersonDataByUserId, addPersonData } = require("./PersonService");
 const dailyClosingService = require("./DailyClosingService");
 const lendService = require("./MoneyLendService");
 const { updateDailyClosingCash } = require("./DailyClosingCashService");
+const BankService = require("./BankServices");
 
 //  Repo
 const creditRepo = require("../repository/CreditRepo");
@@ -14,6 +15,7 @@ const PersonModel = require("../model/PersonModel");
 const CreditReasonModel = require("../model/CreditReasonModel");
 const DailyClosingModel = require("../model/DailyClosingModel");
 const DailyClosingCashModel = require("../model/DailyClosingCashModel");
+const CreditModel = require("../model/CreditModel");
 
 
 async function addCreditDetails(creditObj) {
@@ -21,9 +23,9 @@ async function addCreditDetails(creditObj) {
     creditObj.creditId = crypto.randomBytes(10).toString("hex");
     let userID = creditObj.userId;
     let isCashCredit = creditObj.byCash;
-    
 
-    if (creditObj.reason){
+
+    if (creditObj.reason) {
         let creditReasonResult = await getAllCreditReasonByUserId(userID);
         let creditResult = creditReasonResult.map(each => each.ID);
 
@@ -32,7 +34,7 @@ async function addCreditDetails(creditObj) {
             let creditReasonObj = new CreditReasonModel();
             creditReasonObj.reason = creditObj.reason;
             creditReasonObj.userId = userID;
-    
+
             creditObj.reason = await addCreditReason(creditReasonObj);
         }
     }
@@ -66,10 +68,10 @@ async function addCreditDetails(creditObj) {
             creditObj.lendId = await lendService.addLendDetails(lendObj);
         }
     }
-    if (isCashCredit){
+    if (isCashCredit) {
         creditObj.byCash = 1; // true
         creditObj.reason = "6765454367";
-    }else {
+    } else {
         creditObj.byCash = 0;
     }
     await creditRepo.saveCredit(creditObj);
@@ -101,5 +103,53 @@ async function getCreditLendData(userId) {
     return (await creditRepo.getCreditLendData(userId));
 }
 
+async function getCreditDetailsByuserId(requestObj) {
+    let userId = requestObj.userId;
+    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
+    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
+    // console.log(requestObj);
+    let returnData = [];
+    let bankList = await BankService.getUserBankDetails(userId);
+    let reasonList = await getAllCreditReasonByUserId(userId);
+    let personList = await getPersonDataByUserId(userId);
+    for (let eachBank of bankList) {
+        let totalAmount = 0;
+        let creditObj = new CreditModel();
+        creditObj.bankId = eachBank.BankID;
+        creditObj.userId = eachBank.UserID;
+        creditObj.startDate = requestObj.startDate;
+        creditObj.endDate = requestObj.endDate;
+        eachBank.creditDetails = await creditRepo.getCreditByDate(creditObj);
+
+        // console.log(creditObj.creditDetails)
+
+        for (let eachCredit of eachBank.creditDetails) {
+            totalAmount += eachCredit.Amount;
+            for (let reason of reasonList) {
+                if (reason.ID === eachCredit.Reason) {
+                    eachCredit.Reason = reason.Reason;
+                    break;
+                }
+            }
+            if (eachCredit.LendID) {
+                // console.log("HIT")
+                let personId = await lendService.getLendFromByID(eachCredit.LendID);
+                // console.log(personId)
+                for (let person of personList) {
+                    // console.log(person)
+                    if (person.ID === personId) {
+                        // console.log("HIT")
+                        eachCredit.LendTo = person.Name;
+                        break;
+                    }
+                }
+            }
+        }
+        returnData.push(eachBank);
+        eachBank.totalCredit = totalAmount;
+    }
+    return returnData;
+}
 module.exports.getCreditLendData = getCreditLendData;
 module.exports.addCreditDetails = addCreditDetails;
+module.exports.getCreditDetailsByuserId = getCreditDetailsByuserId;

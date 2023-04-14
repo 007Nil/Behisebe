@@ -5,7 +5,7 @@ const mysqlPool = require("./MysqlConnectionPool");
 async function getBankDetailsByID(bankID) {
     let selectBanksQuery = "SELECT ?? FROM ?? WHERE ?? = ?";
     let prepareSelectBankQuery = mysql.format(selectBanksQuery, ["BankName", "Bank", "BankID", bankID]);
-    
+    console.log(prepareSelectBankQuery)
     let bankName = await mysqlPool.execute(prepareSelectBankQuery);
     
     return bankName[0];
