@@ -12,3 +12,6 @@ Notes:
 /v1/bank/makeDefaultAccount
 /v1/bank/makeInactive
 --------------------------------
+
+05/12/2022
+Need to fix logic for Lend and borrow by cash - DONE

@@ -241,10 +241,10 @@ $(document).on('change', "#cashCheckBox", function () {
         $('#bankCheckBox').prop('checked', false);
         // console.log("HIT");
         $("#credit-from-div").css("display", "none");
-        $("#cerdit-reason-div").css("display", "none");
+        // $("#cerdit-reason-div").css("display", "none");
         // $('#debited-from').removeAttr('required');​​​​​
         $('#credited-to').removeAttr('required');
-        $("#credit-reason").removeAttr('required')
+        // $("#credit-reason").removeAttr('required')
     }
 });
 
@@ -253,9 +253,9 @@ $(document).on('change', "#bankCheckBox", function () {
         $('#cashCheckBox').prop('checked', false);
         // console.log("HIT");
         $("#credit-from-div").css("display", "block");
-        $("#cerdit-reason-div").css("display", "block");
+        // $("#cerdit-reason-div").css("display", "block");
         $('#credited-to').prop('required', true);
-        $("#credit-reason").prop('required', true);
+        // $("#credit-reason").prop('required', true);
 
     }
 });

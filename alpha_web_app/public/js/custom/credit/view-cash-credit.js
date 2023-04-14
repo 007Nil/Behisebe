@@ -107,11 +107,7 @@ function generateCashCreditTable(creditObj) {
             {
                 targets: 2,
                 data: "Reason",
-                render: function (data, row) {
-                    console.log(row)
-                    if (data === "Lend") {
-                        return `${data} To ${expenseData.LendID}`
-                    }
+                render: function (data) {
                     return data;
                 },
             },
@@ -123,7 +119,8 @@ function generateCashCreditTable(creditObj) {
                     return data;
                 },
             },
-        ]
+        ],
+        order: [1, 'desc']
     })
 };
 

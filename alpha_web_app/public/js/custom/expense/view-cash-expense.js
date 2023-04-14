@@ -118,10 +118,6 @@ function generateCashExpenseTable(expenseData) {
                 targets: 2,
                 data: "Reason",
                 render: function (data,row) {
-                    console.log(row)
-                    if (data === "Lend"){
-                        return `${data} To ${expenseData.LendID}`
-                    }
                     return data;
                 },
             },
@@ -133,7 +129,8 @@ function generateCashExpenseTable(expenseData) {
                     return data;
                 },
             },
-        ]
+        ],
+        order: [1, 'desc']
     })
 }
 

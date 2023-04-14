@@ -27,10 +27,10 @@ async function getCreditByDate(creditObj) {
 }
 
 async function getCashCreditByDate(creditObj) {
-    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN STR_TO_DATE(?,'%m-%d-%Y') AND STR_TO_DATE(?,'%m-%d-%Y'))";
+    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN STR_TO_DATE(?,'%m-%d-%Y') AND STR_TO_DATE(?,'%m-%d-%Y')) ORDER BY `Date` DESC";
     let preapreQuery = mysql.format(query, ["Credit", "ByCash", 1, "UserId", creditObj.userId, "Date", creditObj.startDate, creditObj.endDate]);
     
-    // console.log(preapreQuery)
+    console.log(preapreQuery)
     return (await mysqlPool.execute(preapreQuery))[0]
 }
 

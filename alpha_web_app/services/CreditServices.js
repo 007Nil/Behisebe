@@ -70,7 +70,7 @@ async function addCreditDetails(creditObj) {
     }
     if (isCashCredit) {
         creditObj.byCash = 1; // true
-        creditObj.reason = "6765454367";
+        // creditObj.reason = "6765454367";
     } else {
         creditObj.byCash = 0;
     }
@@ -170,7 +170,7 @@ async function getCashCreditDetailsByUserId(requestObj) {
         }
         if (eachCashCredit.LendID) {
             for (let person of personList){
-                let personId = await lendService.getLendFromByID(eachCredit.LendID);
+                let personId = await lendService.getLendFromByID(eachCashCredit.LendID);
                 if (person.ID === personId){
                     eachCashCredit.Reason += ` To ${person.Name}` 
                 }
