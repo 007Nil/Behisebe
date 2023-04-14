@@ -1,0 +1,63 @@
+<%- include("../../common/html_boilerplate.ejs"); %>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/jquery-ui.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <link rel="stylesheet" href="../../css/jquery_datatables/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.3.3/css/rowReorder.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css" />
+    <link rel="stylesheet" href="../../css/admin_panel/admin.css">
+    <link rel="stylesheet" href="../../css/custom/expense_form.css">
+
+    <%- include("../../common/header.ejs"); %>
+        <div class="container" style="padding-top: 10px;">
+            <div class="row center2">
+                <div class="col-sm" style="padding: 10px;">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="start-date" class="col-xs-3">Start Date:</label>
+                            <input type="text" id="start-date" style="padding: 5px;">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm" style="padding: 10px;">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="end-date" class="col-xs-2" style="text-align: left;">End Date:</label>
+                            <input type="text" id="end-date" style="padding: 5px;">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <table id="ExpenseCashDetailsTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        </main>
+        <script type="text/javascript" src="../../js/bootstrape/jquery-3.6.3.js"></script>
+        <!-- ✅ load jquery UI ✅ -->
+        <script type="text/javascript" src="../../js/bootstrape/jquery-ui.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <script type="text/javascript" src="../../js/bootstrape/bootstrap.bundle.min.js"></script>
+
+        <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.datatables.net/rowreorder/1.3.3/js/dataTables.rowReorder.min.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <script type="text/javascript" src="../../js/admin_panel/admin.js"></script>
+        <!-- For expense view js -->
+
+        <script src="../../js/custom/expense/view-cash-excpense.js"></script>
+        <%- include("../../common/footer.ejs"); %>

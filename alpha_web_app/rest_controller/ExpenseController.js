@@ -51,5 +51,8 @@ router
         }
 
     })
-
+    .get("/getCashExpense", async (request, response) => {
+        console.log("HIT");
+        response.status(200).send({ "message": "successful","data": "TEST" });
+    })
 module.exports = router;

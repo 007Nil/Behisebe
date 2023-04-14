@@ -39,7 +39,7 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Expense
                         </a> -->
-                        <a id="expenseId" class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                        <a id="expense-nav" class="nav-link collapsed" href="#" data-bs-toggle="collapse"
                             data-bs-target="#expenseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                             Expense
@@ -48,8 +48,13 @@
                         <div class="collapse" id="expenseLayouts" aria-labelledby="headingOne"
                             data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a id="" class="nav-link" href="/transaction/expense">Add Expense</a>
-                                <!-- <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a> -->
+                                <a id="add-expense-nav" class="nav-link" href="/transaction/expense/add-expense">Add Expense</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a id="view-bank-expense-nav" class="nav-link" href="/transaction/expense/view-bank-expense">View Bank Expense</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a id="view-cash-expense-nav" class="nav-link" href="/transaction/expense/view-cash-expense">View Cash Expense</a>
                             </nav>
                         </div>
                         <a id="credit_id" class="nav-link" href="/transaction/credit">
