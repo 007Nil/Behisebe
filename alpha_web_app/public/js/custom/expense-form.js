@@ -224,7 +224,7 @@ $("#add-expense").on("click", () => {
             "notes": $("#notes").val()
         }
         // console.log(isByCash)
-        console.log(expenseObject);
+        // console.log(expenseObject);
         // return;
 
 
@@ -265,7 +265,7 @@ $(document).on('change', "#cashCheckBox", function () {
 $(document).on('change', "#bankCheckBox", function () {
     if ($('#bankCheckBox').is(":checked")) {
         $('#cashCheckBox').prop('checked', false);
-        console.log("HIT");
+        // console.log("HIT");
         $("#debited-from-div").css("display", "block");
         $('#debited-from').prop('required', true);
 
@@ -280,11 +280,24 @@ $("#view-expense").on("click", () => {
     $("#add-expense").css("color", "#000000");
     $("#add-expense").css("background-color", "#FFFFFF");
     fillDynamicDiv(createViewExpenseTable);
-    $("#start-date").datepicker();
+    $("#start-date").datepicker({
+        showButtonPanel: true,
+        currentText: "Today:" + $.datepicker.formatDate('MM dd, yy', new Date()),
+        maxDate: 0
+    });
     $("#start-date").val(getOneMonthPreviosDate())
-    $("#end-date").datepicker().datepicker('setDate', 'today');
+    $("#end-date").datepicker({
+        showButtonPanel: true,
+        currentText: "Today:" + $.datepicker.formatDate('MM dd, yy', new Date()),
+        maxDate: 0
+    }).datepicker('setDate', 'today');
     getExpenseDetails();
     $("#start-date").on('change', () => {
+        // $("table#ExpenseDetailsTable").remove()
+        getExpenseDetails();
+    })
+    $("#end-date").on('change', () => {
+        // $("table#ExpenseDetailsTable").remove()
         getExpenseDetails();
     })
 })
@@ -295,15 +308,38 @@ $("#view-expense").on("click", () => {
 // }
 
 function getExpenseDetails() {
+    // var tables = $.fn.dataTable.fnTables(true);
 
+    // $(tables).each(function () {
+    //     console.log("HIT");
+    //     $(this).dataTable().fnDestroy();
+    // });
+    // $("#dynamic_bank_content").html("");
+    let startDate = $("#start-date").val();
+    let endDate = $("#end-date").val();
+    console.log(new Date(startDate).getTime());
+    console.log(new Date(endDate).getTime());
+    if (new Date(startDate).getTime() > new Date(endDate).getTime()){
+        alert("NOT POSSIBLE")
+        return
+    }
     $.ajax({
         type: "GET",
         "url": "/v1/expense/getExpense",
-        "data": `startDate=${$("#start-date").val()}&endDate=${$("#end-date").val()}`,
+        "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {
             console.log(response.data);
-            insertExpenseDetails(response.data);
+            if ($.fn.dataTable.isDataTable('#ExpenseDetailsTable')) {
+                console.log("HIT")
+                let expTable = $('#ExpenseDetailsTable').DataTable();
+                expTable.clear().draw();
+                expTable.rows.add(response.data);
+                expTable.columns.adjust().draw();
+            } else {
+                insertExpenseDetails(response.data);
+            }
+
         },
         error: function (error) {
             console.log(error);
@@ -486,6 +522,8 @@ function insertExpenseDetails(expenseData) {
         //     selector: 'td:nth-child(2)'
         // },
         responsive: false,
+        destroy: true,
+        retrieve: true,
         columnDefs: [
             {
                 targets: 1,
@@ -538,6 +576,7 @@ function insertExpenseDetails(expenseData) {
     });
     expenseTable.column(1).visible(false);
 
+
     $("#ExpenseDetailsTable").on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
         let row = expenseTable.row(tr);
@@ -549,6 +588,7 @@ function insertExpenseDetails(expenseData) {
             row.child.hide();
             tr.removeClass('shown');
         } else {
+            console.log(row)
             row.child(expenseDetails(row.data().BankID)).show();
             tr.addClass('shown');
             console.log(row.data());
@@ -594,7 +634,7 @@ function generateExpenseDetailsDatatable(expenseObj) {
         searching: false,
         paging: false,
         info: false,
-
+        destroy: true,
         columnDefs: [
             {
                 targets: 0,

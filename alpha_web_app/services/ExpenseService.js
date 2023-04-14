@@ -142,14 +142,15 @@ async function getExpenseDetailsByuserId(requestObj) {
     let bankList = await getUserBankDetails(userId);
     let reasonList = await fetchExpenseReasonByUserID(userId);
     let personList = await getPersonDataByUserId(userId);
-    let totalAmount = 0;
+    
     for (let eachBank of bankList) {
+        let totalAmount = 0;
         let expenseData = new ExpenseModel()
         expenseData.bankId = eachBank.BankID;
         expenseData.userId = eachBank.UserID;
         expenseData.startDate = requestObj.startDate;
         expenseData.endDate = requestObj.endDate;
-        eachBank.expenseDetails = await expenseRepo.getExpenseByBankId(expenseData);
+        eachBank.expenseDetails = await expenseRepo.getExpenseByDate(expenseData);
         for (let eachExpDetails of eachBank.expenseDetails) {
             totalAmount += eachExpDetails.Amount;
             for (let reason of reasonList) {
@@ -173,7 +174,7 @@ async function getExpenseDetailsByuserId(requestObj) {
         }
         returnData.push(eachBank);
         eachBank.totalExpense = totalAmount;
-        // console.log(eachBank);
+        console.log(eachBank);
         // break;
     }
 

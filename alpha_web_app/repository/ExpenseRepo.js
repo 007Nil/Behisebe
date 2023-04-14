@@ -21,6 +21,7 @@ async function getExpenseByBankId(expenseObj) {
 async function getExpenseByDate(expenseData) {
     let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN STR_TO_DATE(?,'%m-%d-%Y') AND STR_TO_DATE(?,'%m-%d-%Y'))";
     let preapreQuery = mysql.format(query, ["Expense", "BankID", expenseData.bankId, "userId", expenseData.userId,"Date",expenseData.startDate,expenseData.endDate]);
+
     // console.log(preapreQuery)
     return (await mysqlPool.execute(preapreQuery))[0]
 }
