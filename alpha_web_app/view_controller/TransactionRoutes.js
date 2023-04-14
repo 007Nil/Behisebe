@@ -25,6 +25,9 @@ router
 .get("/credit/view-bank-credit", (request,response) =>{
   response.render("transaction/credit/view-bank-credit",{"title": "View Bank Credit"});
 })
+.get("/credit/view-cash-credit", (request,response) =>{
+  response.render("transaction/credit/view-cash-credit",{"title": "View Cash Credit"});
+})
 .get("/pay-your-debts",(request,response) => {
   response.render("transaction/pay-your-debt",{"title": "Pay Your Debts"});
 })

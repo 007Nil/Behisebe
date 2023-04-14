@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { getCreditReason } = require("../services/CreditReasonService");
-const { addCreditDetails, getCreditDetailsByuserId } = require("../services/CreditServices");
+const { addCreditDetails, getCreditDetailsByuserId, getCashCreditDetailsByUserId } = require("../services/CreditServices");
 const { prepareLendToData } = require("../services/MoneyLendService");
 
 router
@@ -37,11 +37,23 @@ router
             response.status(500).send({ "message": "error", "errorData": error.message });
         }
     })
-    .get("/getCredit", async (request, response) =>{
+    .get("/getCredit", async (request, response) => {
+        try {
+            let requestObj = request.query;
+            requestObj.userId = request.session.userData["ID"];
+            let creditData = await getCreditDetailsByuserId(requestObj);
+            response.status(200).send({ "message": "success", "data": creditData });
+        } catch (error) {
+            response.status(500).send({ "message": "error", "errorData": error.message });
+        }
+
+    })
+    .get("/getCashCredit", async (request, response) => {
         let requestObj = request.query;
         requestObj.userId = request.session.userData["ID"];
-        let creditData = await getCreditDetailsByuserId(requestObj);
-        response.status(200).send({ "message": "success", "data": creditData });
+        let cashCreditData = await getCashCreditDetailsByUserId(requestObj);
+        // let creditData = await getCreditDetailsByuserId(requestObj);
+        response.status(200).send({ "message": "success", "data": cashCreditData });
     });
 
 module.exports = router;

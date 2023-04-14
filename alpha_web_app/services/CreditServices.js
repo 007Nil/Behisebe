@@ -139,7 +139,7 @@ async function getCreditDetailsByuserId(requestObj) {
                     // console.log(person)
                     if (person.ID === personId) {
                         // console.log("HIT")
-                        eachCredit.LendTo = person.Name;
+                        eachCredit.Reason += ` To ${person.Name}` 
                         break;
                     }
                 }
@@ -150,6 +150,44 @@ async function getCreditDetailsByuserId(requestObj) {
     }
     return returnData;
 }
+
+
+async function getCashCreditDetailsByUserId(requestObj) {
+
+    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
+    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
+    let reasonList = await getAllCreditReasonByUserId(requestObj.userId);
+    let personList = await getPersonDataByUserId(requestObj.userId);
+    // console.log(reasonList);
+    let cashCreditObj = await creditRepo.getCashCreditByDate(requestObj)
+    for (eachCashCredit of cashCreditObj) {
+        for (let reason of reasonList){
+            if (reason.ID === eachCashCredit.Reason){
+                // console.log("HIT")
+                eachCashCredit.Reason = reason.Reason;
+                break;
+            }
+        }
+        if (eachCashCredit.LendID) {
+            for (let person of personList){
+                let personId = await lendService.getLendFromByID(eachCredit.LendID);
+                if (person.ID === personId){
+                    eachCashCredit.Reason += ` To ${person.Name}` 
+                }
+            }
+        }
+
+        // console.log()
+
+    }
+    // return ();
+    // console.log(cashCreditObj)
+    return cashCreditObj;
+
+}
+
+
 module.exports.getCreditLendData = getCreditLendData;
 module.exports.addCreditDetails = addCreditDetails;
 module.exports.getCreditDetailsByuserId = getCreditDetailsByuserId;
+module.exports.getCashCreditDetailsByUserId = getCashCreditDetailsByUserId;
