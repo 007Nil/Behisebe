@@ -40,7 +40,7 @@ async function getLendFromData(userId) {
     let returnData = []
 
     // addCreditDetails();
-    let creditData = await creditServices.getCreditLendData(userId)
+    let creditData = await creditServices.getCreditLendData(userId);
     // console.log(creditData);
     let bankDetails = await bankRepo.getUserBankDetails(userId);
     let lendFromData = await lendRepo.getLendFromByUserID(userId);
@@ -85,7 +85,7 @@ async function getLendFromData(userId) {
             }
             lendDetails.totalAmount = totalAmount;
 
-
+            console.log()
 
         }
         lendDetails.borrowDetails = detailedLendDetails
@@ -100,6 +100,7 @@ function getBankName(bankObj, bankId) {
             return bankObj[index].BankName;
         }
     }
+    return "By Cash"
 }
 
 function getLendDetails(transactionData, lendID) {

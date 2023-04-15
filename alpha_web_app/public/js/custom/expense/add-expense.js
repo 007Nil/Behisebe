@@ -176,11 +176,21 @@ $(function () {
 
     $("#expense-form").submit(function (event) {
         event.preventDefault();
-        let bankBalance = $("#bankAmount").val();
-        if (parseInt($("#amount").val()) > parseInt(bankBalance)) {
-            alert("NOT POSSIBLE")
-            return;
+        if ($('#cashCheckBox').is(":checked")) {
+            // console.log("HIT")
+            let cashBalance = $('#cashBalance').val();
+            console.log(cashBalance);
+            if (parseInt($("#amount").val()) > parseInt(cashBalance)) {
+                alert("NOT POSSIBLE")
+            }
+        } else {
+            let bankBalance = $("#bankAmount").val();
+            if (parseInt($("#amount").val()) > parseInt(bankBalance)) {
+                alert("NOT POSSIBLE")
+                return;
+            }
         }
+        return;
         let spacialDebit;
         try {
             if ($('#expense-reason').select2('data')[0].text === "Lend") {
@@ -243,6 +253,7 @@ $(document).on('change', "#cashCheckBox", function () {
         $("#debited-from-div").css("display", "none");
         // $('#debited-from').removeAttr('required');​​​​​
         $('#debited-from').removeAttr('required');
+        $("#bankAmount").val("");
     }
 });
 

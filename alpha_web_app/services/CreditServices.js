@@ -172,7 +172,7 @@ async function getCashCreditDetailsByUserId(requestObj) {
             for (let person of personList){
                 let personId = await lendService.getLendFromByID(eachCashCredit.LendID);
                 if (person.ID === personId){
-                    eachCashCredit.Reason += ` To ${person.Name}` 
+                    eachCashCredit.Reason += ` From ${person.Name}` 
                 }
             }
         }
