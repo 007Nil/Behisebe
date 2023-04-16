@@ -1,5 +1,5 @@
 const Credit = class {
-    constructor(creditId,bankId,userId,byCash,lendId,reason,date,amount,notes){
+    constructor(creditId,bankId,userId,byCash,lendId,reason,date,amount,notes,lendPaid){
         this.creditId = creditId;
         this.bankId = bankId;
         this.userId = userId;
@@ -9,6 +9,7 @@ const Credit = class {
         this.date = date;
         this.amount = amount;
         this.notes   = notes;
+        this.lendPaid = lendPaid;
     }
 }
 

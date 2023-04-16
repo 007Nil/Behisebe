@@ -68,6 +68,8 @@ async function addCreditDetails(creditObj) {
 
             creditObj.lendId = await lendService.addLendDetails(lendObj);
         }
+    } else {
+        creditObj.lendId = null;
     }
     if (isCashCredit) {
         creditObj.byCash = 1; // true
@@ -75,6 +77,10 @@ async function addCreditDetails(creditObj) {
     } else {
         creditObj.byCash = 0;
     }
+    if (creditObj.lendId) {
+        creditObj.lendPaid = 0;
+    }
+
     await creditRepo.saveCredit(creditObj);
     // console.log(creditObj);
     if (isCashCredit) {
@@ -140,7 +146,7 @@ async function getCreditDetailsByuserId(requestObj) {
                     // console.log(person)
                     if (person.ID === personId) {
                         // console.log("HIT")
-                        eachCredit.Reason += ` From ${person.Name}` 
+                        eachCredit.Reason += ` From ${person.Name}`
                         break;
                     }
                 }
@@ -162,18 +168,18 @@ async function getCashCreditDetailsByUserId(requestObj) {
     // console.log(reasonList);
     let cashCreditObj = await creditRepo.getCashCreditByDate(requestObj)
     for (eachCashCredit of cashCreditObj) {
-        for (let reason of reasonList){
-            if (reason.ID === eachCashCredit.Reason){
+        for (let reason of reasonList) {
+            if (reason.ID === eachCashCredit.Reason) {
                 // console.log("HIT")
                 eachCashCredit.Reason = reason.Reason;
                 break;
             }
         }
         if (eachCashCredit.LendID) {
-            for (let person of personList){
+            for (let person of personList) {
                 let personId = await lendService.getLendFromByID(eachCashCredit.LendID);
-                if (person.ID === personId){
-                    eachCashCredit.Reason += ` From ${person.Name}` 
+                if (person.ID === personId) {
+                    eachCashCredit.Reason += ` From ${person.Name}`
                 }
             }
         }

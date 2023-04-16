@@ -96,6 +96,9 @@ async function addExpense(requestData) {
     expenseModel.date = requestData.date;
     expenseModel.notes = requestData.notes;
     expenseModel.amount = requestData.amount;
+    if (expenseModel.lendId) {
+        expenseModel.lendClose = 0;
+    }
     console.log(expenseModel);
     await expenseRepo.saveExpense(expenseModel);
     console.log(expenseModel.byCash)
@@ -191,18 +194,18 @@ async function getCashExpenseDetailsByUserId(requestObj) {
     // console.log(reasonList);
     let cashExpObj = await expenseRepo.getCashExpenseByUserId(requestObj)
     for (eachCashExp of cashExpObj) {
-        for (let reason of reasonList){
-            if (reason.ID === eachCashExp.Reason){
+        for (let reason of reasonList) {
+            if (reason.ID === eachCashExp.Reason) {
                 // console.log("HIT")
                 eachCashExp.Reason = reason.Reason;
                 break;
             }
         }
         if (eachCashExp.LendID) {
-            for (let person of personList){
+            for (let person of personList) {
                 let personId = await getLendToByID(eachCashExp.LendID);
-                if (person.ID === personId){
-                    eachCashExp.Reason += ` To ${person.Name}` 
+                if (person.ID === personId) {
+                    eachCashExp.Reason += ` To ${person.Name}`
                 }
             }
         }
