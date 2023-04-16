@@ -181,7 +181,8 @@ $(function () {
             let cashBalance = $('#cashBalance').val();
             console.log(cashBalance);
             if (parseInt($("#amount").val()) > parseInt(cashBalance)) {
-                alert("NOT POSSIBLE")
+                alert("NOT POSSIBLE");
+                return;
             }
         } else {
             let bankBalance = $("#bankAmount").val();
@@ -190,7 +191,7 @@ $(function () {
                 return;
             }
         }
-        return;
+        // return;
         let spacialDebit;
         try {
             if ($('#expense-reason').select2('data')[0].text === "Lend") {

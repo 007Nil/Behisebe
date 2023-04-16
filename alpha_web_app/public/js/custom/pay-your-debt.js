@@ -38,10 +38,12 @@ function generatePayYourDebtTable(transactionData) {
             },
             {
                 "title": "Borrow From",
-                // className: "click-borrow-from"
             },
             {
                 "title": "Total Amount",
+            },
+            {
+                "title": "Already Paid",
             },
             {
                 "title": "Full Payment",
@@ -73,6 +75,14 @@ function generatePayYourDebtTable(transactionData) {
             },
             {
                 targets: 4,
+                data: "totalPaid",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
+            {
+                targets: 5,
                 data: null,
                 defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Make Payment</button>`
             },
@@ -226,6 +236,27 @@ function generateBorrowDetailsDatatable(detailsObj) {
         console.log(rowData)
         // paymentModalBody
         let modalBody = `
+            <div class="row">
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="bankCheckBox" checked>
+                        <label class="form-check-label" for="bankCheckBox">
+                            Debited From Bank
+                        </label>
+
+                        <input id="bankAmount" class="" type="text" readonly>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="cashCheckBox">
+                        <label class="form-check-label" for="cashCheckBox">
+                            Expense By Cash
+                        </label>
+                        <input id="cashBalance" type="text" readonly>
+                    </div>
+                </div>
+            </div>
             <div class="form-group row">
                 <label for="lendFrom" class="col-sm-4 col-form-label">Borrow From</label>
                 <div class="col-sm-6">
@@ -254,7 +285,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div id="debited-from-div" class="form-group row">
                 <label for="debited-from" class="col-sm-4 col-form-label">Debited From</label>
                 <div class="col-sm-6">
                 <select id="debited-from" class="select2 form-control" required>
@@ -275,6 +306,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
             <input type="hidden" id="bankId" value=${rowData.bankId}/>
 
         `
+        getCashBalance()
         $("#paymentModalBody").append(modalBody);
         $('#makePaymentModal').modal("show");
 
@@ -306,14 +338,66 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 },
             }
         });
+
+        $("#debited-from").on("change", () => {
+
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/v1/bank/getAccountBalance",
+                    data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
+                    success: function (response) {
+                        $("#bankAmount").val(response.data);
+                    }
+                });
+            } catch {
+                // console.log("HIT")
+                $("#bankAmount").val("");
+            }
+        })
     });
+
+
 
     $(".btn-cls").on("click", function () {
         $('#makePaymentModal').modal("toggle");
 
     })
+}
 
+$(document).on('change', "#cashCheckBox", function () {
+    // console.log($('#bankCheckBox').attr('checked'))
+    if ($('#cashCheckBox').is(":checked")) {
+        $('#bankCheckBox').prop('checked', false);
+        // console.log("HIT");
+        $("#debited-from-div").css("display", "none");
+        // $('#debited-from').removeAttr('required');​​​​​
+        $('#debited-from').removeAttr('required');
+        $("#bankAmount").val("");
+    }
+});
 
+$(document).on('change', "#bankCheckBox", function () {
+    if ($('#bankCheckBox').is(":checked")) {
+        $('#cashCheckBox').prop('checked', false);
+        // console.log("HIT");
+        $("#debited-from-div").css("display", "block");
+        $('#debited-from').prop('required', true);
+
+    }
+});
+
+function getCashBalance() {
+    $.ajax({
+        type: "GET",
+        url: "/v1/cash/getCashBalance",
+        data: `date=${getDate()}`,
+        success: function (response) {
+            // console.log(response)
+            $("#cashBalance").val(response.data.Amount);
+            // $("#bankAmount").val(response.data);
+        }
+    });
 }
 
 function convertDate(date) {
@@ -332,14 +416,40 @@ $("#processBorrowPayment").on("click", () => {
     let borrowAmount = $("#amount").val();
     let alreadyPaid = $("#alreadyPaid").val();
     let fullPayment = 0;
+    let bankId;
+    // console.log(payAmount)
+    if ($('#cashCheckBox').is(":checked")) {
+        // console.log("HIT")
+        let cashBalance = $('#cashBalance').val();
+        console.log(cashBalance);
+        if (parseInt($("#amount").val()) > parseInt(cashBalance)) {
+            alert("NOT POSSIBLE");
+            return;
+        }
+    } else {
+        try {
+            bankId = `${$("#debited-from").select2('data')[0].id}`;
+        } catch (error) {
+            alert("Please select Bank")
+            return;
+        }
 
-    console.log(payAmount)
-    if (payAmount == 0 || payAmount > (borrowAmount - alreadyPaid) || payAmount < 0) {
+        let bankBalance = $("#bankAmount").val();
+        if (parseInt($("#amount").val()) > parseInt(bankBalance)) {
+            alert("NOT POSSIBLE")
+            return;
+        }
+    }
+
+    if (payAmount == 0) {
         alert("Pay Now is 0");
         return;
+    } else if (payAmount > (borrowAmount - alreadyPaid)) {
+        alert("Pay amount ");
+    } else if (payAmount < 0) {
+        alert("Pay Now is 0");
     }
-    console.log(alreadyPaid + payAmount)
-    console.log(borrowAmount)
+
     if (parseInt(alreadyPaid) + parseInt(payAmount) == parseInt(borrowAmount)) {
         fullPayment = 1;
     }
@@ -354,7 +464,7 @@ $("#processBorrowPayment").on("click", () => {
     let payObject = {
         "transacationId": transacationId,
         "lendId": lendId,
-        "debitedBankId": `${$("#debited-from").select2('data')[0].id}`,
+        "debitedBankId": bankId,
         "date": date,
         "payAmount": payAmount,
         "fullPayment": fullPayment,
@@ -382,8 +492,6 @@ $("#processBorrowPayment").on("click", () => {
             // alertify.error('Error while saving the data!!', 3);
         },
     });
-
-    // le
 
 })
 

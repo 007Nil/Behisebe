@@ -63,6 +63,7 @@ async function addCreditDetails(creditObj) {
             lendObj.fullPayment = 0;
             lendObj.paymentOnDate = null;
             lendObj.userId = userID;
+            lendObj.amount = creditObj.amount;
 
 
             creditObj.lendId = await lendService.addLendDetails(lendObj);
@@ -139,7 +140,7 @@ async function getCreditDetailsByuserId(requestObj) {
                     // console.log(person)
                     if (person.ID === personId) {
                         // console.log("HIT")
-                        eachCredit.Reason += ` To ${person.Name}` 
+                        eachCredit.Reason += ` From ${person.Name}` 
                         break;
                     }
                 }

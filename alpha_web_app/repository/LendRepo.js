@@ -2,9 +2,9 @@ const mysql = require("mysql2/promise");
 const mysqlPool = require("../repository/MysqlConnectionPool");
 
 async function addLend(lendObj){
-    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
-    prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo", "LendFrom", "FullPayment", "PaymentOnDate", "UserID",
-    lendObj.id, lendObj.lendTo, lendObj.lendFrom, lendObj.fullPayment, lendObj.paymentOnDate, lendObj.userId]);
+    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?)";
+    prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo", "LendFrom", "FullPayment", "PaymentOnDate", "UserID","Amount",
+    lendObj.id, lendObj.lendTo, lendObj.lendFrom, lendObj.fullPayment, lendObj.paymentOnDate, lendObj.userId,lendObj.amount]);
     // console.log(prepareQuery)
     await mysqlPool.execute(prepareQuery);
 }

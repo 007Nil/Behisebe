@@ -63,6 +63,8 @@ CREATE TABLE
         ID VARCHAR(255) NOT NULL UNIQUE,
         LendTo VARCHAR(255) NULL,
         LendFrom VARCHAR(255) NULL,
+        Amount INT NOT NULL,
+        PartialAmount INT NOT NULL DEFAULT 0,
         FullPayment TINYINT(1) DEFAULT 0,
         PaymentOnDate DATE NULL,
         UserID VARCHAR(255) NOT NULL,
