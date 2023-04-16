@@ -78,8 +78,11 @@ CREATE TABLE
         OnDate DATE NOT NULL,
         Amount INT NOT NULL,
         LendId VARCHAR(255) NOT NULL,
+        ByCash TINYINT(1) NULL,
+        BankId VARCHAR(255) NULL,
         PRIMARY KEY (ID),
-        FOREIGN KEY (LendId) REFERENCES Lend (ID) ON DELETE CASCADE
+        FOREIGN KEY (LendId) REFERENCES Lend (ID) ON DELETE CASCADE,
+        FOREIGN KEY (BankId) REFERENCES Bank (BankID) ON DELETE CASCADE
     );
 
 -- Expense related statements
