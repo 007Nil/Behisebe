@@ -39,11 +39,58 @@ async function getLendFromData(userId) {
 
     let returnData = []
 
-    // addCreditDetails();
-    let creditData = await creditServices.getCreditLendData(userId);
+    let creditData = await creditServices.getActiveLendData(userId);
     // console.log(creditData);
-    let bankDetails = await bankRepo.getUserBankDetails(userId);
-    let lendFromData = await lendRepo.getLendFromByUserID(userId);
+
+    if (creditData.length > 0) {
+        let bankDetails = await bankRepo.getUserBankDetails(userId);
+        let lendFromData = await lendRepo.getLendFromByUserID(userId);
+
+        lendFromData.forEach(element => {
+            lendFromArray.push(element.LendFrom);
+            lendIDArray.push(element.ID);
+        });
+        // Set gives unique elements
+
+        lendFromPersons = [...new Set(lendFromArray)];
+        // console.log(lendFromPersons)
+        for (let eachPerson of lendFromPersons) {
+
+            let lendDetails = {};
+            let detailedLendDetails = [];
+            let totalAmount = 0;
+            let totalPaid = 0;
+            lendDetails = {
+                "personId": eachPerson,
+                "LendFrom": await getPersonNamebyID(eachPerson, userId),
+                "totalAmount": totalAmount,
+                "totalPaid": totalPaid
+            };
+            for (let eachLend of lendFromData){
+                if (eachPerson === eachLend.LendFrom) {
+                    console.log(lendFromData)
+                    let partialPaymentDetails = await partialPaymentService.getPartialPayment(eachLend.ID);
+                    // console.log(partialPaymentDetails)
+                }
+            }
+
+            // console.log(lendDetails)
+        }
+        // for (let eachLend of lendFromData) {
+        // console.log(eachLend)
+
+        // let lendDetails = {
+        //     "personId": eachLend.LendFrom,
+        //     "LendFrom": await getPersonNamebyID(eachLend.LendFrom, userId),
+        //     // "totalAmount": totalAmount,
+        //     // "totalPaid": totalPaid
+        // }
+        // console.log(lendDetails)
+        // }
+        return
+    } else {
+        return returnData;
+    }
 
     lendFromData.forEach(element => {
         lendFromArray.push(element.LendFrom);
@@ -57,10 +104,10 @@ async function getLendFromData(userId) {
         let lendFromPerosn = lendFromArray[index]
         let totalAmount = 0;
         let totalPaid = 0;
-        for (lendDataindex in lendFromData) {
-            // console.log(lendFromData[lendDataindex].ID)
-            if (lendFromPerosn === lendFromData[lendDataindex].LendFrom) {
-                let partialPaymentDetails = await partialPaymentService.getPartialPayment(lendFromData[lendDataindex].ID);
+        for (eachLendData of lendFromData) {
+            // console.log(lendFromDataeachLendData.ID)
+            if (lendFromPerosn === lendFromData.LendFrom) {
+                let partialPaymentDetails = await partialPaymentService.getPartialPayment(eachLendData.ID);
                 // console.log(partialPaymentDetails);
                 lendDetails = {
                     "personId": lendFromPerosn,
@@ -68,13 +115,13 @@ async function getLendFromData(userId) {
                     "totalAmount": totalAmount,
                     "totalPaid": totalPaid
                 };
-                let [creditId, amount, date, bankId, notes, reasonId] = getLendDetails(creditData, lendFromData[lendDataindex].ID);
+                let [creditId, amount, date, bankId, notes, reasonId] = getLendDetails(creditData, eachLendData.ID);
                 let bankName = getBankName(bankDetails, bankId);
                 // console.log(bankName)
                 totalAmount += amount;
                 let detailsObj = {
                     "transacationId": creditId,
-                    "lendId": lendFromData[lendDataindex].ID,
+                    "lendId": eachLendData.ID,
                     "bankId": bankId,
                     "bankName": bankName,
                     "amount": amount,
@@ -94,7 +141,7 @@ async function getLendFromData(userId) {
             lendDetails.totalAmount = totalAmount;
             // lendDetails.
 
-            // console.log()
+            // console.log("HIT")
 
         }
         lendDetails.borrowDetails = detailedLendDetails
@@ -113,15 +160,15 @@ function getBankName(bankObj, bankId) {
 }
 
 function getLendDetails(transactionData, lendID) {
-    // console.log(transactionData)
-    for (indexData in transactionData) {
-        if (transactionData[indexData].LendID === lendID) {
-            let creditId = transactionData[indexData].CreditID;
-            let amount = transactionData[indexData].Amount;
-            let date = transactionData[indexData].Date;
-            let bankId = transactionData[indexData].BankID;
-            let notes = transactionData[indexData].Notes;
-            let reason = transactionData[indexData].Reason;
+    console.log(transactionData)
+    for (eachData of transactionData) {
+        if (eachData.LendID === lendID) {
+            let creditId = eachData.CreditID;
+            let amount = eachData.Amount;
+            let date = eachData.Date;
+            let bankId = eachData.BankID;
+            let notes = eachData.Notes;
+            let reason = eachData.Reason;
             return [creditId, amount, date, bankId, notes, reason]
         }
     }

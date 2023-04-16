@@ -102,7 +102,9 @@ async function addCreditDetails(creditObj) {
     }
 }
 
-
+async function getActiveLendData(userId){
+    return (await creditRepo.getActiveLendData(userId));
+}
 
 async function getCreditLendData(userId) {
     // console.log("HIT")
@@ -198,3 +200,4 @@ module.exports.getCreditLendData = getCreditLendData;
 module.exports.addCreditDetails = addCreditDetails;
 module.exports.getCreditDetailsByuserId = getCreditDetailsByuserId;
 module.exports.getCashCreditDetailsByUserId = getCashCreditDetailsByUserId;
+module.exports.getActiveLendData = getActiveLendData;
