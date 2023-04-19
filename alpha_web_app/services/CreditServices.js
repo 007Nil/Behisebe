@@ -81,7 +81,7 @@ async function addCreditDetails(creditObj) {
     if (creditObj.lendId) {
         creditObj.lendPaid = 0;
     }
-
+    // console.log(creditObj)
     await creditRepo.saveCredit(creditObj);
     // console.log(creditObj);
     if (isCashCredit) {

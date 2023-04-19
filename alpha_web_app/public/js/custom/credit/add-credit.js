@@ -78,7 +78,7 @@ $("#credited-to").on("change", () => {
         $.ajax({
             type: "GET",
             url: "/v1/bank/getAccountBalance",
-            data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${new Date().toLocaleDateString()}`, // date: DD/MM/YY
+            data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
             success: function (response) {
                 $("#bankAmount").val(response.data);
             }
@@ -284,6 +284,6 @@ function getDate() {
     if (dd < 10) dd = '0' + dd;
     if (mm < 10) mm = '0' + mm;
 
-    const formattedToday = dd + '/' + mm + '/' + yyyy;
+    const formattedToday = mm + '/' + dd + '/' + yyyy;
     return formattedToday
 }

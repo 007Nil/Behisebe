@@ -145,6 +145,9 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 "title": "Amount",
             },
             {
+                "title": "Paid",
+            },
+            {
                 "title": "Make Payment",
             },
             {
@@ -194,12 +197,20 @@ function generateBorrowDetailsDatatable(detailsObj) {
             },
             {
                 targets: 4,
+                data: "alreadyPaid",
+                render: function (data) {
+                    // console.log(data)
+                    return data;
+                },
+            },
+            {
+                targets: 5,
                 data: null,
                 defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Pay</button>`
             },
             {
 
-                targets: 5,
+                targets: 6,
                 data: "date",
                 render: function (data) {
                     return convertDate(data);
@@ -207,7 +218,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
             },
             {
 
-                targets: 6,
+                targets: 7,
                 data: "bankName",
                 render: function (data) {
                     return data;
@@ -282,7 +293,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
             <div class="form-group row">
                 <label for="alreadyPaid" class="col-sm-4 col-form-label">Already Paid</label>
                 <div class="col-sm-6">
-                <input type="text" readonly class="form-control" id="alreadyPaid" value="0">
+                <input type="text" readonly class="form-control" id="alreadyPaid" value="${rowData.alreadyPaid}">
                 </div>
             </div>
 
@@ -301,10 +312,10 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 </div>
             <div>
 
-            <input type="hidden" id="personId" value=${detailsObj.personId}/>
-            <input type="hidden" id="transacationId" value=${rowData.transacationId}/>
-            <input type="hidden" id="lendId" value=${rowData.lendId}/>
-            <input type="hidden" id="bankId" value=${rowData.bankId}/>
+            <input type="hidden" id="personId" value=${detailsObj.personId}>
+            <input type="hidden" id="transacationId" value=${rowData.transacationId}>
+            <input type="hidden" id="lendId" value=${rowData.lendId}>
+            <input type="hidden" id="bankId" value=${rowData.bankId}>
 
         `
         getCashBalance()
@@ -417,14 +428,14 @@ $("#processBorrowPayment").on("click", () => {
     let borrowAmount = $("#amount").val();
     let alreadyPaid = $("#alreadyPaid").val();
     let fullPayment = 0;
-    let bankId;
+    let bankId = null;
+    let bycash = null;
     // console.log(payAmount)
     if ($('#cashCheckBox').is(":checked")) {
-        // console.log("HIT")
         let cashBalance = $('#cashBalance').val();
-        console.log(cashBalance);
-        if (parseInt($("#amount").val()) > parseInt(cashBalance)) {
-            alert("NOT POSSIBLE");
+        bycash = 1;
+        if (parseInt(payAmount) > parseInt(cashBalance)) {
+            alert("You don't have Enough balance")
             return;
         }
     } else {
@@ -436,19 +447,25 @@ $("#processBorrowPayment").on("click", () => {
         }
 
         let bankBalance = $("#bankAmount").val();
-        if (parseInt($("#amount").val()) > parseInt(bankBalance)) {
-            alert("NOT POSSIBLE")
+        // console.log(bankBalance)
+
+        if (parseInt(payAmount) > parseInt(bankBalance)) {
+            // console.log($("#amount").val())
+            alert("You don't have Enough balance")
+            // console.log("You don't have Enough balance")
             return;
         }
     }
 
     if (payAmount == 0) {
-        alert("Pay Now is 0");
+        alert("Invalid Pay Amount");
         return;
     } else if (payAmount > (borrowAmount - alreadyPaid)) {
-        alert("Pay amount ");
+        alert("Invalid Pay Amount");
+        return;
     } else if (payAmount < 0) {
-        alert("Pay Now is 0");
+        alert("Invalid Pay Amount");
+        return;
     }
 
     if (parseInt(alreadyPaid) + parseInt(payAmount) == parseInt(borrowAmount)) {
@@ -470,6 +487,7 @@ $("#processBorrowPayment").on("click", () => {
         "payAmount": payAmount,
         "fullPayment": fullPayment,
         "personId": personId,
+        "bycash": bycash
 
     }
 
@@ -504,6 +522,6 @@ function getDate() {
     let year = date.getFullYear();
 
     // This arrangement can be altered based on how we want the date's format to appear.
-    return `${day}-${month}-${year}`;
-    // console.log(currentDate); // "17-6-2022"
+    return `${month}-${day}-${year}`;
+    // console.log(currentDate); // "6-17-2022"
 }

@@ -292,7 +292,7 @@ function getDate() {
     if (dd < 10) dd = '0' + dd;
     if (mm < 10) mm = '0' + mm;
 
-    const formattedToday = dd + '/' + mm + '/' + yyyy;
+    const formattedToday = mm + '/' + dd + '/' + yyyy;
     return formattedToday
 }
 

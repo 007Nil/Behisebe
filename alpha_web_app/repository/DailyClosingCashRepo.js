@@ -35,7 +35,7 @@ async function findByPreviosDate(dailyClosingCashObj) {
 }
 
 async function getDailyCashClosing(dailyClosingCashObj){
-    let query = "SELECT ?? FROM ?? WHERE ?? = ? AND ?? = STR_TO_DATE(?,'%d-%m-%Y')";
+    let query = "SELECT ?? FROM ?? WHERE ?? = ? AND ?? = STR_TO_DATE(?,'%m-%d-%Y')";
     let prepareQuery = mysql.format(query,["Amount","DailyClosingCash","UserId",dailyClosingCashObj.userId,"Date",dailyClosingCashObj.date]);
     // console.log(prepareQuery);
     return (await mysqlPool.execute(prepareQuery))[0][0];

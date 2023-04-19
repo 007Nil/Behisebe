@@ -26,10 +26,6 @@ async function getUserBankDetails(userId) {
     return bankRepo.getUserBankDetails(userId);
 }
 
-function getAccountCurrentBalance() {
-
-}
-
 async function addBankDetails(requestData) {
 
     // try {

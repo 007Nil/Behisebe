@@ -74,6 +74,7 @@ async function getLendFromData(userId) {
                     lendDetailsObj = {
                         "transacationId": creditId,
                         "lendId": eachLend.ID,
+                        "alreadyPaid": eachLend.PartialAmount,
                         "bankId": bankId,
                         "bankName": bankName,
                         "amount": amount,
@@ -97,7 +98,7 @@ async function getLendFromData(userId) {
 
 function getBankName(bankObj, bankId) {
     if (bankId) {
-        console.log(bankId)
+        // console.log(bankId)
         for (index in bankObj) {
             if (bankObj[index].BankID === bankId) {
                 return bankObj[index].BankName;
@@ -134,6 +135,14 @@ async function prepareLendToData(userID) {
 
 }
 
+async function udpateLendTable(lendObj){
+    await lendRepo.udpateLendTable(lendObj)
+}
+
+async function getPartialPayAmount(lendId){
+    return (await lendRepo.getPartialPayAmount(lendId));
+}
+
 // module.exports.addLendDetails = addLendDetails;
 // module.exports = { getLendByID, prepareLendToData, getLendFromData };
 // export.getLendFromData = getLendFromData;
@@ -143,4 +152,6 @@ module.exports.getLendToByID = getLendToByID;
 module.exports.prepareLendToData = prepareLendToData;
 module.exports.getLendFromData = getLendFromData;
 module.exports.getLendFromByID = getLendFromByID;
+module.exports.udpateLendTable = udpateLendTable;
+module.exports.getPartialPayAmount = getPartialPayAmount;
 // module.exports.getLendFromData = getLendFromData;

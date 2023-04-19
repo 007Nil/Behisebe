@@ -1,9 +1,6 @@
 const mysql = require("mysql2/promise");
 const mysqlPool = require("../repository/MysqlConnectionPool");
 
-function savePartialPayment(partialPaymentObj) {
-
-}
 
 async function getPartialPayment(lendId) {
     let query = "SELECT * FROM ?? WHERE ?? = ?";
@@ -13,6 +10,15 @@ async function getPartialPayment(lendId) {
     return (await mysqlPool.execute(prepareQuery ))[0];
 }
 
+async function savePartialPayment(partialPaymentObj){
+    let query = "INSERT INTO ?? (??,??,??,??,??,??) VALUES (?,STR_TO_DATE(?,'%m-%d-%Y'),?,?,?,?)";
+    let prepareQuery = mysql.format(query,["PartialPaymemnt","ID","OnDate","Amount","LendId","ByCash","BankId",
+                                       partialPaymentObj.id,partialPaymentObj.onDate,partialPaymentObj.amount,partialPaymentObj.lendId,partialPaymentObj.bycash,partialPaymentObj.bankId]);
+    
+    await mysqlPool.execute(prepareQuery);
+
+}
 module.exports = {
-    getPartialPayment
+    getPartialPayment,
+    savePartialPayment
 };

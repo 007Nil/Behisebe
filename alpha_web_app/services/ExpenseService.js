@@ -20,7 +20,7 @@ const DailyClosingCashModel = require("../model/DailyClosingCashModel");
 const expenseRepo = require("../repository/ExpenseRepo");
 
 async function addExpense(requestData) {
-    console.log(requestData);
+    // console.log(requestData);
     let expenseModel = new ExpenseModel();
     expenseModel.userId = requestData.userId;
 
@@ -99,9 +99,9 @@ async function addExpense(requestData) {
     if (expenseModel.lendId) {
         expenseModel.lendClose = 0;
     }
-    console.log(expenseModel);
+    //console.log(expenseModel);
     await expenseRepo.saveExpense(expenseModel);
-    console.log(expenseModel.byCash)
+    // console.log(expenseModel.byCash)
     if (requestData.byCash) {
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = expenseModel.amount;
@@ -178,7 +178,7 @@ async function getExpenseDetailsByuserId(requestObj) {
         }
         returnData.push(eachBank);
         eachBank.totalExpense = totalAmount;
-        console.log(eachBank);
+        // console.log(eachBank);
         // break;
     }
 

@@ -2,7 +2,7 @@ const mysql = require("mysql2/promise");
 const mysqlPool = require("../repository/MysqlConnectionPool");
 
 async function addLend(lendObj){
-    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?)";
+    insertQuery = "INSERT INTO ?? (??,??,??,??,??,??,??) VALUES (?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'),?,?)";
     prepareQuery = mysql.format(insertQuery, ["Lend", "ID", "LendTo", "LendFrom", "FullPayment", "PaymentOnDate", "UserID","Amount",
     lendObj.id, lendObj.lendTo, lendObj.lendFrom, lendObj.fullPayment, lendObj.paymentOnDate, lendObj.userId,lendObj.amount]);
     // console.log(prepareQuery)
@@ -23,8 +23,18 @@ async function getLendToByUserID(userID) {
     return (await mysqlPool.execute(prepareQuery))[0];
 }
 
-async function udpateLendTable(){
-    
+async function udpateLendTable(lendObj){
+    let query = "UPDATE ?? SET ?? = ?, ?? = ?, ?? = STR_TO_DATE(?,'%m-%d-%Y') WHERE ?? = ?";
+    let prepareQuery = mysql.format(query,["Lend","PartialAmount",lendObj.partialAmount,"FullPayment",lendObj.fullPayment,"PaymentOnDate",lendObj.paymentOnDate,"ID",lendObj.id]);
+
+    await mysqlPool.execute(prepareQuery);
+}
+
+async function getPartialPayAmount(lendId) {
+    let query = "SELECT ?? FROM ?? WHERE ?? = ?";
+    let prepareQuery = mysql.format(query,["PartialAmount","Lend","ID",lendId]);
+
+    return (await mysqlPool.execute(prepareQuery))[0][0].PartialAmount;
 }
 
 async function getLendToByID(lendID) {
@@ -47,5 +57,7 @@ module.exports = {
     getLendFromByUserID,
     getLendToByUserID,
     getLendToByID,
-    getLendFromByID
+    getLendFromByID,
+    udpateLendTable,
+    getPartialPayAmount
 }
