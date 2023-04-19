@@ -62,35 +62,37 @@ async function getLendFromData(userId) {
             let totalPaid = 0;
             lendDetails = {
                 "personId": eachPerson,
-                "LendFrom": await getPersonNamebyID(eachPerson, userId),
-                "totalAmount": totalAmount,
-                "totalPaid": totalPaid
+                "LendFrom": await getPersonNamebyID(eachPerson, userId)
             };
-            for (let eachLend of lendFromData){
+
+            for (let eachLend of lendFromData) {
                 if (eachPerson === eachLend.LendFrom) {
-                    console.log(lendFromData)
-                    let partialPaymentDetails = await partialPaymentService.getPartialPayment(eachLend.ID);
-                    // console.log(partialPaymentDetails)
+                    totalAmount += eachLend.Amount;
+                    totalPaid += eachLend.PartialAmount;
+                    let [creditId, amount, date, bankId, notes, reasonId] = getLendDetails(creditData, eachLend.ID);
+                    let bankName = getBankName(bankDetails, bankId);
+                    lendDetailsObj = {
+                        "transacationId": creditId,
+                        "lendId": eachLend.ID,
+                        "bankId": bankId,
+                        "bankName": bankName,
+                        "amount": amount,
+                        "date": date,
+                        "notes": notes,
+                        "reasonId": reasonId,
+                        "partialPayment": await partialPaymentService.getPartialPayment(eachLend.ID)
+                    }
+                    detailedLendDetails.push(lendDetailsObj)
                 }
             }
-
-            // console.log(lendDetails)
+            lendDetails.borrowDetails = detailedLendDetails;
+            lendDetails.totalAmount = totalAmount;
+            lendDetails.totalPaid = totalPaid;
+            returnData.push(lendDetails)
         }
-        // for (let eachLend of lendFromData) {
-        // console.log(eachLend)
-
-        // let lendDetails = {
-        //     "personId": eachLend.LendFrom,
-        //     "LendFrom": await getPersonNamebyID(eachLend.LendFrom, userId),
-        //     // "totalAmount": totalAmount,
-        //     // "totalPaid": totalPaid
-        // }
-        // console.log(lendDetails)
-        // }
-        return
-    } else {
-        return returnData;
+      
     }
+        return returnData;
 
     lendFromData.forEach(element => {
         lendFromArray.push(element.LendFrom);
@@ -160,7 +162,7 @@ function getBankName(bankObj, bankId) {
 }
 
 function getLendDetails(transactionData, lendID) {
-    console.log(transactionData)
+    // console.log(transactionData)
     for (eachData of transactionData) {
         if (eachData.LendID === lendID) {
             let creditId = eachData.CreditID;
