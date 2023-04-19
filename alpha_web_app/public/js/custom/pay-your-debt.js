@@ -128,6 +128,7 @@ function generateBorrowDetailsTable(id) {
 }
 
 function generateBorrowDetailsDatatable(detailsObj) {
+    console.log(detailsObj)
     let detailsTable = $(`#payDebtDetails-${detailsObj.personId}`).DataTable({
         data: detailsObj.borrowDetails,
         columns: [

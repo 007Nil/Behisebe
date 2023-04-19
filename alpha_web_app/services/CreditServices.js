@@ -73,6 +73,7 @@ async function addCreditDetails(creditObj) {
     }
     if (isCashCredit) {
         creditObj.byCash = 1; // true
+        creditObj.bankId = null;
         // creditObj.reason = "6765454367";
     } else {
         creditObj.byCash = 0;

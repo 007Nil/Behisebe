@@ -90,74 +90,21 @@ async function getLendFromData(userId) {
             lendDetails.totalPaid = totalPaid;
             returnData.push(lendDetails)
         }
-      
-    }
-        return returnData;
 
-    lendFromData.forEach(element => {
-        lendFromArray.push(element.LendFrom);
-        lendIDArray.push(element.ID);
-    });
-    lendFromArray = [...new Set(lendFromArray)];
-    for (index in lendFromArray) {
-        let lendDetails = {}
-        let detailedLendDetails = []
-
-        let lendFromPerosn = lendFromArray[index]
-        let totalAmount = 0;
-        let totalPaid = 0;
-        for (eachLendData of lendFromData) {
-            // console.log(lendFromDataeachLendData.ID)
-            if (lendFromPerosn === lendFromData.LendFrom) {
-                let partialPaymentDetails = await partialPaymentService.getPartialPayment(eachLendData.ID);
-                // console.log(partialPaymentDetails);
-                lendDetails = {
-                    "personId": lendFromPerosn,
-                    "LendFrom": await getPersonNamebyID(lendFromPerosn, userId),
-                    "totalAmount": totalAmount,
-                    "totalPaid": totalPaid
-                };
-                let [creditId, amount, date, bankId, notes, reasonId] = getLendDetails(creditData, eachLendData.ID);
-                let bankName = getBankName(bankDetails, bankId);
-                // console.log(bankName)
-                totalAmount += amount;
-                let detailsObj = {
-                    "transacationId": creditId,
-                    "lendId": eachLendData.ID,
-                    "bankId": bankId,
-                    "bankName": bankName,
-                    "amount": amount,
-                    "date": date,
-                    "notes": notes,
-                    "reasonId": reasonId,
-                    "partialPayment": partialPaymentDetails
-                };
-                if (partialPaymentDetails.length > 0) {
-                    for (eachPartitalPayment of partialPaymentDetails) {
-
-                    }
-                }
-
-                detailedLendDetails.push(detailsObj);
-            }
-            lendDetails.totalAmount = totalAmount;
-            // lendDetails.
-
-            // console.log("HIT")
-
-        }
-        lendDetails.borrowDetails = detailedLendDetails
-        returnData.push(lendDetails)
     }
     return returnData;
 }
 
 function getBankName(bankObj, bankId) {
-    for (index in bankObj) {
-        if (bankObj[index].BankID === bankId) {
-            return bankObj[index].BankName;
+    if (bankId) {
+        console.log(bankId)
+        for (index in bankObj) {
+            if (bankObj[index].BankID === bankId) {
+                return bankObj[index].BankName;
+            }
         }
     }
+
     return "By Cash"
 }
 
