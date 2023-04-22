@@ -214,6 +214,106 @@ function generateOweDetailsDatatable(detailsObj) {
     detailsTable.column(0).visible(false);
     detailsTable.column(1).visible(false);
     detailsTable.column(2).visible(false);
+
+    $(`#oweDetails-${detailsObj.personId} tbody`).on('click', '.btn-sm', function () {
+        // console.log("HIT")
+        $("#paymentModalBody").empty();
+        let tr = $(this).closest("tr");
+        let row = detailsTable.row(tr);
+        let rowData = row.data();
+        let modalBody = `
+            <div class="row">
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="bankCheckBox" checked>
+                        <label class="form-check-label" for="bankCheckBox">
+                            Debited From Bank
+                        </label>
+
+                        <input id="bankAmount" class="" type="text" readonly>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="cashCheckBox">
+                        <label class="form-check-label" for="cashCheckBox">
+                            Expense By Cash
+                        </label>
+                        <input id="cashBalance" type="text" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="lendFrom" class="col-sm-4 col-form-label">Borrow From</label>
+                <div class="col-sm-6">
+                <input type="text" readonly class="form-control" id="lendFrom" value="${detailsObj.LendFrom}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="amount" class="col-sm-4 col-form-label">Amount</label>
+                <div class="col-sm-6">
+                <input type="number" readonly class="form-control" id="amount" value="${rowData.amount}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="onDate" class="col-sm-4 col-form-label">On</label>
+                <div class="col-sm-6">
+                <input type="text" readonly class="form-control" id="lendFrom" value="${convertDate(rowData.date)}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="alreadyPaid" class="col-sm-4 col-form-label">Already Paid</label>
+                <div class="col-sm-6">
+                <input type="text" readonly class="form-control" id="alreadyPaid" value="${rowData.alreadyPaid}">
+                </div>
+            </div>
+
+            <div id="debited-from-div" class="form-group row">
+                <label for="debited-from" class="col-sm-4 col-form-label">Debited From</label>
+                <div class="col-sm-6">
+                <select id="debited-from" class="select2 form-control" required>
+                </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="payNow" class="col-sm-4 col-form-label">Pay Now</label>
+                <div class="col-sm-6">
+                <input type="number" class="form-control" id="payNow" value=0>
+                </div>
+            <div>
+
+            <input type="hidden" id="personId" value=${detailsObj.personId}>
+            <input type="hidden" id="transacationId" value=${rowData.transacationId}>
+            <input type="hidden" id="lendId" value=${rowData.lendId}>
+            <input type="hidden" id="bankId" value=${rowData.bankId}>
+
+        `
+        getCashBalance()
+        $("#paymentModalBody").append(modalBody);
+        $('#updatePaymentModal').modal("show");
+    })
+
+
+    $(".btn-cls").on("click", function () {
+        $('#makePaymentModal').modal("toggle");
+
+    })
+}
+
+function getCashBalance() {
+    $.ajax({
+        type: "GET",
+        url: "/v1/cash/getCashBalance",
+        data: `date=${getDate()}`,
+        success: function (response) {
+            // console.log(response)
+            $("#cashBalance").val(response.data.Amount);
+        }
+    });
 }
 
 function generateOweDetailsTable(id) {
@@ -241,4 +341,15 @@ function convertDate(date) {
     dateIST.setMinutes(dateIST.getMinutes() + 30);
     // console.log(dateIST.toDateString())
     return dateIST.toDateString();
+}
+function getDate() {
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    // This arrangement can be altered based on how we want the date's format to appear.
+    return `${month}-${day}-${year}`;
+    // console.log(currentDate); // "6-17-2022"
 }
