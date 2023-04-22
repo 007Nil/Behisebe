@@ -1,11 +1,11 @@
 const crypto = require("crypto");
 const { fetchExpenseReasonByUserID, addExpenseReason, getExpenseNameByID } = require("./ExpenseReasonService");
 const { getPersonDataByUserId, addPersonData, getPersonNamebyID } = require("./PersonService");
-const { addLendDetails, getLendByID } = require("./MoneyLendService");
-const { getUserBankDetails } = require("./BankServices");
+// const { addLendDetails } = require("./MoneyLendService");
+const bankService = require("./BankServices");
 const dailyClosingService = require("./DailyClosingService");
 const { updateDailyClosingCash } = require("./DailyClosingCashService");
-const { getLendToByID } = require("./MoneyLendService");
+const moneyLendService = require("./MoneyLendService");
 
 //  Model
 const ExpenseModel = require("../model/ExpenseModel");
@@ -73,7 +73,7 @@ async function addExpense(requestData) {
         lendModel.amount = requestData.amount;
 
         // Now insert data to Lend table
-        expenseModel.lendId = await addLendDetails(lendModel);
+        expenseModel.lendId = await moneyLendService.addLendDetails(lendModel);
 
 
 
@@ -143,7 +143,7 @@ async function getExpenseDetailsByuserId(requestObj) {
     requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
     // console.log(requestObj)
     let returnData = []
-    let bankList = await getUserBankDetails(userId);
+    let bankList = await bankService.getUserBankDetails(userId);
     let reasonList = await fetchExpenseReasonByUserID(userId);
     let personList = await getPersonDataByUserId(userId);
 
@@ -165,7 +165,7 @@ async function getExpenseDetailsByuserId(requestObj) {
             }
             if (eachExpDetails.LendID) {
                 // console.log("HIT")
-                let personId = await getLendToByID(eachExpDetails.LendID);
+                let personId = await moneyLendService.getLendToByID(eachExpDetails.LendID);
                 // console.log(personId)
                 for (let person of personList) {
                     // console.log(person)
@@ -203,7 +203,7 @@ async function getCashExpenseDetailsByUserId(requestObj) {
         }
         if (eachCashExp.LendID) {
             for (let person of personList) {
-                let personId = await getLendToByID(eachCashExp.LendID);
+                let personId = await moneyLendService.getLendToByID(eachCashExp.LendID);
                 if (person.ID === personId) {
                     eachCashExp.Reason += ` To ${person.Name}`
                 }
@@ -217,9 +217,14 @@ async function getCashExpenseDetailsByUserId(requestObj) {
 
 }
 
+async function getActiveLendData(userId) {
+    return (await expenseRepo.getActiveLendData(userId));
+}
+
 
 module.exports = {
     addExpense,
     getExpenseDetailsByuserId,
-    getCashExpenseDetailsByUserId
+    getCashExpenseDetailsByUserId,
+    getActiveLendData
 }

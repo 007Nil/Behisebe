@@ -3,9 +3,14 @@ $(function () {
     getUserDebtData()
 });
 
-var GlobalRowData;
 var GlobalPRow;
-var GolbalCRow;
+var GlobalCRow;
+// 
+var GlobalCData;
+var GlobalPData;
+// 
+var GlobalPTable;
+var GolbalCTable;
 
 function getUserDebtData() {
     $.ajax({
@@ -17,7 +22,7 @@ function getUserDebtData() {
         success: function (response) {
             generatePayYourDebtTable(response.data);
             // resetExpenseForm()
-            
+
             alertify.success('Information fetched.', 3);
         },
         error: function (error) {
@@ -94,6 +99,7 @@ function generatePayYourDebtTable(transactionData) {
         ],
         order: [1, 'asc']
     });
+    GlobalPTable = payYourDebtTable;
     payYourDebtTable.column(1).visible(false);
 
 
@@ -101,6 +107,8 @@ function generatePayYourDebtTable(transactionData) {
         // console.log("HIT")
         let tr = $(this).closest('tr');
         let row = payYourDebtTable.row(tr);
+        GlobalPRow = row;
+        GlobalPData = row.data();
         // console.log(row)
         // console.log(row.child.isShown())
         if (row.child.isShown()) {
@@ -133,7 +141,7 @@ function generateBorrowDetailsTable(id) {
 }
 
 function generateBorrowDetailsDatatable(detailsObj) {
-    console.log(detailsObj)
+    // console.log(detailsObj)
     let detailsTable = $(`#payDebtDetails-${detailsObj.personId}`).DataTable({
         data: detailsObj.borrowDetails,
         columns: [
@@ -235,6 +243,8 @@ function generateBorrowDetailsDatatable(detailsObj) {
     detailsTable.column(0).visible(false);
     detailsTable.column(1).visible(false);
     detailsTable.column(2).visible(false);
+    GolbalCTable = detailsTable;
+
     // console.log(`#payDebtDetails-${detailsObj.personId} tbody`)
 
 
@@ -248,10 +258,12 @@ function generateBorrowDetailsDatatable(detailsObj) {
         let tr = $(this).closest("tr");
         // console.log(tr)
         let row = detailsTable.row(tr);
+        GolbalCRow = row;
         // console.log(row.data())
         let rowData = row.data();
-        GlobalRowData = rowData;
-        console.log(rowData)
+        GlobalCData = rowData;
+
+        // console.log(rowData)
         // paymentModalBody
         let modalBody = `
             <div class="row">
@@ -413,7 +425,6 @@ function getCashBalance() {
         success: function (response) {
             // console.log(response)
             $("#cashBalance").val(response.data.Amount);
-            // $("#bankAmount").val(response.data);
         }
     });
 }
@@ -430,10 +441,6 @@ function convertDate(date) {
 }
 
 $("#processBorrowPayment").on("click", () => {
-    // let tr = $(this).closest('tr');
-    // let row = $("#pay-your-debt-table").DataTable().row(tr);
-    // let rowData = row.data();
-    // console.log(row.data())
     let payAmount = $("#payNow").val();
     let borrowAmount = $("#amount").val();
     let alreadyPaid = $("#alreadyPaid").val();
@@ -497,11 +504,12 @@ $("#processBorrowPayment").on("click", () => {
         "payAmount": payAmount,
         "fullPayment": fullPayment,
         "personId": personId,
-        "bycash": bycash
+        "bycash": bycash,
+        "borrowAmount": borrowAmount
 
     }
 
-    console.log(payObject)
+    // console.log(payObject)
 
     $.ajax({
         type: "POST",
@@ -513,7 +521,7 @@ $("#processBorrowPayment").on("click", () => {
         success: function (response) {
             console.log(response)
             $('#makePaymentModal').modal('toggle');
-            reDrawTable();
+            reDrawTable(payObject);
             alertify.success('Information saved.', 3);
         },
         error: function (error) {
@@ -523,8 +531,32 @@ $("#processBorrowPayment").on("click", () => {
 
 })
 
-function reDrawTable(){
-    console.log(GlobalRowData)
+function reDrawTable(payObject) {
+    console.log(GlobalPData);
+    GlobalPData.totalPaid = parseInt(payObject.payAmount) + parseInt(GlobalPData.totalPaid);
+    console.log(GlobalPData.totalPaid);
+    // GlobalPData = GlobalPData;
+    if (parseInt(GlobalPData.totalAmount) == parseInt(GlobalPData.totalPaid)) {
+        try {
+            GlobalPTable.row(GlobalPRow).remove().draw();
+        } catch {
+
+        }
+    } else {
+        GlobalPTable.row(GlobalPRow).data(GlobalPData).draw();
+    }
+    // Logic for Child table
+    if (parseInt(payObject.fullPayment) == 1) {
+        try {
+            GolbalCTable.row(GolbalCRow).remove().draw();
+        } catch {
+
+        }
+    } else {
+        GlobalCData.alreadyPaid = parseInt(payObject.payAmount) + parseInt(GlobalCData.alreadyPaid);
+        GolbalCTable.row(GolbalCRow).data(GlobalCData).draw();
+        GlobalCData = GlobalCData;
+    }
 }
 
 function getDate() {

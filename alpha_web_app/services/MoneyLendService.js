@@ -1,9 +1,9 @@
 const crypto = require("crypto");
 // Services
 const { getPersonNamebyID } = require("./PersonService");
-// delete require.cache[require.resolve("./CreditServices")];
 const creditServices = require("./CreditServices");
 const partialPaymentService = require("./PartialPaymemntService");
+const { getActiveLendData } = require("../services/ExpenseService");
 
 // Repos
 const lendRepo = require("../repository/LendRepo");
@@ -44,7 +44,7 @@ async function getLendFromData(userId) {
     // console.log(creditData)
     // return;
     if (creditData.length > 0) {
-        
+
         let bankDetails = await bankRepo.getUserBankDetails(userId);
         let lendFromData = await lendRepo.getLendFromByUserID(userId);
 
@@ -72,6 +72,7 @@ async function getLendFromData(userId) {
                     totalAmount += eachLend.Amount;
                     totalPaid += eachLend.PartialAmount;
                     let [creditId, amount, date, bankId, notes, reasonId] = getLendDetails(creditData, eachLend.ID);
+                    // console.log(creditId)
                     let bankName = getBankName(bankDetails, bankId);
                     lendDetailsObj = {
                         "transacationId": creditId,
@@ -99,6 +100,69 @@ async function getLendFromData(userId) {
     return returnData;
 }
 
+async function getLendToData(userId) {
+    let lendIDArray = new Array();
+    // LendFrom == I borrow money from someone
+    let lendToArray = new Array();
+
+    let returnData = []
+
+    let debitData = await getActiveLendData(userId);
+
+    if (debitData.length > 0) {
+        let bankDetails = await bankRepo.getUserBankDetails(userId);
+        let lendToData = await lendRepo.getLendToByUserID(userId);
+        // console.log(lendToData)
+        lendToData.forEach(element => {
+            lendToArray.push(element.LendTo);
+            lendIDArray.push(element.ID);
+        });
+
+        lendToPersons = [...new Set(lendToArray)];
+        // console.log(lendToArray)
+        for (let eachPerson of lendToPersons) {
+            let lendDetails = {};
+            let detailedLendDetails = [];
+            let totalAmount = 0;
+            let totalReceive = 0;
+            
+            lendDetails = {
+                "personId": eachPerson,
+                "LendTo": await getPersonNamebyID(eachPerson, userId)
+            };
+            for (let eachLend of lendToData) {
+                
+                if (eachPerson === eachLend.LendTo) {
+                    totalAmount += eachLend.Amount;
+                    totalReceive += eachLend.PartialAmount;
+                    let [debitId, amount, date, bankId, notes, reasonId] = getLendDetails(debitData, eachLend.ID);
+                    // console.log(debitId)
+                    let bankName = getBankName(bankDetails, bankId);
+                    lendDetailsObj = {
+                        "transacationId": debitId,
+                        "lendId": eachLend.ID,
+                        "alreadyReceived": eachLend.PartialAmount,
+                        "bankId": bankId,
+                        "bankName": bankName,
+                        "amount": amount,
+                        "date": date,
+                        "notes": notes,
+                        "reasonId": reasonId,
+                        "partialPayment": await partialPaymentService.getPartialPayment(eachLend.ID)
+                    }
+                    // console.log(lendDetailsObj)
+                    detailedLendDetails.push(lendDetailsObj);
+                }
+            }
+            lendDetails.OweDetails = detailedLendDetails;
+            lendDetails.totalAmount = totalAmount;
+            lendDetails.alreadyReceived = totalReceive;
+            returnData.push(lendDetails)
+        }
+    }
+    return returnData;
+}
+
 function getBankName(bankObj, bankId) {
     if (bankId) {
         // console.log(bankId)
@@ -113,17 +177,26 @@ function getBankName(bankObj, bankId) {
 }
 
 function getLendDetails(transactionData, lendID) {
-    console.log(transactionData)
+    // console.log(transactionData)
 
     for (eachData of transactionData) {
+        let transactionId;
         if (eachData.LendID === lendID) {
-            let creditId = eachData.CreditID;
+            // console.log(eachData.CreditID)
+            if (eachData.CreditID){
+                // console.log("HIT")
+                transacationId = eachData.CreditID;
+            }else {
+                // console.log("ELSE HIT")
+                transacationId = eachData.ID
+            }
+            
             let amount = eachData.Amount;
             let date = eachData.Date;
             let bankId = eachData.BankID;
             let notes = eachData.Notes;
             let reason = eachData.Reason;
-            return [creditId, amount, date, bankId, notes, reason]
+            return [transacationId, amount, date, bankId, notes, reason]
         }
     }
 }
@@ -139,11 +212,11 @@ async function prepareLendToData(userID) {
 
 }
 
-async function udpateLendTable(lendObj){
+async function udpateLendTable(lendObj) {
     await lendRepo.udpateLendTable(lendObj)
 }
 
-async function getPartialPayAmount(lendId){
+async function getPartialPayAmount(lendId) {
     return (await lendRepo.getPartialPayAmount(lendId));
 }
 
@@ -158,4 +231,5 @@ module.exports.getLendFromData = getLendFromData;
 module.exports.getLendFromByID = getLendFromByID;
 module.exports.udpateLendTable = udpateLendTable;
 module.exports.getPartialPayAmount = getPartialPayAmount;
+module.exports.getLendToData = getLendToData;
 // module.exports.getLendFromData = getLendFromData;

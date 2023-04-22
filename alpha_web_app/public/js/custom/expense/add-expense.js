@@ -301,12 +301,14 @@ function resetExpenseForm() {
     $("#amount").val("");
     $("#expense_date").val("");
     $("#notes").val("");
+    $("#spacial-debit").empty().trigger('change');
+    $("#spacial-debit-div").css("display", "none");
     $("#expense-reason").empty().trigger('change');
 }
 
 function insertLendMoneyFields() {
     let lendFields = `
-        <div class="mb-3">
+        <div class="mb-3" id="spacial-debit-div">
             <label for="spacial-debit" class="form-label">To</label>
             <select id="spacial-debit" class="select2 form-control" required>
 

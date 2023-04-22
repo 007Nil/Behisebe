@@ -17,7 +17,7 @@ const { closeBorrow } = require("../services/CreditServices");
 router
     .post("/payDebt", async (request, response) => {
         try {
-            /*
+
             let userID = request.session.userData["ID"];
             let requestObj = request.body;
 
@@ -51,11 +51,29 @@ router
                     // Direct payment
                     lendObj.id = requestObj.lendId
                     lendObj.fullPayment = 1;
-                    lendObj.partialAmount = 0;
+                    lendObj.partialAmount = requestObj.borrowAmount;
                     lendObj.paymentOnDate = requestObj.date;
                     udpateLendTable(lendObj);
                 } else {
                     // Save data in partial payment and the save lend
+                    pPaymentObj.amount = requestObj.payAmount;
+                    pPaymentObj.lendId = requestObj.lendId;
+                    if (requestObj.bycash) {
+                        pPaymentObj.bankId = null;
+                        pPaymentObj.bycash = 1;
+                    } else if (requestObj.debitedBankId) {
+                        pPaymentObj.bankId = requestObj.debitedBankId;
+                        pPaymentObj.bycash = 0;
+                    }
+                    pPaymentObj.onDate = requestObj.date;
+                    savePartialPayment(pPaymentObj);
+
+
+                    lendObj.id = requestObj.lendId
+                    lendObj.fullPayment = 1;
+                    lendObj.partialAmount = requestObj.borrowAmount;
+                    lendObj.paymentOnDate = requestObj.date;
+                    udpateLendTable(lendObj);
                 }
                 // lendObj.
 
@@ -83,12 +101,12 @@ router
                     pPaymentObj.bycash = 0;
                 }
                 pPaymentObj.onDate = requestObj.date;
-                console.log(pPaymentObj)
+                // console.log(pPaymentObj)
                 // Save partial payment data
-                await savePartialPayment(pPaymentObj);
+                savePartialPayment(pPaymentObj);
             }
 
-            */
+
             // let queryData = await fetchExpenseReasonByUserID(userID)
             response.status(200).send({ "message": "Success", "data": "Data Saved" })
         } catch (error) {

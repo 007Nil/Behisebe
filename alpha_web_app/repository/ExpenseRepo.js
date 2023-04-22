@@ -32,9 +32,18 @@ async function getCashExpenseByUserId(requestObj) {
     console.log(preapreQuery)
     return (await mysqlPool.execute(preapreQuery))[0];
 }
+
+async function getActiveLendData(userId) {
+    let query = "SELECT * FROM ?? WHERE ?? = ? AND ?? IS NOT NULL AND ?? = ?";
+    let prepareQuery = mysql.format(query, ["Expense", "UserID", userId, "LendID", "LendClose", 0]);
+    // console.log(prepareQuery);
+    return (await mysqlPool.execute(prepareQuery))[0];
+}
+
 module.exports = {
     saveExpense,
     getExpenseByBankId,
     getExpenseByDate,
-    getCashExpenseByUserId
+    getCashExpenseByUserId,
+    getActiveLendData
 }

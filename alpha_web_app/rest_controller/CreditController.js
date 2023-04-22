@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { getCreditReason } = require("../services/CreditReasonService");
 const { addCreditDetails, getCreditDetailsByuserId, getCashCreditDetailsByUserId } = require("../services/CreditServices");
-const { prepareLendToData } = require("../services/MoneyLendService");
+const { prepareLendToData, getLendToData } = require("../services/MoneyLendService");
 
 router
     .get("/getCreditReason", async (request, response) => {
@@ -54,6 +54,15 @@ router
         let cashCreditData = await getCashCreditDetailsByUserId(requestObj);
         // let creditData = await getCreditDetailsByuserId(requestObj);
         response.status(200).send({ "message": "success", "data": cashCreditData });
+    })
+    .get("/getMoneyOwe", async (request, response) => {
+        try {
+            let oweData = await getLendToData(request.session.userData["ID"])
+            response.status(200).send({ "message": "success", "data": oweData });
+        } catch (error) {
+            console.log(error)
+            response.status(500).send({ "message": "error", "errorData": error.message });
+        }
     });
 
 module.exports = router;
