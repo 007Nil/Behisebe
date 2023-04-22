@@ -310,7 +310,7 @@ function insertLendMoneyFields() {
     let lendFields = `
         <div class="mb-3" id="spacial-debit-div">
             <label for="spacial-debit" class="form-label">To</label>
-            <select id="spacial-debit" class="select2 form-control" required>
+            <select id="spacial-debit" class="form-control" required>
 
             </select>
         </div>

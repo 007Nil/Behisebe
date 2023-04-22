@@ -226,7 +226,7 @@ function insertCreditExtendFields() {
     let spacialCreditFileds = `
         <div id="spacial-credit-div" class="mb-3">
             <label for="spacial-credit" class="form-label">From</label>
-            <select id="spacial-credit" class="select2 form-control" required>
+            <select id="spacial-credit" class="form-control" required>
 
             </select>
         </div>
