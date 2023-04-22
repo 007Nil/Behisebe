@@ -4,29 +4,24 @@ const router = express.Router();
 // Models
 
 // const expenseModel = require("../model/ExpenseModel");
+const creditModel = require("../model/CreditModel");
 const lendModel = require("../model/LendModel");
 const partialPaymentModel = require("../model/PartialPaymemnt");
 
 // Servcies
-const { savePartialPayment } = require("../services/PartialPaymemntService");
+const { savePartialPayment, getPartialPayment } = require("../services/PartialPaymemntService");
 const { udpateLendTable, getPartialPayAmount } = require("../services/MoneyLendService");
 const { addExpense } = require("../services/ExpenseService");
+const { closeBorrow } = require("../services/CreditServices");
 
 router
     .post("/payDebt", async (request, response) => {
         try {
+            /*
             let userID = request.session.userData["ID"];
             let requestObj = request.body;
-            // if (requestObj.fullPayment == 1){
-            //     // No partialP
-            // }
-            // console.log(requestObj)
 
             let expenseData = {};
-
-
-
-            // let expenseObj = new expenseModel();
 
             if (requestObj.bycash) {
                 expenseData.bankId = null;
@@ -41,14 +36,33 @@ router
             expenseData.notes = "Pay of Debt transaction";
             expenseData.date = requestObj.date;
             // Save the expense 
-            await addExpense(expenseData);
-
+            addExpense(expenseData);
+            let lendObj = new lendModel();
+            let pPaymentObj = new partialPaymentModel();
             if (requestObj.fullPayment == 1) {
-                // The no partial payment and we can close the borrow data 
+                // The no partial payment and we can close the borrow data
+                let creditObj = new creditModel();
+                creditObj.id = requestObj.transacationId;
+                creditObj.LendPaid = 1;
+                closeBorrow(creditObj)
+                let partialPaymentArray = await getPartialPayment(requestObj.lendId);
+
+                if (partialPaymentArray.length == 0) {
+                    // Direct payment
+                    lendObj.id = requestObj.lendId
+                    lendObj.fullPayment = 1;
+                    lendObj.partialAmount = 0;
+                    lendObj.paymentOnDate = requestObj.date;
+                    udpateLendTable(lendObj);
+                } else {
+                    // Save data in partial payment and the save lend
+                }
+                // lendObj.
+
             } else {
                 // console.log("HIT FROM ELSE");
                 // Its a partial payment
-                let lendObj = new lendModel();
+                lendObj = new lendModel();
                 let DbAmount = await getPartialPayAmount(requestObj.lendId);
                 lendObj.id = requestObj.lendId;
                 lendObj.fullPayment = 0;
@@ -56,9 +70,9 @@ router
                 lendObj.paymentOnDate = requestObj.date;
                 // Update lend data
                 // console.log(lendObj)
-                await udpateLendTable(lendObj);
+                udpateLendTable(lendObj);
 
-                let pPaymentObj = new partialPaymentModel();
+
                 pPaymentObj.amount = requestObj.payAmount;
                 pPaymentObj.lendId = requestObj.lendId;
                 if (requestObj.bycash) {
@@ -74,12 +88,12 @@ router
                 await savePartialPayment(pPaymentObj);
             }
 
-
+            */
             // let queryData = await fetchExpenseReasonByUserID(userID)
-            response.status(200).send({ "message": "Fetch Success", "data": "TEST" })
+            response.status(200).send({ "message": "Success", "data": "Data Saved" })
         } catch (error) {
             console.log(error)
-            response.status(200).send({ "error": "error", "data": "TEST" })
+            response.status(200).send({ "error": "error", "data": "Data Save Failed" })
         }
 
     })

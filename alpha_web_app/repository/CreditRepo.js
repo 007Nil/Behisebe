@@ -21,7 +21,7 @@ async function getCreditLendData(userId) {
 async function getActiveLendData(userId) {
     let query = "SELECT * FROM ?? WHERE ?? = ? AND ?? IS NOT NULL AND ?? = ?";
     let prepareQuery = mysql.format(query, ["Credit", "UserID", userId, "LendID","LendPaid", 0]);
-    // console.log(prepareQuery);
+    console.log(prepareQuery);
     return (await mysqlPool.execute(prepareQuery))[0];
 }
 
@@ -41,10 +41,17 @@ async function getCashCreditByDate(creditObj) {
     return (await mysqlPool.execute(preapreQuery))[0]
 }
 
+function closeBorrow(creditId){
+    let query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+    let preapreQuery = mysql.format(query,["Credit","LendPaid",1,"CreditID",creditId]);
+    mysqlPool.execute(preapreQuery);
+}
+
 module.exports = {
     saveCredit,
     getCreditLendData,
     getCreditByDate,
     getCashCreditByDate,
-    getActiveLendData
+    getActiveLendData,
+    closeBorrow
 }

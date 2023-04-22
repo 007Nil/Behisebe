@@ -41,8 +41,10 @@ async function getLendFromData(userId) {
 
     let creditData = await creditServices.getActiveLendData(userId);
     // console.log(creditData);
-
+    // console.log(creditData)
+    // return;
     if (creditData.length > 0) {
+        
         let bankDetails = await bankRepo.getUserBankDetails(userId);
         let lendFromData = await lendRepo.getLendFromByUserID(userId);
 
@@ -83,7 +85,8 @@ async function getLendFromData(userId) {
                         "reasonId": reasonId,
                         "partialPayment": await partialPaymentService.getPartialPayment(eachLend.ID)
                     }
-                    detailedLendDetails.push(lendDetailsObj)
+                    detailedLendDetails.push(lendDetailsObj);
+                    // console.log(lendDetailsObj)
                 }
             }
             lendDetails.borrowDetails = detailedLendDetails;
@@ -110,7 +113,8 @@ function getBankName(bankObj, bankId) {
 }
 
 function getLendDetails(transactionData, lendID) {
-    // console.log(transactionData)
+    console.log(transactionData)
+
     for (eachData of transactionData) {
         if (eachData.LendID === lendID) {
             let creditId = eachData.CreditID;

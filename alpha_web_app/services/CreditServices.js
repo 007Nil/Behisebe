@@ -196,9 +196,14 @@ async function getCashCreditDetailsByUserId(requestObj) {
 
 }
 
+function closeBorrow(creditObj){
+    creditRepo.closeBorrow(creditObj.id);
+}
+
 
 module.exports.getCreditLendData = getCreditLendData;
 module.exports.addCreditDetails = addCreditDetails;
 module.exports.getCreditDetailsByuserId = getCreditDetailsByuserId;
 module.exports.getCashCreditDetailsByUserId = getCashCreditDetailsByUserId;
 module.exports.getActiveLendData = getActiveLendData;
+module.exports.closeBorrow = closeBorrow;

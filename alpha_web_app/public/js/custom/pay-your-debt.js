@@ -3,6 +3,10 @@ $(function () {
     getUserDebtData()
 });
 
+var GlobalRowData;
+var GlobalPRow;
+var GolbalCRow;
+
 function getUserDebtData() {
     $.ajax({
         type: "GET",
@@ -13,11 +17,12 @@ function getUserDebtData() {
         success: function (response) {
             generatePayYourDebtTable(response.data);
             // resetExpenseForm()
-            alertify.success('Expense information saved.', 3);
+            
+            alertify.success('Information fetched.', 3);
         },
         error: function (error) {
             // console.log(error);
-            alertify.error('Error while saving the data!!', 3);
+            alertify.error('Error while fetching the data!!', 3);
         },
     });
 }
@@ -97,7 +102,7 @@ function generatePayYourDebtTable(transactionData) {
         let tr = $(this).closest('tr');
         let row = payYourDebtTable.row(tr);
         // console.log(row)
-        console.log(row.child.isShown())
+        // console.log(row.child.isShown())
         if (row.child.isShown()) {
             // This row is already open - close it
             // console.log("HIT")
@@ -245,6 +250,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
         let row = detailsTable.row(tr);
         // console.log(row.data())
         let rowData = row.data();
+        GlobalRowData = rowData;
         console.log(rowData)
         // paymentModalBody
         let modalBody = `
@@ -424,6 +430,10 @@ function convertDate(date) {
 }
 
 $("#processBorrowPayment").on("click", () => {
+    // let tr = $(this).closest('tr');
+    // let row = $("#pay-your-debt-table").DataTable().row(tr);
+    // let rowData = row.data();
+    // console.log(row.data())
     let payAmount = $("#payNow").val();
     let borrowAmount = $("#amount").val();
     let alreadyPaid = $("#alreadyPaid").val();
@@ -502,17 +512,20 @@ $("#processBorrowPayment").on("click", () => {
 
         success: function (response) {
             console.log(response)
-            // console.log(response);
-            // resetExpenseForm()
-            // alertify.success('Expense information saved.', 3);
+            $('#makePaymentModal').modal('toggle');
+            reDrawTable();
+            alertify.success('Information saved.', 3);
         },
         error: function (error) {
-            // console.log(error);
-            // alertify.error('Error while saving the data!!', 3);
+            alertify.error('Error while saving the data!!', 3);
         },
     });
 
 })
+
+function reDrawTable(){
+    console.log(GlobalRowData)
+}
 
 function getDate() {
     const date = new Date();
