@@ -82,26 +82,32 @@ app.use(passport.session());
 
 // cookie parser middleware
 app.use(cookieParser());
-
+app.use(function (req, res, next) {
+  // console.log(req.session.passport)
+  res.locals.session = req.session.passport;
+  console.log(res.locals.user)
+  next();
+});
 
 app.get("/auth/google",
   passport.authenticate("google", { scope: ["email", "profile"] })
 )
 
+
 // ------ For app development set demo values for session --------
 
 // ------ All Routes for pages -------------
-app.use("/transaction",isLoggedIn, transactionRoutes);
-app.use("/settings",isLoggedIn, settingsRouter);
-app.use("/login",loginRouter);
+app.use("/transaction", isLoggedIn, transactionRoutes);
+app.use("/settings", isLoggedIn, settingsRouter);
+app.use("/login", loginRouter);
 app.use("/dashboard", isLoggedIn, dashboardRouter);
 
 // ------------- Rest Routes -----------------
-app.use("/v1/lend",isLoggedIn, lendRouter);
-app.use("/v1/persons",isLoggedIn, personRouter);
-app.use("/v1/bank",isLoggedIn, bankRouter);
-app.use("/v1/cash",isLoggedIn, cashRouter);
-app.use("/v1/expense",isLoggedIn, expenseRouter);
+app.use("/v1/lend", isLoggedIn, lendRouter);
+app.use("/v1/persons", isLoggedIn, personRouter);
+app.use("/v1/bank", isLoggedIn, bankRouter);
+app.use("/v1/cash", isLoggedIn, cashRouter);
+app.use("/v1/expense", isLoggedIn, expenseRouter);
 app.use("/v1/credit", isLoggedIn, creditRouter);
 // Without middleware
 app.get('/', function (req, res) {
