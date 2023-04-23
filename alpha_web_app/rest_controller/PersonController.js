@@ -4,7 +4,7 @@ const { getPersonDataByUserId } = require("../services/PersonService");
 
 router.get("/getPersonData", async (request, response) => {
     try {
-        let result = await getPersonDataByUserId(request.session.userData["ID"]);
+        let result = await getPersonDataByUserId(request.session.passport.user["ID"]);
         // console.log(result);
         response.status(200).send({ "message": "Success", "data": result });
     } catch (error) {

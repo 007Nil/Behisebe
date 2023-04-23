@@ -8,7 +8,7 @@ router
     .get("/getCashBalance", async (request, response) => {
         try {
             let requestBody = request.query;
-            requestBody.userId = request.session.userData["ID"];
+            requestBody.userId = request.session.passport.user["ID"];
             // console.log(requestBody);
             let cashBalance = await getCashBalance(requestBody);
             if (cashBalance == undefined) {

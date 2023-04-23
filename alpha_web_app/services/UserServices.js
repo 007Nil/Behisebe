@@ -1,14 +1,13 @@
-const mysql = require("mysql2/promise");
-const mysqlPool = require("../repository/MysqlConnectionPool");
+const userRepo = require("../repository/UserRepo");
 
-async function findUserByEmail(userEmail){
-    let selectUserQuery = "SELECT * FROM ?? WHERE Email = ?";
-    let prepareSelectQuery = mysql.format(selectUserQuery,["User",userEmail]);
-
-    let queryResult = await mysqlPool.execute(prepareSelectQuery);
-    // console.log(queryResult);
-
-    return queryResult[0];
+async function addUser(userObj) {
+    await userRepo.addUser(userObj);
 }
 
-module.exports = {findUserByEmail};
+
+
+async function findUserByEmail(userEmail) {
+    return (await userRepo.findUserByEmail(userEmail));
+}
+
+module.exports = { findUserByEmail, addUser };

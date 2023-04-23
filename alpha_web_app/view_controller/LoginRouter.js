@@ -3,7 +3,7 @@ const router = express.Router();
 const {findUserByEmail} = require("../services/UserServices")
 // const User = require("../model/UserModel");
 
-router.get("/login",async (req, res) => {
+router.get("/",async (req, res) => {
     // This is for testing only
     // 
     // session.userEmail = "sagniksarkar@ymail.com";
@@ -13,7 +13,8 @@ router.get("/login",async (req, res) => {
     // console.log(userObject[0]);
     // let user = new User();
     // console.log(user);
-    res.redirect('/dashboard');
+    // res.redirect('/dashboard');
+    res.render("Login")
 });
 
 module.exports = router;

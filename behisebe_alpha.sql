@@ -13,14 +13,14 @@ CREATE TABLE
 
 -- Demo data
 
-INSERT INTO
-    User (ID, FirstName, LastName, Email)
-VALUES (
-        "1234567890",
-        "Sagnik",
-        "Sarkar",
-        "sagniksarkar@ymail.com"
-    );
+-- INSERT INTO
+--     User (ID, FirstName, LastName, Email)
+-- VALUES (
+--         "1234567890",
+--         "Sagnik",
+--         "Sarkar",
+--         "sagniksarkar@ymail.com"
+--     );
 
 CREATE TABLE
     BankAccountType (
