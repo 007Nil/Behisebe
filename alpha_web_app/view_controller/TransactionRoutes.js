@@ -15,10 +15,6 @@ router
 .get("/expense/view-cash-expense", function (req, res) {
   res.render("transaction/expense/view-cash-expense",{"title": "View Cash Expense"});
 })
-// .get("/credit", (request,response) =>{
-//   response.render("transaction/credit-form",{"title": "Credit Section"});
-// })
-// credit/add-expense
 .get("/credit/add-credit", (request,response) =>{
   response.render("transaction/credit/add-credit",{"title": "Add Credit"});
 })

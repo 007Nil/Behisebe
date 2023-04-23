@@ -13,7 +13,7 @@ router.get("/login",async (req, res) => {
     // console.log(userObject[0]);
     // let user = new User();
     // console.log(user);
-    res.redirect('/transaction/expense');
+    res.redirect('/dashboard');
 });
 
 module.exports = router;

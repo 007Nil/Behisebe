@@ -8,6 +8,7 @@ const expressSession = require('express-session');
 const transactionRoutes = require("./view_controller/TransactionRoutes.js");
 const settingsRouter = require("./view_controller/SettingRoutes");
 const loginRouter = require("./view_controller/LoginRouter");
+const dashboardRouter = require("./view_controller/DashboardRouter");
 //  Rest Router
 const bankRouter = require("./rest_controller/BankController");
 const expenseRouter = require("./rest_controller/ExpenseController");
@@ -69,6 +70,7 @@ app.use(cookieParser());
 app.use("/transaction", transactionRoutes);
 app.use("/settings", settingsRouter);
 app.use("/", loginRouter);
+app.use("/", dashboardRouter);
 
 // ------------- Rest Routes -----------------
 app.use("/v1/lend", lendRouter);
