@@ -40,10 +40,17 @@ async function getActiveLendData(userId) {
     return (await mysqlPool.execute(prepareQuery))[0];
 }
 
+function closeLend(expenseId) {
+    let query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+    let preapreQuery = mysql.format(query,["Expense","LendClose",1,"ID",expenseId]);
+    mysqlPool.execute(preapreQuery);
+}
+
 module.exports = {
     saveExpense,
     getExpenseByBankId,
     getExpenseByDate,
     getCashExpenseByUserId,
-    getActiveLendData
+    getActiveLendData,
+    closeLend
 }

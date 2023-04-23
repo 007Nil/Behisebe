@@ -532,7 +532,7 @@ $("#processBorrowPayment").on("click", () => {
 })
 
 function reDrawTable(payObject) {
-    console.log(GlobalPData);
+    // console.log(GlobalPData);
     GlobalPData.totalPaid = parseInt(payObject.payAmount) + parseInt(GlobalPData.totalPaid);
     console.log(GlobalPData.totalPaid);
     // GlobalPData = GlobalPData;

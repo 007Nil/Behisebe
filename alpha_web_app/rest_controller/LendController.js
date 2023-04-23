@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Models
 
-// const expenseModel = require("../model/ExpenseModel");
+const expenseModel = require("../model/ExpenseModel");
 const creditModel = require("../model/CreditModel");
 const lendModel = require("../model/LendModel");
 const partialPaymentModel = require("../model/PartialPaymemnt");
@@ -11,8 +11,8 @@ const partialPaymentModel = require("../model/PartialPaymemnt");
 // Servcies
 const { savePartialPayment, getPartialPayment } = require("../services/PartialPaymemntService");
 const { udpateLendTable, getPartialPayAmount } = require("../services/MoneyLendService");
-const { addExpense } = require("../services/ExpenseService");
-const { closeBorrow } = require("../services/CreditServices");
+const { addExpense, closeLend } = require("../services/ExpenseService");
+const { closeBorrow, addCreditDetails } = require("../services/CreditServices");
 
 router
     .post("/payDebt", async (request, response) => {
@@ -28,7 +28,7 @@ router
                 expenseData.byCash = true;
             } else if (requestObj.debitedBankId) {
                 expenseData.byCash = false;
-                expenseData.bankId = requestObj.debitedBankId;
+                expenseData.bankId = requestObj.creditedBankId;
             }
             expenseData.userId = userID;
             expenseData.amount = requestObj.payAmount;
@@ -119,7 +119,85 @@ router
         try {
             let userID = request.session.userData["ID"];
             let requestObj = request.body;
-            console.log(requestObj)
+
+            let creaditData = {}
+
+            if (requestObj.bycash) {
+                creaditData.bankId = null;
+                creaditData.byCash = true;
+            } else if (requestObj.creditedBankId) {
+                creaditData.bankId = requestObj.creditedBankId;
+                creaditData.byCash = false;
+            }
+            creaditData.userId = userID;
+            creaditData.reason = "098787651";
+            creaditData.date = requestObj.date;
+            creaditData.amount = requestObj.payAmount;
+            creaditData.notes = "Collect Debt transaction";
+            // Save credit data
+            addCreditDetails(creaditData)
+
+            let lendObj = new lendModel();
+            let pPaymentObj = new partialPaymentModel();
+
+            if (requestObj.fullPayment == 1) {
+                let expenseObj = new expenseModel();
+
+                expenseObj.id = requestObj.transacationId;
+                expenseObj.lendClose = 1;
+                closeLend(expenseObj);
+                // Update expense data
+                let partialPaymentArray = await getPartialPayment(requestObj.lendId);
+                if (partialPaymentArray.length == 0) {
+                    // Direct payment
+                    lendObj.id = requestObj.lendId
+                    lendObj.fullPayment = 1;
+                    lendObj.partialAmount = requestObj.lendAmount;
+                    lendObj.paymentOnDate = requestObj.date;
+                    udpateLendTable(lendObj);
+                } else {
+                    // Save data in partial payment and the save lend
+                    pPaymentObj.amount = requestObj.payAmount;
+                    pPaymentObj.lendId = requestObj.lendId;
+                    if (requestObj.bycash) {
+                        pPaymentObj.bankId = null;
+                        pPaymentObj.bycash = 1;
+                    } else if (requestObj.creditedBankId) {
+                        pPaymentObj.bankId = requestObj.creditedBankId;
+                        pPaymentObj.bycash = 0;
+                    }
+                    pPaymentObj.onDate = requestObj.date;
+                    savePartialPayment(pPaymentObj);
+
+
+                    lendObj.id = requestObj.lendId
+                    lendObj.fullPayment = 1;
+                    lendObj.partialAmount = requestObj.lendAmount;
+                    lendObj.paymentOnDate = requestObj.date;
+                    udpateLendTable(lendObj);
+                }
+            } else {
+                lendObj = new lendModel();
+                let DbAmount = await getPartialPayAmount(requestObj.lendId);
+                lendObj.id = requestObj.lendId;
+                lendObj.fullPayment = 0;
+                lendObj.partialAmount = parseInt(requestObj.payAmount) + parseInt(DbAmount);
+                lendObj.paymentOnDate = requestObj.date;
+                udpateLendTable(lendObj);
+
+                pPaymentObj.amount = requestObj.payAmount;
+                pPaymentObj.lendId = requestObj.lendId;
+                if (requestObj.bycash) {
+                    pPaymentObj.bankId = null;
+                    pPaymentObj.bycash = 1;
+                } else if (requestObj.creditedBankId) {
+                    pPaymentObj.bankId = requestObj.creditedBankId;
+                    pPaymentObj.bycash = 0;
+                }
+                pPaymentObj.onDate = requestObj.date;
+
+                savePartialPayment(pPaymentObj);
+            }
             response.status(200).send({ "message": "Success", "data": "Data Saved" })
         } catch {
             console.log(error)

@@ -20,7 +20,7 @@ const DailyClosingCashModel = require("../model/DailyClosingCashModel");
 const expenseRepo = require("../repository/ExpenseRepo");
 
 async function addExpense(requestData) {
-    // console.log(requestData);
+    console.log(requestData);
     let expenseModel = new ExpenseModel();
     expenseModel.userId = requestData.userId;
 
@@ -221,10 +221,15 @@ async function getActiveLendData(userId) {
     return (await expenseRepo.getActiveLendData(userId));
 }
 
+function closeLend(expenseObj){
+    expenseRepo.closeLend(expenseObj.id);
+}
+
 
 module.exports = {
     addExpense,
     getExpenseDetailsByuserId,
     getCashExpenseDetailsByUserId,
-    getActiveLendData
+    getActiveLendData,
+    closeLend
 }

@@ -3,6 +3,12 @@ $(function () {
     getMoneyOweData();
 });
 
+var GlobalPRow;
+var GlobalCRow;
+//  
+var GlobalPTable;
+var GolbalCTable;
+
 function getMoneyOweData() {
     $.ajax({
         type: "GET",
@@ -91,12 +97,13 @@ function generateCollectYourDebt(oweData) {
         order: [1, 'asc']
     });
     collectYourDebtTable.column(1).visible(false);
+    GlobalPTable = collectYourDebtTable;
 
     $('#collect-your-debt-table tbody').on('click', 'td.dt-control', function () {
         // console.log("HIT")
         let tr = $(this).closest('tr');
         let row = collectYourDebtTable.row(tr);
-        // GlobalPRow = row;
+        GlobalPRow = row;
         // GlobalPData = row.data();
         if (row.child.isShown()) {
             // This row is already open - close it
@@ -215,11 +222,14 @@ function generateOweDetailsDatatable(detailsObj) {
     detailsTable.column(1).visible(false);
     detailsTable.column(2).visible(false);
 
+    GolbalCTable = detailsTable;
+
     $(`#oweDetails-${detailsObj.personId} tbody`).on('click', '.btn-sm', function () {
         // console.log("HIT")
         $("#paymentModalBody").empty();
         let tr = $(this).closest("tr");
         let row = detailsTable.row(tr);
+        GlobalCRow = row;
         let rowData = row.data();
         let modalBody = `
             <div class="row">
@@ -413,7 +423,7 @@ $("#processOwePayment").on("click", () => {
     let collectObj = {
         "transacationId": transacationId,
         "lendId": lendId,
-        "debitedBankId": bankId,
+        "creditedBankId": bankId,
         "date": date,
         "payAmount": collectedDebt,
         "fullPayment": fullPayment,
@@ -433,10 +443,10 @@ $("#processOwePayment").on("click", () => {
         dataType: "json",
 
         success: function (response) {
-            console.log(response.data)
-            // $('#makePaymentModal').modal('toggle');
-            // reDrawTable(payObject);
-            // alertify.success('Information saved.', 3);
+            // console.log(response.data)
+            $('#updatePaymentModal').modal('toggle');
+            reDrawTable(collectObj);
+            alertify.success('Information saved.', 3);
         },
         error: function (error) {
             // alertify.error('Error while saving the data!!', 3);
@@ -444,6 +454,35 @@ $("#processOwePayment").on("click", () => {
     });
 });
 
+function reDrawTable(collectObj) {
+    // console.log(GlobalPData);
+    let pTableData = GlobalPRow.data()
+    pTableData.alreadyReceived = parseInt(collectObj.payAmount) + parseInt(pTableData.alreadyReceived);
+    // console.log(GlobalPData.totalPaid);
+    // GlobalPData = GlobalPData;
+    if (parseInt(pTableData.totalAmount) == parseInt(pTableData.alreadyReceived)) {
+        try {
+            GlobalPTable.row(GlobalPRow).remove().draw();
+        } catch {
+
+        }
+    } else {
+        GlobalPTable.row(GlobalPRow).data(pTableData).draw();
+    }
+    // Logic for Child table
+    if (parseInt(collectObj.fullPayment) == 1) {
+        try {
+            GolbalCTable.row(GlobalCRow).remove().draw();
+        } catch {
+
+        }
+    } else {
+        let cTableData = GlobalCRow.data();
+        cTableData.alreadyReceived = parseInt(collectObj.payAmount) + parseInt(cTableData.alreadyReceived);
+        GolbalCTable.row(GlobalCRow).data(cTableData).draw();
+        // GlobalCData = GlobalCData;
+    }
+}
 
 
 

@@ -19,7 +19,7 @@ const CreditModel = require("../model/CreditModel");
 
 
 async function addCreditDetails(creditObj) {
-
+    console.log(creditObj)
     creditObj.creditId = crypto.randomBytes(10).toString("hex");
     let userID = creditObj.userId;
     let isCashCredit = creditObj.byCash;
