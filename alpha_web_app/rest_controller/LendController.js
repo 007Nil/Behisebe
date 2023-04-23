@@ -115,5 +115,16 @@ router
         }
 
     })
+    .post("/collectDebt", async (request, response) => {
+        try {
+            let userID = request.session.userData["ID"];
+            let requestObj = request.body;
+            console.log(requestObj)
+            response.status(200).send({ "message": "Success", "data": "Data Saved" })
+        } catch {
+            console.log(error)
+            response.status(200).send({ "error": "error", "data": "Data Save Failed" })
+        }
+    });
 
 module.exports = router;

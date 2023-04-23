@@ -126,7 +126,7 @@ function createAddBankDetailsForm() {
         </div>
         <div class="mb-3">
         <label for="bankAccountType" class="form-label">Account Type</label>
-          <select id="bankAccountType" class="select2 form-control" required>
+          <select id="bankAccountType" class="form-control" required>
             
           </select>
         </div>

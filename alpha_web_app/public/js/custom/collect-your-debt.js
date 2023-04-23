@@ -227,7 +227,7 @@ function generateOweDetailsDatatable(detailsObj) {
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="bankCheckBox" checked>
                         <label class="form-check-label" for="bankCheckBox">
-                            Debited From Bank
+                            Credited In Bank
                         </label>
 
                         <input id="bankAmount" class="" type="text" readonly>
@@ -237,16 +237,16 @@ function generateOweDetailsDatatable(detailsObj) {
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="cashCheckBox">
                         <label class="form-check-label" for="cashCheckBox">
-                            Expense By Cash
+                            Credit By Cash
                         </label>
                         <input id="cashBalance" type="text" readonly>
                     </div>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="lendFrom" class="col-sm-4 col-form-label">Borrow From</label>
+                <label for="lendTo" class="col-sm-4 col-form-label">Lend To</label>
                 <div class="col-sm-6">
-                <input type="text" readonly class="form-control" id="lendFrom" value="${detailsObj.LendFrom}">
+                <input type="text" readonly class="form-control" id="lendTo" value="${detailsObj.LendTo}">
                 </div>
             </div>
 
@@ -260,29 +260,29 @@ function generateOweDetailsDatatable(detailsObj) {
             <div class="form-group row">
                 <label for="onDate" class="col-sm-4 col-form-label">On</label>
                 <div class="col-sm-6">
-                <input type="text" readonly class="form-control" id="lendFrom" value="${convertDate(rowData.date)}">
+                <input type="text" readonly class="form-control" id="onDate" value="${convertDate(rowData.date)}">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="alreadyPaid" class="col-sm-4 col-form-label">Already Paid</label>
+                <label for="alreadyReceived" class="col-sm-4 col-form-label">Received</label>
                 <div class="col-sm-6">
-                <input type="text" readonly class="form-control" id="alreadyPaid" value="${rowData.alreadyPaid}">
+                <input type="text" readonly class="form-control" id="alreadyReceived" value="${rowData.alreadyReceived}">
                 </div>
             </div>
 
-            <div id="debited-from-div" class="form-group row">
-                <label for="debited-from" class="col-sm-4 col-form-label">Debited From</label>
+            <div id="credited-in-div" class="form-group row">
+                <label for="credited-in" class="col-sm-4 col-form-label">Credited In</label>
                 <div class="col-sm-6">
-                <select id="debited-from" class="select2 form-control" required>
+                <select id="credited-in" class="form-control" required>
                 </select>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="payNow" class="col-sm-4 col-form-label">Pay Now</label>
+                <label for="collectedDebt" class="col-sm-4 col-form-label">Collected</label>
                 <div class="col-sm-6">
-                <input type="number" class="form-control" id="payNow" value=0>
+                <input type="number" class="form-control" id="collectedDebt" value=0>
                 </div>
             <div>
 
@@ -295,14 +295,157 @@ function generateOweDetailsDatatable(detailsObj) {
         getCashBalance()
         $("#paymentModalBody").append(modalBody);
         $('#updatePaymentModal').modal("show");
-    })
+
+        $("#credited-in").select2({
+            dropdownParent: $('#updatePaymentModal'),
+            placeholder: "Select a Bank Account",
+            // tags: false,
+            ajax: {
+                url: "/v1/bank/getBankDetails",
+                dataType: 'json',
+                type: "GET",
+                // quietMillis: 1000,
+
+                data: function (params) {
+                    return {
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data)
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.BankName,
+                                id: item.BankID
+                            }
+                        })
+                    };
+                },
+            }
+        });
+
+        $("#credited-in").on("change", () => {
+
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/v1/bank/getAccountBalance",
+                    data: `bankId=${$("#credited-in").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
+                    success: function (response) {
+                        $("#bankAmount").val(response.data);
+                    }
+                });
+            } catch {
+                // console.log("HIT")
+                $("#bankAmount").val("");
+            }
+        })
+    });
 
 
     $(".btn-cls").on("click", function () {
-        $('#makePaymentModal').modal("toggle");
+        $('#updatePaymentModal').modal("toggle");
 
     })
 }
+
+$(document).on('change', "#cashCheckBox", function () {
+    if ($('#cashCheckBox').is(":checked")) {
+        $('#bankCheckBox').prop('checked', false);
+        $("#credited-in-div").css("display", "none");
+        $('#credited-in').removeAttr('required');
+        $("#bankAmount").val("");
+    }
+});
+
+$(document).on('change', "#bankCheckBox", function () {
+    if ($('#bankCheckBox').is(":checked")) {
+        $('#cashCheckBox').prop('checked', false);
+        $("#credited-in-div").css("display", "block");
+        $('#credited-in').prop('required', true);
+
+    }
+});
+
+
+
+$("#processOwePayment").on("click", () => {
+    let collectedDebt = $("#collectedDebt").val();
+    let lendAmount = $("#amount").val();
+    let alreadyReceived = $("#alreadyReceived").val();
+    let fullPayment = 0;
+    let bankId = null;
+    let bycash = null;
+
+    if ($('#cashCheckBox').is(":checked")) {
+        bycash = 1;
+    } else {
+        try {
+            bankId = `${$("#credited-in").select2('data')[0].id}`;
+        } catch (error) {
+            alert("Please select Bank")
+            return;
+        }
+    }
+
+    if (collectedDebt == 0) {
+        alert("Invalid Pay Amount");
+        return;
+    } else if (collectedDebt > (lendAmount - alreadyReceived)) {
+        alert("Invalid Pay Amount");
+        return;
+    } else if (collectedDebt < 0) {
+        alert("Invalid Pay Amount");
+        return;
+    }
+
+    if (parseInt(alreadyReceived) + parseInt(collectedDebt) == parseInt(lendAmount)) {
+        fullPayment = 1;
+    }
+
+    let personId = $("#personId").val();
+    let transacationId = $("#transacationId").val();
+    let lendId = $("#lendId").val();
+    // let bankId = $("#bankId").val();
+    let date = getDate();
+
+    let collectObj = {
+        "transacationId": transacationId,
+        "lendId": lendId,
+        "debitedBankId": bankId,
+        "date": date,
+        "payAmount": collectedDebt,
+        "fullPayment": fullPayment,
+        "personId": personId,
+        "bycash": bycash,
+        "lendAmount": lendAmount
+
+    };
+
+    // console.log(collectObj)
+
+    $.ajax({
+        type: "POST",
+        url: "/v1/lend/collectDebt",
+        data: JSON.stringify(collectObj),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+
+        success: function (response) {
+            console.log(response.data)
+            // $('#makePaymentModal').modal('toggle');
+            // reDrawTable(payObject);
+            // alertify.success('Information saved.', 3);
+        },
+        error: function (error) {
+            // alertify.error('Error while saving the data!!', 3);
+        },
+    });
+});
+
+
+
 
 function getCashBalance() {
     $.ajax({
