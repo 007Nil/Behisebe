@@ -99,7 +99,7 @@ async function addExpense(requestData) {
     if (expenseModel.lendId) {
         expenseModel.lendClose = 0;
     }
-    //console.log(expenseModel);
+    console.log(expenseModel);
     await expenseRepo.saveExpense(expenseModel);
     // console.log(expenseModel.byCash)
     if (requestData.byCash) {

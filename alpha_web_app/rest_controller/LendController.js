@@ -28,7 +28,7 @@ router
                 expenseData.byCash = true;
             } else if (requestObj.debitedBankId) {
                 expenseData.byCash = false;
-                expenseData.bankId = requestObj.creditedBankId;
+                expenseData.bankId = requestObj.debitedBankId;
             }
             expenseData.userId = userID;
             expenseData.amount = requestObj.payAmount;
