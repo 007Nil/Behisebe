@@ -3,12 +3,15 @@ const router = express.Router();
 const { getCreditReason } = require("../services/CreditReasonService");
 const { addCreditDetails, getCreditDetailsByuserId, getCashCreditDetailsByUserId } = require("../services/CreditServices");
 const { prepareLendToData, getLendToData } = require("../services/MoneyLendService");
+const { addUser } = require("../services/UserServices");
+
+const userModel = require("../model/UserModel");
 
 router
     .get("/getCreditReason", async (request, response) => {
         try {
             let reasonData = await getCreditReason(request.session.passport.user["ID"]);
-            console.log(reasonData);
+            // console.log(reasonData);
             response.status(200).send({ "message": "success", "data": reasonData });
         } catch (error) {
             console.log(error);
@@ -63,6 +66,37 @@ router
             console.log(error)
             response.status(500).send({ "message": "error", "errorData": error.message });
         }
+    })
+    .post("/add-init-cash", async (request, response) => {
+        try {
+            let userSessionData = request.session.passport.user;
+            let userObj = new userModel();
+            userObj.id = userSessionData.ID;
+            userObj.firstName = userSessionData.FirstName;
+            userObj.lastName = userSessionData.LastName;
+            userObj.email = userSessionData.Email;
+
+            await addUser(userObj);
+
+            request.session.passport.user.NewUser = false;
+
+            let creditObj = {
+                "bankId": null,
+                "amount": request.body.cashInHand,
+                "date": request.body.date,
+                "reason": "6765454367",
+                "spacialCreditID": null,
+                "byCash": true,
+                "notes": "Initial Cash Value",
+                "userId": request.session.passport.user["ID"]
+            }
+
+            await addCreditDetails(creditObj);
+            response.status(200).send({ "message": "success", "data": "Data Saved" });
+        } catch (error) {
+            response.status(500).send({ "message": "error", "errorData": error.message });
+        }
+
     });
 
 module.exports = router;

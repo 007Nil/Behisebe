@@ -2,8 +2,8 @@ const passport = require("passport");
 require('dotenv').config()
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 
-const userModel = require("../model/UserModel");
-const { findUserByEmail, addUser } = require("../services/UserServices")
+// const userModel = require("../model/UserModel");
+const { findUserByEmail } = require("../services/UserServices");
 
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENTID,
@@ -17,28 +17,17 @@ passport.use(new GoogleStrategy({
 ))
 
 passport.serializeUser(async function (user, cb) {
-    // console.log(user.id)
-    // console.log(user.given_name)
-    // console.log(user.family_name)
-    // console.log(user.email)
+    let isNewUser = false;
     if ((await findUserByEmail(user.email)).length == 0) {
-        let userObj = new userModel();
-        userObj.id = user.id;
-        userObj.firstName = user.given_name;
-        userObj.lastName = user.family_name;
-        userObj.email = user.email;
-
-        await addUser(userObj);
+        isNewUser = true;
     }
-
-
-
     process.nextTick(function () {
         return cb(null, {
             ID: user.id,
             FirstName: user.given_name,
             LastName: user.family_name,
-            Email: user.email
+            Email: user.email,
+            NewUser: isNewUser
         });
     });
 })

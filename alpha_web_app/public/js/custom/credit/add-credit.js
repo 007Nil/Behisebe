@@ -11,7 +11,7 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            console.log(response)
+            // console.log(response)
             $("#cashBalance").val(response.data.Amount);
             // $("#bankAmount").val(response.data);
         }
@@ -33,7 +33,7 @@ $("#credited-to").select2({
             };
         },
         processResults: function (data) {
-            console.log(data)
+            // console.log(data)
             return {
                 results: $.map(data, function (item) {
                     return {

@@ -144,6 +144,7 @@ function getBankDetails() {
   $.ajax({
     type: "GET",
     "url": "/v1/bank/getBankDetails",
+    data: `date=${getDate()}`,
 
     success: function (response) {
       insertBankData(response);
@@ -187,7 +188,7 @@ function insertBankData(bankDetailsObj) {
         "title": "Ammount",
       },
       {
-        "title": "Default",
+        "title": "Notes",
       }
     ],
     rowReorder: {
@@ -212,21 +213,21 @@ function insertBankData(bankDetailsObj) {
       },
       {
         targets: 2,
-        data: "UserID",
+        data: "AccountType",
         render: function (data) {
           return data;
         },
       },
       {
         targets: 3,
-        data: "Notes",
+        data: "bankBalance",
         render: function (data, type, full, meta) {
           return data;
         },
       },
       {
         targets: 4,
-        data: "IsDefault",
+        data: "Notes",
         render: function (data, type, full, meta) {
           return data;
         },
@@ -235,4 +236,17 @@ function insertBankData(bankDetailsObj) {
   });
 
   tabel.column(0).visible(false);
+}
+
+function getDate() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0!
+  let dd = today.getDate();
+
+  if (dd < 10) dd = '0' + dd;
+  if (mm < 10) mm = '0' + mm;
+
+  const formattedToday = mm + '/' + dd + '/' + yyyy;
+  return formattedToday
 }

@@ -85,7 +85,7 @@ app.use(cookieParser());
 app.use(function (req, res, next) {
   // console.log(req.session.passport)
   res.locals.session = req.session.passport;
-  console.log(res.locals.user)
+  // console.log(res.locals.user)
   next();
 });
 

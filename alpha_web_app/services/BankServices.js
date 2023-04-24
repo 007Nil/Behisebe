@@ -9,9 +9,10 @@ const BankModel = require("../model/BankModel");
 const CreditModel = require("../model/CreditModel");
 // Services
 const { addCreditDetails } = require("./CreditServices");
+const { getDailyClosing } = require("./DailyClosingService");
 
 async function getAccountType() {
-    return bankAccountTypeRepo.getAccountType();
+    return await bankAccountTypeRepo.getAccountType();
 }
 
 async function fetchBankDetails(userID) {
@@ -22,14 +23,31 @@ async function getBankDetailsByID(bankID) {
     return bankRepo.getBankDetailsByID(bankID);
 }
 
-async function getUserBankDetails(userId) {
-    return bankRepo.getUserBankDetails(userId);
+async function getUserBankDetails(requestObj) {
+    let userId = requestObj.userId;
+    // let date = requestObj.date;
+    let bankData = await bankRepo.getUserBankDetails(userId);
+    let accountTypes = await getAccountType();
+    console.log(bankData);
+    for (eachBank of bankData) {
+        for (eachType of accountTypes) {
+            if (eachBank.AccountType === eachType.ID) {
+                eachBank.AccountType = eachType.AccountType;
+            }
+            dailyCloisngObj = {
+                "bankId": eachBank.BankID,
+                "date": requestObj.date.replaceAll("/", "-"),
+                "userId": userId,
+            }
+            eachBank.bankBalance = (await getDailyClosing(dailyCloisngObj)).Amount;
+            // console.log(eachBank.bankBalance)
+        }
+    }
+    return bankData;
 }
 
 async function addBankDetails(requestData) {
 
-    // try {
-    // console.log(requestData.creditCause);
     let bankObj = new BankModel();
 
     // console.log(requestData);

@@ -269,5 +269,4 @@ CREATE TABLE YearlyClosingCash (
 );
 
 
-
 -- DROP DATABASE Behisebe;
