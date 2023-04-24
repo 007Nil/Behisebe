@@ -125,6 +125,13 @@ app.get("/auth/failure", (req, res) => {
   res.send("ERROR");
 })
 
+app.get('/logout', function(req, res, next){
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
+
 app.listen(3000, '0.0.0.0', function () {
   console.log('Alpha app listening on port 3000!');
 });
