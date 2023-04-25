@@ -16,31 +16,34 @@ $("#add_bank_details").on("click", () => {
   $("#edit_bank_details").css("background-color", "#FFFFFF");
 
   fillDynamicDiv(createAddBankDetailsForm);
+
   $("#bankAccountType").select2({
     placeholder: "Select an Account Type",
-    allowClear: true,
-    tags: [],
+    // allowClear: true,
+    // tags: [],
     ajax: {
       url: "/v1/bank/getAccountTypes",
-      dataType: 'json',
       type: "GET",
-      quietMillis: 50,
-      data: function (term) {
+      dataType: 'json',
+      delay: 250,
+      data: function (params) {
+        // console.log(params.term)
         return {
-          term: term
+          searchTerm: params.term
         };
       },
-      processResults: function (data) {
-        console.log(data)
+      processResults: function (response) {
+        console.log(response)
         return {
-          results: $.map(data, function (item) {
+          results: $.map(response, function (item) {
             return {
               text: item.AccountType,
               id: item.ID
             }
           })
         };
-      }
+      },
+      cache: true
     }
     // theme: "bootstrap"
   });
