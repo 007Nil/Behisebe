@@ -30,8 +30,8 @@ function randomValueHex(len) {
 
 function isLoggedIn(req, res, next) {
   // console.log(req.user)
-  req.user ? next() : res.send("<h1>Not Authorized</h1><br><h2><a href='/login'>Please Login</a></h2>");
-  // next()
+  req.user ? next() : res.render("not-authorized");
+  // next();
 }
 
 var app = express();
@@ -126,8 +126,8 @@ app.get("/auth/failure", (req, res) => {
   res.send("ERROR");
 })
 
-app.get('/logout', function(req, res, next){
-  req.logout(function(err) {
+app.get('/logout', function (req, res, next) {
+  req.logout(function (err) {
     if (err) { return next(err); }
     res.redirect('/');
   });
