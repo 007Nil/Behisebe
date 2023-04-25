@@ -10,8 +10,8 @@ async function saveExpenseReason(expenseReasonModel) {
 }
 
 async function fetchExpenseReasonByUserID(userId) {
-    selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ? AND ?? <>?";
-    prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["ExpenseReason", "UserID", userId, "UserID", null,"ID","1234567098"]);
+    selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ?";
+    prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["ExpenseReason", "UserID", userId, "UserID", null]);
 
     return (await mysqlPool.execute(prepareSelectReasonQuery))[0];
 }
