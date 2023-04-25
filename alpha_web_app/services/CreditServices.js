@@ -119,7 +119,7 @@ async function getCreditDetailsByuserId(requestObj) {
     requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
     // console.log(requestObj);
     let returnData = [];
-    let bankList = await BankService.getUserBankDetails(userId);
+    let bankList = await BankService.getUserBankDetails({userId});
     let reasonList = await getAllCreditReasonByUserId(userId);
     let personList = await getPersonDataByUserId(userId);
     for (let eachBank of bankList) {

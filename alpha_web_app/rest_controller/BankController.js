@@ -23,6 +23,7 @@ router.get("/getBankDetails", async (request, response) => {
             userId: request.session.passport.user["ID"],
             date: request.query.date
         }
+        // console.log(request.query);
         let bankDetails = await getUserBankDetails(requestObj);
         // console.log("HIT")
         response.status(200).send(bankDetails);

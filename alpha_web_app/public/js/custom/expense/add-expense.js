@@ -8,9 +8,9 @@ $(function () {
         placeholder: "Select a Bank Account",
         // tags: false,
         ajax: {
-            url: "/v1/bank/getBankDetails",
-            dataType: 'json',
             type: "GET",
+            url: "/v1/bank/getBankDetails",
+            data: `date=${getDate()}`,
             quietMillis: 1000,
 
             data: function (params) {

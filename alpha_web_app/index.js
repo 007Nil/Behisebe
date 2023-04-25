@@ -31,6 +31,7 @@ function randomValueHex(len) {
 function isLoggedIn(req, res, next) {
   // console.log(req.user)
   req.user ? next() : res.send("<h1>Not Authorized</h1><br><h2><a href='/login'>Please Login</a></h2>");
+  // next()
 }
 
 var app = express();

@@ -28,18 +28,22 @@ async function getUserBankDetails(requestObj) {
     // let date = requestObj.date;
     let bankData = await bankRepo.getUserBankDetails(userId);
     let accountTypes = await getAccountType();
-    console.log(bankData);
+    // console.log(bankData);
     for (eachBank of bankData) {
         for (eachType of accountTypes) {
             if (eachBank.AccountType === eachType.ID) {
                 eachBank.AccountType = eachType.AccountType;
             }
-            dailyCloisngObj = {
-                "bankId": eachBank.BankID,
-                "date": requestObj.date.replaceAll("/", "-"),
-                "userId": userId,
+            try {
+                dailyCloisngObj = {
+                    "bankId": eachBank.BankID,
+                    "date": requestObj.date.replaceAll("/", "-"),
+                    "userId": userId,
+                }
+                eachBank.bankBalance = (await getDailyClosing(dailyCloisngObj)).Amount;
+            } catch {
+
             }
-            eachBank.bankBalance = (await getDailyClosing(dailyCloisngObj)).Amount;
             // console.log(eachBank.bankBalance)
         }
     }

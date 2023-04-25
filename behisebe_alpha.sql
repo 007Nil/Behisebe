@@ -152,7 +152,7 @@ VALUES ("765654343", "Borrow", NULL), (
         NULL
     ),(
         "6765454367",
-        "As Gift",
+        "Credit as Cash",
         NULL
     );
 
@@ -269,4 +269,4 @@ CREATE TABLE YearlyClosingCash (
 );
 
 
--- DROP DATABASE Behisebe;
+DROP DATABASE Behisebe;

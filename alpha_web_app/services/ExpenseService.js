@@ -143,10 +143,10 @@ async function getExpenseDetailsByuserId(requestObj) {
     requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
     // console.log(requestObj)
     let returnData = []
-    let bankList = await bankService.getUserBankDetails(userId);
+    let bankList = await bankService.getUserBankDetails({userId});
     let reasonList = await fetchExpenseReasonByUserID(userId);
     let personList = await getPersonDataByUserId(userId);
-
+    console.log(bankList);
     for (let eachBank of bankList) {
         let totalAmount = 0;
         let expenseData = new ExpenseModel()
