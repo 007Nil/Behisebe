@@ -52,9 +52,9 @@ function generateCollectYourDebt(oweData) {
             {
                 "title": "Already Received",
             },
-            {
-                "title": "Full Payment",
-            },
+            // {
+            //     "title": "Full Payment",
+            // },
         ],
         responsive: false,
         columnDefs: [
@@ -88,11 +88,11 @@ function generateCollectYourDebt(oweData) {
                     return data;
                 },
             },
-            {
-                targets: 5,
-                data: null,
-                defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Clear Debt</button>`
-            },
+            // {
+            //     targets: 5,
+            //     data: null,
+            //     defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Clear Debt</button>`
+            // },
         ],
         order: [1, 'asc']
     });

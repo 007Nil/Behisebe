@@ -55,9 +55,9 @@ function generatePayYourDebtTable(transactionData) {
             {
                 "title": "Already Paid",
             },
-            {
-                "title": "Full Payment",
-            },
+            // {
+            //     "title": "Full Payment",
+            // },
         ],
         responsive: false,
         columnDefs: [
@@ -91,11 +91,11 @@ function generatePayYourDebtTable(transactionData) {
                     return data;
                 },
             },
-            {
-                targets: 5,
-                data: null,
-                defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Make Payment</button>`
-            },
+            // {
+            //     targets: 5,
+            //     data: null,
+            //     defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Make Payment</button>`
+            // },
         ],
         order: [1, 'asc']
     });
