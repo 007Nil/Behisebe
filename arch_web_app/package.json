@@ -1,7 +1,7 @@
 {
-  "name": "behisebe_alpha_web_app",
+  "name": "behisebe_arch",
   "version": "1.0.0",
-  "description": "Alpha Web Application for behisebe",
+  "description": "Behisebe Web Application Arch Version",
   "main": "index.js",
   "scripts": {
     "start": "nodemon --config configaration/nodemon.json index.js",
