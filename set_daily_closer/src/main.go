@@ -15,7 +15,7 @@ import (
 // var wg sync.WaitGroup
 
 func connectDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "root:sxycmfczbe2ru5v3@tcp(localhost:3306)/Behisebe")
+	db, err := sql.Open("mysql", "behisebe:sxycmfczbe2ru5v3@tcp(localhost:3306)/Behisebe")
 
 	return db, err
 
@@ -186,7 +186,7 @@ func main() {
 	var dcCashSlice []models.DailyClosingCash
 	for _, userId := range allUser {
 		var dcCash models.DailyClosingCash
-		// fmt.Println(user)
+		fmt.Println(userId)
 		dcCash.UserId = userId
 		dcCash.Date = time.Now().Format("2006-01-02")
 		dcCashSlice = append(dcCashSlice, dcCash)

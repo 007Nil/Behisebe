@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS Behisebe;
+-- CREATE DATABASE IF NOT EXISTS Behisebe;
 
 USE Behisebe;
 
