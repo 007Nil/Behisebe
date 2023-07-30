@@ -13,14 +13,14 @@ CREATE TABLE
 
 -- Demo data
 
--- INSERT INTO
---     User (ID, FirstName, LastName, Email)
--- VALUES (
---         "1234567890",
---         "Sagnik",
---         "Sarkar",
---         "sagniksarkar@ymail.com"
---     );
+INSERT INTO
+    User (ID, FirstName, LastName, Email)
+VALUES (
+        "1234567890",
+        "Sagnik",
+        "Sarkar",
+        "sagnik952@gmail.com"
+    );
 
 CREATE TABLE
     BankAccountType (
@@ -31,7 +31,7 @@ CREATE TABLE
 
 INSERT INTO
     BankAccountType (AccountType)
-VALUES ("Current Account"), ("Savings Account"), ("Salary Account");
+VALUES ("Current Account"), ("Savings Account"), ("Salary Account"), ("Credit Card");
 
 CREATE TABLE
     Bank (
@@ -107,6 +107,10 @@ VALUES ("0987654321", "Lend", NULL), (
     ), (
         "6565454378",
         "Cash Withdrawal",
+        NULL
+    ),(
+        "7676543456",
+        "Pay Credit Card Balance",
         NULL
     );
 

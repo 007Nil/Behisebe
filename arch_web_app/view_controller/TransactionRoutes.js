@@ -32,6 +32,9 @@ router
   })
   .get("/add-initial-cash", (req, res) => {
     res.render("transaction/credit/add-initial-cash");
+  })
+  .get("/self-transfer", (req,res) => {
+    res.render("transaction/self-transfer", {"title": "Self Transfer"});
   });
 
 module.exports = router;
