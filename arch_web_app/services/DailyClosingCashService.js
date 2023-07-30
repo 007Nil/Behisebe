@@ -20,10 +20,7 @@ async function addDailyClosingCash(dailyClosingCashObj) {
 }
 
 async function updateDailyClosingCash(dailyClosingCashObj) {
-    // console.log("HIT")
-    // console.log(dailyClosingCashObj);
     let queryResult = await dailyCloisngCashRepo.findByValues(dailyClosingCashObj);
-    console.log(queryResult);
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
         dailyClosingCashObj.id = queryResult[0].ID;
         if (dailyClosingCashObj.isCredit) {

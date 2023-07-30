@@ -75,11 +75,9 @@ router
                     lendObj.paymentOnDate = requestObj.date;
                     udpateLendTable(lendObj);
                 }
-                // lendObj.
 
             } else {
-                // console.log("HIT FROM ELSE");
-                // Its a partial payment
+                // It's a partial payment
                 lendObj = new lendModel();
                 let DbAmount = await getPartialPayAmount(requestObj.lendId);
                 lendObj.id = requestObj.lendId;
@@ -87,7 +85,6 @@ router
                 lendObj.partialAmount = parseInt(requestObj.payAmount) + parseInt(DbAmount);
                 lendObj.paymentOnDate = requestObj.date;
                 // Update lend data
-                // console.log(lendObj)
                 udpateLendTable(lendObj);
 
 
@@ -101,16 +98,12 @@ router
                     pPaymentObj.bycash = 0;
                 }
                 pPaymentObj.onDate = requestObj.date;
-                // console.log(pPaymentObj)
                 // Save partial payment data
                 savePartialPayment(pPaymentObj);
             }
 
-
-            // let queryData = await fetchExpenseReasonByUserID(userID)
             response.status(200).send({ "message": "Success", "data": "Data Saved" })
         } catch (error) {
-            console.log(error)
             response.status(200).send({ "error": "error", "data": "Data Save Failed" })
         }
 
@@ -200,7 +193,6 @@ router
             }
             response.status(200).send({ "message": "Success", "data": "Data Saved" })
         } catch {
-            console.log(error)
             response.status(200).send({ "error": "error", "data": "Data Save Failed" })
         }
     });

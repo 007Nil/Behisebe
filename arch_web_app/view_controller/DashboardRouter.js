@@ -3,11 +3,6 @@ const router = express.Router();
 
 
 router.get("/",async (req, res) => {
-    // try{
-
-    // }catch (error){
-        
-    // }
     if( req.session.passport.user.NewUser){
         res.redirect("/transaction/add-initial-cash");
     }

@@ -19,7 +19,6 @@ const CreditModel = require("../model/CreditModel");
 
 
 async function addCreditDetails(creditObj) {
-    console.log(creditObj)
     creditObj.creditId = crypto.randomBytes(10).toString("hex");
     let userID = creditObj.userId;
     let isCashCredit = creditObj.byCash;
@@ -74,16 +73,13 @@ async function addCreditDetails(creditObj) {
     if (isCashCredit) {
         creditObj.byCash = 1; // true
         creditObj.bankId = null;
-        // creditObj.reason = "6765454367";
     } else {
         creditObj.byCash = 0;
     }
     if (creditObj.lendId) {
         creditObj.lendPaid = 0;
     }
-    // console.log(creditObj)
     await creditRepo.saveCredit(creditObj);
-    // console.log(creditObj);
     if (isCashCredit) {
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = creditObj.amount;
@@ -98,7 +94,6 @@ async function addCreditDetails(creditObj) {
         dailyClosingObj.bankId = creditObj.bankId;
         dailyClosingObj.date = creditObj.date.replaceAll("/", "-");
         dailyClosingObj.isCredit = true;
-        // console.log(dailyClosingObj);
         dailyClosingService.updateDailyClosing(dailyClosingObj);
     }
 }
@@ -108,8 +103,6 @@ async function getActiveLendData(userId){
 }
 
 async function getCreditLendData(userId) {
-    // console.log("HIT")
-    // console.log((await creditRepo.getCreditLendData(userId))[0])
     return (await creditRepo.getCreditLendData(userId));
 }
 
@@ -117,7 +110,6 @@ async function getCreditDetailsByuserId(requestObj) {
     let userId = requestObj.userId;
     requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
     requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
-    // console.log(requestObj);
     let returnData = [];
     let bankList = await BankService.getUserBankDetails({userId});
     let reasonList = await getAllCreditReasonByUserId(userId);
@@ -131,8 +123,6 @@ async function getCreditDetailsByuserId(requestObj) {
         creditObj.endDate = requestObj.endDate;
         eachBank.creditDetails = await creditRepo.getCreditByDate(creditObj);
 
-        // console.log(creditObj.creditDetails)
-
         for (let eachCredit of eachBank.creditDetails) {
             totalAmount += eachCredit.Amount;
             for (let reason of reasonList) {
@@ -142,13 +132,9 @@ async function getCreditDetailsByuserId(requestObj) {
                 }
             }
             if (eachCredit.LendID) {
-                // console.log("HIT")
                 let personId = await lendService.getLendFromByID(eachCredit.LendID);
-                // console.log(personId)
                 for (let person of personList) {
-                    // console.log(person)
                     if (person.ID === personId) {
-                        // console.log("HIT")
                         eachCredit.Reason += ` From ${person.Name}`
                         break;
                     }
@@ -168,12 +154,10 @@ async function getCashCreditDetailsByUserId(requestObj) {
     requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
     let reasonList = await getAllCreditReasonByUserId(requestObj.userId);
     let personList = await getPersonDataByUserId(requestObj.userId);
-    // console.log(reasonList);
     let cashCreditObj = await creditRepo.getCashCreditByDate(requestObj)
     for (eachCashCredit of cashCreditObj) {
         for (let reason of reasonList) {
             if (reason.ID === eachCashCredit.Reason) {
-                // console.log("HIT")
                 eachCashCredit.Reason = reason.Reason;
                 break;
             }
@@ -187,11 +171,7 @@ async function getCashCreditDetailsByUserId(requestObj) {
             }
         }
 
-        // console.log()
-
     }
-    // return ();
-    // console.log(cashCreditObj)
     return cashCreditObj;
 
 }

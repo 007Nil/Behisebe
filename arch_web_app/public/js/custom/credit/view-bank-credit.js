@@ -16,11 +16,9 @@ $(function () {
     getCreditDetials();
 
     $("#start-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getCreditDetials();
     })
     $("#end-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getCreditDetials();
     })
 });
@@ -28,8 +26,6 @@ $(function () {
 function getCreditDetials() {
     let startDate = $("#start-date").val();
     let endDate = $("#end-date").val();
-    // console.log(new Date(startDate).getTime());
-    // console.log(new Date(endDate).getTime());
     if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         alert("NOT POSSIBLE")
         return
@@ -40,9 +36,7 @@ function getCreditDetials() {
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {
-            console.log(response.data);
             if ($.fn.dataTable.isDataTable('#creditDetailsTable')) {
-                // console.log("HIT")
                 let creditTable = $('#creditDetailsTable').DataTable();
                 creditTable.clear().draw();
                 creditTable.rows.add(response.data);
@@ -53,7 +47,7 @@ function getCreditDetials() {
 
         },
         error: function (error) {
-            console.log(error);
+            alertify.error("Error occur", 3);
         },
     });
 }
@@ -83,7 +77,6 @@ function insertCreditDetails(creditData) {
                 targets: 1,
                 data: "BankName",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -91,7 +84,6 @@ function insertCreditDetails(creditData) {
                 targets: 2,
                 data: "totalCredit",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             }
@@ -103,25 +95,19 @@ function insertCreditDetails(creditData) {
     $("#creditDetailsTable").on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
         let row = creditTable.row(tr);
-        // console.log(row)
-        // console.log(row.child.isShown())
         if (row.child.isShown()) {
             // This row is already open - close it
-            // console.log("HIT")
             row.child.hide();
             tr.removeClass('shown');
         } else {
-            console.log(row)
             row.child(creditDetails(row.data().BankID)).show();
             tr.addClass('shown');
-            console.log(row.data());
             generateCreditDetails(row.data());
         }
     });
 }
 
 function generateCreditDetails(creditDetailsData) {
-    // console.log(creditDetailsData.creditDetails);
     let detailsCreditTable = $(`#credit-details-${creditDetailsData.BankID}`).DataTable({
         data: creditDetailsData.creditDetails,
         columns: [
@@ -148,7 +134,6 @@ function generateCreditDetails(creditDetailsData) {
                 targets: 0,
                 data: "Reason",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -156,7 +141,6 @@ function generateCreditDetails(creditDetailsData) {
                 targets: 1,
                 data: "Amount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -164,7 +148,6 @@ function generateCreditDetails(creditDetailsData) {
                 targets: 2,
                 data: "Date",
                 render: function (data) {
-                    // console.log(data)
                     return convertDate(data);
                 },
             },
@@ -172,7 +155,6 @@ function generateCreditDetails(creditDetailsData) {
                 targets: 3,
                 data: "Notes",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -210,6 +192,5 @@ function convertDate(date) {
     //date shifting for IST timezone (+5 hours and 30 minutes)
     dateIST.setHours(dateIST.getHours() + 5);
     dateIST.setMinutes(dateIST.getMinutes() + 30);
-    // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }

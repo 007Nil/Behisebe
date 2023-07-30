@@ -10,10 +10,7 @@ async function addDailyCloisng(dailyClosingObj) {
     // Else -> this means 1st entry the bank, so it the query
     // Returns emply list add the now.
     let queryResult = await dailyClosingRepo.findByPreviosDate(dailyClosingObj);
-    console.log(queryResult)
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
-        // console.log(queryResult);
-        // console.log("I am HIT FROM IF");
         if (dailyClosingObj.isCredit) {
             dailyClosingObj.amount = parseInt(queryResult[0].Amount) + parseInt(dailyClosingObj.amount);
         } else {
@@ -21,8 +18,6 @@ async function addDailyCloisng(dailyClosingObj) {
         }
 
     }
-    // console.log("AFter HIT")
-    console.log(dailyClosingObj);
     dailyClosingRepo.addDailyCloisng(dailyClosingObj);
 }
 
@@ -31,10 +26,7 @@ async function updateDailyClosing(dailyClosingObj) {
     // If any result found the udpate the row
     // Else call addDailyCloisng
     queryResult = await dailyClosingRepo.findByValues(dailyClosingObj);
-    console.log(queryResult)
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
-        // We have data
-        // console.log(queryResult);
         dailyClosingObj.id = queryResult[0].ID;
         if (dailyClosingObj.isCredit) {
             dailyClosingObj.amount = parseInt(queryResult[0].Amount) + parseInt(dailyClosingObj.amount);

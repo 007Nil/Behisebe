@@ -11,9 +11,7 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            // console.log(response)
             $("#cashBalance").val(response.data.Amount);
-            // $("#bankAmount").val(response.data);
         }
     });
 }
@@ -33,7 +31,6 @@ $("#credited-to").select2({
             };
         },
         processResults: function (data) {
-            // console.log(data)
             return {
                 results: $.map(data, function (item) {
                     return {
@@ -60,7 +57,6 @@ $("#credit-reason").select2({
             };
         },
         processResults: function (response) {
-            // console.log(data.data)
             return {
                 results: $.map(response.data, function (item) {
                     return {
@@ -91,7 +87,6 @@ $("#credited-to").on("change", () => {
 
 $('#credit-reason').on("change", () => {
     try {
-        // console.log($('#expense-reason').select2('data')[0].text);
         if ($('#credit-reason').select2('data')[0].text === "Borrow") {
             $("#credit-cause-div").html("");
             insertCreditExtendFields();
@@ -109,7 +104,6 @@ $('#credit-reason').on("change", () => {
                         };
                     },
                     processResults: function (response) {
-                        // console.log(data.data)
                         return {
                             results: $.map(response.data, function (item) {
                                 return {
@@ -138,7 +132,6 @@ $('#credit-reason').on("change", () => {
                         };
                     },
                     processResults: function (response) {
-                        // console.log(data.data)
                         return {
                             results: $.map(response.data, function (item) {
                                 return {
@@ -152,7 +145,6 @@ $('#credit-reason').on("change", () => {
                 }
             });
         } else {
-            // console.log("HIT ELSE")
             $("#credit-cause-div").html("");
         }
 
@@ -197,9 +189,6 @@ $("#credit-form").submit((event) => {
         "byCash": $("#cashCheckBox").is(":checked"),
         "notes": $("#notes").val()
     }
-    // console.log($("#spacial-credit").select2('data')[0].personID);
-    // console.log(creditObject);
-    // return;
 
     $.ajax({
         type: "POST",
@@ -209,13 +198,11 @@ $("#credit-form").submit((event) => {
         dataType: "json",
 
         success: function (response) {
-            // console.log(response);
             resetCreditForm();
             alertify.success('Credit information saved.', 3);
             getCashBalance()
         },
         error: function (error) {
-            // console.log(error);
             alertify.error('Error while saving the data!!', 3);
         },
     });
@@ -236,27 +223,18 @@ function insertCreditExtendFields() {
 }
 
 $(document).on('change', "#cashCheckBox", function () {
-    // console.log($('#bankCheckBox').attr('checked'))
     if ($('#cashCheckBox').is(":checked")) {
         $('#bankCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#credit-from-div").css("display", "none");
-        // $("#cerdit-reason-div").css("display", "none");
-        // $('#debited-from').removeAttr('required');​​​​​
         $('#credited-to').removeAttr('required');
-        // $("#credit-reason").removeAttr('required')
     }
 });
 
 $(document).on('change', "#bankCheckBox", function () {
     if ($('#bankCheckBox').is(":checked")) {
         $('#cashCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#credit-from-div").css("display", "block");
-        // $("#cerdit-reason-div").css("display", "block");
         $('#credited-to').prop('required', true);
-        // $("#credit-reason").prop('required', true);
-
     }
 });
 

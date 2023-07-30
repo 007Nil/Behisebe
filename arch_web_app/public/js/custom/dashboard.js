@@ -15,7 +15,7 @@ function getBankDetails() {
             insertBankData(response);
         },
         error: function (error) {
-            console.log(error);
+            alertify.error('Error while processing the data!!', 3);
         },
     });
 }

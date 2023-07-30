@@ -15,11 +15,9 @@ $(function () {
     }).datepicker('setDate', 'today');
     getExpenseDetails();
     $("#start-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getExpenseDetails();
     })
     $("#end-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getExpenseDetails();
     })
 
@@ -45,9 +43,6 @@ function insertExpenseDetails(expenseData) {
                 "title": "Amount",
             },
         ],
-        // rowReorder: {
-        //     selector: 'td:nth-child(2)'
-        // },
         responsive: false,
         destroy: true,
         retrieve: true,
@@ -56,7 +51,6 @@ function insertExpenseDetails(expenseData) {
                 targets: 1,
                 data: "BankID",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -85,18 +79,13 @@ function insertExpenseDetails(expenseData) {
     $("#ExpenseDetailsTable").on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
         let row = expenseTable.row(tr);
-        // console.log(row)
-        console.log(row.child.isShown())
         if (row.child.isShown()) {
             // This row is already open - close it
-            // console.log("HIT")
             row.child.hide();
             tr.removeClass('shown');
         } else {
-            console.log(row)
             row.child(expenseDetails(row.data().BankID)).show();
             tr.addClass('shown');
-            console.log(row.data());
             generateExpenseDetailsDatatable(row.data());
         }
     });
@@ -105,8 +94,6 @@ function insertExpenseDetails(expenseData) {
 function getExpenseDetails() {
     let startDate = $("#start-date").val();
     let endDate = $("#end-date").val();
-    console.log(new Date(startDate).getTime());
-    console.log(new Date(endDate).getTime());
     if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         alert("NOT POSSIBLE")
         return
@@ -117,9 +104,7 @@ function getExpenseDetails() {
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {
-            console.log(response.data);
             if ($.fn.dataTable.isDataTable('#ExpenseDetailsTable')) {
-                console.log("HIT")
                 let expTable = $('#ExpenseDetailsTable').DataTable();
                 expTable.clear().draw();
                 expTable.rows.add(response.data);
@@ -130,7 +115,6 @@ function getExpenseDetails() {
 
         },
         error: function (error) {
-            console.log(error);
         },
     });
 }
@@ -171,7 +155,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 0,
                 data: "Reason",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -179,7 +162,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 1,
                 data: "Amount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -187,7 +169,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 2,
                 data: "Date",
                 render: function (data) {
-                    // console.log(data)
                     return convertDate(data);
                 },
             },
@@ -195,7 +176,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 3,
                 data: "Notes",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -211,7 +191,6 @@ function convertDate(date) {
     //date shifting for IST timezone (+5 hours and 30 minutes)
     dateIST.setHours(dateIST.getHours() + 5);
     dateIST.setMinutes(dateIST.getMinutes() + 30);
-    // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }
 

@@ -6,7 +6,6 @@ $(function () {
     $('#expense_date').datepicker();
     $("#debited-from").select2({
         placeholder: "Select a Bank Account",
-        // tags: false,
         ajax: {
             type: "GET",
             url: "/v1/bank/getBankDetails",
@@ -19,7 +18,6 @@ $(function () {
                 };
             },
             processResults: function (data) {
-                // console.log(data)
                 return {
                     results: $.map(data, function (item) {
                         return {
@@ -47,7 +45,6 @@ $(function () {
                 };
             },
             processResults: function (response) {
-                // console.log(data.data)
                 return {
                     results: $.map(response.data, function (item) {
                         return {
@@ -74,7 +71,6 @@ $(function () {
                 };
             },
             processResults: function (response) {
-                // console.log(data.data)
                 return {
                     results: $.map(response.data, function (item) {
                         return {
@@ -99,14 +95,12 @@ $(function () {
                 }
             });
         } catch {
-            // console.log("HIT")
             $("#bankAmount").val("");
         }
     })
 
     $('#expense-reason').on("change", () => {
         try {
-            // console.log($('#expense-reason').select2('data')[0].text);
             if ($('#expense-reason').select2('data')[0].text === "Lend") {
                 $("#expense-cause-form").html("");
                 insertLendMoneyFields();
@@ -123,7 +117,6 @@ $(function () {
                             };
                         },
                         processResults: function (response) {
-                            // console.log(data.data)
                             return {
                                 results: $.map(response.data, function (item) {
                                     return {
@@ -138,7 +131,6 @@ $(function () {
             } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
                 $("#expense-cause-form").html("");
                 insertLendMoneyFields();
-                // console.log("HIT")
                 $("#spacial-debit").select2({
                     tags: [],
                     ajax: {
@@ -152,7 +144,6 @@ $(function () {
                             };
                         },
                         processResults: function (response) {
-                            // console.log(data.data)
                             return {
                                 results: $.map(response.data, function (item) {
                                     return {
@@ -166,7 +157,6 @@ $(function () {
                 });
             }
             else {
-                // console.log("HIT ELSE")
                 $("#expense-cause-form").html("");
             }
         } catch {
@@ -177,9 +167,7 @@ $(function () {
     $("#expense-form").submit(function (event) {
         event.preventDefault();
         if ($('#cashCheckBox').is(":checked")) {
-            // console.log("HIT")
             let cashBalance = $('#cashBalance').val();
-            console.log(cashBalance);
             if (parseInt($("#amount").val()) > parseInt(cashBalance)) {
                 alert("NOT POSSIBLE");
                 return;
@@ -191,7 +179,6 @@ $(function () {
                 return;
             }
         }
-        // return;
         let spacialDebit;
         try {
             if ($('#expense-reason').select2('data')[0].text === "Lend") {
@@ -199,7 +186,6 @@ $(function () {
             } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
                 spacialDebit = `${$("#spacial-debit").select2('data')[0].id}-payOfDebt`;
             }
-            // spacialDebit = $("#spacial-debit").select2('data')[0].id;
         } catch (error) {
             spacialDebit = null;
         }
@@ -209,8 +195,6 @@ $(function () {
         } catch {
             bankId = null;
         }
-        // let isByCash = $("#cashCheckBox").is(":checked");
-        // console.log($("#debited-from").select2('data'));
         let expenseObject = {
             "bankId": bankId,
             "amount": $("#amount").val(),
@@ -220,10 +204,6 @@ $(function () {
             "byCash": $("#cashCheckBox").is(":checked"),
             "notes": $("#notes").val()
         }
-        // console.log(isByCash)
-        // console.log(expenseObject);
-        // return;
-
 
         $.ajax({
             type: "POST",
@@ -233,13 +213,11 @@ $(function () {
             dataType: "json",
 
             success: function (response) {
-                // console.log(response);
                 resetExpenseForm()
                 alertify.success('Expense information saved.', 3);
                 getCashBalance();
             },
             error: function (error) {
-                // console.log(error);
                 alertify.error('Error while saving the data!!', 3);
             },
         });
@@ -247,12 +225,9 @@ $(function () {
 });
 
 $(document).on('change', "#cashCheckBox", function () {
-    // console.log($('#bankCheckBox').attr('checked'))
     if ($('#cashCheckBox').is(":checked")) {
         $('#bankCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "none");
-        // $('#debited-from').removeAttr('required');​​​​​
         $('#debited-from').removeAttr('required');
         $("#bankAmount").val("");
     }
@@ -261,7 +236,6 @@ $(document).on('change', "#cashCheckBox", function () {
 $(document).on('change', "#bankCheckBox", function () {
     if ($('#bankCheckBox').is(":checked")) {
         $('#cashCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "block");
         $('#debited-from').prop('required', true);
 
@@ -276,9 +250,7 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            // console.log(response)
             $("#cashBalance").val(response.data.Amount);
-            // $("#bankAmount").val(response.data);
         }
     });
 }

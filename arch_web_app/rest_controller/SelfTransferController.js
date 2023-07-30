@@ -7,7 +7,6 @@ router.post("/add-self", async (req, res) => {
     try {
         let requestObj = req.body;
         requestObj.userId = req.session.passport.user["ID"];
-        console.log(requestObj);
         let expense_model = {
             "userId": requestObj.userId,
             "bankId": requestObj.transfer_from_id,
@@ -36,7 +35,6 @@ router.post("/add-self", async (req, res) => {
         res.status(200).send({ "message": "Success", "data": "domo_data" });
 
     } catch (error) {
-        console.log(error);
         res.status(500).send(new Error(error.message));
     }
 });

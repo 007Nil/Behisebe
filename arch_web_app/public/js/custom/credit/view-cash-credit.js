@@ -14,13 +14,10 @@ $(function () {
         currentText: "Today:" + $.datepicker.formatDate('MM dd, yy', new Date()),
         maxDate: 0
     }).datepicker('setDate', 'today');
-    // getExpenseDetails();
     $("#start-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getCashCredit()
     })
     $("#end-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getCashCredit();
     })
     getCashCredit();
@@ -36,8 +33,6 @@ function getOneMonthPreviosDate() {
 function getCashCredit() {
     let startDate = $("#start-date").val();
     let endDate = $("#end-date").val();
-    // console.log(new Date(startDate).getTime());
-    // console.log(new Date(endDate).getTime());
     if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         alert("NOT POSSIBLE")
         return
@@ -48,21 +43,18 @@ function getCashCredit() {
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {
-            console.log(response.data);
             if ($.fn.dataTable.isDataTable('#CreditCashDetailsTable')) {
-                console.log("HIT")
                 let cashCreditTable = $('#CreditCashDetailsTable').DataTable();
                 cashCreditTable.clear().draw();
                 cashCreditTable.rows.add(response.data);
                 cashCreditTable.columns.adjust().draw();
             } else {
-                console.log("ELSE HIT")
                 generateCashCreditTable(response.data);
             }
 
         },
         error: function (error) {
-            console.log(error);
+            alertify.error("Error occur!!", 3);
         },
     });
 }
@@ -92,7 +84,6 @@ function generateCashCreditTable(creditObj) {
                 targets: 0,
                 data: "Amount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -100,7 +91,6 @@ function generateCashCreditTable(creditObj) {
                 targets: 1,
                 data: "Date",
                 render: function (data) {
-                    // console.log(data)
                     return convertDate(data);
                 },
             },
@@ -115,7 +105,6 @@ function generateCashCreditTable(creditObj) {
                 targets: 3,
                 data: "Notes",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -131,6 +120,5 @@ function convertDate(date) {
     //date shifting for IST timezone (+5 hours and 30 minutes)
     dateIST.setHours(dateIST.getHours() + 5);
     dateIST.setMinutes(dateIST.getMinutes() + 30);
-    // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }

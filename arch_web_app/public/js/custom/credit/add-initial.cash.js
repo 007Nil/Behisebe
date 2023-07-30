@@ -15,14 +15,9 @@ $(function () {
             dataType: "json",
 
             success: function (response) {
-                console.log(response);
                 window.location.replace('/dashboard');
-                // resetCreditForm();
-                // alertify.success('Credit information saved.', 3);
-                // getCashBalance()
             },
             error: function (error) {
-                // console.log(error);
                 alertify.error('Error while saving the data!!', 3);
             },
         });

@@ -25,10 +25,8 @@ async function getBankDetailsByID(bankID) {
 
 async function getUserBankDetails(requestObj) {
     let userId = requestObj.userId;
-    // let date = requestObj.date;
     let bankData = await bankRepo.getUserBankDetails(userId);
     let accountTypes = await getAccountType();
-    // console.log(bankData);
     for (eachBank of bankData) {
         for (eachType of accountTypes) {
             if (eachBank.AccountType === eachType.ID) {
@@ -44,7 +42,6 @@ async function getUserBankDetails(requestObj) {
             } catch {
 
             }
-            // console.log(eachBank.bankBalance)
         }
     }
     return bankData;
@@ -53,8 +50,6 @@ async function getUserBankDetails(requestObj) {
 async function addBankDetails(requestData) {
 
     let bankObj = new BankModel();
-
-    // console.log(requestData);
     bankObj.bankID = crypto.randomBytes(10).toString("hex");
 
     bankObj.bankName = requestData.bankName;
@@ -77,7 +72,6 @@ async function addBankDetails(requestData) {
     creditObj.amount = requestData.bankBalance;
     creditObj.notes = "This is the initial amount when this Bank was added to system";
     await addCreditDetails(creditObj);
-    // await getCreditLendData();
 }
 
 function makeBankInvalida() {
@@ -90,12 +84,3 @@ module.exports.makeBankInvalida = makeBankInvalida;
 module.exports.getAccountType = getAccountType;
 module.exports.getBankDetailsByID = getBankDetailsByID;
 module.exports.getUserBankDetails = getUserBankDetails;
-
-// module.exports = {
-//     fetchBankDetails,
-//     addBankDetails,
-//     makeBankInvalida,
-//     getAccountType,
-//     getBankDetailsByID,
-//     getUserBankDetails
-// }
