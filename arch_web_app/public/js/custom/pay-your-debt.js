@@ -26,14 +26,13 @@ function getUserDebtData() {
             alertify.success('Information fetched.', 3);
         },
         error: function (error) {
-            // console.log(error);
             alertify.error('Error while fetching the data!!', 3);
         },
     });
 }
 
 function generatePayYourDebtTable(transactionData) {
-    console.log(transactionData);
+
     let payYourDebtTable = $("#pay-your-debt-table").DataTable({
         data: transactionData,
         columns: [
@@ -79,7 +78,6 @@ function generatePayYourDebtTable(transactionData) {
                 targets: 3,
                 data: "totalAmount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -87,15 +85,9 @@ function generatePayYourDebtTable(transactionData) {
                 targets: 4,
                 data: "totalPaid",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
-            // {
-            //     targets: 5,
-            //     data: null,
-            //     defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Make Payment</button>`
-            // },
         ],
         order: [1, 'asc']
     });
@@ -104,16 +96,12 @@ function generatePayYourDebtTable(transactionData) {
 
 
     $('#pay-your-debt-table tbody').on('click', 'td.dt-control', function () {
-        // console.log("HIT")
         let tr = $(this).closest('tr');
         let row = payYourDebtTable.row(tr);
         GlobalPRow = row;
         GlobalPData = row.data();
-        // console.log(row)
-        // console.log(row.child.isShown())
         if (row.child.isShown()) {
             // This row is already open - close it
-            // console.log("HIT")
             row.child.hide();
             tr.removeClass('shown');
         } else {
@@ -141,7 +129,6 @@ function generateBorrowDetailsTable(id) {
 }
 
 function generateBorrowDetailsDatatable(detailsObj) {
-    // console.log(detailsObj)
     let detailsTable = $(`#payDebtDetails-${detailsObj.personId}`).DataTable({
         data: detailsObj.borrowDetails,
         columns: [
@@ -179,7 +166,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 targets: 0,
                 data: "transacationId",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
 
@@ -188,7 +174,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 targets: 1,
                 data: "lendId",
                 render: function (data) {
-                    // console.log(data)
+
                     return data;
                 },
             },
@@ -196,7 +182,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 targets: 2,
                 data: "bankId",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -204,7 +189,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 targets: 3,
                 data: "amount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -212,7 +196,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 targets: 4,
                 data: "alreadyPaid",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -245,25 +228,16 @@ function generateBorrowDetailsDatatable(detailsObj) {
     detailsTable.column(2).visible(false);
     GolbalCTable = detailsTable;
 
-    // console.log(`#payDebtDetails-${detailsObj.personId} tbody`)
-
-
-
-
 
     $(`#payDebtDetails-${detailsObj.personId} tbody`).on('click', '.btn-sm', function () {
-        // console.log(detailsObj)
-
         $("#paymentModalBody").empty();
         let tr = $(this).closest("tr");
-        // console.log(tr)
+
         let row = detailsTable.row(tr);
         GolbalCRow = row;
-        // console.log(row.data())
         let rowData = row.data();
         GlobalCData = rowData;
 
-        // console.log(rowData)
         // paymentModalBody
         let modalBody = `
             <div class="row">
@@ -348,7 +322,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 url: "/v1/bank/getBankDetails",
                 dataType: 'json',
                 type: "GET",
-                // quietMillis: 1000,
 
                 data: function (params) {
                     return {
@@ -356,7 +329,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                     };
                 },
                 processResults: function (data) {
-                    console.log(data)
                     return {
                         results: $.map(data, function (item) {
                             return {
@@ -381,7 +353,6 @@ function generateBorrowDetailsDatatable(detailsObj) {
                     }
                 });
             } catch {
-                // console.log("HIT")
                 $("#bankAmount").val("");
             }
         })
@@ -396,12 +367,9 @@ function generateBorrowDetailsDatatable(detailsObj) {
 }
 
 $(document).on('change', "#cashCheckBox", function () {
-    // console.log($('#bankCheckBox').attr('checked'))
     if ($('#cashCheckBox').is(":checked")) {
         $('#bankCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "none");
-        // $('#debited-from').removeAttr('required');​​​​​
         $('#debited-from').removeAttr('required');
         $("#bankAmount").val("");
     }
@@ -410,7 +378,6 @@ $(document).on('change', "#cashCheckBox", function () {
 $(document).on('change', "#bankCheckBox", function () {
     if ($('#bankCheckBox').is(":checked")) {
         $('#cashCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "block");
         $('#debited-from').prop('required', true);
 
@@ -423,7 +390,6 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            // console.log(response)
             $("#cashBalance").val(response.data.Amount);
         }
     });
@@ -436,7 +402,6 @@ function convertDate(date) {
     //date shifting for IST timezone (+5 hours and 30 minutes)
     dateIST.setHours(dateIST.getHours() + 5);
     dateIST.setMinutes(dateIST.getMinutes() + 30);
-    // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }
 
@@ -447,7 +412,6 @@ $("#processBorrowPayment").on("click", () => {
     let fullPayment = 0;
     let bankId = null;
     let bycash = null;
-    // console.log(payAmount)
     if ($('#cashCheckBox').is(":checked")) {
         let cashBalance = $('#cashBalance').val();
         bycash = 1;
@@ -464,12 +428,8 @@ $("#processBorrowPayment").on("click", () => {
         }
 
         let bankBalance = $("#bankAmount").val();
-        // console.log(bankBalance)
-
         if (parseInt(payAmount) > parseInt(bankBalance)) {
-            // console.log($("#amount").val())
             alert("You don't have Enough balance")
-            // console.log("You don't have Enough balance")
             return;
         }
     }
@@ -492,7 +452,6 @@ $("#processBorrowPayment").on("click", () => {
     let personId = $("#personId").val();
     let transacationId = $("#transacationId").val();
     let lendId = $("#lendId").val();
-    // let bankId = $("#bankId").val();
     let date = getDate();
 
 
@@ -509,8 +468,6 @@ $("#processBorrowPayment").on("click", () => {
 
     }
 
-    // console.log(payObject)
-
     $.ajax({
         type: "POST",
         url: "/v1/lend/payDebt",
@@ -519,7 +476,6 @@ $("#processBorrowPayment").on("click", () => {
         dataType: "json",
 
         success: function (response) {
-            console.log(response)
             $('#makePaymentModal').modal('toggle');
             reDrawTable(payObject);
             alertify.success('Information saved.', 3);
@@ -532,10 +488,7 @@ $("#processBorrowPayment").on("click", () => {
 })
 
 function reDrawTable(payObject) {
-    // console.log(GlobalPData);
     GlobalPData.totalPaid = parseInt(payObject.payAmount) + parseInt(GlobalPData.totalPaid);
-    console.log(GlobalPData.totalPaid);
-    // GlobalPData = GlobalPData;
     if (parseInt(GlobalPData.totalAmount) == parseInt(GlobalPData.totalPaid)) {
         try {
             GlobalPTable.row(GlobalPRow).remove().draw();
@@ -565,8 +518,5 @@ function getDate() {
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
-
-    // This arrangement can be altered based on how we want the date's format to appear.
     return `${month}-${day}-${year}`;
-    // console.log(currentDate); // "6-17-2022"
 }

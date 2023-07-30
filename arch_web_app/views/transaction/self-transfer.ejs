@@ -14,7 +14,7 @@
 
         <div class="container" style="padding-top: 10px;">
 
-            <form id="expense-form">
+            <form id="self-transfer-form">
                 <div class="row">
                     <div class="col">
                             <label class="form-check-label" for="fund-amount">
@@ -25,8 +25,8 @@
                     </div>
                 </div>
                 <div id="Transfer-from-div" class="mb-3">
-                    <label for="debited-from" class="form-label">Transfer From</label>
-                    <select id="debited-from" class="form-control" required>
+                    <label for="transfer-from" class="form-label">Transfer From</label>
+                    <select id="transfer-from" class="form-control" required>
 
                     </select>
                 </div>
@@ -43,14 +43,10 @@
                 </div>
 
                 <div class='mb-3'>
-                    <label for="expense_date" class="form-label">Date</label>
-                    <input type="text" id="expense_date" class="form-control" required>
+                    <label for="self-transfer-date" class="form-label">Date</label>
+                    <input type="text" id="self-transfer-date" class="form-control" required>
                 </div>
-
-                <div class="mb-3">
-                    <label for="notes" class="form-label">Notes</label>
-                    <input type="text" class="form-control" id="notes" required>
-                </div>
+                
                 <button type="submit" class="btn btn-primary">Submit Data</button>
             </form>
         </div>
@@ -71,4 +67,5 @@
             src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
         <!-- Custom Script -->
         <script type="text/javascript" src="../js/admin_panel/admin.js"></script>
+        <script type="text/javascript" src="../js/custom/self-transfer.js"></script>
         <%- include("../common/footer.ejs"); %>

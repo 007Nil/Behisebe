@@ -26,10 +26,7 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            // console.log(response)
-            // $("#cashBalance").val(response.data.Amount);
             insertCashDetails(response.data.Amount)
-            // $("#bankAmount").val(response.data);
         }
     });
 }

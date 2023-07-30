@@ -18,6 +18,7 @@ const creditRouter = require("./rest_controller/CreditController");
 const personRouter = require("./rest_controller/PersonController");
 const lendRouter = require("./rest_controller/LendController");
 const cashRouter = require("./rest_controller/CashController");
+const selfTransaction = require("./rest_controller/SelfTransferController.js");
 // const passport = require('./services/PassportService');
 
 const oneDay = 1000 * 60 * 60 * 24;
@@ -117,6 +118,7 @@ app.use("/v1/bank", bankRouter);
 app.use("/v1/cash", cashRouter);
 app.use("/v1/expense", expenseRouter);
 app.use("/v1/credit", creditRouter);
+app.use("/v1/self-transation", selfTransaction);
 
 /*
 // ------ All Prod Routes for pages -------------

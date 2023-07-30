@@ -1,12 +1,8 @@
-// $(document).ready(function() {
-// Click on Settings href and set Bank setting color white
-// console.log("HIT");
+const { notify } = require("../../../view_controller/TransactionRoutes");
+
 $("#settings_id")[0].click();
 $("#bank_settings_id").css("color", "#FFFFFF");
 alertify.set('notifier', 'position', 'top-right');
-
-
-// });
 
 $("#add_bank_details").on("click", () => {
   $("#add_bank_details").css("color", "#FFFFFF");
@@ -27,13 +23,11 @@ $("#add_bank_details").on("click", () => {
       dataType: 'json',
       delay: 250,
       data: function (params) {
-        // console.log(params.term)
         return {
           searchTerm: params.term
         };
       },
       processResults: function (response) {
-        console.log(response)
         return {
           results: $.map(response, function (item) {
             return {
@@ -45,7 +39,6 @@ $("#add_bank_details").on("click", () => {
       },
       cache: true
     }
-    // theme: "bootstrap"
   });
 
   // Add bank details form submit
@@ -53,8 +46,6 @@ $("#add_bank_details").on("click", () => {
     event.preventDefault();
     let date = new Date();
     let currentDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`
-    // console.log(`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`);
-    // return;
     let jsonObj = {
       "bankName": $("#new_bank_name").val(),
       "bankBalance": $("#total_amount").val(),
@@ -63,10 +54,6 @@ $("#add_bank_details").on("click", () => {
       "borrowFrom": null,
       "date": currentDate
     };
-    // console.log($('#bankAccountType').select2('data')[0].id)
-    // return;
-
-    // console.log(jsonObj);
     $.ajax({
       type: "POST",
       url: "/v1/bank/addDetails",
@@ -75,14 +62,10 @@ $("#add_bank_details").on("click", () => {
       dataType: "json",
 
       success: function (response) {
-        // console.log(response);
         resetAddBankForm()
         alertify.success('Bank information saved.', 3);
       },
       error: function (error) {
-        console.log(error)
-        // console.log(error);
-        // console.log("Error");
         alertify.error('Error while saving the data!!', 3);
       },
     });
@@ -153,7 +136,6 @@ function getBankDetails() {
       insertBankData(response);
     },
     error: function (error) {
-      console.log(error);
     },
   });
 }
@@ -203,7 +185,6 @@ function insertBankData(bankDetailsObj) {
         targets: 0,
         data: "BankID",
         render: function (data) {
-          // console.log(data)
           return data;
         },
       },

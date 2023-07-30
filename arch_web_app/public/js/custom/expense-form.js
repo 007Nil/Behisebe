@@ -12,15 +12,10 @@ $("#add-expense").on("click", () => {
     getCashBalance();
 
 
-
-    // $('#cashCheckBox')[0].checked = true;
-
-    // Added form jquery
-
     $('#expense_date').datepicker();
     $("#debited-from").select2({
         placeholder: "Select a Bank Account",
-        // tags: false,
+
         ajax: {
             url: "/v1/bank/getBankDetails",
             dataType: 'json',
@@ -33,7 +28,6 @@ $("#add-expense").on("click", () => {
                 };
             },
             processResults: function (data) {
-                // console.log(data)
                 return {
                     results: $.map(data, function (item) {
                         return {
@@ -61,7 +55,6 @@ $("#add-expense").on("click", () => {
                 };
             },
             processResults: function (response) {
-                // console.log(data.data)
                 return {
                     results: $.map(response.data, function (item) {
                         return {
@@ -88,7 +81,6 @@ $("#add-expense").on("click", () => {
                 };
             },
             processResults: function (response) {
-                // console.log(data.data)
                 return {
                     results: $.map(response.data, function (item) {
                         return {
@@ -113,14 +105,12 @@ $("#add-expense").on("click", () => {
                 }
             });
         } catch {
-            // console.log("HIT")
             $("#bankAmount").val("");
         }
     })
 
     $('#expense-reason').on("change", () => {
         try {
-            // console.log($('#expense-reason').select2('data')[0].text);
             if ($('#expense-reason').select2('data')[0].text === "Lend") {
                 $("#expense-cause-form").html("");
                 insertLendMoneyFields();
@@ -137,7 +127,6 @@ $("#add-expense").on("click", () => {
                             };
                         },
                         processResults: function (response) {
-                            // console.log(data.data)
                             return {
                                 results: $.map(response.data, function (item) {
                                     return {
@@ -152,7 +141,6 @@ $("#add-expense").on("click", () => {
             } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
                 $("#expense-cause-form").html("");
                 insertLendMoneyFields();
-                // console.log("HIT")
                 $("#spacial-debit").select2({
                     tags: [],
                     ajax: {
@@ -166,7 +154,6 @@ $("#add-expense").on("click", () => {
                             };
                         },
                         processResults: function (response) {
-                            // console.log(data.data)
                             return {
                                 results: $.map(response.data, function (item) {
                                     return {
@@ -180,7 +167,6 @@ $("#add-expense").on("click", () => {
                 });
             }
             else {
-                // console.log("HIT ELSE")
                 $("#expense-cause-form").html("");
             }
         } catch {
@@ -202,7 +188,6 @@ $("#add-expense").on("click", () => {
             } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
                 spacialDebit = `${$("#spacial-debit").select2('data')[0].id}-payOfDebt`;
             }
-            // spacialDebit = $("#spacial-debit").select2('data')[0].id;
         } catch (error) {
             spacialDebit = null;
         }
@@ -212,8 +197,7 @@ $("#add-expense").on("click", () => {
         } catch {
             bankId = null;
         }
-        // let isByCash = $("#cashCheckBox").is(":checked");
-        // console.log($("#debited-from").select2('data'));
+
         let expenseObject = {
             "bankId": bankId,
             "amount": $("#amount").val(),
@@ -223,10 +207,6 @@ $("#add-expense").on("click", () => {
             "byCash": $("#cashCheckBox").is(":checked"),
             "notes": $("#notes").val()
         }
-        // console.log(isByCash)
-        // console.log(expenseObject);
-        // return;
-
 
         $.ajax({
             type: "POST",
@@ -236,13 +216,11 @@ $("#add-expense").on("click", () => {
             dataType: "json",
 
             success: function (response) {
-                // console.log(response);
                 resetExpenseForm()
                 alertify.success('Expense information saved.', 3);
                 getCashBalance();
             },
             error: function (error) {
-                // console.log(error);
                 alertify.error('Error while saving the data!!', 3);
             },
         });
@@ -252,12 +230,9 @@ $("#add-expense").on("click", () => {
 
 
 $(document).on('change', "#cashCheckBox", function () {
-    // console.log($('#bankCheckBox').attr('checked'))
     if ($('#cashCheckBox').is(":checked")) {
         $('#bankCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "none");
-        // $('#debited-from').removeAttr('required');​​​​​
         $('#debited-from').removeAttr('required');
     }
 });
@@ -265,7 +240,6 @@ $(document).on('change', "#cashCheckBox", function () {
 $(document).on('change', "#bankCheckBox", function () {
     if ($('#bankCheckBox').is(":checked")) {
         $('#cashCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "block");
         $('#debited-from').prop('required', true);
 
@@ -293,32 +267,19 @@ $("#view-expense").on("click", () => {
     }).datepicker('setDate', 'today');
     getExpenseDetails();
     $("#start-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getExpenseDetails();
     })
     $("#end-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getExpenseDetails();
     })
 })
 // ------ Functions ------------------//
 
-// function noResultsButtonClicked() {
-//     alert('You clicked the "No Result Found" button.');
-// }
 
 function getExpenseDetails() {
-    // var tables = $.fn.dataTable.fnTables(true);
 
-    // $(tables).each(function () {
-    //     console.log("HIT");
-    //     $(this).dataTable().fnDestroy();
-    // });
-    // $("#dynamic_bank_content").html("");
     let startDate = $("#start-date").val();
     let endDate = $("#end-date").val();
-    console.log(new Date(startDate).getTime());
-    console.log(new Date(endDate).getTime());
     if (new Date(startDate).getTime() > new Date(endDate).getTime()){
         alert("NOT POSSIBLE")
         return
@@ -329,9 +290,7 @@ function getExpenseDetails() {
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {
-            console.log(response.data);
             if ($.fn.dataTable.isDataTable('#ExpenseDetailsTable')) {
-                console.log("HIT")
                 let expTable = $('#ExpenseDetailsTable').DataTable();
                 expTable.clear().draw();
                 expTable.rows.add(response.data);
@@ -342,7 +301,7 @@ function getExpenseDetails() {
 
         },
         error: function (error) {
-            console.log(error);
+            alert("Error occur!!!"+error);
         },
     });
 }
@@ -484,9 +443,7 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            console.log(response)
             $("#cashBalance").val(response.data.Amount);
-            // $("#bankAmount").val(response.data);
         }
     });
 }
@@ -518,9 +475,6 @@ function insertExpenseDetails(expenseData) {
                 "title": "Amount",
             },
         ],
-        // rowReorder: {
-        //     selector: 'td:nth-child(2)'
-        // },
         responsive: false,
         destroy: true,
         retrieve: true,
@@ -529,7 +483,6 @@ function insertExpenseDetails(expenseData) {
                 targets: 1,
                 data: "BankID",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -549,28 +502,6 @@ function insertExpenseDetails(expenseData) {
                     return data;
                 },
             }
-            // {
-            //     targets: 3,
-            //     data: "Reason",
-            //     render: function (data) {
-            //         // console.log(data)
-            //         return data;
-            //     },
-            // }
-            // {
-            //     targets: 4,
-            //     data: "Date",
-            //     render: function (data) {
-            //         // console.log(data)
-            //         let dateUTC = new Date(data);
-            //         dateUTC = dateUTC.getTime()
-            //         let dateIST = new Date(dateUTC);
-            //         //date shifting for IST timezone (+5 hours and 30 minutes)
-            //         dateIST.setHours(dateIST.getHours() + 5);
-            //         dateIST.setMinutes(dateIST.getMinutes() + 30);
-            //         return dateIST.toDateString();
-            //     },
-            // }
         ],
         order: [1, 'asc']
     });
@@ -580,18 +511,13 @@ function insertExpenseDetails(expenseData) {
     $("#ExpenseDetailsTable").on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
         let row = expenseTable.row(tr);
-        // console.log(row)
-        console.log(row.child.isShown())
         if (row.child.isShown()) {
             // This row is already open - close it
-            // console.log("HIT")
             row.child.hide();
             tr.removeClass('shown');
         } else {
-            console.log(row)
             row.child(expenseDetails(row.data().BankID)).show();
             tr.addClass('shown');
-            console.log(row.data());
             generateExpenseDetailsDatatable(row.data());
         }
     });
@@ -640,7 +566,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 0,
                 data: "Reason",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -648,7 +573,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 1,
                 data: "Amount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -656,7 +580,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 2,
                 data: "Date",
                 render: function (data) {
-                    // console.log(data)
                     return convertDate(data);
                 },
             },
@@ -664,7 +587,6 @@ function generateExpenseDetailsDatatable(expenseObj) {
                 targets: 3,
                 data: "Notes",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -680,6 +602,5 @@ function convertDate(date) {
     //date shifting for IST timezone (+5 hours and 30 minutes)
     dateIST.setHours(dateIST.getHours() + 5);
     dateIST.setMinutes(dateIST.getMinutes() + 30);
-    // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }

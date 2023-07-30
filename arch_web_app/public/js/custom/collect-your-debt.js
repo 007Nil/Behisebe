@@ -17,14 +17,10 @@ function getMoneyOweData() {
         dataType: "json",
 
         success: function (response) {
-            console.log(response.data);
             generateCollectYourDebt(response.data);
-            // resetExpenseForm()
-
             alertify.success('Information fetched.', 3);
         },
         error: function (error) {
-            // console.log(error);
             alertify.error('Error while fetching the data!!', 3);
         },
     });
@@ -52,9 +48,6 @@ function generateCollectYourDebt(oweData) {
             {
                 "title": "Already Received",
             },
-            // {
-            //     "title": "Full Payment",
-            // },
         ],
         responsive: false,
         columnDefs: [
@@ -76,7 +69,6 @@ function generateCollectYourDebt(oweData) {
                 targets: 3,
                 data: "totalAmount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -84,15 +76,9 @@ function generateCollectYourDebt(oweData) {
                 targets: 4,
                 data: "alreadyReceived",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
-            },
-            // {
-            //     targets: 5,
-            //     data: null,
-            //     defaultContent: `<button type="button" class="btn btn-outline-success btn-sm">Clear Debt</button>`
-            // },
+            }
         ],
         order: [1, 'asc']
     });
@@ -100,14 +86,11 @@ function generateCollectYourDebt(oweData) {
     GlobalPTable = collectYourDebtTable;
 
     $('#collect-your-debt-table tbody').on('click', 'td.dt-control', function () {
-        // console.log("HIT")
         let tr = $(this).closest('tr');
         let row = collectYourDebtTable.row(tr);
         GlobalPRow = row;
-        // GlobalPData = row.data();
         if (row.child.isShown()) {
             // This row is already open - close it
-            // console.log("HIT")
             row.child.hide();
             tr.removeClass('shown');
         } else {
@@ -119,7 +102,6 @@ function generateCollectYourDebt(oweData) {
 }
 
 function generateOweDetailsDatatable(detailsObj) {
-    console.log(detailsObj.OweDetails)
     let detailsTable = $(`#oweDetails-${detailsObj.personId}`).DataTable({
         data: detailsObj.OweDetails,
         columns: [
@@ -157,7 +139,6 @@ function generateOweDetailsDatatable(detailsObj) {
                 targets: 0,
                 data: "transacationId",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
 
@@ -166,7 +147,6 @@ function generateOweDetailsDatatable(detailsObj) {
                 targets: 1,
                 data: "lendId",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -174,7 +154,6 @@ function generateOweDetailsDatatable(detailsObj) {
                 targets: 2,
                 data: "bankId",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -182,7 +161,6 @@ function generateOweDetailsDatatable(detailsObj) {
                 targets: 3,
                 data: "amount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -190,7 +168,6 @@ function generateOweDetailsDatatable(detailsObj) {
                 targets: 4,
                 data: "alreadyReceived",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -225,7 +202,6 @@ function generateOweDetailsDatatable(detailsObj) {
     GolbalCTable = detailsTable;
 
     $(`#oweDetails-${detailsObj.personId} tbody`).on('click', '.btn-sm', function () {
-        // console.log("HIT")
         $("#paymentModalBody").empty();
         let tr = $(this).closest("tr");
         let row = detailsTable.row(tr);
@@ -314,15 +290,12 @@ function generateOweDetailsDatatable(detailsObj) {
                 url: "/v1/bank/getBankDetails",
                 dataType: 'json',
                 type: "GET",
-                // quietMillis: 1000,
-
                 data: function (params) {
                     return {
                         searchTerm: params.term
                     };
                 },
                 processResults: function (data) {
-                    console.log(data)
                     return {
                         results: $.map(data, function (item) {
                             return {
@@ -347,7 +320,6 @@ function generateOweDetailsDatatable(detailsObj) {
                     }
                 });
             } catch {
-                // console.log("HIT")
                 $("#bankAmount").val("");
             }
         })
@@ -417,7 +389,6 @@ $("#processOwePayment").on("click", () => {
     let personId = $("#personId").val();
     let transacationId = $("#transacationId").val();
     let lendId = $("#lendId").val();
-    // let bankId = $("#bankId").val();
     let date = getDate();
 
     let collectObj = {
@@ -433,7 +404,6 @@ $("#processOwePayment").on("click", () => {
 
     };
 
-    // console.log(collectObj)
 
     $.ajax({
         type: "POST",
@@ -443,7 +413,6 @@ $("#processOwePayment").on("click", () => {
         dataType: "json",
 
         success: function (response) {
-            // console.log(response.data)
             $('#updatePaymentModal').modal('toggle');
             reDrawTable(collectObj);
             alertify.success('Information saved.', 3);
@@ -455,11 +424,8 @@ $("#processOwePayment").on("click", () => {
 });
 
 function reDrawTable(collectObj) {
-    // console.log(GlobalPData);
     let pTableData = GlobalPRow.data()
     pTableData.alreadyReceived = parseInt(collectObj.payAmount) + parseInt(pTableData.alreadyReceived);
-    // console.log(GlobalPData.totalPaid);
-    // GlobalPData = GlobalPData;
     if (parseInt(pTableData.totalAmount) == parseInt(pTableData.alreadyReceived)) {
         try {
             GlobalPTable.row(GlobalPRow).remove().draw();
@@ -480,7 +446,7 @@ function reDrawTable(collectObj) {
         let cTableData = GlobalCRow.data();
         cTableData.alreadyReceived = parseInt(collectObj.payAmount) + parseInt(cTableData.alreadyReceived);
         GolbalCTable.row(GlobalCRow).data(cTableData).draw();
-        // GlobalCData = GlobalCData;
+
     }
 }
 
@@ -492,7 +458,6 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            // console.log(response)
             $("#cashBalance").val(response.data.Amount);
         }
     });
@@ -521,7 +486,6 @@ function convertDate(date) {
     //date shifting for IST timezone (+5 hours and 30 minutes)
     dateIST.setHours(dateIST.getHours() + 5);
     dateIST.setMinutes(dateIST.getMinutes() + 30);
-    // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }
 function getDate() {
@@ -533,5 +497,4 @@ function getDate() {
 
     // This arrangement can be altered based on how we want the date's format to appear.
     return `${month}-${day}-${year}`;
-    // console.log(currentDate); // "6-17-2022"
 }

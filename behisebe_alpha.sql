@@ -112,6 +112,10 @@ VALUES ("0987654321", "Lend", NULL), (
         "7676543456",
         "Pay Credit Card Balance",
         NULL
+    ),(
+        "1098856458",
+        "Self Transfer",
+        NULL
     );
 
 CREATE TABLE
@@ -157,6 +161,10 @@ VALUES ("765654343", "Borrow", NULL), (
     ),(
         "6765454367",
         "Credit as Cash",
+        NULL
+    ),(
+        "1698898645",
+        "Self Transfer",
         NULL
     );
 

@@ -25,7 +25,6 @@ $("#add-credit-details").on("click", () => {
                 };
             },
             processResults: function (data) {
-                console.log(data)
                 return {
                     results: $.map(data, function (item) {
                         return {
@@ -52,7 +51,6 @@ $("#add-credit-details").on("click", () => {
                 };
             },
             processResults: function (response) {
-                // console.log(data.data)
                 return {
                     results: $.map(response.data, function (item) {
                         return {
@@ -83,7 +81,6 @@ $("#add-credit-details").on("click", () => {
 
     $('#credit-reason').on("change", () => {
         try {
-            // console.log($('#expense-reason').select2('data')[0].text);
             if ($('#credit-reason').select2('data')[0].text === "Borrow") {
                 $("#credit-cause-div").html("");
                 insertCreditExtendFields();
@@ -101,7 +98,6 @@ $("#add-credit-details").on("click", () => {
                             };
                         },
                         processResults: function (response) {
-                            // console.log(data.data)
                             return {
                                 results: $.map(response.data, function (item) {
                                     return {
@@ -130,7 +126,6 @@ $("#add-credit-details").on("click", () => {
                             };
                         },
                         processResults: function (response) {
-                            // console.log(data.data)
                             return {
                                 results: $.map(response.data, function (item) {
                                     return {
@@ -144,7 +139,6 @@ $("#add-credit-details").on("click", () => {
                     }
                 });
             } else {
-                // console.log("HIT ELSE")
                 $("#credit-cause-div").html("");
             }
 
@@ -189,9 +183,6 @@ $("#add-credit-details").on("click", () => {
             "byCash": $("#cashCheckBox").is(":checked"),
             "notes": $("#notes").val()
         }
-        // console.log($("#spacial-credit").select2('data')[0].personID);
-        console.log(creditObject);
-        // return;
 
         $.ajax({
             type: "POST",
@@ -201,13 +192,11 @@ $("#add-credit-details").on("click", () => {
             dataType: "json",
 
             success: function (response) {
-                // console.log(response);
                 resetCreditForm();
                 alertify.success('Credit information saved.', 3);
                 getCashBalance()
             },
             error: function (error) {
-                // console.log(error);
                 alertify.error('Error while saving the data!!', 3);
             },
         });
@@ -277,9 +266,7 @@ function getCashBalance() {
         url: "/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
-            console.log(response)
             $("#cashBalance").val(response.data.Amount);
-            // $("#bankAmount").val(response.data);
         }
     });
 }
@@ -340,13 +327,10 @@ function addCreditForm() {
 }
 
 $(document).on('change', "#cashCheckBox", function () {
-    // console.log($('#bankCheckBox').attr('checked'))
     if ($('#cashCheckBox').is(":checked")) {
         $('#bankCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#credit-from-div").css("display", "none");
         $("#cerdit-reason-div").css("display", "none");
-        // $('#debited-from').removeAttr('required');​​​​​
         $('#credited-to').removeAttr('required');
         $("#credit-reason").removeAttr('required')
     }
@@ -355,7 +339,6 @@ $(document).on('change', "#cashCheckBox", function () {
 $(document).on('change', "#bankCheckBox", function () {
     if ($('#bankCheckBox').is(":checked")) {
         $('#cashCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#credit-from-div").css("display", "block");
         $("#cerdit-reason-div").css("display", "block");
         $('#credited-to').prop('required', true);

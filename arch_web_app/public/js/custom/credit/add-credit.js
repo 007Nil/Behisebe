@@ -198,7 +198,7 @@ $("#credit-form").submit((event) => {
         "notes": $("#notes").val()
     }
     // console.log($("#spacial-credit").select2('data')[0].personID);
-    console.log(creditObject);
+    // console.log(creditObject);
     // return;
 
     $.ajax({

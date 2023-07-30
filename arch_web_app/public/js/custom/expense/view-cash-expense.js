@@ -14,13 +14,10 @@ $(function () {
         currentText: "Today:" + $.datepicker.formatDate('MM dd, yy', new Date()),
         maxDate: 0
     }).datepicker('setDate', 'today');
-    // getExpenseDetails();
     $("#start-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getCashExpense()
     })
     $("#end-date").on('change', () => {
-        // $("table#ExpenseDetailsTable").remove()
         getCashExpense();
     })
     getCashExpense();
@@ -36,8 +33,6 @@ function getOneMonthPreviosDate() {
 function getCashExpense() {
     let startDate = $("#start-date").val();
     let endDate = $("#end-date").val();
-    // console.log(new Date(startDate).getTime());
-    // console.log(new Date(endDate).getTime());
     if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
         alert("NOT POSSIBLE")
         return
@@ -48,9 +43,7 @@ function getCashExpense() {
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {
-            console.log(response.data);
             if ($.fn.dataTable.isDataTable('#ExpenseCashDetailsTable')) {
-                console.log("HIT")
                 let cashExpTable = $('#ExpenseCashDetailsTable').DataTable();
                 cashExpTable.clear().draw();
                 cashExpTable.rows.add(response.data);
@@ -61,7 +54,6 @@ function getCashExpense() {
 
         },
         error: function (error) {
-            console.log(error);
         },
     });
 }
@@ -73,7 +65,6 @@ function convertDate(date) {
     //date shifting for IST timezone (+5 hours and 30 minutes)
     dateIST.setHours(dateIST.getHours() + 5);
     dateIST.setMinutes(dateIST.getMinutes() + 30);
-    // console.log(dateIST.toDateString())
     return dateIST.toDateString();
 }
 
@@ -102,7 +93,6 @@ function generateCashExpenseTable(expenseData) {
                 targets: 0,
                 data: "Amount",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
@@ -110,7 +100,6 @@ function generateCashExpenseTable(expenseData) {
                 targets: 1,
                 data: "Date",
                 render: function (data) {
-                    // console.log(data)
                     return convertDate(data);
                 },
             },
@@ -125,7 +114,6 @@ function generateCashExpenseTable(expenseData) {
                 targets: 3,
                 data: "Notes",
                 render: function (data) {
-                    // console.log(data)
                     return data;
                 },
             },
