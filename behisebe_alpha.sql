@@ -1,4 +1,4 @@
--- CREATE DATABASE IF NOT EXISTS Behisebe;
+ CREATE DATABASE IF NOT EXISTS Behisebe;
 
 USE Behisebe;
 
@@ -11,17 +11,6 @@ CREATE TABLE
         PRIMARY KEY (ID)
     );
 
--- Demo data
-
--- INSERT INTO
---     User (ID, FirstName, LastName, Email)
--- VALUES (
---         "1234567890",
---         "Sagnik",
---         "Sarkar",
---         "sagniksarkar@ymail.com"
---     );
-
 CREATE TABLE
     BankAccountType (
         ID TINYINT NOT NULL AUTO_INCREMENT UNIQUE,
@@ -31,7 +20,7 @@ CREATE TABLE
 
 INSERT INTO
     BankAccountType (AccountType)
-VALUES ("Current Account"), ("Savings Account"), ("Salary Account");
+VALUES ("Current Account"), ("Savings Account"), ("Salary Account"), ("Credit Card");
 
 CREATE TABLE
     Bank (
@@ -108,6 +97,14 @@ VALUES ("0987654321", "Lend", NULL), (
         "6565454378",
         "Cash Withdrawal",
         NULL
+    ),(
+        "7676543456",
+        "Pay Credit Card Balance",
+        NULL
+    ),(
+        "1098856458",
+        "Self Transfer",
+        NULL
     );
 
 CREATE TABLE
@@ -153,6 +150,10 @@ VALUES ("765654343", "Borrow", NULL), (
     ),(
         "6765454367",
         "Credit as Cash",
+        NULL
+    ),(
+        "1698898645",
+        "Self Transfer",
         NULL
     );
 

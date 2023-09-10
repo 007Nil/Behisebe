@@ -18,6 +18,7 @@ const creditRouter = require("./rest_controller/CreditController");
 const personRouter = require("./rest_controller/PersonController");
 const lendRouter = require("./rest_controller/LendController");
 const cashRouter = require("./rest_controller/CashController");
+const selfTransaction = require("./rest_controller/SelfTransferController.js");
 const passport = require('./services/PassportService');
 
 const oneDay = 1000 * 60 * 60 * 24;
@@ -110,6 +111,7 @@ app.use("/v1/bank", isLoggedIn, bankRouter);
 app.use("/v1/cash", isLoggedIn, cashRouter);
 app.use("/v1/expense", isLoggedIn, expenseRouter);
 app.use("/v1/credit", isLoggedIn, creditRouter);
+app.use("/v1/self-transation",isLoggedIn, selfTransaction);
 // Without middleware
 app.get('/', function (req, res) {
   res.redirect('/login');
