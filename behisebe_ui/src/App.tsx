@@ -1,17 +1,25 @@
-
-
 import './App.css'
-import { Navbar } from './components'
-
-import { Sidebar } from './components/Sidebar'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Navbar, Sidebar } from './components/index'
+import { Dashboard } from './pages/index'
 
 function App() {
 
 
   return (
     <>
-      <Navbar />
-      <Sidebar />
+      <BrowserRouter>
+        <Navbar />
+        <div className="flex">
+          <Sidebar />
+          <div className="h-screen flex-1 p-7">
+            <Routes>
+              <Route path='/' element={<Dashboard />} />
+            </Routes>
+          </div>
+
+        </div>
+      </BrowserRouter>
     </>
   )
 }
