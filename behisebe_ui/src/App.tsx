@@ -3,7 +3,7 @@
 import './App.css'
 import { Navbar } from './components'
 
-// import { Sidebar } from './components/Sidebar'
+import { Sidebar } from './components/Sidebar'
 
 function App() {
 
@@ -11,7 +11,7 @@ function App() {
   return (
     <>
       <Navbar />
-      {/* <Sidebar /> */}
+      <Sidebar />
     </>
   )
 }
