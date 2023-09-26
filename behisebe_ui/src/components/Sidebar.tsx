@@ -33,7 +33,7 @@ export const Sidebar = () => {
             {Menus.map((Menu, index) => (
               <li
                 key={index}
-                className={`flex  rounded-md p-2 cursor-pointer text-black text-sm items-center gap-x-4 
+                className={`flex  rounded-md p-2 cursor-pointer text-blue-400 text-sm items-center gap-x-4 hover:text-blue-800
               ${Menu.gap ? "mt-9" : "mt-2"} ${index === 0 && "bg-light-white"
                   } `}
               >

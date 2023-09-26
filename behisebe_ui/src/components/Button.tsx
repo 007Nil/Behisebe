@@ -11,7 +11,7 @@ export const Button = ({ children, className, style }: ButtonProps) => {
     <button
       type='button'
       style={style}
-      className={`${className} p-3 hover:drop-shadow-xl`}>
+      className={`${className} hover:drop-shadow-xl`}>
       {children}
     </button>
   )

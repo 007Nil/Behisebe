@@ -53,21 +53,22 @@ export const Navbar = () => {
                                             <span className='justify-center items-center flex'>
                                                 <span className='justify-center items-center flex'>
                                                     <span className='items-center justify-center flex'>
-                                                        <button><MdNotificationsNone size={28} /></button>
-
+                                                        <Button style={{ color: 'black' }} className='rounded-3xl' ><MdNotificationsNone size={28} /></Button>
                                                     </span>
                                                 </span>
                                             </span>
                                         </p>
-                                        <p className='px-1.5 py-0.5 font-semibold text-xs items-center bg-indigo-600 text-white rounded-full inline-flex
+                                        <p className='px-1.5 py-0.5 font-semibold text-xs items-center bg-blue-400 text-white rounded-full inline-flex
                 absolute -top-px -right-1'>{notification_list}</p>
                                     </div>
                                     <div className='justify-center items-center flex relative'>
                                         <img src={IMAGE.image1}
-                                            className='object-cover  h-9 w-9 rounded-full mr-2 bg-gray-300' alt='' />
+                                            className='object-cover h-9 w-9 rounded-full bg-gray-300' alt='' />
+                                    </div>
+                                    <div className='justify-center items-center flex relative'>
                                         <Button
-                                            style={{color: 'white'}}
-                                            className='bg-blue-600 text-14 rounded-3xl'>
+                                            style={{ color: 'white' }}
+                                            className='bg-blue-400 text-14 rounded-3xl p-2'>
                                             Money Transfer
                                         </Button>
                                     </div>
