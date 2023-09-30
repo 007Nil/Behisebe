@@ -1,15 +1,29 @@
-import { Card } from "../components"
+import { Card, PositiveAndNegativeBarChart, PieChart } from "../components"
 
 export const Dashboard = () => {
   return (
     <>
       <div className="mx-auto">
-        <div className="grid sm:grid-cols-1 lg:grid-cols-3 md:grid-cols-2">
-          <div className="lg:col-span-2 sm:col-span-1">
-            1
+        <div className="flex">
+
+          <div className="flex-grow">
+            <div>
+              Statistics
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="">
+                <PositiveAndNegativeBarChart />
+              </div>
+              <div className="">
+                <PieChart />
+              </div>
+            </div>
+
+
           </div>
 
-          <div className="container">
+          <div className="flex-none">
             <div className="flex flex-row">
               <div className="grow">
                 My Funds
@@ -24,17 +38,6 @@ export const Dashboard = () => {
               <Card />
             </div>
 
-          </div>
-
-          <div className="sm:col-span-3">
-            2asdasdadada
-          </div>
-          <div>
-            3
-          </div>
-
-          <div>
-            5
           </div>
 
         </div>
