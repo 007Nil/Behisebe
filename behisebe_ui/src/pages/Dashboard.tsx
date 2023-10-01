@@ -21,11 +21,11 @@ export const Dashboard = () => {
         <div className="flex h-screen">
 
           <div className="flex-grow pl-4 bg-gray-100">
-            <div className="m-2 pt-4 pb-3">
+            <div className="m-4 pt-4 pb-3">
               <h1 className="font-bold">Statistics</h1>
             </div>
 
-            <div className="bg-white rounded-2xl m-2">
+            <div className="bg-white rounded-2xl m-4">
               <div>
                 <Datepicker value={value} onChange={handleValueChange} />
               </div>
@@ -35,7 +35,19 @@ export const Dashboard = () => {
                   <PositiveAndNegativeBarChart />
                 </div>
                 <div className="col-span-1">
-                  <PieChart />
+                  <div>
+                    <PieChart />
+                  </div>
+                  <div className="grid grid-cols-2">
+                    <div className="">
+                      sds
+                    </div>
+                    <div>
+                      sds
+                    </div>
+                  </div>
+
+
                 </div>
               </div>
             </div>

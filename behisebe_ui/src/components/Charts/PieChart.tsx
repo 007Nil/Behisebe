@@ -15,9 +15,10 @@ export const PieChart = () => {
         <ResponsiveContainer aspect={2}>
             <PC>
                 <Pie
+
                     data={data}
                     // cx={120}
-                    // cy={200}
+                    // cy={120}
                     innerRadius={60}
                     outerRadius={80}
                     fill="#8884d8"
