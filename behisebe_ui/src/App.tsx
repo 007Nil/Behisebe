@@ -12,7 +12,7 @@ function App() {
         <Navbar />
         <div className="flex">
           <Sidebar />
-          <div className="h-screen flex-1 p-7">
+          <div className="h-screen flex-1">
             <Routes>
               <Route path='/' element={<Dashboard />} />
             </Routes>

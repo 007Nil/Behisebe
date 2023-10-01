@@ -59,7 +59,7 @@ export const PositiveAndNegativeBarChart = ( ) =>{
 //    demoUrl = 'https://codesandbox.io/s/bar-chart-with-positive-negative-i3b8b';
 
     return (
-      <ResponsiveContainer width="100%" height="100%" aspect={1}>
+      <ResponsiveContainer aspect={2}>
         <BarChart
           width={500}
           height={300}
