@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS Behisebe;
+ CREATE DATABASE IF NOT EXISTS Behisebe;
 
 USE Behisebe;
 
@@ -21,6 +21,7 @@ VALUES (
         "Sarkar",
         "sagnik952@gmail.com"
     );
+
 
 CREATE TABLE
     BankAccountType (
