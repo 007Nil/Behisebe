@@ -1,0 +1,35 @@
+{
+  "name": "behisebe_alpha_web_app",
+  "version": "1.0.0",
+  "description": "Alpha Web Application for behisebe",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/007Nil/Behisebe.git"
+  },
+  "author": "Sagnik Sarkar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/007Nil/Behisebe/issues"
+  },
+  "homepage": "https://github.com/007Nil/Behisebe#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.0.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "js-yaml": "^4.1.0",
+    "mysql2": "^3.2.0",
+    "passport": "^0.6.0",
+    "passport-google-oauth2": "^0.2.0",
+    "serve-favicon": "^2.5.0"
+  }
+}
