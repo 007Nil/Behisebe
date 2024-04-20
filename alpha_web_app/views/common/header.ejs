@@ -121,8 +121,8 @@
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Logged in as:</div>
-                    <%= firstName %>
-                    <%=lastName%>
+                    <%= session.user.firstName %>
+                    <%=session.user.lastName%>
                 </div>
             </nav>
         </div>

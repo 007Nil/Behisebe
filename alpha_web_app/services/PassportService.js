@@ -24,10 +24,10 @@ passport.serializeUser(async function (user, cb) {
     process.nextTick(function () {
         return cb(null, {
             ID: user.id,
-            FirstName: user.given_name,
-            LastName: user.family_name,
-            Email: user.email,
-            NewUser: isNewUser
+            firstName: user.given_name,
+            lastName: user.family_name,
+            email: user.email,
+            newUser: isNewUser
         });
     });
 })

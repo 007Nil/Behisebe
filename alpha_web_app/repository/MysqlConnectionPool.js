@@ -1,14 +1,12 @@
 const mysql = require('mysql2/promise');
-const {readConfig} =  require("../services/ReadConfig");
+require('dotenv').config()
 
-
-const mysqlParam = readConfig();
 const pool = mysql.createPool({
     connectionLimit: 100, //important
-    host: mysqlParam.MysqlServer,
-    user: mysqlParam.MysqlUser,
-    password: mysqlParam.MysqlPassword,
-    database: mysqlParam.MysqlDatabase,
+    host: process.env.MysqlServer,
+    user: process.env.MysqlUser,
+    password: process.env.MysqlPassword,
+    database: process.env.MysqlDatabase,
     debug: false
 });
 

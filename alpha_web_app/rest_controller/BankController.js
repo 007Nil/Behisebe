@@ -19,17 +19,19 @@ router.post("/addDetails", async function (req, res) {
 
 router.get("/getBankDetails", async (request, response) => {
     try {
+
         let requestObj = {
-            userId: request.session.user["ID"],
+            userId: request.session.passport.user["ID"],
             date: request.query.date
         }
         // console.log(request.query);
         let bankDetails = await getUserBankDetails(requestObj);
-        // console.log("HIT")
         response.status(200).send(bankDetails);
+        return;
     } catch (error) {
         console.log(error);
         response.status(500).send(new Error("Unablle to fetch Bank details. 500 Server Error!!!"));
+        return;
     }
 
 })
@@ -48,7 +50,7 @@ router.get("/getAccountTypes", async (request, response) => {
 router.get("/getAccountBalance", async (request, response) => {
     try {
         let requestBody = request.query;
-        requestBody.userId = request.session.user["ID"];
+        requestBody.userId = request.session.passport.user["ID"];
         let bankAmount = await getDailyClosing(requestBody);
         // console.log(bankAmount);
         response.status(200).send({"message": "successful","data": bankAmount.Amount});

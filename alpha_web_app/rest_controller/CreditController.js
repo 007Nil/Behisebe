@@ -10,7 +10,7 @@ const userModel = require("../model/UserModel");
 router
     .get("/getCreditReason", async (request, response) => {
         try {
-            let reasonData = await getCreditReason(request.session.user["ID"]);
+            let reasonData = await getCreditReason(request.session.passport.user["ID"]);
             // console.log(reasonData);
             response.status(200).send({ "message": "success", "data": reasonData });
         } catch (error) {
@@ -22,7 +22,7 @@ router
     })
     .post("/addCredit", async (request, response) => {
         try {
-            request.body.userId = request.session.user["ID"];
+            request.body.userId = request.session.passport.user["ID"];
             await addCreditDetails(request.body);
             response.status(200).send({ "message": "success" });
         } catch (error) {
@@ -33,7 +33,7 @@ router
     })
     .get("/getLendToPersons", async (request, response) => {
         try {
-            let lendToData = await prepareLendToData(request.session.user["ID"]);
+            let lendToData = await prepareLendToData(request.session.passport.user["ID"]);
             response.status(200).send({ "message": "success", "data": lendToData });
         } catch (error) {
             console.log(error);
@@ -43,7 +43,7 @@ router
     .get("/getCredit", async (request, response) => {
         try {
             let requestObj = request.query;
-            requestObj.userId = request.session.user["ID"];
+            requestObj.userId = request.session.passport.user["ID"];
             let creditData = await getCreditDetailsByuserId(requestObj);
             response.status(200).send({ "message": "success", "data": creditData });
         } catch (error) {
@@ -53,14 +53,14 @@ router
     })
     .get("/getCashCredit", async (request, response) => {
         let requestObj = request.query;
-        requestObj.userId = request.session.user["ID"];
+        requestObj.userId = request.session.passport.user["ID"];
         let cashCreditData = await getCashCreditDetailsByUserId(requestObj);
         // let creditData = await getCreditDetailsByuserId(requestObj);
         response.status(200).send({ "message": "success", "data": cashCreditData });
     })
     .get("/getMoneyOwe", async (request, response) => {
         try {
-            let oweData = await getLendToData(request.session.user["ID"])
+            let oweData = await getLendToData(request.session.passport.user["ID"])
             response.status(200).send({ "message": "success", "data": oweData });
         } catch (error) {
             console.log(error)
@@ -88,7 +88,7 @@ router
                 "spacialCreditID": null,
                 "byCash": true,
                 "notes": "Initial Cash Value",
-                "userId": request.session.user["ID"]
+                "userId": request.session.passport.user["ID"]
             }
 
             await addCreditDetails(creditObj);
