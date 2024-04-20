@@ -6,7 +6,7 @@ const { addCreditDetails } = require("../services/CreditServices");
 router.post("/add-self", async (req, res) => {
     try {
         let requestObj = req.body;
-        requestObj.userId = req.session.passport.user["ID"];
+        requestObj.userId = req.session.user["ID"];
         console.log(requestObj);
         let expense_model = {
             "userId": requestObj.userId,

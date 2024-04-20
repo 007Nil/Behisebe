@@ -18,7 +18,7 @@ router
     .post("/payDebt", async (request, response) => {
         try {
 
-            let userID = request.session.passport.user["ID"];
+            let userID = request.session.user["ID"];
             let requestObj = request.body;
 
             let expenseData = {};
@@ -117,7 +117,7 @@ router
     })
     .post("/collectDebt", async (request, response) => {
         try {
-            let userID = request.session.passport.user["ID"];
+            let userID = request.session.user["ID"];
             let requestObj = request.body;
 
             let creaditData = {}

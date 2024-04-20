@@ -7,7 +7,7 @@ const { getDailyClosing } = require("../services/DailyClosingService");
 
 router.post("/addDetails", async function (req, res) {
     let requestObj = req.body;
-    requestObj.userID = req.session.passport.user["ID"];
+    requestObj.userID = req.session.user["ID"];
     try {
         await addBankDetails(requestObj);
         res.status(200).send({ "message": "Data Saved Successfully" });
@@ -20,7 +20,7 @@ router.post("/addDetails", async function (req, res) {
 router.get("/getBankDetails", async (request, response) => {
     try {
         let requestObj = {
-            userId: request.session.passport.user["ID"],
+            userId: request.session.user["ID"],
             date: request.query.date
         }
         // console.log(request.query);
@@ -48,7 +48,7 @@ router.get("/getAccountTypes", async (request, response) => {
 router.get("/getAccountBalance", async (request, response) => {
     try {
         let requestBody = request.query;
-        requestBody.userId = request.session.passport.user["ID"];
+        requestBody.userId = request.session.user["ID"];
         let bankAmount = await getDailyClosing(requestBody);
         // console.log(bankAmount);
         response.status(200).send({"message": "successful","data": bankAmount.Amount});
