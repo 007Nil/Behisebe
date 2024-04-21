@@ -37,8 +37,9 @@ function randomValueHex(len) {
 function isLoggedIn(req, res, next) {
   if (applicationEnv == "PROD") {
     req.user ? next() : res.render("not-authorized");
+  } else {
+    next();
   }
-  next();
 }
 
 var app = express();
@@ -49,11 +50,10 @@ app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
+
 // ------ Set Session ---------------------
 
-
 if (applicationEnv == "PROD") {
-
   app.use(
     expressSession({
       secret: `${randomValueHex(6)}-${randomValueHex(6)}-${randomValueHex(6)}`,
@@ -71,10 +71,9 @@ if (applicationEnv == "PROD") {
       failureRedirect: "/auth/failure",
     })
   );
-
-
   app.get("/auth/failure", (req, res) => {
     res.send("ERROR");
+    return;
   });
 } else if (applicationEnv == "DEV") {
   // This is for testing env
@@ -93,12 +92,15 @@ if (applicationEnv == "PROD") {
       // Initialise default variables on the session object
       if (typeof req.session.initialisedSession === "undefined") {
         (req.session.initialisedSession = true),
-          (req.session.passport = {user: {
-            ID: "1234567890",
-            firstName: "Sagnik",
-            lastName: "Sarkar",
-            Email: "sagniksarkar@ymail.com",
-          }});
+          (req.session.passport = {
+            user: {
+              ID: "1234567890",
+              firstName: "Sagnik",
+              lastName: "Sarkar",
+              email: "sagniksarkar@ymail.com",
+              newUser: false,
+            },
+          });
       }
       next();
     }
@@ -137,6 +139,7 @@ app.use("/v1/cash", isLoggedIn, cashRouter);
 app.use("/v1/expense", isLoggedIn, expenseRouter);
 app.use("/v1/credit", isLoggedIn, creditRouter);
 app.use("/v1/self-transation", isLoggedIn, selfTransaction);
+
 // Without middleware
 app.get("/", function (req, res) {
   res.redirect("/login");

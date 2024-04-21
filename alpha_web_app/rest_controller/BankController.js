@@ -7,7 +7,7 @@ const { getDailyClosing } = require("../services/DailyClosingService");
 
 router.post("/addDetails", async function (req, res) {
     let requestObj = req.body;
-    requestObj.userID = req.session.user["ID"];
+    requestObj.userID = req.session.passport.user["ID"];
     try {
         await addBankDetails(requestObj);
         res.status(200).send({ "message": "Data Saved Successfully" });
@@ -26,6 +26,7 @@ router.get("/getBankDetails", async (request, response) => {
         }
         // console.log(request.query);
         let bankDetails = await getUserBankDetails(requestObj);
+        console.log("pass")
         response.status(200).send(bankDetails);
         return;
     } catch (error) {
