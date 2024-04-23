@@ -5,17 +5,16 @@ import (
 	"database/sql"
 	"fmt"
 	"math/rand"
-
-	// "sync"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/robfig/cron/v3"
 )
 
 // var wg sync.WaitGroup
 
 func connectDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "sergey:sergey@tcp(localhost:3306)/Behisebe")
+	db, err := sql.Open("mysql", "user:password@tcp(localhost:3306)/Behisebe")
 
 	return db, err
 
@@ -144,67 +143,73 @@ func randSeq(n int) string {
 }
 
 func main() {
-	db, err := connectDB()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	// defer the close till after the main function has finished
-	// executing
-	defer db.Close()
-	fmt.Println("Connected")
-
-	allUser := fetchAllUsers(db)
-	allBank := fetchAllBank(db)
-	// fmt.Println(allUser)
-	// Logic for DailyClosing
-	var dailyClosingSlice []models.DailyClosing
-	for _, bank := range allBank {
-		var dailyClosing models.DailyClosing
-		dailyClosing.BankId = bank.Id
-		dailyClosing.UserId = bank.UserId
-		dailyClosing.Date = time.Now().Format("2006-01-02")
-		dailyClosingSlice = append(dailyClosingSlice, dailyClosing)
-	}
-
-	for _, closing := range dailyClosingSlice {
-		if !fetchDailyClosing(closing, db) {
-			var newdClosing models.DailyClosing
-			newdClosing.Id = randSeq(20)
-			newdClosing.Amount = fetchDailyClosingPreviosDate(closing, db)
-			newdClosing.Date = closing.Date
-			newdClosing.UserId = closing.UserId
-			newdClosing.BankId = closing.BankId
-			// fmt.Println(newdClosing)
-			// wg.Add(1)
-			insertDailyClosing(db, newdClosing)
-		}
-	}
-
-	// fetchDailyClosing(dailyClosingSlice)
-	// Logic for Dailycash Clsoing
-	var dcCashSlice []models.DailyClosingCash
-	for _, userId := range allUser {
-		var dcCash models.DailyClosingCash
-		fmt.Println(userId)
-		dcCash.UserId = userId
-		dcCash.Date = time.Now().Format("2006-01-02")
-		dcCashSlice = append(dcCashSlice, dcCash)
-	}
-
-	for _, cashClosing := range dcCashSlice {
-		if !fetchDailyClosingCash(cashClosing, db) {
-			var newDCCash models.DailyClosingCash
-			newDCCash.Id = randSeq(20)
-			newDCCash.Date = cashClosing.Date
-			newDCCash.UserId = cashClosing.UserId
-			newDCCash.Amount = fetchDailyClosingCashPreviosDate(cashClosing, db)
-			// fmt.Println(cashClosing.UserId)
-			insertDailyClosingCash(db, newDCCash)
+	c := cron.New()
+	c.AddFunc("@daily", func() {
+		db, err := connectDB()
+		if err != nil {
+			fmt.Println(err.Error())
 		}
 
-	}
+		// defer the close till after the main function has finished
+		// executing
+		defer db.Close()
+		fmt.Println("Connected")
 
-	fmt.Print("Done")
+		allUser := fetchAllUsers(db)
+		allBank := fetchAllBank(db)
+		// fmt.Println(allUser)
+		// Logic for DailyClosing
+		var dailyClosingSlice []models.DailyClosing
+		for _, bank := range allBank {
+			var dailyClosing models.DailyClosing
+			dailyClosing.BankId = bank.Id
+			dailyClosing.UserId = bank.UserId
+			dailyClosing.Date = time.Now().Format("2006-01-02")
+			dailyClosingSlice = append(dailyClosingSlice, dailyClosing)
+		}
+
+		for _, closing := range dailyClosingSlice {
+			if !fetchDailyClosing(closing, db) {
+				var newdClosing models.DailyClosing
+				newdClosing.Id = randSeq(20)
+				newdClosing.Amount = fetchDailyClosingPreviosDate(closing, db)
+				newdClosing.Date = closing.Date
+				newdClosing.UserId = closing.UserId
+				newdClosing.BankId = closing.BankId
+				// fmt.Println(newdClosing)
+				// wg.Add(1)
+				insertDailyClosing(db, newdClosing)
+			}
+		}
+
+		// fetchDailyClosing(dailyClosingSlice)
+		// Logic for Dailycash Clsoing
+		var dcCashSlice []models.DailyClosingCash
+		for _, userId := range allUser {
+			var dcCash models.DailyClosingCash
+			fmt.Println(userId)
+			dcCash.UserId = userId
+			dcCash.Date = time.Now().Format("2006-01-02")
+			dcCashSlice = append(dcCashSlice, dcCash)
+		}
+
+		for _, cashClosing := range dcCashSlice {
+			if !fetchDailyClosingCash(cashClosing, db) {
+				var newDCCash models.DailyClosingCash
+				newDCCash.Id = randSeq(20)
+				newDCCash.Date = cashClosing.Date
+				newDCCash.UserId = cashClosing.UserId
+				newDCCash.Amount = fetchDailyClosingCashPreviosDate(cashClosing, db)
+				// fmt.Println(cashClosing.UserId)
+				insertDailyClosingCash(db, newDCCash)
+			}
+
+		}
+
+		fmt.Print("Done")
+
+	})
+	c.Start()
+	select {}
 
 }
