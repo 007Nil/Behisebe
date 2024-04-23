@@ -1,17 +1,21 @@
 const express = require("express");
 const router = express.Router();
 
+require("dotenv").config();
+
 router.get("/", async (req, res) => {
-  // try{
-
-  // }catch (error){
-
-  // }
-  if (req.session.passport.user.newUser) {
-    res.redirect("/transaction/add-initial-cash");
-    res.send(
-      "THIS IS A ALPHA TESTING APPLICATION. REGISTRATION IS NOT VALID FOR REGULAR USERS"
-    );
+  let userDetails = req.session.passport.user;
+  console.log(userDetails)
+  if (userDetails.newUser) {
+    if (userDetails.email == process.env.USER_EMAIL) {
+      res.redirect("/transaction/add-initial-cash");
+      return;
+    } else {
+      res.send(
+        "THIS IS A ALPHA TESTING APPLICATION. REGISTRATION IS NOT VALID FOR REGULAR USERS"
+      );
+      return;
+    }
   }
   res.render("dashboard/dashboard", { title: "Dashboard" });
 });

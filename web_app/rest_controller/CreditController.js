@@ -72,13 +72,13 @@ router
             let userSessionData = request.session.passport.user;
             let userObj = new userModel();
             userObj.id = userSessionData.ID;
-            userObj.firstName = userSessionData.FirstName;
-            userObj.lastName = userSessionData.LastName;
-            userObj.email = userSessionData.Email;
-
+            userObj.firstName = userSessionData.firstName;
+            userObj.lastName = userSessionData.lastName;
+            userObj.email = userSessionData.email;
+            
             await addUser(userObj);
-
-            request.session.passport.user.NewUser = false;
+            console.log(userObj)
+            request.session.passport.user.newUser = false;
 
             let creditObj = {
                 "bankId": null,

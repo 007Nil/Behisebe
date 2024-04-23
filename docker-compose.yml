@@ -17,6 +17,7 @@ services:
       - CLIENTID=${CLIENTID}
       - CLIENTSECRET=${CLIENTSECRET}
       - CALLBACKURL=${CALLBACKURL}
+      - USER_EMAIL=${USER_EMAIL}
     restart: unless-stopped
     networks:
       - nodejs-mysql-network
