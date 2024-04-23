@@ -11,8 +11,12 @@ if [ "$1" = "up" ]; then
   
 elif [ "$1" = "down" ]; then
 
+  docker compose down
+
+elif [ "$1" = "clean" ]; then
+
   docker compose down --rmi all
-  
+
 fi
 
 
