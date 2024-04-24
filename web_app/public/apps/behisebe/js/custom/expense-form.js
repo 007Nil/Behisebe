@@ -22,7 +22,7 @@ $("#add-expense").on("click", () => {
         placeholder: "Select a Bank Account",
         // tags: false,
         ajax: {
-            url: "/v1/bank/getBankDetails",
+            url: "/apps/behisebe/v1/bank/getBankDetails",
             dataType: 'json',
             type: "GET",
             quietMillis: 1000,
@@ -51,7 +51,7 @@ $("#add-expense").on("click", () => {
         placeholder: "Select a Reason",
         tags: [],
         ajax: {
-            url: "/v1/expense/getExpenseReason",
+            url: "/apps/behisebe/v1/expense/getExpenseReason",
             dataType: 'json',
             type: "GET",
             quietMillis: 50,
@@ -78,7 +78,7 @@ $("#add-expense").on("click", () => {
         placeholder: "Select an Option",
         tags: [],
         ajax: {
-            url: "/v1/expense/getPersonData",
+            url: "/apps/behisebe/v1/expense/getPersonData",
             dataType: 'json',
             type: "GET",
             quietMillis: 50,
@@ -106,7 +106,7 @@ $("#add-expense").on("click", () => {
         try {
             $.ajax({
                 type: "GET",
-                url: "/v1/bank/getAccountBalance",
+                url: "/apps/behisebe/v1/bank/getAccountBalance",
                 data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
                 success: function (response) {
                     $("#bankAmount").val(response.data);
@@ -156,7 +156,7 @@ $("#add-expense").on("click", () => {
                 $("#spacial-debit").select2({
                     tags: [],
                     ajax: {
-                        url: "/v1/expense/getPayOfDebt",
+                        url: "/apps/behisebe/v1/expense/getPayOfDebt",
                         dataType: 'json',
                         type: "GET",
                         quietMillis: 50,
@@ -230,7 +230,7 @@ $("#add-expense").on("click", () => {
 
         $.ajax({
             type: "POST",
-            url: "/v1/expense/addExpense",
+            url: "/apps/behisebe/v1/expense/addExpense",
             data: JSON.stringify(expenseObject),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -325,7 +325,7 @@ function getExpenseDetails() {
     }
     $.ajax({
         type: "GET",
-        "url": "/v1/expense/getExpense",
+        "url": "/apps/behisebe/v1/expense/getExpense",
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {
@@ -481,7 +481,7 @@ function getDate() {
 function getCashBalance() {
     $.ajax({
         type: "GET",
-        url: "/v1/cash/getCashBalance",
+        url: "/apps/behisebe/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
             console.log(response)

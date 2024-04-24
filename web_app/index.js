@@ -117,35 +117,35 @@ app.use(cookieParser());
 
 if (applicationEnv == "PROD") {
   app.get(
-    "/auth/google",
+    "/apps/behisebe/auth/google",
     passport.authenticate("google", { scope: ["email", "profile"] })
   );
 } else if (applicationEnv == "DEV") {
-  app.get("/auth/google", (req, res) => {
-    res.redirect("/dashboard");
+  app.get("/apps/behisebe/auth/google", (req, res) => {
+    res.redirect("/apps/behisebe/dashboard");
   });
 }
 // ------ All Routes for pages -------------
-app.use("/transaction", isLoggedIn, transactionRoutes);
-app.use("/settings", isLoggedIn, settingsRouter);
-app.use("/login", loginRouter);
-app.use("/dashboard", isLoggedIn, dashboardRouter);
+app.use("/apps/behisebe/transaction", isLoggedIn, transactionRoutes);
+app.use("/apps/behisebe/settings", isLoggedIn, settingsRouter);
+app.use("/apps/behisebe/login", loginRouter);
+app.use("/apps/behisebe/dashboard", isLoggedIn, dashboardRouter);
 
 // ------------- Rest Routes -----------------
-app.use("/v1/lend", isLoggedIn, lendRouter);
-app.use("/v1/persons", isLoggedIn, personRouter);
-app.use("/v1/bank", isLoggedIn, bankRouter);
-app.use("/v1/cash", isLoggedIn, cashRouter);
-app.use("/v1/expense", isLoggedIn, expenseRouter);
-app.use("/v1/credit", isLoggedIn, creditRouter);
-app.use("/v1/self-transation", isLoggedIn, selfTransaction);
+app.use("/apps/behisebe/v1/lend", isLoggedIn, lendRouter);
+app.use("/apps/behisebe/v1/persons", isLoggedIn, personRouter);
+app.use("/apps/behisebe/v1/bank", isLoggedIn, bankRouter);
+app.use("/apps/behisebe/v1/cash", isLoggedIn, cashRouter);
+app.use("/apps/behisebe/v1/expense", isLoggedIn, expenseRouter);
+app.use("/apps/behisebe/v1/credit", isLoggedIn, creditRouter);
+app.use("/apps/behisebe/v1/self-transation", isLoggedIn, selfTransaction);
 
 // Without middleware
 app.get("/", function (req, res) {
-  res.redirect("/login");
+  res.redirect("/apps/behisebe/login");
 });
 
-app.get("/logout", function (req, res, next) {
+app.get("/apps/behisebe/logout", function (req, res, next) {
   if (applicationEnv == "PROD") {
     req.logout(function (err) {
       if (err) {

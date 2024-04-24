@@ -9,7 +9,7 @@ $(function () {
        
         $.ajax({
             type: "POST",
-            url: "/v1/credit/add-init-cash",
+            url: "/apps/behisebe/v1/credit/add-init-cash",
             data: JSON.stringify(cashObj),
             contentType: "application/json; charset=utf-8",
             dataType: "json",

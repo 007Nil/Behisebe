@@ -44,7 +44,7 @@ function getCashExpense() {
     }
     $.ajax({
         type: "GET",
-        "url": "/v1/expense/getCashExpense",
+        "url": "/apps/behisebe/v1/expense/getCashExpense",
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {

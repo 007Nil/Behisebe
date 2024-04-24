@@ -15,7 +15,7 @@ $("#add-credit-details").on("click", () => {
         placeholder: "Select a Bank Account",
         tags: [],
         ajax: {
-            url: "/v1/bank/getBankDetails",
+            url: "/apps/behisebe/v1/bank/getBankDetails",
             dataType: 'json',
             type: "GET",
             quietMillis: 50,
@@ -42,7 +42,7 @@ $("#add-credit-details").on("click", () => {
         placeholder: "Select a Credit Reason",
         tags: [],
         ajax: {
-            url: "/v1/credit/getCreditReason",
+            url: "/apps/behisebe/v1/credit/getCreditReason",
             dataType: 'json',
             type: "GET",
             quietMillis: 50,
@@ -69,7 +69,7 @@ $("#add-credit-details").on("click", () => {
         try {
             $.ajax({
                 type: "GET",
-                url: "/v1/bank/getAccountBalance",
+                url: "/apps/behisebe/v1/bank/getAccountBalance",
                 data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${new Date().toLocaleDateString()}`, // date: DD/MM/YY
                 success: function (response) {
                     $("#bankAmount").val(response.data);
@@ -120,7 +120,7 @@ $("#add-credit-details").on("click", () => {
                     placeholder: "Select an Option",
                     tags: [],
                     ajax: {
-                        url: "/v1/credit/getLendToPersons",
+                        url: "/apps/behisebe/v1/credit/getLendToPersons",
                         dataType: 'json',
                         type: "GET",
                         quietMillis: 50,
@@ -195,7 +195,7 @@ $("#add-credit-details").on("click", () => {
 
         $.ajax({
             type: "POST",
-            url: "/v1/credit/addCredit",
+            url: "/apps/behisebe/v1/credit/addCredit",
             data: JSON.stringify(creditObject),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -274,7 +274,7 @@ function fillDynamicDiv(functionName) {
 function getCashBalance() {
     $.ajax({
         type: "GET",
-        url: "/v1/cash/getCashBalance",
+        url: "/apps/behisebe/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
             console.log(response)

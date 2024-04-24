@@ -8,7 +8,7 @@ $(function () {
         // tags: false,
         ajax: {
             type: "GET",
-            url: "/v1/bank/getBankDetails",
+            url: "/apps/behisebe/v1/bank/getBankDetails",
             data: `date=${getDate()}`,
             quietMillis: 1000,
 
@@ -36,7 +36,7 @@ $(function () {
         // tags: false,
         ajax: {
             type: "GET",
-            url: "/v1/bank/getBankDetails",
+            url: "/apps/behisebe/v1/bank/getBankDetails",
             data: `date=${getDate()}`,
             quietMillis: 1000,
 
@@ -80,7 +80,7 @@ $("#transfer-from").on("change", () => {
     try {
         $.ajax({
             type: "GET",
-            url: "/v1/bank/getAccountBalance",
+            url: "/apps/behisebe/v1/bank/getAccountBalance",
             data: `bankId=${$("#transfer-from").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
             success: function (response) {
                 $("#fund-amount").val(response.data);

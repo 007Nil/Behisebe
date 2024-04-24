@@ -11,6 +11,9 @@ CREATE TABLE
         PRIMARY KEY (ID)
     );
 
+INSERT INTO User
+(ID,FirstName,LastName,Email) VALUES ("1234567890", "Sagnik", "Sarkar", "sagnik952@gmail.com");
+
 
 CREATE TABLE
     BankAccountType (

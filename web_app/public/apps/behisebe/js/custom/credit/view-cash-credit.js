@@ -44,7 +44,7 @@ function getCashCredit() {
     }
     $.ajax({
         type: "GET",
-        "url": "/v1/credit/getCashCredit",
+        "url": "/apps/behisebe/v1/credit/getCashCredit",
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {

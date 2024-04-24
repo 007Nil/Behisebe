@@ -36,7 +36,7 @@ function getCreditDetials() {
     }
     $.ajax({
         type: "GET",
-        "url": "/v1/credit/getCredit",
+        "url": "/apps/behisebe/v1/credit/getCredit",
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {

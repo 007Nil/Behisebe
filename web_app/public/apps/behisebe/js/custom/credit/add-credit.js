@@ -8,7 +8,7 @@ $(function () {
 function getCashBalance() {
     $.ajax({
         type: "GET",
-        url: "/v1/cash/getCashBalance",
+        url: "/apps/behisebe/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
             // console.log(response)
@@ -23,7 +23,7 @@ $("#credited-to").select2({
     placeholder: "Select a Bank Account",
     tags: [],
     ajax: {
-        url: "/v1/bank/getBankDetails",
+        url: "/apps/behisebe/v1/bank/getBankDetails",
         dataType: 'json',
         type: "GET",
         quietMillis: 50,
@@ -50,7 +50,7 @@ $("#credit-reason").select2({
     placeholder: "Select a Credit Reason",
     tags: [],
     ajax: {
-        url: "/v1/credit/getCreditReason",
+        url: "/apps/behisebe/v1/credit/getCreditReason",
         dataType: 'json',
         type: "GET",
         quietMillis: 50,
@@ -77,7 +77,7 @@ $("#credited-to").on("change", () => {
     try {
         $.ajax({
             type: "GET",
-            url: "/v1/bank/getAccountBalance",
+            url: "/apps/behisebe/v1/bank/getAccountBalance",
             data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
             success: function (response) {
                 $("#bankAmount").val(response.data);
@@ -128,7 +128,7 @@ $('#credit-reason').on("change", () => {
                 placeholder: "Select an Option",
                 tags: [],
                 ajax: {
-                    url: "/v1/credit/getLendToPersons",
+                    url: "/apps/behisebe/v1/credit/getLendToPersons",
                     dataType: 'json',
                     type: "GET",
                     quietMillis: 50,
@@ -203,7 +203,7 @@ $("#credit-form").submit((event) => {
 
     $.ajax({
         type: "POST",
-        url: "/v1/credit/addCredit",
+        url: "/apps/behisebe/v1/credit/addCredit",
         data: JSON.stringify(creditObject),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

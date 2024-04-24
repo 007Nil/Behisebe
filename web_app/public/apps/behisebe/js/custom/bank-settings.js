@@ -22,7 +22,7 @@ $("#add_bank_details").on("click", () => {
     // allowClear: true,
     // tags: [],
     ajax: {
-      url: "/v1/bank/getAccountTypes",
+      url: "/apps/behisebe/v1/bank/getAccountTypes",
       type: "GET",
       dataType: 'json',
       delay: 250,
@@ -69,7 +69,7 @@ $("#add_bank_details").on("click", () => {
     // console.log(jsonObj);
     $.ajax({
       type: "POST",
-      url: "/v1/bank/addDetails",
+      url: "/apps/behisebe/v1/bank/addDetails",
       data: JSON.stringify(jsonObj),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
@@ -146,7 +146,7 @@ function getBankDetails() {
 
   $.ajax({
     type: "GET",
-    "url": "/v1/bank/getBankDetails",
+    "url": "/apps/behisebe/v1/bank/getBankDetails",
     data: `date=${getDate()}`,
 
     success: function (response) {

@@ -113,7 +113,7 @@ function getExpenseDetails() {
     }
     $.ajax({
         type: "GET",
-        "url": "/v1/expense/getExpense",
+        "url": "/apps/behisebe/v1/expense/getExpense",
         "data": `startDate=${startDate}&endDate=${endDate}`,
 
         success: function (response) {

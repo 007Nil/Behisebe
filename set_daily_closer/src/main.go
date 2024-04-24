@@ -14,7 +14,7 @@ import (
 // var wg sync.WaitGroup
 
 func connectDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "user:password@tcp(localhost:3306)/Behisebe")
+	db, err := sql.Open("mysql", "sergey:sergey@tcp(localhost:3306)/Behisebe")
 
 	return db, err
 
@@ -144,7 +144,8 @@ func randSeq(n int) string {
 
 func main() {
 	c := cron.New()
-	c.AddFunc("@daily", func() {
+	c.AddFunc("@every 1m", func() {
+		fmt.Print("HIT")
 		db, err := connectDB()
 		if err != nil {
 			fmt.Println(err.Error())

@@ -8,7 +8,7 @@ function getBankDetails() {
 
     $.ajax({
         type: "GET",
-        "url": "/v1/bank/getBankDetails",
+        "url": "/apps/behisebe/v1/bank/getBankDetails",
         data: `date=${getDate()}`,
 
         success: function (response) {
@@ -23,7 +23,7 @@ function getBankDetails() {
 function getCashBalance() {
     $.ajax({
         type: "GET",
-        url: "/v1/cash/getCashBalance",
+        url: "/apps/behisebe/v1/cash/getCashBalance",
         data: `date=${getDate()}`,
         success: function (response) {
             // console.log(response)
