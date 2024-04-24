@@ -144,7 +144,7 @@ func randSeq(n int) string {
 
 func main() {
 	c := cron.New()
-	c.AddFunc("@daily", func() {
+	c.AddFunc("@every 1m", func() {
 		db, err := connectDB()
 		if err != nil {
 			fmt.Println(err.Error())
