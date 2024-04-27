@@ -91,7 +91,7 @@ $("#add-credit-details").on("click", () => {
                     placeholder: "Select an Option",
                     tags: [],
                     ajax: {
-                        url: "/v1/persons/getPersonData",
+                        url: "/apps/behisebe/v1/persons/getPersonData",
                         dataType: 'json',
                         type: "GET",
                         quietMillis: 50,
