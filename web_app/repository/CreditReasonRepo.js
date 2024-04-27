@@ -16,15 +16,16 @@ async function getAllCreditReasonByUserId(userId){
 }
 
 async function getCreditReason(userID) {
-    let selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ? AND ?? <>? AND ?? <> ?";
-    let prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["CreditReason", "UserID", userID, "UserID", null,"ID","098787651","ID","565434329"]);
+    let selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ? AND ?? = ?";
+    let prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["CreditReason", "UserID", userID, "UserID", null, "isVisable", 1]);
+    console.log(prepareSelectReasonQuery);
 
     return (await mysqlPool.execute(prepareSelectReasonQuery))[0];
 }
 
 async function saveCreditReason(creditObj) {
-    insertQuery = "INSERT INTO ?? (??,??,??) VALUES (?,?,?)";
-    preapreQuery = mysql.format(insertQuery,["CreditReason","ID","Reason","UserID",creditObj.id,creditObj.reason,creditObj.userId]);
+    insertQuery = "INSERT INTO ?? (??,??,??,??) VALUES (?,?,?,?)";
+    preapreQuery = mysql.format(insertQuery,["CreditReason","ID","Reason","UserID","isVisable",creditObj.id,creditObj.reason,creditObj.userId,1]);
     // console.log(preapreQuery);
     await mysqlPool.execute(preapreQuery);
 }

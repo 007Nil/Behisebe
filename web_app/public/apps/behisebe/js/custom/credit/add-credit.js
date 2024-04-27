@@ -257,15 +257,10 @@ function insertCreditExtendFields() {
 }
 
 $(document).on('change', "#cashCheckBox", function () {
-    // console.log($('#bankCheckBox').attr('checked'))
     if ($('#cashCheckBox').is(":checked")) {
         $('#bankCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#credit-from-div").css("display", "none");
-        // $("#cerdit-reason-div").css("display", "none");
-        // $('#debited-from').removeAttr('required');​​​​​
         $('#credited-to').removeAttr('required');
-        // $("#credit-reason").removeAttr('required')
     }
 });
 
