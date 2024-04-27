@@ -160,11 +160,11 @@ function createAddBankDetailsForm() {
 }
 // Call a rest API and add those data to database
 function getBankDetails() {
-  let date = toISOLocal(new Date()).slice(0, 19).replace('T', ' ').split(",").toString().split(" ")[0];
+  let timeStamp = toISOLocal(new Date()).slice(0, 19).replace('T', ' ').split(",");
   $.ajax({
     type: "GET",
     "url": "/apps/behisebe/v1/bank/getBankDetails",
-    data: `date=${date}`,
+    data: `date=${timeStamp}`,
 
     success: function (response) {
       // console.log(response);

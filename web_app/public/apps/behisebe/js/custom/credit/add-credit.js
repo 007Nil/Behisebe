@@ -15,7 +15,7 @@ function getCashBalance() {
     $.ajax({
         type: "GET",
         url: "/apps/behisebe/v1/cash/getCashBalance",
-        data: `date=${getDate()}`,
+        data: `date=${toISOLocal(new Date()).slice(0, 19).replace('T', ' ')}`,
         success: function (response) {
             // console.log(response)
             $("#cashBalance").val(response.data.Amount);
@@ -84,7 +84,7 @@ $("#credited-to").on("change", () => {
         $.ajax({
             type: "GET",
             url: "/apps/behisebe/v1/bank/getAccountBalance",
-            data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
+            data: `bankId=${$("#credited-to").select2('data')[0].id}&date=${toISOLocal(new Date()).slice(0, 19).replace('T', ' ')}`, // date: DD/MM/YY
             success: function (response) {
                 $("#bankAmount").val(response.data);
             }

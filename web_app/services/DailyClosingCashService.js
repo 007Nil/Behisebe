@@ -20,8 +20,6 @@ async function addDailyClosingCash(dailyClosingCashObj) {
 }
 
 async function updateDailyClosingCash(dailyClosingCashObj) {
-    // console.log("HIT")
-    // console.log(dailyClosingCashObj);
     let queryResult = await dailyCloisngCashRepo.findByValues(dailyClosingCashObj);
     console.log(queryResult);
     if (typeof queryResult !== 'undefined' && queryResult.length > 0) {
@@ -40,7 +38,7 @@ async function updateDailyClosingCash(dailyClosingCashObj) {
 
 async function getCashBalance(requestData) {
     let dailyClosingCashObj = new DailyClosingCashModel();
-    dailyClosingCashObj.date = requestData.date;
+    dailyClosingCashObj.date = requestData.date.split(" ")[0];
     dailyClosingCashObj.userId = requestData.userId;
 
     return await dailyCloisngCashRepo.getDailyCashClosing(dailyClosingCashObj)

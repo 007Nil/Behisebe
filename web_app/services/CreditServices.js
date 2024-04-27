@@ -87,7 +87,7 @@ async function addCreditDetails(creditObj) {
     if (isCashCredit) {
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = creditObj.amount;
-        dailyCloisngCashObj.date = creditObj.date;
+        dailyCloisngCashObj.date = creditObj.date.split(" ")[0];
         dailyCloisngCashObj.isCredit = true;
         dailyCloisngCashObj.userId = creditObj.userId;
         updateDailyClosingCash(dailyCloisngCashObj);
@@ -96,7 +96,7 @@ async function addCreditDetails(creditObj) {
         dailyClosingObj.userId = userID;
         dailyClosingObj.amount = creditObj.amount;
         dailyClosingObj.bankId = creditObj.bankId;
-        dailyClosingObj.date = creditObj.date;
+        dailyClosingObj.date = creditObj.date.split(" ")[0];
         dailyClosingObj.isCredit = true;
         // console.log(dailyClosingObj);
         dailyClosingService.updateDailyClosing(dailyClosingObj);

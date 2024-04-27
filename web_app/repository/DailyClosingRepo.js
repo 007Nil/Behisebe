@@ -19,7 +19,7 @@ function updateDailyClosing (dailyClosingObj){
 }
 
 async function findByValues(dailyClosingObj){
-    let query = "SELECT ??,?? FROM ?? WHERE ?? = ? AND ?? = ? AND ?? = ?"
+    let query = "SELECT ??,?? FROM ?? WHERE ?? = ? AND ?? = ? AND CAST (?? as Date) = ?"
     let preapreQuery = mysql.format(query, ["ID","Amount","DailyClosing", "BankId", dailyClosingObj.bankId,
                                             "UserId",dailyClosingObj.userId,"Date",dailyClosingObj.date]);
     
@@ -39,7 +39,7 @@ async function findByPreviosDate(dailyClosingObj){
 async function getDailyClosing(dailyClosingObj){
     let query = "SELECT ?? FROM ?? WHERE ?? = ? AND ?? = ? AND CAST (?? AS Date) = ?";
     let prepareQuery = mysql.format(query,["Amount","DailyClosing","BankId",dailyClosingObj.bankId,"UserId",dailyClosingObj.userId,"Date",dailyClosingObj.date]);
-    // console.log(prepareQuery);
+    console.log(prepareQuery);
     return (await mysqlPool.execute(prepareQuery))[0][0];
 }
 

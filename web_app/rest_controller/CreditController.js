@@ -23,6 +23,7 @@ router
     .post("/addCredit", async (request, response) => {
         try {
             request.body.userId = request.session.passport.user["ID"];
+            console.log(request.body);
             await addCreditDetails(request.body);
             response.status(200).send({ "message": "success" });
         } catch (error) {
