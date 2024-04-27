@@ -15,3 +15,8 @@ docker run -d -p 3306:3306 --name mysql-dev -e MYSQL_ROOT_PASSWORD=sergey -e MYS
 <!-- Openssl  -->
 
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+
+
+<!-- TODO -->
+
+Need reason in by cash expense and credit. change the logic

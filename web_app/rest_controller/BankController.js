@@ -24,7 +24,6 @@ router.get("/getBankDetails", async (request, response) => {
             userId: request.session.passport.user["ID"],
             date: request.query.date
         }
-        // console.log(request.query);
         let bankDetails = await getUserBankDetails(requestObj);
         response.status(200).send(bankDetails);
         return;
@@ -39,7 +38,6 @@ router.get("/getBankDetails", async (request, response) => {
 router.get("/getAccountTypes", async (request, response) => {
     try {
         let accountTypes = await getAccountType();
-        // console.log(accountTypes);
         response.status(200).send(accountTypes);
     } catch (error) {
         console.log(error)
@@ -52,7 +50,6 @@ router.get("/getAccountBalance", async (request, response) => {
         let requestBody = request.query;
         requestBody.userId = request.session.passport.user["ID"];
         let bankAmount = await getDailyClosing(requestBody);
-        // console.log(bankAmount);
         response.status(200).send({"message": "successful","data": bankAmount.Amount});
     } catch (error) {
         console.log(error)

@@ -10,7 +10,6 @@ $(function () {
         ajax: {
             type: "GET",
             url: "/apps/behisebe/v1/bank/getBankDetails",
-            data: `date=${getDate()}`,
             quietMillis: 1000,
 
             data: function (params) {
@@ -93,7 +92,7 @@ $(function () {
             $.ajax({
                 type: "GET",
                 url: "/apps/behisebe/v1/bank/getAccountBalance",
-                data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
+                data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${toISOLocal(new Date()).slice(0, 19).replace('T', ' ')}}`, // date: DD/MM/YY
                 success: function (response) {
                     $("#bankAmount").val(response.data);
                 }
@@ -138,7 +137,6 @@ $(function () {
             } else if ($('#expense-reason').select2('data')[0].text === "Pay Of Debt") {
                 $("#expense-cause-form").html("");
                 insertLendMoneyFields();
-                // console.log("HIT")
                 $("#spacial-debit").select2({
                     tags: [],
                     ajax: {
@@ -166,7 +164,6 @@ $(function () {
                 });
             }
             else {
-                // console.log("HIT ELSE")
                 $("#expense-cause-form").html("");
             }
         } catch {
@@ -191,7 +188,6 @@ $(function () {
                 return;
             }
         }
-        // return;
         let spacialDebit;
         try {
             if ($('#expense-reason').select2('data')[0].text === "Lend") {
@@ -214,15 +210,12 @@ $(function () {
         let expenseObject = {
             "bankId": bankId,
             "amount": $("#amount").val(),
-            "date": $("#expense_date").val(),
+            "date": `${toISOLocal(new Date()).slice(0, 19).replace('T', ' ')}`,
             "expenseReason": $('#expense-reason').select2('data')[0].id,
             "spacialDebit": spacialDebit,
             "byCash": $("#cashCheckBox").is(":checked"),
             "notes": $("#notes").val()
         }
-        // console.log(isByCash)
-        // console.log(expenseObject);
-        // return;
 
 
         $.ajax({
@@ -246,13 +239,28 @@ $(function () {
     });
 });
 
+
+function toISOLocal(d) {
+    var z  = n =>  ('0' + n).slice(-2);
+    var zz = n => ('00' + n).slice(-3);
+    var off = d.getTimezoneOffset();
+    var sign = off > 0? '-' : '+';
+    off = Math.abs(off);
+  
+    return d.getFullYear() + '-'
+           + z(d.getMonth()+1) + '-' +
+           z(d.getDate()) + 'T' +
+           z(d.getHours()) + ':'  + 
+           z(d.getMinutes()) + ':' +
+           z(d.getSeconds()) + '.' +
+           zz(d.getMilliseconds()) +
+           sign + z(off/60|0) + ':' + z(off%60); 
+  }
+
 $(document).on('change', "#cashCheckBox", function () {
-    // console.log($('#bankCheckBox').attr('checked'))
     if ($('#cashCheckBox').is(":checked")) {
         $('#bankCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "none");
-        // $('#debited-from').removeAttr('required');​​​​​
         $('#debited-from').removeAttr('required');
         $("#bankAmount").val("");
     }
@@ -261,7 +269,6 @@ $(document).on('change', "#cashCheckBox", function () {
 $(document).on('change', "#bankCheckBox", function () {
     if ($('#bankCheckBox').is(":checked")) {
         $('#cashCheckBox').prop('checked', false);
-        // console.log("HIT");
         $("#debited-from-div").css("display", "block");
         $('#debited-from').prop('required', true);
 
@@ -274,11 +281,9 @@ function getCashBalance() {
     $.ajax({
         type: "GET",
         url: "/apps/behisebe/v1/cash/getCashBalance",
-        data: `date=${getDate()}`,
+        data: `date=${toISOLocal(new Date()).slice(0, 19).replace('T', ' ')}`,
         success: function (response) {
-            // console.log(response)
             $("#cashBalance").val(response.data.Amount);
-            // $("#bankAmount").val(response.data);
         }
     });
 }

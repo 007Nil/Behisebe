@@ -13,80 +13,74 @@ const { getDailyClosing } = require("./DailyClosingService");
 const dailyCloisng = require("../model/DailyClosingModel");
 
 async function getAccountType() {
-    return await bankAccountTypeRepo.getAccountType();
+  return await bankAccountTypeRepo.getAccountType();
 }
 
 async function fetchBankDetails(userID) {
-    return bankRepo.getUserBankDetails(userID);
+  return bankRepo.getUserBankDetails(userID);
 }
 
 async function getBankDetailsByID(bankID) {
-    return bankRepo.getBankDetailsByID(bankID);
+  return bankRepo.getBankDetailsByID(bankID);
 }
 
 async function getUserBankDetails(requestObj) {
-    let userId = requestObj.userId;
-    // let date = requestObj.date;
-    let bankData = await bankRepo.getUserBankDetails(userId);
-    let accountTypes = await getAccountType();
-    // console.log(bankData);
-    for (eachBank of bankData) {
-        for (eachType of accountTypes) {
-            if (eachBank.AccountType === eachType.ID) {
-                eachBank.AccountType = eachType.AccountType;
-                break;
-
-            }
-        }
-            try {
-                dailyCloisngObj = {
-                    "bankId": eachBank.BankID,
-                    "date": requestObj.date,
-                    "userId": userId,
-                }
-                console.log(dailyCloisngObj)
-                eachBank.bankBalance = (await getDailyClosing(dailyCloisngObj)).Amount;
-            } catch {
-
-            }
-        
+  let userId = requestObj.userId;
+  // let date = requestObj.date;
+  let bankData = await bankRepo.getUserBankDetails(userId);
+  let accountTypes = await getAccountType();
+  // console.log(bankData);
+  for (eachBank of bankData) {
+    for (eachType of accountTypes) {
+      if (eachBank.AccountType === eachType.ID) {
+        eachBank.AccountType = eachType.AccountType;
+        break;
+      }
     }
-    return bankData;
+    try {
+      let dailyCloisngObj = {
+        bankId: eachBank.BankID,
+        date: requestObj.date,
+        userId: userId,
+      };
+      eachBank.bankBalance = (await getDailyClosing(dailyCloisngObj)).Amount;
+    } catch {
+        console.log("WARNING: dailyCloisng model does not have correct values or found null!!")
+    }
+  }
+  return bankData;
 }
 
 async function addBankDetails(requestData) {
+  let bankObj = new BankModel();
 
-    let bankObj = new BankModel();
+  // console.log(requestData);
+  bankObj.bankID = crypto.randomBytes(10).toString("hex");
 
-    // console.log(requestData);
-    bankObj.bankID = crypto.randomBytes(10).toString("hex");
+  bankObj.bankName = requestData.bankName;
+  bankObj.acccountType = requestData.bankAccountType;
+  bankObj.notes = requestData.notes;
+  bankObj.userID = requestData.userID;
+  bankObj.isDefault = 0;
+  bankObj.addedOn = requestData.date;
 
-    bankObj.bankName = requestData.bankName;
-    bankObj.acccountType = requestData.bankAccountType;
-    bankObj.notes = requestData.notes;
-    bankObj.userID = requestData.userID;
-    bankObj.isDefault = 0;
-    bankObj.addedOn = requestData.date;
+  await bankRepo.saveBank(bankObj);
 
-
-    await bankRepo.saveBank(bankObj)
-
-    let creditObj = new CreditModel();
-    creditObj.creditId = crypto.randomBytes(10).toString("hex");;
-    creditObj.bankId = bankObj.bankID;
-    creditObj.userId = requestData.userID;
-    creditObj.lendId = null;
-    creditObj.reason = "565434329";
-    creditObj.date = bankObj.addedOn;
-    creditObj.amount = requestData.bankBalance;
-    creditObj.notes = "This is the initial amount when this Bank was added to system";
-    await addCreditDetails(creditObj);
-    // await getCreditLendData();
+  let creditObj = new CreditModel();
+  creditObj.creditId = crypto.randomBytes(10).toString("hex");
+  creditObj.bankId = bankObj.bankID;
+  creditObj.userId = requestData.userID;
+  creditObj.lendId = null;
+  creditObj.reason = "565434329";
+  creditObj.date = bankObj.addedOn;
+  creditObj.amount = requestData.bankBalance;
+  creditObj.notes =
+    "This is the initial amount when this Bank was added to system";
+  await addCreditDetails(creditObj);
+  // await getCreditLendData();
 }
 
-function makeBankInvalida() {
-
-}
+function makeBankInvalida() {}
 
 module.exports.fetchBankDetails = fetchBankDetails;
 module.exports.addBankDetails = addBankDetails;

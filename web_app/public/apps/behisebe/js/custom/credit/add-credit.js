@@ -24,7 +24,6 @@ function getCashBalance() {
     });
 }
 
-$("#credit-date").datepicker();
 $("#credited-to").select2({
     placeholder: "Select a Bank Account",
     tags: [],

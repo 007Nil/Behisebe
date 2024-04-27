@@ -53,7 +53,7 @@ INSERT INTO
     ExpenseReason (ID, Reason, UserID, isVisable)
 VALUES ("0987654321", "Lend", NULL, 1),
     (
-        "1234567098", "Pay Of Debt", NULL, 1
+        "1234567098", "Pay Of Debt", NULL, 0
     ),
     (
         "6565454378", "Cash Withdrawal", NULL, 1

@@ -20,7 +20,9 @@ const DailyClosingCashModel = require("../model/DailyClosingCashModel");
 const expenseRepo = require("../repository/ExpenseRepo");
 
 async function addExpense(requestData) {
-    console.log(requestData);
+    // Take only date from timestamp
+    requestData.date = requestData.date.split(" ")[0];
+
     let expenseModel = new ExpenseModel();
     expenseModel.userId = requestData.userId;
 
@@ -35,12 +37,8 @@ async function addExpense(requestData) {
         let expenseReasonModel = new ExpenseReasonModel();
         expenseReasonModel.reason = requestData.expenseReason;
         expenseReasonModel.userId = expenseModel.userId;
-        // let reasonObj = {
-        //     "expenseReason": requestData.expenseReason,
-        //     "userId": userId
-        // }
+
         expenseModel.reason = await addExpenseReason(expenseReasonModel);
-        // console.log(expenseModel.reason);
     } else {
         expenseModel.reason = requestData.expenseReason;
     }
@@ -51,7 +49,6 @@ async function addExpense(requestData) {
         let getPersonDetails = await getPersonDataByUserId(expenseModel.userId);
         let personID = getPersonDetails.map(each => each.ID);
 
-        // console.log((requestData.spacialDebit).split("-")[1]);
         // Someone lend some mony from Me
         if ((requestData.spacialDebit).split("-")[1] === "lendMoney") {
             if (!personID.includes((requestData.spacialDebit).split("-")[0])) {
@@ -62,7 +59,7 @@ async function addExpense(requestData) {
                 lendModel.lendTo = await addPersonData(personModel);
                 lendModel.lendFrom = null;
             } else {
-                // We hve the person in DB
+                // We have the person in DB
                 lendModel.lendTo = (requestData.spacialDebit).split("-")[0];
                 lendModel.lendFrom = null;
             }
@@ -74,11 +71,6 @@ async function addExpense(requestData) {
 
         // Now insert data to Lend table
         expenseModel.lendId = await moneyLendService.addLendDetails(lendModel);
-
-
-
-        // console.log(personNames);
-        // console.log(requestData);
     } else {
         expenseModel.lendId = null;
     }
@@ -101,7 +93,6 @@ async function addExpense(requestData) {
     }
     console.log(expenseModel);
     await expenseRepo.saveExpense(expenseModel);
-    // console.log(expenseModel.byCash)
     if (requestData.byCash) {
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = expenseModel.amount;
@@ -110,22 +101,18 @@ async function addExpense(requestData) {
         dailyCloisngCashObj.userId = expenseModel.userId;
         updateDailyClosingCash(dailyCloisngCashObj);
     } else {
-        // console.log("HIT ELSE")
         let dailyClosingObj = new DailyClosingModel();
         dailyClosingObj.userId = expenseModel.userId;
         dailyClosingObj.amount = expenseModel.amount;
         dailyClosingObj.bankId = expenseModel.bankId;
         dailyClosingObj.date = expenseModel.date;
         dailyClosingObj.isCredit = false;
-        // console.log(dailyClosingObj)
-        // console.log(dailyClosingObj);
         dailyClosingService.updateDailyClosing(dailyClosingObj);
     }
 
 
     if (expenseModel.reason === "6565454378") {
         // Cash withdrawal
-        // console.log("HIT CASG")
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = expenseModel.amount;
         dailyCloisngCashObj.date = expenseModel.date;
@@ -164,11 +151,9 @@ async function getExpenseDetailsByuserId(requestObj) {
                 }
             }
             if (eachExpDetails.LendID) {
-                // console.log("HIT")
                 let personId = await moneyLendService.getLendToByID(eachExpDetails.LendID);
                 // console.log(personId)
                 for (let person of personList) {
-                    // console.log(person)
                     if (person.ID === personId) {
                         eachExpDetails.LendTo = person.Name;
                         break;
@@ -178,8 +163,6 @@ async function getExpenseDetailsByuserId(requestObj) {
         }
         returnData.push(eachBank);
         eachBank.totalExpense = totalAmount;
-        // console.log(eachBank);
-        // break;
     }
 
     return returnData;
@@ -211,8 +194,6 @@ async function getCashExpenseDetailsByUserId(requestObj) {
         }
 
     }
-    // return ();
-    // console.log(cashExpObj)
     return cashExpObj;
 
 }
