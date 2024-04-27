@@ -19,7 +19,7 @@ async function getExpenseByBankId(expenseObj) {
 }
 
 async function getExpenseByDate(expenseData) {
-    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN ? AND ?)";
+    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (CAST (?? AS Date) BETWEEN ? AND ?)";
     let preapreQuery = mysql.format(query, ["Expense", "BankID", expenseData.bankId, "UserId", expenseData.userId, "Date", expenseData.startDate, expenseData.endDate]);
 
     // console.log(preapreQuery)
@@ -27,7 +27,7 @@ async function getExpenseByDate(expenseData) {
 }
 
 async function getCashExpenseByUserId(requestObj) {
-    let query = "SELECT * FROM ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN ? AND ?) ORDER BY `Date` DESC";
+    let query = "SELECT * FROM ?? WHERE ?? = ? AND ?? = ? AND (CAST (?? AS Date) BETWEEN ? AND ?) ORDER BY `Date` DESC";
     let preapreQuery = mysql.format(query, ["Expense", "ByCash", 1, "UserID", requestObj.userId, "Date", requestObj.startDate, requestObj.endDate]);
     console.log(preapreQuery)
     return (await mysqlPool.execute(preapreQuery))[0];

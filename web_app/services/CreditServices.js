@@ -115,9 +115,8 @@ async function getCreditLendData(userId) {
 
 async function getCreditDetailsByuserId(requestObj) {
     let userId = requestObj.userId;
-    requestObj.startDate = requestObj.startdate;
-    requestObj.endDate = requestObj.enddate;
-    // console.log(requestObj);
+
+    console.log(requestObj);
     let returnData = [];
     let bankList = await BankService.getUserBankDetails({userId});
     let reasonList = await getAllCreditReasonByUserId(userId);
@@ -164,8 +163,6 @@ async function getCreditDetailsByuserId(requestObj) {
 
 async function getCashCreditDetailsByUserId(requestObj) {
 
-    requestObj.startDate = requestObj.startdate;
-    requestObj.endDate = requestObj.enddate;
     let reasonList = await getAllCreditReasonByUserId(requestObj.userId);
     let personList = await getPersonDataByUserId(requestObj.userId);
     // console.log(reasonList);

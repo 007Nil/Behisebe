@@ -26,15 +26,15 @@ async function getActiveLendData(userId) {
 }
 
 async function getCreditByDate(creditObj) {
-    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN ? AND ?)";
+    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (CAST (?? AS Date) BETWEEN ? AND ?)";
     let preapreQuery = mysql.format(query, ["Credit", "BankID", creditObj.bankId, "UserId", creditObj.userId, "Date", creditObj.startDate, creditObj.endDate]);
     
-    // console.log(preapreQuery)
+    console.log(preapreQuery)
     return (await mysqlPool.execute(preapreQuery))[0]
 }
 
 async function getCashCreditByDate(creditObj) {
-    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN ? AND ?) ORDER BY `Date` DESC";
+    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (CAST (?? AS Date) BETWEEN ? AND ?) ORDER BY `Date` DESC";
     let preapreQuery = mysql.format(query, ["Credit", "ByCash", 1, "UserId", creditObj.userId, "Date", creditObj.startDate, creditObj.endDate]);
     
     console.log(preapreQuery)
