@@ -11,7 +11,7 @@ async function getPartialPayment(lendId) {
 }
 
 async function savePartialPayment(partialPaymentObj){
-    let query = "INSERT INTO ?? (??,??,??,??,??,??) VALUES (?,STR_TO_DATE(?,'%m-%d-%Y'),?,?,?,?)";
+    let query = "INSERT INTO ?? (??,??,??,??,??,??) VALUES (?,?,?,?,?,?)";
     let prepareQuery = mysql.format(query,["PartialPaymemnt","ID","OnDate","Amount","LendId","ByCash","BankId",
                                        partialPaymentObj.id,partialPaymentObj.onDate,partialPaymentObj.amount,partialPaymentObj.lendId,partialPaymentObj.bycash,partialPaymentObj.bankId]);
     

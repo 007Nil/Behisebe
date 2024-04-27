@@ -12,7 +12,7 @@ async function getBankDetailsByID(bankID) {
 }
 
 async function saveBank(bankObj) {
-    let bankDetailsInsertQuery = "INSERT INTO ?? (??,??,??,??, ??,??,??) VALUES (?,?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'),?)";
+    let bankDetailsInsertQuery = "INSERT INTO ?? (??,??,??,??, ??,??,??) VALUES (?,?,?,?,?,?,?)";
     let prepareBankQuery = mysql.format(bankDetailsInsertQuery, ["Bank", "BankID", "BankName", "AccountType", "UserID", "IsDefault", "AddedOn", "Notes",
         bankObj.bankID, bankObj.bankName, bankObj.acccountType, bankObj.userID, bankObj.isDefault, bankObj.addedOn, bankObj.notes]);
 

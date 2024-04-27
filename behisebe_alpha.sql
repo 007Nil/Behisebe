@@ -33,7 +33,7 @@ CREATE TABLE
         AccountType TINYINT(3),
         UserID VARCHAR(255),
         IsDefault TINYINT (1) NOT NULL,
-        AddedOn Date NOT NULL,
+        AddedOn TIMESTAMP NOT NULL,
         Notes TEXT,
         PRIMARY KEY (BankID),
         FOREIGN KEY (UserID) REFERENCES User(ID) ON DELETE CASCADE,
@@ -59,7 +59,7 @@ CREATE TABLE
         Amount INT NOT NULL,
         PartialAmount INT NOT NULL DEFAULT 0,
         FullPayment TINYINT(1) DEFAULT 0,
-        PaymentOnDate DATE NULL,
+        PaymentOnDate TIMESTAMP NULL,
         UserID VARCHAR(255) NOT NULL,
         PRIMARY KEY (ID),
         FOREIGN KEY (LendTo) REFERENCES Person (ID) ON DELETE CASCADE,
@@ -70,7 +70,7 @@ CREATE TABLE
 CREATE TABLE
     PartialPaymemnt (
         ID VARCHAR(255) NOT NULL UNIQUE,
-        OnDate DATE NOT NULL,
+        OnDate TIMESTAMP NOT NULL,
         Amount INT NOT NULL,
         LendId VARCHAR(255) NOT NULL,
         ByCash TINYINT(1) NULL,
@@ -120,7 +120,7 @@ CREATE TABLE
         LendID VARCHAR(255) NULL,
         LendClose TINYINT(1) NULL,
         Reason VARCHAR(255) NOT NULL,
-        Date DATE NOT NULL,
+        Date TIMESTAMP NOT NULL,
         Notes TEXT,
         Amount INT NOT NULL,
         PRIMARY KEY (ID),
@@ -170,7 +170,7 @@ CREATE TABLE
         LendPaid TINYINT(1) NULL,
         ByCash TINYINT(1) DEFAULT 0,
         Reason VARCHAR(255) NOT NULL,
-        Date DATE NOT NULL,
+        Date TIMESTAMP NOT NULL,
         Amount INT NOT NULL,
         Notes TEXT,
         PRIMARY KEY (CreditID),
@@ -210,7 +210,7 @@ VALUES
 
 CREATE TABLE DailyClosing (
     ID VARCHAR(255) NOT NULL UNIQUE,
-    Date DATE,
+    Date TIMESTAMP,
     Amount INT,
     BankId VARCHAR(255) NOT NULL,
     UserId VARCHAR(255) NOT NULL,
@@ -246,7 +246,7 @@ CREATE TABLE YearlyClosing (
 -- For Cash transaction
 CREATE TABLE DailyClosingCash (
     ID VARCHAR(255) NOT NULL UNIQUE,
-    Date DATE,
+    Date TIMESTAMP,
     Amount INT,
     UserId VARCHAR(255) NOT NULL,
     PRIMARY KEY (ID),

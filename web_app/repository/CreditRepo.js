@@ -3,9 +3,9 @@ const mysqlPool = require("./MysqlConnectionPool");
 
 async function saveCredit(creditObj) {
     // console.log(creditObj)
-    let creaditInsertQuery = "INSERT INTO ?? (??, ??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%m-%d-%Y'),?,?,?)";
+    let creaditInsertQuery = "INSERT INTO ?? (??, ??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?,?,?)";
     let prepareCerditQuery = mysql.format(creaditInsertQuery, ["Credit", "CreditID", "BankID", "UserID", "ByCash", "LendID", "Reason", "Date", "Amount", "Notes","LendPaid",
-        creditObj.creditId, creditObj.bankId, creditObj.userId, creditObj.byCash, creditObj.lendId, creditObj.reason, (creditObj.date).replaceAll("/", "-"), creditObj.amount, creditObj.notes,creditObj.lendPaid]);
+        creditObj.creditId, creditObj.bankId, creditObj.userId, creditObj.byCash, creditObj.lendId, creditObj.reason, creditObj.date, creditObj.amount, creditObj.notes,creditObj.lendPaid]);
     console.log(prepareCerditQuery);
     await mysqlPool.execute(prepareCerditQuery);
 
@@ -26,7 +26,7 @@ async function getActiveLendData(userId) {
 }
 
 async function getCreditByDate(creditObj) {
-    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN STR_TO_DATE(?,'%m-%d-%Y') AND STR_TO_DATE(?,'%m-%d-%Y'))";
+    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN ? AND ?)";
     let preapreQuery = mysql.format(query, ["Credit", "BankID", creditObj.bankId, "UserId", creditObj.userId, "Date", creditObj.startDate, creditObj.endDate]);
     
     // console.log(preapreQuery)
@@ -34,7 +34,7 @@ async function getCreditByDate(creditObj) {
 }
 
 async function getCashCreditByDate(creditObj) {
-    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN STR_TO_DATE(?,'%m-%d-%Y') AND STR_TO_DATE(?,'%m-%d-%Y')) ORDER BY `Date` DESC";
+    let query = "SELECT * from ?? WHERE ?? = ? AND ?? = ? AND (?? BETWEEN ? AND ?) ORDER BY `Date` DESC";
     let preapreQuery = mysql.format(query, ["Credit", "ByCash", 1, "UserId", creditObj.userId, "Date", creditObj.startDate, creditObj.endDate]);
     
     console.log(preapreQuery)

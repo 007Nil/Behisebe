@@ -8,5 +8,5 @@ EXPOSE 3000
 COPY daily_closer /root/daily_closer
 
 RUN bash -c "chmod +x /root/daily_closer"
-RUN bash -c "/root/daily_closer &"
+RUN bash -c "nohup /root/daily_closer &"
 CMD ["npm", "start"]

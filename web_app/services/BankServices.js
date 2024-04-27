@@ -10,6 +10,7 @@ const CreditModel = require("../model/CreditModel");
 // Services
 const { addCreditDetails } = require("./CreditServices");
 const { getDailyClosing } = require("./DailyClosingService");
+const dailyCloisng = require("../model/DailyClosingModel");
 
 async function getAccountType() {
     return await bankAccountTypeRepo.getAccountType();
@@ -33,19 +34,22 @@ async function getUserBankDetails(requestObj) {
         for (eachType of accountTypes) {
             if (eachBank.AccountType === eachType.ID) {
                 eachBank.AccountType = eachType.AccountType;
+                break;
+
             }
+        }
             try {
                 dailyCloisngObj = {
                     "bankId": eachBank.BankID,
-                    "date": requestObj.date.replaceAll("/", "-"),
+                    "date": requestObj.date,
                     "userId": userId,
                 }
+                console.log(dailyCloisngObj)
                 eachBank.bankBalance = (await getDailyClosing(dailyCloisngObj)).Amount;
             } catch {
 
             }
-            // console.log(eachBank.bankBalance)
-        }
+        
     }
     return bankData;
 }

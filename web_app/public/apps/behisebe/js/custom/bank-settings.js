@@ -5,6 +5,23 @@ $("#settings_id")[0].click();
 $("#bank_settings_id").css("color", "#FFFFFF");
 alertify.set('notifier', 'position', 'top-right');
 
+function toISOLocal(d) {
+  var z  = n =>  ('0' + n).slice(-2);
+  var zz = n => ('00' + n).slice(-3);
+  var off = d.getTimezoneOffset();
+  var sign = off > 0? '-' : '+';
+  off = Math.abs(off);
+
+  return d.getFullYear() + '-'
+         + z(d.getMonth()+1) + '-' +
+         z(d.getDate()) + 'T' +
+         z(d.getHours()) + ':'  + 
+         z(d.getMinutes()) + ':' +
+         z(d.getSeconds()) + '.' +
+         zz(d.getMilliseconds()) +
+         sign + z(off/60|0) + ':' + z(off%60); 
+}
+
 
 // });
 
@@ -51,8 +68,8 @@ $("#add_bank_details").on("click", () => {
   // Add bank details form submit
   $("#add_bank_details_btn").submit(function (event) {
     event.preventDefault();
-    let date = new Date();
-    let currentDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`
+
+    let timeStamp = toISOLocal(new Date()).slice(0, 19).replace('T', ' ');
     // console.log(`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`);
     // return;
     let jsonObj = {
@@ -61,7 +78,7 @@ $("#add_bank_details").on("click", () => {
       "bankAccountType": $('#bankAccountType').select2('data')[0].id,
       "notes": $("#notes").val(),
       "borrowFrom": null,
-      "date": currentDate
+      "date": timeStamp
     };
     // console.log($('#bankAccountType').select2('data')[0].id)
     // return;
@@ -143,13 +160,14 @@ function createAddBankDetailsForm() {
 }
 // Call a rest API and add those data to database
 function getBankDetails() {
-
+  let date = toISOLocal(new Date()).slice(0, 19).replace('T', ' ').split(",").toString().split(" ")[0];
   $.ajax({
     type: "GET",
     "url": "/apps/behisebe/v1/bank/getBankDetails",
-    data: `date=${getDate()}`,
+    data: `date=${date}`,
 
     success: function (response) {
+      // console.log(response);
       insertBankData(response);
     },
     error: function (error) {

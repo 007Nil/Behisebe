@@ -87,7 +87,7 @@ async function addCreditDetails(creditObj) {
     if (isCashCredit) {
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = creditObj.amount;
-        dailyCloisngCashObj.date = creditObj.date.replaceAll("/", "-");
+        dailyCloisngCashObj.date = creditObj.date;
         dailyCloisngCashObj.isCredit = true;
         dailyCloisngCashObj.userId = creditObj.userId;
         updateDailyClosingCash(dailyCloisngCashObj);
@@ -96,7 +96,7 @@ async function addCreditDetails(creditObj) {
         dailyClosingObj.userId = userID;
         dailyClosingObj.amount = creditObj.amount;
         dailyClosingObj.bankId = creditObj.bankId;
-        dailyClosingObj.date = creditObj.date.replaceAll("/", "-");
+        dailyClosingObj.date = creditObj.date;
         dailyClosingObj.isCredit = true;
         // console.log(dailyClosingObj);
         dailyClosingService.updateDailyClosing(dailyClosingObj);
@@ -115,8 +115,8 @@ async function getCreditLendData(userId) {
 
 async function getCreditDetailsByuserId(requestObj) {
     let userId = requestObj.userId;
-    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
-    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
+    requestObj.startDate = requestObj.startdate;
+    requestObj.endDate = requestObj.enddate;
     // console.log(requestObj);
     let returnData = [];
     let bankList = await BankService.getUserBankDetails({userId});
@@ -164,8 +164,8 @@ async function getCreditDetailsByuserId(requestObj) {
 
 async function getCashCreditDetailsByUserId(requestObj) {
 
-    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
-    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
+    requestObj.startDate = requestObj.startdate;
+    requestObj.endDate = requestObj.enddate;
     let reasonList = await getAllCreditReasonByUserId(requestObj.userId);
     let personList = await getPersonDataByUserId(requestObj.userId);
     // console.log(reasonList);

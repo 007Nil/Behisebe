@@ -40,7 +40,7 @@ async function updateDailyClosingCash(dailyClosingCashObj) {
 
 async function getCashBalance(requestData) {
     let dailyClosingCashObj = new DailyClosingCashModel();
-    dailyClosingCashObj.date = requestData.date.replaceAll("/", "-");
+    dailyClosingCashObj.date = requestData.date;
     dailyClosingCashObj.userId = requestData.userId;
 
     return await dailyCloisngCashRepo.getDailyCashClosing(dailyClosingCashObj)

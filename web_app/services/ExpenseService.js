@@ -105,7 +105,7 @@ async function addExpense(requestData) {
     if (requestData.byCash) {
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = expenseModel.amount;
-        dailyCloisngCashObj.date = expenseModel.date.replaceAll("/", "-");
+        dailyCloisngCashObj.date = expenseModel.date;
         dailyCloisngCashObj.isCredit = false;
         dailyCloisngCashObj.userId = expenseModel.userId;
         updateDailyClosingCash(dailyCloisngCashObj);
@@ -115,7 +115,7 @@ async function addExpense(requestData) {
         dailyClosingObj.userId = expenseModel.userId;
         dailyClosingObj.amount = expenseModel.amount;
         dailyClosingObj.bankId = expenseModel.bankId;
-        dailyClosingObj.date = expenseModel.date.replaceAll("/", "-");
+        dailyClosingObj.date = expenseModel.date;
         dailyClosingObj.isCredit = false;
         // console.log(dailyClosingObj)
         // console.log(dailyClosingObj);
@@ -128,7 +128,7 @@ async function addExpense(requestData) {
         // console.log("HIT CASG")
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = expenseModel.amount;
-        dailyCloisngCashObj.date = expenseModel.date.replaceAll("/", "-");
+        dailyCloisngCashObj.date = expenseModel.date;
         dailyCloisngCashObj.isCredit = true;
         dailyCloisngCashObj.userId = expenseModel.userId;
         updateDailyClosingCash(dailyCloisngCashObj);
@@ -139,8 +139,8 @@ async function addExpense(requestData) {
 async function getExpenseDetailsByuserId(requestObj) {
     let userId = requestObj.userId;
     // console.log(requestObj)
-    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
-    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
+    requestObj.startDate = requestObj.startdate;
+    requestObj.endDate = requestObj.enddate;
     // console.log(requestObj)
     let returnData = []
     let bankList = await bankService.getUserBankDetails({userId});
@@ -187,8 +187,8 @@ async function getExpenseDetailsByuserId(requestObj) {
 
 async function getCashExpenseDetailsByUserId(requestObj) {
 
-    requestObj.startDate = requestObj.startDate.replaceAll("/", "-");
-    requestObj.endDate = requestObj.endDate.replaceAll("/", "-");
+    requestObj.startDate = requestObj.startdate;
+    requestObj.endDate = requestObj.enddate;
     let reasonList = await fetchExpenseReasonByUserID(requestObj.userId);
     let personList = await getPersonDataByUserId(requestObj.userId);
     // console.log(reasonList);

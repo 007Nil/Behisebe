@@ -52,7 +52,7 @@ async function updateDailyClosing(dailyClosingObj) {
 async function getDailyClosing(requestData) {
     let dailyCloisngObj = new dailyClosingModel();
     dailyCloisngObj.bankId = requestData.bankId;
-    dailyCloisngObj.date = requestData.date.replaceAll("/", "-");
+    dailyCloisngObj.date = requestData.date;
     dailyCloisngObj.userId = requestData.userId;
 
     return await dailyClosingRepo.getDailyClosing(dailyCloisngObj);

@@ -26,7 +26,6 @@ router.get("/getBankDetails", async (request, response) => {
         }
         // console.log(request.query);
         let bankDetails = await getUserBankDetails(requestObj);
-        console.log("pass")
         response.status(200).send(bankDetails);
         return;
     } catch (error) {
