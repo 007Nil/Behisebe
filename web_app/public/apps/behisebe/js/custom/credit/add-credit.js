@@ -5,12 +5,6 @@ $(function () {
     getCashBalance();
 });
 
-
-$("#cashCheckBox").on("click", function(e){
-    $("#cerdit-reason-div").hide();
-});
-
-
 function getCashBalance() {
     $.ajax({
         type: "GET",
@@ -206,13 +200,13 @@ $("#credit-form").submit((event) => {
     try {
         reason = $('#credit-reason').select2('data')[0].id;
     } catch {
-        reason = null;
+        alert("Error!!! Select a reason")
     }
     let creditObject = {
         "bankId": bankId,
         "amount": $("#amount").val(),
         "date": toISOLocal(new Date()).slice(0, 19).replace('T', ' '),
-        "reason": $("#cashCheckBox").is(":checked") ? "6765454367" : reason,
+        "reason":  reason,
         "spacialCreditID": spacialCredit,
         "byCash": $("#cashCheckBox").is(":checked"),
         "notes": $("#notes").val()

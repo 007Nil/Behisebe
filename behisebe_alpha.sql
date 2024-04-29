@@ -87,9 +87,6 @@ VALUES (
         "565434329", "Added Bank Details", NULL, 0
     ),
     (
-        "6765454367", "Credit as Cash", NULL, 0
-    ),
-    (
         "1698898645", "Self Transfer", NULL, 0
     );
 
