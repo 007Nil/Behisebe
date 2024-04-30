@@ -377,7 +377,7 @@ function generateBorrowDetailsDatatable(detailsObj) {
                 $.ajax({
                     type: "GET",
                     url: "/apps/behisebe/v1/bank/getAccountBalance",
-                    data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${getDate()}`, // date: DD/MM/YY
+                    data: `bankId=${$("#debited-from").select2('data')[0].id}&date=${toISOLocal(new Date()).slice(0, 19).replace('T', ' ')}`, // date: DD/MM/YY
                     success: function (response) {
                         $("#bankAmount").val(response.data);
                     }
@@ -396,6 +396,23 @@ function generateBorrowDetailsDatatable(detailsObj) {
 
     })
 }
+
+function toISOLocal(d) {
+    var z  = n =>  ('0' + n).slice(-2);
+    var zz = n => ('00' + n).slice(-3);
+    var off = d.getTimezoneOffset();
+    var sign = off > 0? '-' : '+';
+    off = Math.abs(off);
+  
+    return d.getFullYear() + '-'
+           + z(d.getMonth()+1) + '-' +
+           z(d.getDate()) + 'T' +
+           z(d.getHours()) + ':'  + 
+           z(d.getMinutes()) + ':' +
+           z(d.getSeconds()) + '.' +
+           zz(d.getMilliseconds()) +
+           sign + z(off/60|0) + ':' + z(off%60); 
+  }
 
 $(document).on('change', "#cashCheckBox", function () {
     // console.log($('#bankCheckBox').attr('checked'))
@@ -423,7 +440,7 @@ function getCashBalance() {
     $.ajax({
         type: "GET",
         url: "/apps/behisebe/v1/cash/getCashBalance",
-        data: `date=${getDate()}`,
+        data: `date=${toISOLocal(new Date()).slice(0, 19).replace('T', ' ')}`,
         success: function (response) {
             // console.log(response)
             $("#cashBalance").val(response.data.Amount);
@@ -495,7 +512,7 @@ $("#processBorrowPayment").on("click", () => {
     let transacationId = $("#transacationId").val();
     let lendId = $("#lendId").val();
     // let bankId = $("#bankId").val();
-    let date = getDate();
+    let date = toISOLocal(new Date()).slice(0, 19).replace('T', ' ');
 
 
     let payObject = {
@@ -515,7 +532,7 @@ $("#processBorrowPayment").on("click", () => {
 
     $.ajax({
         type: "POST",
-        url: "/v1/lend/payDebt",
+        url: "/apps/behisebe/v1/lend/payDebt",
         data: JSON.stringify(payObject),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

@@ -15,7 +15,16 @@ async function fetchExpenseReasonByUserID(userId) {
     return (await mysqlPool.execute(prepareSelectReasonQuery))[0];
 }
 
+async function fetchAllExpenseReasonByUserID(userId) {
+    selectReasonQuery = "SELECT * FROM ?? WHERE ?? = ? OR ?? IS ?";
+    prepareSelectReasonQuery = mysql.format(selectReasonQuery, ["ExpenseReason", "UserID", userId, "UserID", null]);
+    console.log(prepareSelectReasonQuery)
+    return (await mysqlPool.execute(prepareSelectReasonQuery))[0];
+}
+
+
 module.exports = {
     saveExpenseReason,
-    fetchExpenseReasonByUserID
+    fetchExpenseReasonByUserID,
+    fetchAllExpenseReasonByUserID
 }

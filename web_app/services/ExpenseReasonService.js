@@ -21,5 +21,9 @@ async function getExpenseNameByID(expenseID){
     return (await mysqlPool.execute(prepareQuery))[0][0].Reason;
 }
 
-module.exports = {fetchExpenseReasonByUserID, addExpenseReason,getExpenseNameByID}
+async function fetchAllExpenseReasonByUserID(userId){
+    return expenseRepo.fetchAllExpenseReasonByUserID(userId);
+}
+
+module.exports = {fetchExpenseReasonByUserID, addExpenseReason,getExpenseNameByID,fetchAllExpenseReasonByUserID}
 

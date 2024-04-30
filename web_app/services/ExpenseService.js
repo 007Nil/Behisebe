@@ -1,6 +1,6 @@
 const crypto = require("crypto");
-const { fetchExpenseReasonByUserID, addExpenseReason, getExpenseNameByID } = require("./ExpenseReasonService");
-const { getPersonDataByUserId, addPersonData, getPersonNamebyID } = require("./PersonService");
+const { fetchExpenseReasonByUserID, addExpenseReason, fetchAllExpenseReasonByUserID } = require("./ExpenseReasonService");
+const { getPersonDataByUserId, addPersonData } = require("./PersonService");
 // const { addLendDetails } = require("./MoneyLendService");
 const bankService = require("./BankServices");
 const dailyClosingService = require("./DailyClosingService");
@@ -127,9 +127,9 @@ async function getExpenseDetailsByuserId(requestObj) {
     let userId = requestObj.userId;
     let returnData = []
     let bankList = await bankService.getUserBankDetails({userId});
-    let reasonList = await fetchExpenseReasonByUserID(userId);
+    let reasonList = await fetchAllExpenseReasonByUserID(userId);
     let personList = await getPersonDataByUserId(userId);
-    console.log(bankList);
+    // console.log(bankList);
     for (let eachBank of bankList) {
         let totalAmount = 0;
         let expenseData = new ExpenseModel()
