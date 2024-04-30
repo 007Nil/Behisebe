@@ -34,7 +34,6 @@ router
             let requestObj = request.query
             // console.log(requestObj);
             requestObj.userId = request.session.passport.user["ID"];
-            // let expenseData = await getExpenseDetailsByuserId(request.session.passport.user["ID"]);
             let expenseData = await getExpenseDetailsByuserId(requestObj);
             response.status(200).send({ "message": "Success", "data": expenseData });
         } catch (error) {

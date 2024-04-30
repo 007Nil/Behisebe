@@ -21,7 +21,7 @@ const expenseRepo = require("../repository/ExpenseRepo");
 
 async function addExpense(requestData) {
     // Take only date from timestamp
-    requestData.date = requestData.date.split(" ")[0];
+    // requestData.date = requestData.date.split(" ")[0];
 
     let expenseModel = new ExpenseModel();
     expenseModel.userId = requestData.userId;
@@ -91,8 +91,8 @@ async function addExpense(requestData) {
     if (expenseModel.lendId) {
         expenseModel.lendClose = 0;
     }
-    console.log(expenseModel);
     await expenseRepo.saveExpense(expenseModel);
+    expenseModel.date = expenseModel.date.split(" ")[0];
     if (requestData.byCash) {
         let dailyCloisngCashObj = new DailyClosingCashModel();
         dailyCloisngCashObj.amount = expenseModel.amount;
@@ -125,10 +125,6 @@ async function addExpense(requestData) {
 
 async function getExpenseDetailsByuserId(requestObj) {
     let userId = requestObj.userId;
-    // console.log(requestObj)
-    requestObj.startDate = requestObj.startdate;
-    requestObj.endDate = requestObj.enddate;
-    // console.log(requestObj)
     let returnData = []
     let bankList = await bankService.getUserBankDetails({userId});
     let reasonList = await fetchExpenseReasonByUserID(userId);
@@ -169,12 +165,8 @@ async function getExpenseDetailsByuserId(requestObj) {
 }
 
 async function getCashExpenseDetailsByUserId(requestObj) {
-
-    requestObj.startDate = requestObj.startdate;
-    requestObj.endDate = requestObj.enddate;
     let reasonList = await fetchExpenseReasonByUserID(requestObj.userId);
     let personList = await getPersonDataByUserId(requestObj.userId);
-    // console.log(reasonList);
     let cashExpObj = await expenseRepo.getCashExpenseByUserId(requestObj)
     for (eachCashExp of cashExpObj) {
         for (let reason of reasonList) {

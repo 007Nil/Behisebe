@@ -1,5 +1,7 @@
 alertify.set('notifier', 'position', 'top-right');
 $(function () {
+    $("#expense-nav")[0].click();
+    $("#pay-your-debt-id").css("color", "#FFFFFF");
     getUserDebtData()
 });
 

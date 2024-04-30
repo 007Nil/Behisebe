@@ -28,7 +28,7 @@ router
     res.render("transaction/pay-your-debt", { "title": "Pay Your Debts" });
   })
   .get("/collect-your-debts", (req, res) => {
-    res.render("transaction/collect-your-debt", { "title": "Collect Your Debts" });
+    res.render("transaction/collect-your-debt", { "title": "Collect Lend Moneys" });
   })
   .get("/add-initial-cash", (req, res) => {
     res.render("transaction/credit/add-initial-cash");
