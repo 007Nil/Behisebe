@@ -1,12 +1,16 @@
+import 'react-native-gesture-handler';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 import { scale, verticalScale } from "react-native-size-matters";
 
+import { Home, History } from "./src/screens/index";
+
 export default function App() {
   const [selectedTab, setSelectedTab] = useState(0);
   return (
     <View style={styles.container}>
+      {selectedTab == 0 ? <Home /> : <History />}
       <View style={[styles.bottomNav]}>
         <View style={styles.bottomNav2}>
           <TouchableOpacity
@@ -90,7 +94,7 @@ export default function App() {
               />
             </View>
             <Text style={{ color: selectedTab == 3 ? "purple" : "#bdbdbd" }}>
-              Wealth
+              Statement
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
