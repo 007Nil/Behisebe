@@ -2,8 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import AppScreen from "../screens/AppScreen";
-import { AddExpense, AddCredit } from "../screens/moneyTransfer/index";
-
+import { AddExpense, AddCredit, ToSelfTransfer, CheckBalance } from "../screens/moneyTransfer/index";
 
 const stack = createStackNavigator();
 const AppNavigator = () => {
@@ -23,6 +22,16 @@ const AppNavigator = () => {
         <stack.Screen
           name="AddCredit"
           component={AddCredit}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="ToSelfTransfer"
+          component={ToSelfTransfer}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="CheckBalance"
+          component={CheckBalance}
           options={{ headerShown: false }}
         />
       </stack.Navigator>

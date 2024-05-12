@@ -62,7 +62,9 @@ const Home = () => {
               </View>
               <Text style={styles.tranferText}>{"Credit/Earnings"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
+            <TouchableOpacity style={styles.transferTab} onPress={() => {
+                navigation.navigate("ToSelfTransfer");
+              }}> 
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/reload.png")}
@@ -71,7 +73,9 @@ const Home = () => {
               </View>
               <Text style={styles.tranferText}>{"To Self Transfer"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
+            <TouchableOpacity style={styles.transferTab} onPress={() => {
+                navigation.navigate("CheckBalance");
+              }}>
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/bank.png")}
