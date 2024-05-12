@@ -3,13 +3,21 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 import { scale, verticalScale } from "react-native-size-matters";
 
-import { Home, History } from "./index";
+import { Home, Repay, Statements, History } from "./index";
 
 const AppScreen = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   return (
     <View style={styles.container}>
-      {selectedTab == 0 ? <Home /> : <History />}
+      {selectedTab == 0 ? (
+        <Home />
+      ) : selectedTab == 1 ? (
+        <Repay />
+      ) : selectedTab == 2 ? (
+        <Statements />
+      ) : (
+        <History />
+      )}
       <View style={[styles.bottomNav]}>
         <View style={styles.bottomNav2}>
           <TouchableOpacity
@@ -54,7 +62,28 @@ const AppScreen = () => {
               Repay
             </Text>
           </TouchableOpacity>
-    
+
+          <TouchableOpacity
+            style={styles.bottomTab}
+            onPress={() => {
+              setSelectedTab(2);
+            }}
+          >
+            <View
+              style={[
+                styles.tabIconBg,
+                { backgroundColor: selectedTab == 2 ? "purple" : "#9e9e9e" },
+              ]}
+            >
+              <Image
+                source={require("../../src/images/rupee.png")}
+                style={styles.tabIcon}
+              />
+            </View>
+            <Text style={{ color: selectedTab == 2 ? "purple" : "#bdbdbd" }}>
+              Statements
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.bottomTab}
             onPress={() => {
@@ -68,32 +97,11 @@ const AppScreen = () => {
               ]}
             >
               <Image
-                source={require("../../src/images/rupee.png")}
-                style={styles.tabIcon}
-              />
-            </View>
-            <Text style={{ color: selectedTab == 3 ? "purple" : "#bdbdbd" }}>
-              Statements
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.bottomTab}
-            onPress={() => {
-              setSelectedTab(4);
-            }}
-          >
-            <View
-              style={[
-                styles.tabIconBg,
-                { backgroundColor: selectedTab == 4 ? "purple" : "#9e9e9e" },
-              ]}
-            >
-              <Image
                 source={require("../../src/images/transaction.png")}
                 style={styles.tabIcon}
               />
             </View>
-            <Text style={{ color: selectedTab == 4 ? "purple" : "#bdbdbd" }}>
+            <Text style={{ color: selectedTab == 3 ? "purple" : "#bdbdbd" }}>
               Histoy
             </Text>
           </TouchableOpacity>
