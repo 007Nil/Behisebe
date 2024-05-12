@@ -14,58 +14,53 @@ import {
   scale,
   verticalScale,
 } from "react-native-size-matters";
-
+import { useNavigation } from '@react-navigation/native'
 import CommonHeader from "../common/CommonHeader";
 
+import {AddExpense} from "./moneyTransfer/index"
+
 const Home = () => {
+  const navigation=useNavigation()
   return (
     <View style={styles.container}>
       {/* <StatusBar barStyle={'light-content'} /> */}
       <CommonHeader />
       <ScrollView>
-        <View style={styles.updateCard}>
-          <View style={styles.updateTopView}>
-            <Image source={require("../images/logo.png")} style={styles.logo} />
-            <View>
-              <Text style={styles.updateTitle}>App Update Available</Text>
-              <Text style={styles.updateMsg}>
-                {
-                  "We need fixed some issues and added some cool feaures in this update"
-                }
-              </Text>
-            </View>
-          </View>
-          <View style={styles.updateBtnView}>
-            <Text style={styles.later}>LATER</Text>
-            <TouchableOpacity style={styles.update}>
-              <Text style={styles.updateText}>UPDATE</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <Image
-          source={require("../images/phone_pay_banner.png")}
-          style={styles.banner}
-        />
-        <View style={styles.moneyTransferCard}>
+        <View
+          style={[
+            styles.moneyTransferCard,
+            {
+              marginBottom: moderateVerticalScale(10),
+              marginTop: moderateVerticalScale(20),
+            },
+          ]}
+        >
           <Text style={styles.heading}>Money Transfers</Text>
           <View style={styles.transferView}>
-            <TouchableOpacity style={styles.transferTab}>
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigation.navigate("AddExpense");
+              }}
+            >
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/user.png")}
                   style={styles.icons}
                 />
               </View>
-              <Text style={styles.tranferText}>To Mobile Number</Text>
+              <Text style={styles.tranferText}>{"Debit/Expense"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
+            <TouchableOpacity style={styles.transferTab}  onPress={() => {
+                navigation.navigate("AddCredit");
+              }}>
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/bank2.png")}
                   style={styles.icons}
                 />
               </View>
-              <Text style={styles.tranferText}>{"To Bank/\nUPI ID"}</Text>
+              <Text style={styles.tranferText}>{"Credit/Earnings"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}>
               <View style={styles.transferCard}>
@@ -74,7 +69,7 @@ const Home = () => {
                   style={styles.icons}
                 />
               </View>
-              <Text style={styles.tranferText}>{"To Self Account"}</Text>
+              <Text style={styles.tranferText}>{"To Self Transfer"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}>
               <View style={styles.transferCard}>
@@ -88,161 +83,21 @@ const Home = () => {
           </View>
         </View>
 
-        <View style={styles.otherOptions}>
-          <TouchableOpacity style={styles.otherOptionTab}>
-            <Image
-              source={require("../images/wallet.png")}
-              style={styles.icons}
-            />
-            <Text style={styles.otherOptionText}>PhonePe Wallet</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.otherOptionTab}>
-            <Image
-              source={require("../images/gift.png")}
-              style={styles.icons}
-            />
-            <Text style={styles.otherOptionText}>PhonePe Wallet</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.otherOptionTab}>
-            <Image
-              source={require("../images/speaker.png")}
-              style={styles.icons}
-            />
-            <Text style={styles.otherOptionText}>Refer & Get 100</Text>
-          </TouchableOpacity>
+        <View
+          style={[
+            styles.rechargeAndBills,
+            { marginBottom: moderateVerticalScale(10) },
+          ]}
+        >
+          <Text style={styles.heading}>Expense Charts</Text>
         </View>
         <View
           style={[
             styles.rechargeAndBills,
-            { marginBottom: moderateVerticalScale(100) },
+            { marginBottom: moderateVerticalScale(10) },
           ]}
         >
-          <Text style={styles.heading}>Recharge & Pay Bills</Text>
-          <View style={styles.transferView}>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
-                <Image
-                  source={require("../images/mobile.png")}
-                  style={[
-                    styles.icons,
-                    {
-                      tintColor: "purple",
-                      width: scale(30),
-                      height: scale(30),
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"Mobile Recharge"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
-                <Image
-                  source={require("../images/satellite-dish.png")}
-                  style={[
-                    styles.icons,
-                    {
-                      tintColor: "purple",
-                      width: scale(30),
-                      height: scale(30),
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"DTH"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
-                <Image
-                  source={require("../images/bulb.png")}
-                  style={[
-                    styles.icons,
-                    {
-                      tintColor: "purple",
-                      width: scale(30),
-                      height: scale(30),
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"Electricity"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
-                <Image
-                  source={require("../images/credit-card.png")}
-                  style={[
-                    styles.icons,
-                    {
-                      tintColor: "purple",
-                      width: scale(30),
-                      height: scale(30),
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"Credit Card\nPayment"}</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.transferView}>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
-                <Image
-                  source={require("../images/renewable.png")}
-                  style={[
-                    styles.icons,
-                    {
-                      tintColor: "purple",
-                      width: scale(30),
-                      height: scale(30),
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"Rent Payment"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
-                <Image
-                  source={require("../images/personal.png")}
-                  style={[
-                    styles.icons,
-                    {
-                      tintColor: "purple",
-                      width: scale(30),
-                      height: scale(30),
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"Loan Repayment"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
-                <Image
-                  source={require("../images/gas-tank.png")}
-                  style={[
-                    styles.icons,
-                    {
-                      tintColor: "purple",
-                      width: scale(30),
-                      height: scale(30),
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"Book Cylinder"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
-              <View style={[styles.transferCard]}>
-                <Image
-                  source={require("../images/next.png")}
-                  style={[styles.icons]}
-                />
-              </View>
-              <Text style={styles.tranferText}>{"See All"}</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.heading}>More Charts</Text>
         </View>
       </ScrollView>
     </View>

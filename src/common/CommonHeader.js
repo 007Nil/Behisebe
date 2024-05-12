@@ -4,7 +4,7 @@ import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native'
 
 const CommonHeader = () => {
-//   const navigation=useNavigation()
+  const navigation=useNavigation()
   return (
     <View style={styles.header}>
     <View style={styles.header2}>
@@ -31,14 +31,6 @@ const CommonHeader = () => {
         </View>
       </View>
       <View style={styles.headerRightView}>
-       <TouchableOpacity onPress={()=>{
-        navigation.navigate("QrCodeScanner")
-       }}>
-       <Image
-          source={require('../images/qr-code.png')}
-          style={styles.icons}
-        />
-       </TouchableOpacity>
         <Image
           source={require('../images/bell.png')}
           style={[
