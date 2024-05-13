@@ -85,6 +85,7 @@ const Home = () => {
               <Text style={styles.tranferText}>{"Check\nBalance"}</Text>
             </TouchableOpacity>
           </View>
+
         </View>
 
         <View
