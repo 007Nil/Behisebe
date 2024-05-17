@@ -1,0 +1,10 @@
+[
+    {
+        "_id": "1",
+        "credit_reason": "Salary Credited"
+    },
+    {
+        "_id": "2",
+        "credit_reason": "Pay Of Debt"
+    }
+]

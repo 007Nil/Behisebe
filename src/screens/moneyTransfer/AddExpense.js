@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  FlatList,
+  KeyboardAvoidingView,
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
@@ -18,11 +18,15 @@ import Modal from "react-native-modal";
 
 import { useNavigation } from "@react-navigation/native";
 import Dropdown from "../../component/Dropdown";
+
+import { expense_reason, persons, funds } from "../../dummy_data/index";
+
 const AddExpense = () => {
   const [amount, setAmount] = useState("");
   const navigation = useNavigation();
   const [isBankChecked, setBankIsChecked] = useState(true);
   const [isCashChecked, setCashIsChecked] = useState(false);
+  const [expenseReason, setExpenseReason] = useState("");
 
   const toggleBankCheckbox = () => {
     setCashIsChecked(isBankChecked);
@@ -32,6 +36,10 @@ const AddExpense = () => {
   const toggleCashCheckbox = () => {
     setBankIsChecked(isCashChecked);
     setCashIsChecked(!isCashChecked);
+  };
+
+  const getExpenseReason = (expenseReason) => {
+    setExpenseReason(expenseReason);
   };
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -74,6 +82,7 @@ const AddExpense = () => {
             </TouchableOpacity>
           </View>
           {/* For Cash Payment */}
+
           <TouchableOpacity
             style={styles.checkboxContainer}
             onPress={toggleCashCheckbox}
@@ -81,6 +90,7 @@ const AddExpense = () => {
             <View
               style={[styles.checkbox, isCashChecked ? styles.checked : null]}
             />
+            <Text>Cash Balance</Text>
             <TextInput
               style={styles.input}
               placeholder={isCashChecked ? "12000" : ""}
@@ -89,10 +99,9 @@ const AddExpense = () => {
           </TouchableOpacity>
         </View>
         {/* Actual form */}
-        
         {!isCashChecked ? (
           <View style={styles.amountView}>
-            <Dropdown />
+            <Dropdown dropDownValues={funds} dropDownType={"fundDetails"} />
           </View>
         ) : null}
         <View style={styles.amountView}>
@@ -112,26 +121,34 @@ const AddExpense = () => {
         </View>
         {/* Reason for expense */}
         <View style={[styles.amountView]}>
-          <Dropdown />
+          <Dropdown
+            dropDownValues={expense_reason}
+            dropDownType={"expenseReasonDetails"}
+            getExpenseReason={getExpenseReason}
+          />
         </View>
 
         {/* Money Lend */}
+        {expenseReason === "Lend Money" ? (
+          <View style={[styles.amountView]}>
+            <Dropdown dropDownValues={persons} dropDownType={"personDetails"} />
+          </View>
+        ) : null}
         <View
           style={[
             styles.amountView,
+            { marginBottom: moderateVerticalScale(20) },
           ]}
         >
-          <Dropdown />
-        </View>
-        <View style={[styles.amountView,{ marginBottom: moderateVerticalScale(20) },]}>
           <TextInput
             placeholderTextColor={"#929292"}
             placeholder="Add a Message(optional)"
             style={[styles.input, { fontSize: moderateScale(14) }]}
-            keyboardType="number-pad"
+            keyboardType="default"
           />
         </View>
       </View>
+
       <TouchableOpacity
         style={[
           styles.proceedToPay,
