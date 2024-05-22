@@ -15,16 +15,14 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import { useNavigation } from '@react-navigation/native'
-import CommonHeader from "../common/CommonHeader";
+import HomeCommonHeader from "../common/HomeCommonHeader";
 
-import {AddExpense} from "./moneyTransfer/index"
 
 const Home = () => {
-  const navigation=useNavigation()
+  const navigation=useNavigation();
   return (
     <View style={styles.container}>
-      {/* <StatusBar barStyle={'light-content'} /> */}
-      <CommonHeader />
+      <HomeCommonHeader title={"Home"}/>
       <ScrollView>
         <View
           style={[

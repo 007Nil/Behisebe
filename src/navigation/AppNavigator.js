@@ -9,6 +9,11 @@ import {
   CheckBalance,
 } from "../screens/moneyTransfer/index";
 import ProfileAndSettings from "../screens/settings/ProfileAndSettings";
+import {
+  Funds,
+  ExpesneReasons,
+  CreditReasons,
+} from "../screens/settings/index";
 
 const stack = createStackNavigator();
 const AppNavigator = () => {
@@ -43,6 +48,21 @@ const AppNavigator = () => {
         <stack.Screen
           name="ProfileAndSettings"
           component={ProfileAndSettings}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="Funds"
+          component={Funds}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="ExpesneReasons"
+          component={ExpesneReasons}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="CreditReasons"
+          component={CreditReasons}
           options={{ headerShown: false }}
         />
       </stack.Navigator>

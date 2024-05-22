@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
 import React from 'react'
-import CommonHeader from '../common/CommonHeader'
+import HomeCommonHeader from '../common/HomeCommonHeader'
 import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
 
 const History = () => {
   return (
     <View style={styles.container}>
-      <CommonHeader />
+      <HomeCommonHeader title={"History"}/>
       <View style={styles.searchBox}>
         <Image source={require('../images/search.png')} style={styles.search} />
         <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>

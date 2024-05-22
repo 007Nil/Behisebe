@@ -14,35 +14,15 @@ import {
   moderateVerticalScale,
 } from "react-native-size-matters";
 
+import { useNavigation } from "@react-navigation/native";
+
+import CommonHeader from "../../common/CommonHeader";
+
 const ProfileAndSettings = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.header2}>
-          <View style={styles.headerLeftView}>
-            <TouchableOpacity>
-              <View>
-                <Image
-                  source={require("../../images/left.png")}
-                  style={styles.leftIcon}
-                />
-              </View>
-            </TouchableOpacity>
-            <View style={{ marginLeft: moderateScale(10) }}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={styles.home}>Profile and Settings</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.headerRightView}>
-            <Image
-              source={require("../../images/help.png")}
-              style={styles.icons}
-            />
-          </View>
-        </View>
-      </View>
-      {/* End of Header..... */}
+      <CommonHeader title={"Profile and Settings"} />
 
       <ScrollView>
         <View
@@ -93,13 +73,18 @@ const ProfileAndSettings = () => {
         {/* Settings area */}
         <View
           style={[
-            styles.rechargeAndBills,
+            styles.settingsArea,
             { marginBottom: moderateVerticalScale(10) },
           ]}
         >
-          <Text style={styles.heading}>Recharge & Pay Bills</Text>
+          <Text style={styles.heading}>Settings</Text>
           <View style={styles.transferView}>
-            <TouchableOpacity style={styles.transferTab}>
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigation.navigate("Funds");
+              }}
+            >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
                 <Image
                   source={require("../../images/mobile.png")}
@@ -113,9 +98,14 @@ const ProfileAndSettings = () => {
                   ]}
                 />
               </View>
-              <Text style={styles.tranferText}>{"Mobile Recharge"}</Text>
+              <Text style={styles.tranferText}>{"Funds"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigation.navigate("ExpesneReasons");
+              }}
+            >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
                 <Image
                   source={require("../../images/satellite-dish.png")}
@@ -129,9 +119,14 @@ const ProfileAndSettings = () => {
                   ]}
                 />
               </View>
-              <Text style={styles.tranferText}>{"DTH"}</Text>
+              <Text style={styles.tranferText}>{"Expense Reason"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigation.navigate("CreditReasons");
+              }}
+            >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
                 <Image
                   source={require("../../images/bulb.png")}
@@ -145,7 +140,7 @@ const ProfileAndSettings = () => {
                   ]}
                 />
               </View>
-              <Text style={styles.tranferText}>{"Electricity"}</Text>
+              <Text style={styles.tranferText}>{"Credit Reason"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}>
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
@@ -161,7 +156,7 @@ const ProfileAndSettings = () => {
                   ]}
                 />
               </View>
-              <Text style={styles.tranferText}>{"Credit Card\nPayment"}</Text>
+              <Text style={styles.tranferText}>{"Persons"}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -173,6 +168,10 @@ const ProfileAndSettings = () => {
 export default ProfileAndSettings;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f2f2f2",
+  },
   tranferText: {
     marginTop: moderateScale(5),
     textAlign: "center",
@@ -189,12 +188,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: moderateScale(20),
   },
-  rechargeAndBills: {
+  settingsArea: {
     backgroundColor: "white",
     borderRadius: moderateScale(5),
     marginTop: moderateVerticalScale(10),
     alignSelf: "center",
-    height: verticalScale(200),
+    height: verticalScale(140),
     width: "94%",
   },
   userInfoCard: {
@@ -223,10 +222,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  leftIcon: {
-    width: scale(30),
-    height: scale(30),
-  },
   user: {
     width: scale(60),
     height: scale(60),
@@ -243,11 +238,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "white",
   },
-  home: {
-    fontSize: moderateScale(18),
-    color: "white",
-    fontWeight: "600",
-  },
   userDetails: {
     color: "black",
     fontWeight: "600",
@@ -263,10 +253,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: moderateScale(12),
     marginTop: moderateScale(2),
-  },
-  headerRightView: {
-    flexDirection: "row",
-    alignItems: "center",
   },
   icons: {
     width: scale(22),

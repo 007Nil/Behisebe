@@ -15,6 +15,7 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
+import SelectDropdown from "react-native-select-dropdown";
 
 import { useNavigation } from "@react-navigation/native";
 import Dropdown from "../../component/Dropdown";
@@ -41,6 +42,7 @@ const AddExpense = () => {
   const getExpenseReason = (expenseReason) => {
     setExpenseReason(expenseReason);
   };
+  const [selectedFruit, setSelectedFruit] = useState("");
 
   const [modalOpen, setModalOpen] = useState(false);
   return (
@@ -101,7 +103,57 @@ const AddExpense = () => {
         {/* Actual form */}
         {!isCashChecked ? (
           <View style={styles.amountView}>
-            <Dropdown dropDownValues={funds} dropDownType={"fundDetails"} />
+            {/* <Dropdown dropDownValues={funds} dropDownType={"fundDetails"} /> */}
+            <SelectDropdown
+              data={funds}
+              search={true}
+              onSelect={(selectedItem, index) => {
+                console.log(selectedItem, index);
+              }}
+              renderButton={(selectedItem, isOpened) => {
+                return (
+                  <View style={styles.dropdownButtonStyle}>
+                    {selectedItem && (
+                      <Icon
+                        name={selectedItem.icon}
+                        style={styles.dropdownButtonIconStyle}
+                      />
+                    )}
+                    <Text style={styles.dropdownButtonTxtStyle}>
+                      {(selectedItem && selectedItem.title) ||
+                        "Select your mood"}
+                    </Text>
+                    {/* <Icon
+                      name={isOpened ? "chevron-up" : "chevron-down"}
+                      style={styles.dropdownButtonArrowStyle}
+                    /> */}
+                  </View>
+                );
+              }}
+              renderItem={(item, index, isSelected) => {
+                return (
+                  <View
+                    style={{
+                      ...styles.dropdownItemStyle,
+                      ...(isSelected && { backgroundColor: "#D2D9DF" }),
+                    }}
+                  >
+                    {/* <Icon
+                      name={item.icon}
+                      style={styles.dropdownItemIconStyle}
+                    /> */}
+                    <Text style={styles.dropdownItemTxtStyle}>
+                      {item.fund_name}
+                    </Text>
+                  </View>
+                );
+              }}
+              showsVerticalScrollIndicator={false}
+              dropdownStyle={styles.dropdownMenuStyle}
+              // onChangeSearchInputText= {(item) => {
+              //   console.log(item)
+              // }}
+            />
           </View>
         ) : null}
         <View style={styles.amountView}>
@@ -459,5 +511,50 @@ const styles = StyleSheet.create({
     marginBottom: moderateVerticalScale(40),
     justifyContent: "center",
     alignItems: "center",
+  },
+  dropdownButtonStyle: {
+    width: 200,
+    height: 50,
+    backgroundColor: '#E9ECEF',
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
   },
 });
