@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  KeyboardAvoidingView,
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
@@ -15,7 +14,6 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
-import SelectDropdown from "react-native-select-dropdown";
 
 import { useNavigation } from "@react-navigation/native";
 import Dropdown from "../../component/Dropdown";
@@ -42,7 +40,6 @@ const AddExpense = () => {
   const getExpenseReason = (expenseReason) => {
     setExpenseReason(expenseReason);
   };
-  const [selectedFruit, setSelectedFruit] = useState("");
 
   const [modalOpen, setModalOpen] = useState(false);
   return (
@@ -102,58 +99,8 @@ const AddExpense = () => {
         </View>
         {/* Actual form */}
         {!isCashChecked ? (
-          <View style={styles.amountView}>
-            {/* <Dropdown dropDownValues={funds} dropDownType={"fundDetails"} /> */}
-            <SelectDropdown
-              data={funds}
-              search={true}
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
-              }}
-              renderButton={(selectedItem, isOpened) => {
-                return (
-                  <View style={styles.dropdownButtonStyle}>
-                    {selectedItem && (
-                      <Icon
-                        name={selectedItem.icon}
-                        style={styles.dropdownButtonIconStyle}
-                      />
-                    )}
-                    <Text style={styles.dropdownButtonTxtStyle}>
-                      {(selectedItem && selectedItem.title) ||
-                        "Select your mood"}
-                    </Text>
-                    {/* <Icon
-                      name={isOpened ? "chevron-up" : "chevron-down"}
-                      style={styles.dropdownButtonArrowStyle}
-                    /> */}
-                  </View>
-                );
-              }}
-              renderItem={(item, index, isSelected) => {
-                return (
-                  <View
-                    style={{
-                      ...styles.dropdownItemStyle,
-                      ...(isSelected && { backgroundColor: "#D2D9DF" }),
-                    }}
-                  >
-                    {/* <Icon
-                      name={item.icon}
-                      style={styles.dropdownItemIconStyle}
-                    /> */}
-                    <Text style={styles.dropdownItemTxtStyle}>
-                      {item.fund_name}
-                    </Text>
-                  </View>
-                );
-              }}
-              showsVerticalScrollIndicator={false}
-              dropdownStyle={styles.dropdownMenuStyle}
-              // onChangeSearchInputText= {(item) => {
-              //   console.log(item)
-              // }}
-            />
+          <View style={[styles.amountView]}>
+            <Dropdown dropDownValues={funds} dropDownType={"fundDetails"} />
           </View>
         ) : null}
         <View style={styles.amountView}>
@@ -181,7 +128,7 @@ const AddExpense = () => {
         </View>
 
         {/* Money Lend */}
-        {expenseReason === "Lend Money" ? (
+        {expenseReason.expense_reason === "Lend Money" ? (
           <View style={[styles.amountView]}>
             <Dropdown dropDownValues={persons} dropDownType={"personDetails"} />
           </View>
@@ -285,23 +232,12 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: "center",
   },
-  picker: {
-    height: 50,
-    width: 200,
-    borderWidth: 1,
-    borderColor: "#ccc",
+  input: {
+    width: "100%",
+    height: 40,
+    paddingHorizontal: 10,
+    opacity: 0.5, // Optional: you can adjust opacity to visually indicate that the input is disabled
   },
-  // input: {
-  //   width: 200,
-  //   height: 40,
-  //   borderWidth: 1,
-  //   borderColor: '#ccc',
-  //   borderRadius: 5,
-  //   paddingHorizontal: 10,
-  //   backgroundColor: '#f0f0f0',
-  //   opacity: 0.5, // Optional: you can adjust opacity to visually indicate that the input is disabled
-  // },
-
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -317,9 +253,6 @@ const styles = StyleSheet.create({
   },
   checked: {
     backgroundColor: "#000",
-  },
-  label: {
-    fontSize: 16,
   },
   header: {
     width: "100%",
@@ -353,7 +286,6 @@ const styles = StyleSheet.create({
   },
   cardView: {
     width: "94%",
-
     alignSelf: "center",
     backgroundColor: "white",
     marginTop: moderateVerticalScale(10),
@@ -369,35 +301,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  nameView: {
-    width: scale(40),
-    height: scale(40),
-    backgroundColor: "#929292",
-    borderRadius: scale(20),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  nameChar: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "white",
-  },
-  name: {
-    fontSize: 18,
-    color: "#000",
-    marginLeft: moderateScale(10),
-  },
-  upi_id: {
-    fontSize: 14,
-    color: "#929292",
-    marginLeft: moderateScale(10),
-    marginTop: moderateScale(5),
-  },
-  viewHistory: {
-    color: "purple",
-    fontSize: moderateScale(16),
-    fontWeight: "600",
-  },
   amountView: {
     width: "94%",
     height: verticalScale(45),
@@ -410,11 +313,6 @@ const styles = StyleSheet.create({
     paddingRight: moderateScale(10),
     alignItems: "center",
     marginTop: moderateVerticalScale(20),
-  },
-  input_2: {
-    fontSize: 25,
-    marginLeft: moderateScale(15),
-    fontWeight: "600",
   },
   proceedToPay: {
     width: "100%",
@@ -435,7 +333,6 @@ const styles = StyleSheet.create({
   mainView: {
     backgroundColor: "white",
     width: "100%",
-
     position: "absolute",
     bottom: 0,
     borderTopLeftRadius: moderateScale(20),
@@ -511,50 +408,5 @@ const styles = StyleSheet.create({
     marginBottom: moderateVerticalScale(40),
     justifyContent: "center",
     alignItems: "center",
-  },
-  dropdownButtonStyle: {
-    width: 200,
-    height: 50,
-    backgroundColor: '#E9ECEF',
-    borderRadius: 12,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-  },
-  dropdownButtonTxtStyle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#151E26',
-  },
-  dropdownButtonArrowStyle: {
-    fontSize: 28,
-  },
-  dropdownButtonIconStyle: {
-    fontSize: 28,
-    marginRight: 8,
-  },
-  dropdownMenuStyle: {
-    backgroundColor: '#E9ECEF',
-    borderRadius: 8,
-  },
-  dropdownItemStyle: {
-    width: '100%',
-    flexDirection: 'row',
-    paddingHorizontal: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  dropdownItemTxtStyle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#151E26',
-  },
-  dropdownItemIconStyle: {
-    fontSize: 28,
-    marginRight: 8,
   },
 });

@@ -1,72 +1,102 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Picker } from "@react-native-picker/picker";
+import SelectDropdown from "react-native-select-dropdown";
 
 const Dropdown = (props) => {
-  const [selecteddropDownValues, setselecteddropDownValues] = useState(
-    "Select a value"
-  );
+  const [selecteddropDownValues, setselecteddropDownValues] = useState("");
   useEffect(() => {
     if (props.dropDownType === "expenseReasonDetails")
       props.getExpenseReason(selecteddropDownValues);
   });
 
   return (
-    <Picker
-      selectedValue={selecteddropDownValues}
-      onValueChange={(itemValue, itemIndex) =>
-        setselecteddropDownValues(itemValue)
-      }
-      style={styles.picker}
-    >
-      {/* <Picker.Item label="Select a value" value="Select a value" /> */}
-      {props.dropDownValues.map((item, index) => {
-        if (props.dropDownType === "fundDetails") {
+    <View style={styles.dropdownButtonStyle}>
+      <SelectDropdown
+        data={props.dropDownValues}
+        search={true}
+        onSelect={(selectedItem, index) => {
+          setselecteddropDownValues(selectedItem);
+        }}
+        renderButton={(selectedItem, isOpened) => {
           return (
-            <Picker.Item
-              key={item._id}
-              label={item.fund_name}
-              value={item.fund_name}
-            />
+            <View style={styles.dropdownButtonStyle}>
+              <Text style={styles.dropdownButtonTxtStyle}>
+                {(selectedItem &&
+                  (props.dropDownType === "expenseReasonDetails"
+                    ? selectedItem.expense_reason
+                    : props.dropDownType === "personDetails"
+                    ? selectedItem.name
+                    : selectedItem.fund_name)) ||
+                  (props.dropDownType === "expenseReasonDetails"
+                    ? "Select Expense Reason"
+                    : props.dropDownType === "personDetails"
+                    ? "Select Person name"
+                    : "Select a Fund")}
+              </Text>
+            </View>
           );
-        } else if (props.dropDownType === "expenseReasonDetails") {
+        }}
+        renderItem={(item, index, isSelected) => {
           return (
-            <Picker.Item
-              key={item._id}
-              label={item.expense_reason}
-              value={item.expense_reason}
-            />
+            <View
+              style={{
+                ...styles.dropdownItemStyle,
+                ...(isSelected && { backgroundColor: "#D2D9DF" }),
+              }}
+            >
+              <Text style={styles.dropdownItemTxtStyle}>
+                {props.dropDownType === "expenseReasonDetails"
+                  ? item.expense_reason
+                  : props.dropDownType === "personDetails"
+                  ? item.name
+                  : item.fund_name}
+              </Text>
+            </View>
           );
-        } else if (props.dropDownType === "creditReasonDetails") {
-          return (
-            <Picker.Item
-              key={item._id}
-              label={item.credit_reason}
-              value={item.credit_reason}
-            />
-          );
-        } else if (props.dropDownType === "personDetails") {
-          return (
-            <Picker.Item key={item._id} label={item.name} value={item.name} />
-          );
-        }
-      })}
-    </Picker>
+        }}
+        showsVerticalScrollIndicator={false}
+        dropdownStyle={styles.dropdownMenuStyle}
+      />
+    </View>
   );
 };
 
+export default Dropdown;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  dropdownButtonStyle: {
+    width: "100%",
+    height: 30,
+    backgroundColor: "#E9ECEF",
+    borderRadius: 12,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 12,
   },
-  picker: {
-    height: 50,
-    width: 300,
-    borderWidth: 1,
-    borderColor: "#ccc",
+  dropdownButtonTxtStyle: {
+    width: "100%",
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "400",
+    color: "#151E26",
+  },
+  dropdownMenuStyle: {
+    backgroundColor: "#E9ECEF",
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: "100%",
+    flexDirection: "row",
+    paddingHorizontal: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#151E26",
   },
 });
-
-export default Dropdown;
