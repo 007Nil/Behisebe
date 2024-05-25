@@ -14,8 +14,8 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
-
 import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 
 import { expense_reason, persons, funds } from "../../dummy_data/index";
@@ -23,23 +23,71 @@ import { expense_reason, persons, funds } from "../../dummy_data/index";
 const AddExpense = () => {
   const [amount, setAmount] = useState("");
   const navigation = useNavigation();
-  const [isBankChecked, setBankIsChecked] = useState(true);
+  const [isFundChecked, setFundIsChecked] = useState(true);
   const [isCashChecked, setCashIsChecked] = useState(false);
+  //
   const [expenseReason, setExpenseReason] = useState("");
-
-  const toggleBankCheckbox = () => {
-    setCashIsChecked(isBankChecked);
-    setBankIsChecked(!isBankChecked);
+  const [fundDetails, setFundDetails] = useState("");
+  const [personDetails, setPersonDetails] = useState("");
+  const toggleFundCheckbox = () => {
+    if (!isFundChecked) {
+      setCashIsChecked(isFundChecked);
+      setFundIsChecked(!isFundChecked);
+    }
   };
 
   const toggleCashCheckbox = () => {
-    setBankIsChecked(isCashChecked);
-    setCashIsChecked(!isCashChecked);
+    if (!isCashChecked) {
+      setFundIsChecked(isCashChecked);
+      setCashIsChecked(!isCashChecked);
+    }
   };
 
   const getExpenseReason = (expenseReason) => {
     setExpenseReason(expenseReason);
   };
+
+  const getFundDetails = (fundDetails) => {
+    setFundDetails(fundDetails);
+  };
+
+  const getPersonDetails = (personDetails) => {
+    setPersonDetails(personDetails);
+  };
+
+  const checkExpenseForm = () => {
+    let isValidFrom = true;
+    if (!expenseReason) {
+      alert("Please select expense reason");
+      isValidFrom = false;
+    } else {
+      if (expenseReason.expense_reason === "Lend Money") {
+        if (!personDetails) {
+          alert("Please select person name");
+          isValidFrom = false;
+        }
+      }
+    }
+    if (isFundChecked && !fundDetails) {
+      alert("Please select a fund");
+      isValidFrom = false;
+    }
+    if (amount === "") {
+      alert("Please enter amount");
+      isValidFrom = false;
+    }
+
+    return isValidFrom;
+  };
+
+  const saveExpenseDetails = () => {
+    let expenseObject = {
+      fundId: isCashChecked ? fundDetails._id: null,
+      expenseReason: expenseReason._id,
+      amount: amount,
+    }
+    console.log(expenseObject)
+  }
 
   const [modalOpen, setModalOpen] = useState(false);
   return (
@@ -68,39 +116,55 @@ const AddExpense = () => {
             e.g. Bank, Credit Card, etc*/}
             <TouchableOpacity
               style={styles.checkboxContainer}
-              onPress={toggleBankCheckbox}
+              onPress={toggleFundCheckbox}
             >
+              <Text style={{ paddingRight: 10 }}>By Fund</Text>
               <View
-                style={[styles.checkbox, isBankChecked ? styles.checked : null]}
+                style={[styles.checkbox, isFundChecked ? styles.checked : null]}
               />
               <TextInput
-                style={styles.input}
-                placeholder={isBankChecked ? "50000" : ""}
+                style={styles.Checkedinput}
+                placeholder={
+                  isFundChecked
+                    ? fundDetails.balance
+                      ? "Balance: " + fundDetails.balance
+                      : fundDetails.limit
+                      ? "Available Limit: " + fundDetails.limit
+                      : ""
+                    : ""
+                }
                 editable={false}
               />
             </TouchableOpacity>
           </View>
-          {/* For Cash Payment */}
-
-          <TouchableOpacity
-            style={styles.checkboxContainer}
-            onPress={toggleCashCheckbox}
-          >
-            <View
-              style={[styles.checkbox, isCashChecked ? styles.checked : null]}
-            />
-            <Text>Cash Balance</Text>
-            <TextInput
-              style={styles.input}
-              placeholder={isCashChecked ? "12000" : ""}
-              editable={false}
-            />
-          </TouchableOpacity>
+        </View>
+        {/* For Cash Payment */}
+        <View style={styles.topView}>
+          <View style={styles.leftView}>
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={toggleCashCheckbox}
+            >
+              <Text style={{ paddingRight: 10 }}>By Cash</Text>
+              <View
+                style={[styles.checkbox, isCashChecked ? styles.checked : null]}
+              />
+              <TextInput
+                style={styles.Checkedinput}
+                placeholder={isCashChecked ? "Balance: 12000" : ""}
+                editable={false}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         {/* Actual form */}
         {!isCashChecked ? (
           <View style={[styles.amountView]}>
-            <Dropdown dropDownValues={funds} dropDownType={"fundDetails"} />
+            <Dropdown
+              dropDownValues={funds}
+              dropDownType={"fundDetails"}
+              getFundDetails={getFundDetails}
+            />
           </View>
         ) : null}
         <View style={styles.amountView}>
@@ -130,7 +194,11 @@ const AddExpense = () => {
         {/* Money Lend */}
         {expenseReason.expense_reason === "Lend Money" ? (
           <View style={[styles.amountView]}>
-            <Dropdown dropDownValues={persons} dropDownType={"personDetails"} />
+            <Dropdown
+              dropDownValues={persons}
+              dropDownType={"personDetails"}
+              getPersonDetails={getPersonDetails}
+            />
           </View>
         ) : null}
         <View
@@ -154,7 +222,7 @@ const AddExpense = () => {
           { backgroundColor: amount != "" ? "purple" : "#929292" },
         ]}
         onPress={() => {
-          setModalOpen(true);
+          setModalOpen(checkExpenseForm());
         }}
       >
         <Text style={styles.payNowText}>Save Expense</Text>
@@ -187,34 +255,75 @@ const AddExpense = () => {
           <View style={styles.divider}></View>
           <View style={styles.bankView}>
             <View style={styles.bankLeftView}>
-              <Image
-                source={require("../../images/bank_logo.png")}
-                style={styles.logo}
-              />
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  <Text>{"ICICI Bank - *****25"}</Text>
-                  <Image
-                    source={require("../../images/upi_logo.png")}
-                    style={styles.logo}
-                  />
+                  <Text>Fund Name</Text>
                 </View>
-                <Text style={styles.bankAccount}>{"Bank Account"}</Text>
               </View>
             </View>
             <View style={styles.bankRightView}>
-              <Text style={styles.payable}>{"₹ " + amount}</Text>
-              <Image
-                source={require("../../images/correct.png")}
-                style={[styles.logo, { marginRight: moderateScale(10) }]}
-              />
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text>{fundDetails.fund_name}</Text>
+                </View>
+                <Text style={styles.bankAccount}>{fundDetails.fund_type}</Text>
+              </View>
             </View>
           </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text>Expense Reason</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.bankRightView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text>{expenseReason.expense_reason}</Text>
+                </View>
+                <Text style={styles.bankAccount}>{expenseReason.category}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text>Date</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.bankRightView}>
+              <View style={styles.upi_view}>
+                <Text>{moment().format("DD/MM/YYYY HH:mm:ss")}</Text>
+              </View>
+            </View>
+          </View>
+          {expenseReason.expense_reason === "Lend Money" ? (
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text>Lend To</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.bankRightView}>
+                <View style={styles.upi_view}>
+                  <Text>{personDetails.name}</Text>
+                </View>
+              </View>
+            </View>
+          ) : (
+            ""
+          )}
           <TouchableOpacity
             style={styles.confirmPayNow}
             onPress={() => {
               setModalOpen(false);
-              navigation.navigate("UPIPass");
+              saveExpenseDetails();
             }}
           >
             <Text style={styles.title}>{"Pay " + "₹ " + amount}</Text>
@@ -229,7 +338,6 @@ export default AddExpense;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
     alignItems: "center",
   },
   input: {
@@ -237,6 +345,11 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal: 10,
     opacity: 0.5, // Optional: you can adjust opacity to visually indicate that the input is disabled
+  },
+  Checkedinput: {
+    width: "100%",
+    paddingHorizontal: 10,
+    opacity: 1,
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -295,7 +408,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: moderateScale(15),
+    paddingLeft: moderateScale(15),
   },
   leftView: {
     flexDirection: "row",

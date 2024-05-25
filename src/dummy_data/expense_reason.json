@@ -1,19 +1,23 @@
 [
     {
         "_id": "1",
-        "expense_reason": "Pay Credit Card Bill"
+        "expense_reason": "Pay Credit Card Bill",
+        "category": "Personal Expense"
     },
     {
         "_id": "2",
-        "expense_reason": "Lend Money"
+        "expense_reason": "Lend Money",
+        "category": "Personal Expense"
     },
     {
         "_id": "3",
-        "expense_reason": "Electricity bill"
+        "expense_reason": "Electricity bill",
+        "category": "Family Expense"
     },
     {
         "_id": "4",
-        "expense_reason": "Online Food Order"
+        "expense_reason": "Online Food Order",
+        "category": "Personal Expense"
     }
 
 ]

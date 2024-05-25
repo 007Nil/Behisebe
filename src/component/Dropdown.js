@@ -5,8 +5,13 @@ import SelectDropdown from "react-native-select-dropdown";
 const Dropdown = (props) => {
   const [selecteddropDownValues, setselecteddropDownValues] = useState("");
   useEffect(() => {
-    if (props.dropDownType === "expenseReasonDetails")
+    if (props.dropDownType === "expenseReasonDetails") {
       props.getExpenseReason(selecteddropDownValues);
+    } else if (props.dropDownType === "fundDetails") {
+      props.getFundDetails(selecteddropDownValues);
+    } else if (props.dropDownType === "personDetails") {
+      props.getPersonDetails(selecteddropDownValues);
+    }
   });
 
   return (
