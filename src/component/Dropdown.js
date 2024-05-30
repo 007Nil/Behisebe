@@ -11,6 +11,9 @@ const Dropdown = (props) => {
       props.getFundDetails(selecteddropDownValues);
     } else if (props.dropDownType === "personDetails") {
       props.getPersonDetails(selecteddropDownValues);
+    } else if (props.dropDownType === "reset") {
+      console.log("HIT")
+      // SelectDropdown.reset();
     }
   });
 

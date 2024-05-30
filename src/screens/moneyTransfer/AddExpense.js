@@ -18,11 +18,16 @@ import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 
+// Services
+
+import { saveExpenseData } from "../../services";
+
 import { expense_reason, persons, funds } from "../../dummy_data/index";
 
 const AddExpense = () => {
-  const [amount, setAmount] = useState("");
   const navigation = useNavigation();
+  const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
   const [isFundChecked, setFundIsChecked] = useState(true);
   const [isCashChecked, setCashIsChecked] = useState(false);
   //
@@ -82,12 +87,17 @@ const AddExpense = () => {
 
   const saveExpenseDetails = () => {
     let expenseObject = {
-      fundId: isCashChecked ? fundDetails._id: null,
+      fundId: isCashChecked ? null : fundDetails._id,
+      isByCash: isCashChecked ? 1 : 0,
       expenseReason: expenseReason._id,
       amount: amount,
-    }
-    console.log(expenseObject)
-  }
+      message: message,
+    };
+    //
+    // saveExpenseData();
+    <Dropdown dropDownValues={[]} dropDownType="expenseReasonDetails" />;
+    console.log(expenseObject);
+  };
 
   const [modalOpen, setModalOpen] = useState(false);
   return (
@@ -212,6 +222,8 @@ const AddExpense = () => {
             placeholder="Add a Message(optional)"
             style={[styles.input, { fontSize: moderateScale(14) }]}
             keyboardType="default"
+            onChangeText={(txt) => setMessage(txt)}
+            value={message}
           />
         </View>
       </View>
