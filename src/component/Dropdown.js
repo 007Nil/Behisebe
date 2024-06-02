@@ -11,6 +11,8 @@ const Dropdown = (props) => {
       props.getFundDetails(selecteddropDownValues);
     } else if (props.dropDownType === "personDetails") {
       props.getPersonDetails(selecteddropDownValues);
+    } else if (props.dropDownType === "creditReason") {
+      props.getCreditReason(selecteddropDownValues);
     }
   });
   return (
@@ -19,6 +21,7 @@ const Dropdown = (props) => {
         data={props.dropDownValues}
         search={true}
         onSelect={(selectedItem, index) => {
+          console.log(selectedItem);
           setselecteddropDownValues(selectedItem);
         }}
         renderButton={(selectedItem, isOpened) => {
@@ -30,11 +33,15 @@ const Dropdown = (props) => {
                     ? selectedItem.expense_reason
                     : props.dropDownType === "personDetails"
                     ? selectedItem.name
+                    : props.dropDownType === "creditReason"
+                    ? selectedItem.credit_reason
                     : selectedItem.fund_name)) ||
                   (props.dropDownType === "expenseReasonDetails"
                     ? "Select Expense Reason"
                     : props.dropDownType === "personDetails"
                     ? "Select Person name"
+                    : props.dropDownType === "creditReason"
+                    ? "Select Credit Reason"
                     : "Select a Fund")}
               </Text>
             </View>
@@ -53,6 +60,8 @@ const Dropdown = (props) => {
                   ? item.expense_reason
                   : props.dropDownType === "personDetails"
                   ? item.name
+                  : props.dropDownType === "creditReason"
+                  ? item.credit_reason
                   : item.fund_name}
               </Text>
             </View>

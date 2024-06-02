@@ -8,11 +8,12 @@ const TransferSuccessful = () => {
 
   return (
     <View>
-      <TouchableOpacity style={{backgroundColor: "red", width:"100", height: "100%"}}
+      {/* <TouchableOpacity style={{backgroundColor: "red", width:"100", height: "100%"}}
         onPress={() => {
           navigation.navigate("AddExpense");
         }}
-      />
+      /> */}
+      <Text>Done</Text>
     </View>
   );
 };

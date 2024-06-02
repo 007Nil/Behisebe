@@ -6,21 +6,36 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   moderateScale,
   moderateVerticalScale,
   scale,
   verticalScale,
 } from "react-native-size-matters";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 import Modal from "react-native-modal";
 import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 
+import { SaveCreditData } from "../../services";
+
 import { credit_reason, persons, funds } from "../../dummy_data/index";
 
 const AddCredit = () => {
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      // reset state
+      setIsSubmit(false);
+      setFundIsChecked(true);
+      setCashIsChecked(false);
+      setMessage("");
+      setAmount("");
+    }
+  }, [isFocused]);
+  const navigation = useNavigation();
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [isFundChecked, setFundIsChecked] = useState(true);
@@ -29,6 +44,7 @@ const AddCredit = () => {
   const [creditReason, setCreditReason] = useState("");
   const [fundDetails, setFundDetails] = useState("");
   const [personDetails, setPersonDetails] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
   const toggleFundCheckbox = () => {
     if (!isFundChecked) {
       setCashIsChecked(isFundChecked);
@@ -42,9 +58,6 @@ const AddCredit = () => {
       setCashIsChecked(!isCashChecked);
     }
   };
-  // const getExpenseReason = (expenseReason) => {
-  //   setExpenseReason(expenseReason);
-  // };
 
   const getFundDetails = (fundDetails) => {
     setFundDetails(fundDetails);
@@ -52,6 +65,49 @@ const AddCredit = () => {
 
   const getPersonDetails = (personDetails) => {
     setPersonDetails(personDetails);
+  };
+
+  const getCreditReason = (creditReason) => {
+    setCreditReason(creditReason);
+  };
+
+  const checkCreditForm = () => {
+    let isValidFrom = true;
+    if (!creditReason) {
+      alert("Please select expense reason");
+      isValidFrom = false;
+    } else {
+      if (creditReason.credit_reason === "Pay Of Debt") {
+        if (!personDetails) {
+          alert("Please select person name");
+          isValidFrom = false;
+        }
+      }
+    }
+    if (isFundChecked && !fundDetails) {
+      alert("Please select a fund");
+      isValidFrom = false;
+    }
+    if (amount === "") {
+      alert("Please enter amount");
+      isValidFrom = false;
+    }
+
+    return isValidFrom;
+  };
+
+  const saveCreditDetails = () => {
+    let creditObject = {
+      fundId: isCashChecked ? null : fundDetails._id,
+      isByCash: isCashChecked ? 1 : 0,
+      creditReason: creditReason._id,
+      amount: amount,
+      message: message,
+    };
+    setIsSubmit(true);
+    SaveCreditData();
+    console.log(creditObject);
+    navigation.navigate("TransferSuccessful");
   };
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -108,7 +164,7 @@ const AddCredit = () => {
           </View>
         </View>
         {/* Actual form */}
-        {!isCashChecked ? (
+        {!isCashChecked && !isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={funds}
@@ -133,12 +189,18 @@ const AddCredit = () => {
           />
         </View>
         {/* Reason for expense */}
-        <View style={[styles.amountView]}>
-          <Dropdown dropDownValues={creditReason} />
-        </View>
+        {!isSubmit ? (
+          <View style={[styles.amountView]}>
+            <Dropdown
+              dropDownValues={credit_reason}
+              dropDownType={"creditReason"}
+              getCreditReason={getCreditReason}
+            />
+          </View>
+        ) : null}
 
         {/* Money Lend */}
-        {creditReason.credit_reason === "Lend Money" ? (
+        {creditReason.credit_reason === "Pay Of Debt" ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={persons}
@@ -170,10 +232,10 @@ const AddCredit = () => {
           { backgroundColor: amount != "" ? "purple" : "#929292" },
         ]}
         onPress={() => {
-          setModalOpen(checkExpenseForm());
+          setModalOpen(checkCreditForm());
         }}
       >
-        <Text style={styles.payNowText}>Save Expense</Text>
+        <Text style={styles.payNowText}>Save Credit</Text>
       </TouchableOpacity>
       <Modal
         isVisible={modalOpen}
@@ -229,9 +291,9 @@ const AddCredit = () => {
             <View style={styles.bankRightView}>
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  <Text>Hi</Text>
+                  <Text>{creditReason.credit_reason}</Text>
                 </View>
-                <Text style={styles.bankAccount}>Hit2</Text>
+                <Text style={styles.bankAccount}>{creditReason.category}</Text>
               </View>
             </View>
           </View>
@@ -249,29 +311,29 @@ const AddCredit = () => {
               </View>
             </View>
           </View>
-          {/* {expenseReason.expense_reason === "Lend Money" ? (
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
+          {creditReason.credit_reason === "Pay Of Debt" ? (
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text>Lend From</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.bankRightView}>
                 <View style={styles.upi_view}>
-                  <Text>Lend To</Text>
+                  <Text>{personDetails.name}</Text>
                 </View>
               </View>
             </View>
-            <View style={styles.bankRightView}>
-              <View style={styles.upi_view}>
-                <Text>{personDetails.name}</Text>
-              </View>
-            </View>
-          </View>
-        ) : (
-          ""
-        )} */}
+          ) : (
+            ""
+          )}
           <TouchableOpacity
             style={styles.confirmPayNow}
             onPress={() => {
               setModalOpen(false);
-              saveExpenseDetails();
+              saveCreditDetails();
             }}
           >
             <Text style={styles.title}>{"Pay " + "₹ " + amount}</Text>

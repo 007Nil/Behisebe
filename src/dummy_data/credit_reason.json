@@ -1,10 +1,12 @@
 [
     {
         "_id": "1",
-        "credit_reason": "Salary Credited"
+        "credit_reason": "Salary Credited",
+        "category": "Personal"
     },
     {
         "_id": "2",
-        "credit_reason": "Pay Of Debt"
+        "credit_reason": "Pay Of Debt",
+        "category": "Personal"
     }
 ]
