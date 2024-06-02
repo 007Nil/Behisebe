@@ -6,7 +6,7 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   moderateScale,
   moderateVerticalScale,
@@ -14,10 +14,11 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 
+import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 // Services
 
 import { saveExpenseData } from "../../services";
@@ -25,11 +26,23 @@ import { saveExpenseData } from "../../services";
 import { expense_reason, persons, funds } from "../../dummy_data/index";
 
 const AddExpense = () => {
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      // reset state
+      setIsSubmit(false);
+      setFundIsChecked(true);
+      setCashIsChecked(false);
+      setMessage("");
+      setAmount("");
+    }
+  }, [isFocused]);
   const navigation = useNavigation();
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [isFundChecked, setFundIsChecked] = useState(true);
   const [isCashChecked, setCashIsChecked] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   //
   const [expenseReason, setExpenseReason] = useState("");
   const [fundDetails, setFundDetails] = useState("");
@@ -94,31 +107,16 @@ const AddExpense = () => {
       message: message,
     };
     //
-    // saveExpenseData();
-    <Dropdown dropDownValues={[]} dropDownType="expenseReasonDetails" />;
+    //saveExpenseData();
+    setIsSubmit(true);
     console.log(expenseObject);
+    navigation.navigate("TransferSuccessful");
   };
 
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.subHeader}>
-          <TouchableOpacity style={styles.backBtn}>
-            <Image
-              source={require("../../images/left.png")}
-              style={styles.backIcon}
-            />
-          </TouchableOpacity>
-          <Text style={styles.title}> Pay</Text>
-          <TouchableOpacity style={styles.backBtn}>
-            <Image
-              source={require("../../images/help.png")}
-              style={styles.backIcon}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <PaymentCommonHeader headerTitle={"Save Expense"} />
       <View style={styles.cardView}>
         <View style={styles.topView}>
           <View style={styles.leftView}>
@@ -168,7 +166,7 @@ const AddExpense = () => {
           </View>
         </View>
         {/* Actual form */}
-        {!isCashChecked ? (
+        {!isCashChecked && !isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={funds}
@@ -193,13 +191,15 @@ const AddExpense = () => {
           />
         </View>
         {/* Reason for expense */}
-        <View style={[styles.amountView]}>
-          <Dropdown
-            dropDownValues={expense_reason}
-            dropDownType={"expenseReasonDetails"}
-            getExpenseReason={getExpenseReason}
-          />
-        </View>
+        {!isSubmit ? (
+          <View style={[styles.amountView]}>
+            <Dropdown
+              dropDownValues={expense_reason}
+              dropDownType={"expenseReasonDetails"}
+              getExpenseReason={getExpenseReason}
+            />
+          </View>
+        ) : null}
 
         {/* Money Lend */}
         {expenseReason.expense_reason === "Lend Money" ? (
@@ -265,23 +265,27 @@ const AddExpense = () => {
             </View>
           </View>
           <View style={styles.divider}></View>
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text>Fund Name</Text>
+          {!isCashChecked ? (
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text>Fund Name</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.bankRightView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text>{fundDetails.fund_name}</Text>
+                  </View>
+                  <Text style={styles.bankAccount}>
+                    {fundDetails.fund_type}
+                  </Text>
                 </View>
               </View>
             </View>
-            <View style={styles.bankRightView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text>{fundDetails.fund_name}</Text>
-                </View>
-                <Text style={styles.bankAccount}>{fundDetails.fund_type}</Text>
-              </View>
-            </View>
-          </View>
+          ) : null}
           <View style={styles.bankView}>
             <View style={styles.bankLeftView}>
               <View style={{ marginLeft: moderateScale(15) }}>

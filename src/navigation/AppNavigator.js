@@ -7,6 +7,7 @@ import {
   AddCredit,
   ToSelfTransfer,
   CheckBalance,
+  TransferSuccessful,
 } from "../screens/moneyTransfer/index";
 import ProfileAndSettings from "../screens/settings/ProfileAndSettings";
 import {
@@ -63,6 +64,11 @@ const AppNavigator = () => {
         <stack.Screen
           name="CreditReasons"
           component={CreditReasons}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="TransferSuccessful"
+          component={TransferSuccessful}
           options={{ headerShown: false }}
         />
       </stack.Navigator>
