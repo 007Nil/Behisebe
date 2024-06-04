@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
-  Button
+  Button,
 } from "react-native";
-import { React, useState } from "react";
+import { React, useState, useId } from "react";
 
 import CommonHeader from "../../common/CommonHeader";
 import {
@@ -21,8 +21,54 @@ import Modal from "react-native-modal";
 
 import { funds } from "../../dummy_data/index";
 
+// Services
+import { SaveFundDetails } from "../../services";
+
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [fundData, setFundData] = useState(funds);
+  const [fundName, setFundName] = useState("");
+  const [fundType, setFundType] = useState("");
+  const [fundAmount, setFundAmount] = useState("");
+  const resetState = () => {
+    setFundName("");
+    setFundType("");
+    setFundAmount("");
+    setModalOpen(false);
+  };
+  const validateForm = () => {
+    let isValid = false;
+    if (fundName === "") {
+      alert("Fund Name cannot emply");
+      return isValid;
+    }
+    if (fundType === "") {
+      alert("Fund Type cannot emply");
+      return isValid;
+    }
+    if (fundAmount === "") {
+      alert("Amount cannot emply");
+      return isValid;
+    }
+    return true;
+  };
+  const addFunds = () => {
+    let id = (Math.random() + 1).toString(36).substring(7);
+    let newFundDetails = [
+      ...fundData,
+      {
+        _id: id,
+        fund_name: fundName,
+        fund_type: fundType,
+        balance: fundAmount,
+        is_active: true,
+      },
+    ];
+    SaveFundDetails();
+    setFundData(newFundDetails);
+    resetState();
+    alert("Fund Information Saved");
+  };
   return (
     <View style={styles.container}>
       <CommonHeader title={"Fund Settings"} />
@@ -37,8 +83,8 @@ const Funds = () => {
       <View style={styles.card}>
         <FlatList
           contentContainerStyle={{ marginTop: moderateVerticalScale(30) }}
-          data={funds}
-          List
+          // keyExtractor={ item}
+          data={fundData}
           renderItem={({ item, index }) => {
             return (
               <View style={styles.transactionItem}>
@@ -70,7 +116,7 @@ const Funds = () => {
           setModalOpen(true);
         }}
       >
-        <Text style={styles.payNowText}>Add Fund</Text>
+        <Text style={styles.payNowText}>{"Add Fund"}</Text>
       </TouchableOpacity>
       <Modal
         isVisible={modalOpen}
@@ -101,9 +147,13 @@ const Funds = () => {
             <View style={styles.bankLeftView}>
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>{"Bank Account"}</Text>
+                  <Text style={styles.bankAccount}>{"Fund Name"}</Text>
                 </View>
-                <TextInput style={styles.bankAccount} />
+                <TextInput
+                  style={styles.bankAccount}
+                  onChangeText={(name) => setFundName(name)}
+                  value={fundName}
+                />
               </View>
             </View>
           </View>
@@ -111,13 +161,36 @@ const Funds = () => {
             <View style={styles.bankLeftView}>
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>{"Bank Account"}</Text>
+                  <Text style={styles.bankAccount}>{"Fund Type"}</Text>
                 </View>
-                <TextInput style={styles.bankAccount} />
+                <TextInput
+                  style={styles.bankAccount}
+                  onChangeText={(type) => setFundType(type)}
+                  value={fundType}
+                />
               </View>
             </View>
           </View>
-          <TouchableOpacity style={styles.confirmPayNow}>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Amount / Limit"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                  keyboardType="number-pad"
+                  onChangeText={(amount) => setFundAmount(amount)}
+                  value={fundAmount}
+                />
+              </View>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={styles.confirmPayNow}
+            onPress={validateForm ? addFunds : null}
+          >
             <Text style={styles.title}>{"Add Fund"}</Text>
           </TouchableOpacity>
         </View>
