@@ -4,9 +4,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList,
   TextInput,
-  Button,
 } from "react-native";
 import { React, useState, useId } from "react";
 
@@ -23,6 +21,8 @@ import { funds } from "../../dummy_data/index";
 
 // Services
 import { SaveFundDetails } from "../../services";
+import CustomFlatList from "../../component/CustomFlatList";
+import { CustomButton } from "../../component";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,29 +30,29 @@ const Funds = () => {
   const [fundName, setFundName] = useState("");
   const [fundType, setFundType] = useState("");
   const [fundAmount, setFundAmount] = useState("");
+
+  const getModalopen = (modelState) => {
+    setModalOpen(modelState);
+  };
   const resetState = () => {
     setFundName("");
     setFundType("");
     setFundAmount("");
     setModalOpen(false);
   };
-  const validateForm = () => {
-    let isValid = false;
+  const addFunds = () => {
     if (fundName === "") {
       alert("Fund Name cannot emply");
-      return isValid;
+      return;
     }
     if (fundType === "") {
       alert("Fund Type cannot emply");
-      return isValid;
+      return;
     }
     if (fundAmount === "") {
       alert("Amount cannot emply");
-      return isValid;
+      return;
     }
-    return true;
-  };
-  const addFunds = () => {
     let id = (Math.random() + 1).toString(36).substring(7);
     let newFundDetails = [
       ...fundData,
@@ -81,43 +81,10 @@ const Funds = () => {
         <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>
       </View>
       <View style={styles.card}>
-        <FlatList
-          contentContainerStyle={{ marginTop: moderateVerticalScale(30) }}
-          // keyExtractor={ item}
-          data={fundData}
-          renderItem={({ item, index }) => {
-            return (
-              <View style={styles.transactionItem}>
-                <View>
-                  <View style={styles.topLeftView}>
-                    <View style={{ marginLeft: moderateScale(10) }}>
-                      <Text style={styles.paidTo}>{item.fund_name}</Text>
-                      <Text style={styles.paidTo}>{item.fund_type}</Text>
-                      <Text style={styles.paidTo}>
-                        {item.is_active ? "Active" : "Not Active"}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={{ alignItems: "flex-end" }}>
-                  <TouchableOpacity>
-                    <Text style={styles.amount}>{"Edit"}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            );
-          }}
-        />
+        <CustomFlatList data={fundData} flatLisyType={"fundDetails"} />
       </View>
 
-      <TouchableOpacity
-        style={[styles.proceedToPay]}
-        onPress={() => {
-          setModalOpen(true);
-        }}
-      >
-        <Text style={styles.payNowText}>{"Add Fund"}</Text>
-      </TouchableOpacity>
+      <CustomButton pressEvent={"add_fund"} getModalopen={getModalopen} />
       <Modal
         isVisible={modalOpen}
         backdropOpacity={0.2}
@@ -187,10 +154,7 @@ const Funds = () => {
             </View>
           </View>
 
-          <TouchableOpacity
-            style={styles.confirmPayNow}
-            onPress={validateForm ? addFunds : null}
-          >
+          <TouchableOpacity style={styles.confirmPayNow} onPress={addFunds}>
             <Text style={styles.title}>{"Add Fund"}</Text>
           </TouchableOpacity>
         </View>
@@ -230,6 +194,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "94%",
+    height: "70%",
     backgroundColor: "white",
     marginTop: moderateVerticalScale(15),
 
@@ -311,74 +276,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: moderateVerticalScale(20),
   },
-  logo: {
-    width: scale(12),
-    height: scale(12),
-    marginLeft: moderateScale(15),
-  },
-  //   sdsafjkbsfgalfhsag
-  container: {
-    flex: 1,
-    // justifyContent: 'center',
-    alignItems: "center",
-  },
-  picker: {
-    height: 50,
-    width: 200,
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
-  // input: {
-  //   width: 200,
-  //   height: 40,
-  //   borderWidth: 1,
-  //   borderColor: '#ccc',
-  //   borderRadius: 5,
-  //   paddingHorizontal: 10,
-  //   backgroundColor: '#f0f0f0',
-  //   opacity: 0.5, // Optional: you can adjust opacity to visually indicate that the input is disabled
-  // },
-
-  checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: "#000",
-    marginRight: 10,
-  },
-  checked: {
-    backgroundColor: "#000",
-  },
-  label: {
-    fontSize: 16,
-  },
-  header: {
-    width: "100%",
-    height: verticalScale(85),
-    backgroundColor: "purple",
-    justifyContent: "flex-end",
-  },
-  subHeader: {
-    width: "100%",
-    height: verticalScale(50),
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingLeft: moderateScale(10),
-    paddingRight: moderateScale(15),
-  },
-  backBtn: {
-    width: scale(50),
-    height: scale(50),
-    justifyContent: "center",
-    alignItems: "center",
-  },
   backIcon: {
     width: scale(24),
     height: scale(24),
@@ -387,53 +284,6 @@ const styles = StyleSheet.create({
   title: {
     color: "white",
     fontSize: moderateScale(20),
-  },
-  cardView: {
-    width: "94%",
-
-    alignSelf: "center",
-    backgroundColor: "white",
-    marginTop: moderateVerticalScale(10),
-    borderRadius: moderateScale(5),
-  },
-  topView: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: moderateScale(15),
-  },
-  leftView: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  nameView: {
-    width: scale(40),
-    height: scale(40),
-    backgroundColor: "#929292",
-    borderRadius: scale(20),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  nameChar: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "white",
-  },
-  name: {
-    fontSize: 18,
-    color: "#000",
-    marginLeft: moderateScale(10),
-  },
-  upi_id: {
-    fontSize: 14,
-    color: "#929292",
-    marginLeft: moderateScale(10),
-    marginTop: moderateScale(5),
-  },
-  viewHistory: {
-    color: "purple",
-    fontSize: moderateScale(16),
-    fontWeight: "600",
   },
   amountView: {
     width: "94%",
@@ -447,25 +297,6 @@ const styles = StyleSheet.create({
     paddingRight: moderateScale(10),
     alignItems: "center",
     marginTop: moderateVerticalScale(20),
-  },
-  input_2: {
-    fontSize: 25,
-    marginLeft: moderateScale(15),
-    fontWeight: "600",
-  },
-  proceedToPay: {
-    width: "100%",
-    height: verticalScale(60),
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    backgroundColor: "green",
-    bottom: 0,
-  },
-  payNowText: {
-    color: "white",
-    fontSize: moderateScale(18),
-    fontWeight: "600",
   },
   modaView: {
     margin: 0,
