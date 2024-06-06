@@ -3,14 +3,22 @@ import { moderateScale, verticalScale } from "react-native-size-matters";
 import React from "react";
 
 const CustomButton = (props) => {
+  let buttonText = ""
+  if (props.pressEvent === "add_fund") {
+    buttonText = "Add Fund";
+  }else if (props.pressEvent === "addExpense"){
+    buttonText = "Add Expense";
+  }
   const handleOnPress = () => {
     if (props.pressEvent === "add_fund") {
+      props.getModalopen(true);
+    }else if (props.pressEvent === "addExpense"){
       props.getModalopen(true);
     }
   };
   return (
     <TouchableOpacity style={[styles.proceedToPay]} onPress={handleOnPress}>
-      <Text style={styles.payNowText}>{"Add Fund"}</Text>
+      <Text style={styles.payNowText}>{buttonText}</Text>
     </TouchableOpacity>
   );
 };

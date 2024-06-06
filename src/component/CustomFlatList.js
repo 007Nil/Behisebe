@@ -33,9 +33,18 @@ const CustomFlatList = (props) => {
                           {item.is_active ? "Active" : "Not Active"}
                         </Text>
                       </View>
-                    ) : 
+                    ) : (
+                      null
+                    )}
+
+                    {props.flatLisyType === "expenseReasonDetails" ? (
+                      <View>
+                        <Text style={styles.paidTo}>Name: {item.expense_reason}</Text>
+                        <Text style={styles.paidTo}>Type: {item.category}</Text>
+                      </View>
+                    ) : (
                       ""
-                    }
+                    )}
                   </View>
                 </View>
               </View>
@@ -83,5 +92,5 @@ const styles = StyleSheet.create({
     marginTop: scale(15),
     fontWeight: "400",
     fontSize: 15,
-  }
+  },
 });

@@ -1,10 +1,136 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import { React, useState } from "react";
+import {
+  moderateScale,
+  moderateVerticalScale,
+  scale,
+  verticalScale,
+} from "react-native-size-matters";
 import CommonHeader from "../../common/CommonHeader";
+import Modal from "react-native-modal";
+import { CustomFlatList, CustomButton } from "../../component";
+import { expense_reason } from "../../dummy_data";
+
+// Services
+import { SaveExpenseReason } from "../../services";
+
 const ExpesneReasons = () => {
+  const [expenseData ,setExpenseData] = useState(expense_reason);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [expenseReason, setExpenseReason] = useState("");
+  const [expenseCatagory, setExpenseCatagory] = useState("");
+  const getModalopen = (modelState) => {
+    setModalOpen(modelState);
+  };
+  const resetState = () => {
+    setExpenseReason("");
+    setExpenseCatagory("");
+    setModalOpen(false);
+  }
+  const addExpenseReason = () => {
+    if (expenseReason === "") {
+      alert("Please Add Expense Reason");
+      return;
+    }
+    if (expenseCatagory === "") {
+      alert("Please Add Expense Catagory");
+      return;
+    }
+    let id = (Math.random() + 1).toString(36).substring(7);
+    let expenseReasonObj = {
+      _id: id,
+      expense_reason: expenseReason,
+      category: expenseCatagory,
+    };
+    SaveExpenseReason();
+    let newExpenseReasonDetails = [...expenseReason, expenseReasonObj];
+    setExpenseData(newExpenseReasonDetails);
+    resetState();
+  };
   return (
     <View style={styles.container}>
-      <CommonHeader title={"Expense Reason Settings"}/>
+      <CommonHeader title={"Expense Reason Settings"} />
+      <View style={styles.searchBox}>
+        <Image
+          source={require("../../images/search.png")}
+          style={styles.search}
+        />
+        <Text style={styles.searchText}>Search by Expense Reason Name</Text>
+      </View>
+      <View style={styles.card}>
+        <CustomFlatList
+          data={expenseData}
+          flatLisyType={"expenseReasonDetails"}
+        />
+      </View>
+      <CustomButton pressEvent={"addExpense"} getModalopen={getModalopen} />
+      <Modal
+        isVisible={modalOpen}
+        backdropOpacity={0.2}
+        style={styles.modaView}
+      >
+        <View style={styles.mainView}>
+          <View style={styles.modalTopView}>
+            <Text style={styles.payable}>Fund Details</Text>
+            <View style={styles.modalTopRightView}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalOpen(false);
+                }}
+              >
+                <Image
+                  source={require("../../images/close.png")}
+                  style={[
+                    styles.backIcon,
+                    { tintColor: "black", width: scale(16) },
+                  ]}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Reason Name"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                  onChangeText={(reason) => setExpenseReason(reason)}
+                  value={expenseReason}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Reason Catagory"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                  onChangeText={(catagory) => setExpenseCatagory(catagory)}
+                  value={expenseCatagory}
+                />
+              </View>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.confirmPayNow}
+            onPress={addExpenseReason}
+          >
+            <Text style={styles.title}>{"Add Expense"}</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -15,5 +141,96 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
+  },
+  search: {
+    width: scale(15),
+    height: scale(15),
+  },
+  searchBox: {
+    width: "94%",
+    height: verticalScale(40),
+    backgroundColor: "white",
+    alignSelf: "center",
+    marginTop: moderateVerticalScale(10),
+    borderRadius: moderateScale(10),
+    borderWidth: 0.5,
+    borderColor: "#929292",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: moderateScale(15),
+  },
+  searchText: {
+    marginLeft: moderateScale(20),
+    color: "#929292",
+    fontSize: moderateScale(16),
+  },
+  modaView: {
+    margin: 0,
+  },
+  mainView: {
+    backgroundColor: "white",
+    width: "100%",
+
+    position: "absolute",
+    bottom: 0,
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
+    padding: moderateScale(10),
+  },
+  modalTopView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: moderateScale(10),
+  },
+  payable: {
+    fontWeight: "700",
+    color: "black",
+    fontSize: moderateScale(16),
+  },
+  modalTopRightView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backIcon: {
+    width: scale(24),
+    height: scale(24),
+    tintColor: "white",
+  },
+  bankView: {
+    width: "100%",
+    height: verticalScale(50),
+    backgroundColor: "#f2f2f2",
+    alignSelf: "center",
+    marginTop: moderateVerticalScale(15),
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  bankLeftView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  upi_view: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bankAccount: {
+    color: "#929292",
+    fontSize: moderateScale(12),
+  },
+  confirmPayNow: {
+    width: "94%",
+    height: verticalScale(40),
+    backgroundColor: "purple",
+    borderRadius: moderateScale(30),
+    alignSelf: "center",
+    marginTop: moderateVerticalScale(20),
+    marginBottom: moderateVerticalScale(40),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    color: "white",
+    fontSize: moderateScale(20),
   },
 });
