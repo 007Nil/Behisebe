@@ -54,17 +54,15 @@ const Funds = () => {
       return;
     }
     let id = (Math.random() + 1).toString(36).substring(7);
-    let newFundDetails = [
-      ...fundData,
-      {
-        _id: id,
-        fund_name: fundName,
-        fund_type: fundType,
-        balance: fundAmount,
-        is_active: true,
-      },
-    ];
-    SaveFundDetails();
+    let fundObject = {
+      _id: id,
+      fund_name: fundName,
+      fund_type: fundType,
+      balance: fundAmount,
+      is_active: true,
+    };
+    let newFundDetails = [...fundData, fundObject];
+    SaveFundDetails(fundObject);
     setFundData(newFundDetails);
     resetState();
     alert("Fund Information Saved");
