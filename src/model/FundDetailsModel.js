@@ -4,7 +4,7 @@ const FundDetailsModel = {
         _id: "string",
         fund_name: "string",
         fund_type: "string",
-        balance: "int",
+        balance: "float",
         is_active: "bool"
     }
 }

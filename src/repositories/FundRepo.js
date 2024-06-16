@@ -1,15 +1,33 @@
 import { FundDetailsModel } from "../model";
 import Realm from "realm";
 
-const openRealm = async () => {
+async function openRealm() {
   return await Realm.open({
     schema: [FundDetailsModel],
   });
-};
+}
 
-const getAllFunds = async () => {
+async function getAllFunds() {
   const realm = await openRealm();
-  return realm.objects("Fund");
-};
+  // console.log(realm.objects("FundDetails"));
+  return await realm.objects("FundDetails");
+}
 
-export { getAllFunds };
+async function saveFundDetails(fundObject) {
+  const realm = await openRealm();
+  try {
+    realm.write(() => {
+      realm.create("FundDetails", {
+        _id: fundObject._id,
+        fund_name: fundObject.fund_name,
+        fund_type: fundObject.fund_type,
+        balance: parseFloat(fundObject.balance),
+        is_active: fundObject.is_active,
+      });
+    });
+  } catch(error) {
+    console.log(error);
+  }
+}
+
+export { getAllFunds, saveFundDetails };

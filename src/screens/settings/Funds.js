@@ -20,17 +20,17 @@ import Modal from "react-native-modal";
 import { funds } from "../../dummy_data/index";
 
 // Services
-import { SaveFundDetails } from "../../services";
+import { SaveFundDetails, getFundDetails } from "../../services/FundServices";
 import CustomFlatList from "../../component/CustomFlatList";
 import { CustomButton } from "../../component";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [fundData, setFundData] = useState(funds);
+  const [fundData, setFundData] = useState(getFundDetails);
   const [fundName, setFundName] = useState("");
   const [fundType, setFundType] = useState("");
   const [fundAmount, setFundAmount] = useState("");
-
+console.log(fundData)
   const getModalopen = (modelState) => {
     setModalOpen(modelState);
   };
@@ -40,7 +40,7 @@ const Funds = () => {
     setFundAmount("");
     setModalOpen(false);
   };
-  const addFunds = () => {
+  const addFunds = async () => {
     if (fundName === "") {
       alert("Fund Name cannot emply");
       return;
@@ -61,9 +61,9 @@ const Funds = () => {
       balance: fundAmount,
       is_active: true,
     };
-    let newFundDetails = [...fundData, fundObject];
-    SaveFundDetails(fundObject);
-    setFundData(newFundDetails);
+    // let newFundDetails = [...fundData, fundObject];
+    await SaveFundDetails(fundObject);
+    // setFundData(newFundDetails);
     resetState();
     alert("Fund Information Saved");
   };
