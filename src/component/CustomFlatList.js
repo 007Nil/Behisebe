@@ -5,20 +5,48 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import {React, useState, useEffect} from "react";
 import {
   moderateScale,
   moderateVerticalScale,
   scale,
 } from "react-native-size-matters";
+import { useTheme } from "@react-navigation/native";
 
 const CustomFlatList = (props) => {
+  const [flatListData, setFlatListData] = useState(props.data);
+ 
+  useEffect(() => {
+    setFlatListData(props.data)
+}, [props.data])
+
+
+  const editForm = (item) => {
+    flatListData.forEach(element => {
+      if (element._id == item._id){
+        let x = flatListData
+        console.log(x.indexOf(item))
+        let y = x.slice(x.indexOf(item))
+        newflatListObj = {
+          _id: item._id,
+          fund_name: "adadadad",
+          fund_type: "adadadad",
+          balance: "5000",
+          is_active: true,
+
+        };
+        y.push(newflatListObj);
+        setFlatListData(y);
+      }
+    });
+  }
+
   return (
     <View>
       <FlatList
         contentContainerStyle={{ marginTop: moderateVerticalScale(30) }}
         // keyExtractor={ item}
-        data={props.data}
+        data={flatListData}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.transactionItem}>
@@ -49,7 +77,7 @@ const CustomFlatList = (props) => {
                 </View>
               </View>
               <View style={{ alignItems: "flex-end" }}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => editForm(item)}>
                   <Text style={styles.amount}>{"Edit"}</Text>
                 </TouchableOpacity>
               </View>

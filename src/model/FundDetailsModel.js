@@ -6,7 +6,8 @@ const FundDetailsModel = {
         fund_type: "string",
         balance: "float",
         is_active: "bool"
-    }
+    },
+    primaryKey: '_id'
 }
 
 export default FundDetailsModel;

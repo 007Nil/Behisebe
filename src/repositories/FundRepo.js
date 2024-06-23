@@ -9,8 +9,7 @@ async function openRealm() {
 
 async function getAllFunds() {
   const realm = await openRealm();
-  // console.log(realm.objects("FundDetails"));
-  return await realm.objects("FundDetails");
+  return realm.objects("FundDetails");
 }
 
 async function saveFundDetails(fundObject) {

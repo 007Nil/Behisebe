@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { React, useState, useId } from "react";
+import { React, useState, useEffect } from "react";
 
 import CommonHeader from "../../common/CommonHeader";
 import {
@@ -17,8 +17,6 @@ import {
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
 
-import { funds } from "../../dummy_data/index";
-
 // Services
 import { SaveFundDetails, getFundDetails } from "../../services/FundServices";
 import CustomFlatList from "../../component/CustomFlatList";
@@ -26,11 +24,13 @@ import { CustomButton } from "../../component";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [fundData, setFundData] = useState(getFundDetails);
+  const [fundData, setFundData] = useState();
   const [fundName, setFundName] = useState("");
   const [fundType, setFundType] = useState("");
   const [fundAmount, setFundAmount] = useState("");
-console.log(fundData)
+  useEffect(() => {
+    getFundDetails().then( data => setFundData(data))
+  },[]);
   const getModalopen = (modelState) => {
     setModalOpen(modelState);
   };
