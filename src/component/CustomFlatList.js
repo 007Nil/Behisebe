@@ -4,42 +4,48 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  Button,
+  Image,
+  TextInput
 } from "react-native";
-import {React, useState, useEffect} from "react";
+import { React, useState, useEffect } from "react";
 import {
   moderateScale,
   moderateVerticalScale,
   scale,
 } from "react-native-size-matters";
-import { useTheme } from "@react-navigation/native";
+import Modal from "react-native-modal";
 
 const CustomFlatList = (props) => {
   const [flatListData, setFlatListData] = useState(props.data);
- 
-  useEffect(() => {
-    setFlatListData(props.data)
-}, [props.data])
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const handleModal = () => setIsModalVisible(() => !isModalVisible);
 
+  useEffect(() => {
+    setFlatListData(props.data);
+  }, [props.data]);
 
   const editForm = (item) => {
-    flatListData.forEach(element => {
-      if (element._id == item._id){
-        let x = flatListData
-        console.log(x.indexOf(item))
-        let y = x.slice(x.indexOf(item))
-        newflatListObj = {
-          _id: item._id,
-          fund_name: "adadadad",
-          fund_type: "adadadad",
-          balance: "5000",
-          is_active: true,
+    setIsModalVisible(true)
+    // flatListData.forEach((element) => {
+    //   if (element._id == item._id) {
+    //     let tmpArray = flatListData;
+    //     const updatedArray = tmpArray.filter(function (ele) {
+    //       return ele._id !== item._id;
+    //     });
 
-        };
-        y.push(newflatListObj);
-        setFlatListData(y);
-      }
-    });
-  }
+    //     newflatListObj = {
+    //       _id: item._id,
+    //       fund_name: "adadadad",
+    //       fund_type: "adadadad",
+    //       balance: "5000",
+    //       is_active: true,
+    //     };
+    //     updatedArray.splice(tmpArray.indexOf(item), 0, newflatListObj);
+    //     setFlatListData(updatedArray);
+    //   }
+    // });
+  };
 
   return (
     <View>
@@ -61,13 +67,13 @@ const CustomFlatList = (props) => {
                           {item.is_active ? "Active" : "Not Active"}
                         </Text>
                       </View>
-                    ) : (
-                      null
-                    )}
+                    ) : null}
 
                     {props.flatLisyType === "expenseReasonDetails" ? (
                       <View>
-                        <Text style={styles.paidTo}>Name: {item.expense_reason}</Text>
+                        <Text style={styles.paidTo}>
+                          Name: {item.expense_reason}
+                        </Text>
                         <Text style={styles.paidTo}>Type: {item.category}</Text>
                       </View>
                     ) : (
@@ -85,6 +91,76 @@ const CustomFlatList = (props) => {
           );
         }}
       />
+      <Modal isVisible={isModalVisible} backdropOpacity={0.2}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+        <View style={styles.mainView}>
+          <View style={styles.modalTopView}>
+            <Text style={styles.payable}>Fund Details</Text>
+            <View style={styles.modalTopRightView}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalOpen(false);
+                }}
+              >
+                <Image
+                  source={require("../images/close.png")}
+                  style={[
+                    styles.backIcon,
+                    { tintColor: "black", width: scale(16) },
+                  ]}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.divider}></View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Fund Name"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Fund Type"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Amount / Limit"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                  keyboardType="number-pad"
+                 
+                />
+              </View>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.confirmPayNow}>
+            <Text style={styles.title}>{"Add Fund"}</Text>
+          </TouchableOpacity>
+        </View>
+          <Button title="Hide modal" onPress={handleModal} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
