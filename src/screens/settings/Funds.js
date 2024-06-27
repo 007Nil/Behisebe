@@ -24,7 +24,7 @@ import { CustomButton } from "../../component";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [fundData, setFundData] = useState();
+  const [fundData, setFundData] = useState([]);
   const [fundName, setFundName] = useState("");
   const [fundType, setFundType] = useState("");
   const [fundAmount, setFundAmount] = useState("");
@@ -79,7 +79,7 @@ const Funds = () => {
         <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>
       </View>
       <View style={styles.card}>
-        <CustomFlatList data={fundData} flatLisyType={"fundDetails"} />
+        <CustomFlatList data={fundData} flatLisyType={"fundDetails"} edit_type={"Fund"} />
       </View>
 
       <CustomButton pressEvent={"add_fund"} getModalopen={getModalopen} />

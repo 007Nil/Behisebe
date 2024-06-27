@@ -11,3 +11,5 @@ const FundDetailsModel = {
 }
 
 export default FundDetailsModel;
+
+

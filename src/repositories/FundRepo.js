@@ -1,6 +1,6 @@
 import { FundDetailsModel } from "../model";
 import Realm from "realm";
-
+import {useQuery} from "@realm/react";
 async function openRealm() {
   return await Realm.open({
     schema: [FundDetailsModel],
@@ -9,11 +9,13 @@ async function openRealm() {
 
 async function getAllFunds() {
   const realm = await openRealm();
+  // console.log(realm.objects("FundDetails"))
   return realm.objects("FundDetails");
 }
 
 async function saveFundDetails(fundObject) {
   const realm = await openRealm();
+
   try {
     realm.write(() => {
       realm.create("FundDetails", {
@@ -24,9 +26,20 @@ async function saveFundDetails(fundObject) {
         is_active: fundObject.is_active,
       });
     });
-  } catch(error) {
+  } catch (error) {
     console.log(error);
   }
 }
 
-export { getAllFunds, saveFundDetails };
+async function getFundDetailsById(fund_id) {
+  try {
+    const realm = await openRealm();
+    const fundDetailsData = realm.objects("FundDetails");
+    const filterData = fundDetailsData.filtered("_id = $0",fund_id);
+    return filterData[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { getAllFunds, saveFundDetails, getFundDetailsById };
