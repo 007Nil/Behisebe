@@ -42,4 +42,24 @@ async function getFundDetailsById(fund_id) {
   }
 }
 
-export { getAllFunds, saveFundDetails, getFundDetailsById };
+async function updateFundDetails(fundObject){
+  try{
+    const realm = await openRealm();
+    realm.write(() => {
+      let data = realm.objectForPrimaryKey('FundDetails', fundObject._id);
+      data.fund_name =fundObject.fund_name,
+      data.fund_type =fundObject.fund_type,
+      data.balance = parseFloat(fundObject.balance),
+      data.is_active = fundObject.is_active,
+      // data.completed = true
+      // console.log(data._id)
+      console.log(data);
+      // realm.delete(data)
+
+    });
+  }catch (error){
+    console.log(error)
+  }
+}
+
+export { getAllFunds, saveFundDetails, getFundDetailsById, updateFundDetails };

@@ -16,7 +16,7 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
-import { getFundDetailsById } from "../repositories/FundRepo";
+import { getFundDetailsById, updateFundDetails } from "../repositories/FundRepo";
 
 const CustomFlatList = (props) => {
   const [flatListData, setFlatListData] = useState([]);
@@ -52,8 +52,8 @@ const CustomFlatList = (props) => {
       balance: editAmount,
       is_active: accountState,
     };
-    console.log(newflatListObj);
     updatedArray.splice(flatListIndex, 0, newflatListObj);
+    updateFundDetails(newflatListObj);
     setFlatListData(updatedArray);
   };
 
