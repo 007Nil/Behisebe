@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   moderateScale,
   moderateVerticalScale,
@@ -16,16 +16,22 @@ import {
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
-import { expense_reason } from "../../dummy_data";
+import { getExpenseReason } from "../../services/ExpenseReasonService";
 
 // Services
 import { SaveExpenseReason } from "../../services";
 
 const ExpesneReasons = () => {
-  const [expenseData ,setExpenseData] = useState(expense_reason);
+  const [expenseData ,setExpenseData] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [expenseReason, setExpenseReason] = useState("");
   const [expenseCatagory, setExpenseCatagory] = useState("");
+
+  useEffect(() => {
+    getExpenseReason().then( data => setExpenseData(data))
+  },[]);
+
+
   const getModalopen = (modelState) => {
     setModalOpen(modelState);
   };
@@ -68,6 +74,7 @@ const ExpesneReasons = () => {
         <CustomFlatList
           data={expenseData}
           flatLisyType={"expenseReasonDetails"}
+          edit_type={"ExpenseReason"}
         />
       </View>
       <CustomButton pressEvent={"addExpense"} getModalopen={getModalopen} />

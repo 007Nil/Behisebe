@@ -1,6 +1,5 @@
 import { FundDetailsModel } from "../model";
 import Realm from "realm";
-import {useQuery} from "@realm/react";
 async function openRealm() {
   return await Realm.open({
     schema: [FundDetailsModel],
