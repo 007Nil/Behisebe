@@ -108,8 +108,7 @@ const AddExpense = () => {
     };
     //
     //saveExpenseData();
-    setIsSubmit(true);
-    console.log(expenseObject);
+    setIsSubmit(true);s
     navigation.navigate("TransferSuccessful");
   };
 

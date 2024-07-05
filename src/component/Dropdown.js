@@ -21,7 +21,6 @@ const Dropdown = (props) => {
         data={props.dropDownValues}
         search={true}
         onSelect={(selectedItem, index) => {
-          console.log(selectedItem);
           setselecteddropDownValues(selectedItem);
         }}
         renderButton={(selectedItem, isOpened) => {

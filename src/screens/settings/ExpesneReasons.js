@@ -16,10 +16,10 @@ import {
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
-import { getExpenseReason } from "../../services/ExpenseReasonService";
+import { getExpenseReason, saveExpenseReasonService } from "../../services/ExpenseReasonService";
 
 // Services
-import { SaveExpenseReason } from "../../services";
+// import { SaveExpenseReason } from "../../services";
 
 const ExpesneReasons = () => {
   const [expenseData ,setExpenseData] = useState([]);
@@ -53,10 +53,10 @@ const ExpesneReasons = () => {
     let expenseReasonObj = {
       _id: id,
       expense_reason: expenseReason,
-      category: expenseCatagory,
+      expense_category: expenseCatagory,
     };
-    SaveExpenseReason();
-    let newExpenseReasonDetails = [...expenseReason, expenseReasonObj];
+    saveExpenseReasonService(expenseReasonObj);
+    let newExpenseReasonDetails = [...expenseData, expenseReasonObj];
     setExpenseData(newExpenseReasonDetails);
     resetState();
   };
@@ -74,7 +74,7 @@ const ExpesneReasons = () => {
         <CustomFlatList
           data={expenseData}
           flatLisyType={"expenseReasonDetails"}
-          edit_type={"ExpenseReason"}
+          edit_type={"Expense Reason"}
         />
       </View>
       <CustomButton pressEvent={"addExpense"} getModalopen={getModalopen} />

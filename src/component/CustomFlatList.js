@@ -16,7 +16,12 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
-import { getFundDetailsById, updateFundDetails } from "../repositories/FundRepo";
+import {
+  getFundDetailsById,
+  updateFundDetails,
+} from "../repositories/FundRepo";
+
+import { updateExpenseReason } from "../services/ExpenseReasonService";
 
 const CustomFlatList = (props) => {
   const [flatListData, setFlatListData] = useState([]);
@@ -44,16 +49,24 @@ const CustomFlatList = (props) => {
     const updatedArray = tmpArray.filter(function (ele) {
       return ele._id !== formId;
     });
-
-    newflatListObj = {
-      _id: formId,
-      fund_name: editName,
-      fund_type: editType,
-      balance: editAmount,
-      is_active: accountState,
-    };
+    if (props.flatLisyType === "fundDetails") {
+      newflatListObj = {
+        _id: formId,
+        fund_name: editName,
+        fund_type: editType,
+        balance: editAmount,
+        is_active: accountState,
+      };
+      updateFundDetails(newflatListObj);
+    } else if (props.flatLisyType === "expenseReasonDetails") {
+      newflatListObj = {
+        _id: formId,
+        expense_reason: editName,
+        expense_category: editType,
+      };
+      updateExpenseReason(newflatListObj);
+    }
     updatedArray.splice(flatListIndex, 0, newflatListObj);
-    updateFundDetails(newflatListObj);
     setFlatListData(updatedArray);
   };
 
@@ -62,16 +75,17 @@ const CustomFlatList = (props) => {
     flatListData.forEach(async (element) => {
       if (element._id == item._id) {
         setFormId(item._id);
-        setEditName(item.fund_name);
-        setEditType(item.fund_type);
-        setAccountState(item.is_active);
-        setFlatListIndex(flatListData.indexOf(item))
-        try {
+        if (props.flatLisyType === "fundDetails") {
+          setEditName(item.fund_name);
+          setEditType(item.fund_type);
+          setAccountState(item.is_active);
           let fund_details = await getFundDetailsById(item._id);
           setEditAmount(fund_details.balance.toString());
-        } catch (err) {
-          console.log(err);
+        } else if (props.flatLisyType === "expenseReasonDetails") {
+          setEditName(item.expense_reason);
+          setEditType(item.expense_category);
         }
+        setFlatListIndex(flatListData.indexOf(item));
       }
     });
   };
@@ -103,7 +117,9 @@ const CustomFlatList = (props) => {
                         <Text style={styles.paidTo}>
                           Name: {item.expense_reason}
                         </Text>
-                        <Text style={styles.paidTo}>Type: {item.category}</Text>
+                        <Text style={styles.paidTo}>
+                          Type: {item.expense_category}
+                        </Text>
                       </View>
                     ) : (
                       ""

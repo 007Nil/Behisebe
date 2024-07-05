@@ -1,6 +1,20 @@
-import { getAllExpenseReasonDetails } from "../repositories/ExpenseReasonRepo";
+import {
+  getAllExpenseReasonDetails,
+  saveExpenseReason,
+  updateExpensReasonDetails,
+} from "../repositories/ExpenseReasonRepo";
 
 async function getExpenseReason() {
   return await getAllExpenseReasonDetails();
 }
-export { getExpenseReason };
+
+async function saveExpenseReasonService(expenseObj) {
+  await saveExpenseReason(expenseObj);
+  return;
+}
+
+async function updateExpenseReason(expenseObj) {
+  await updateExpensReasonDetails(expenseObj);
+  return;
+}
+export { getExpenseReason, saveExpenseReasonService, updateExpenseReason };

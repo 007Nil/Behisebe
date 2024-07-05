@@ -106,7 +106,6 @@ const AddCredit = () => {
     };
     setIsSubmit(true);
     SaveCreditData();
-    console.log(creditObject);
     navigation.navigate("TransferSuccessful");
   };
 

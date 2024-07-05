@@ -3,7 +3,7 @@ const ExpenseReasonModel = {
     properties: {
         _id: "string",
         expense_reason: "string",
-        expense_type: "string"
+        expense_category: "string"
     },
     primaryKey: '_id'
 }

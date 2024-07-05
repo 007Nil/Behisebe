@@ -1,19 +1,13 @@
-import { FundDetailsModel } from "../model";
-import Realm from "realm";
-async function openRealm() {
-  return await Realm.open({
-    schema: [FundDetailsModel],
-  });
-}
+
+import { OpenRealm } from "./OpenConnection";
 
 async function getAllFunds() {
-  const realm = await openRealm();
-  // console.log(realm.objects("FundDetails"))
+  const realm = await OpenRealm();
   return realm.objects("FundDetails");
 }
 
 async function saveFundDetails(fundObject) {
-  const realm = await openRealm();
+  const realm = await OpenRealm();
 
   try {
     realm.write(() => {
@@ -32,7 +26,7 @@ async function saveFundDetails(fundObject) {
 
 async function getFundDetailsById(fund_id) {
   try {
-    const realm = await openRealm();
+    const realm = await OpenRealm();
     const fundDetailsData = realm.objects("FundDetails");
     const filterData = fundDetailsData.filtered("_id = $0",fund_id);
     return filterData[0];
@@ -43,7 +37,7 @@ async function getFundDetailsById(fund_id) {
 
 async function updateFundDetails(fundObject){
   try{
-    const realm = await openRealm();
+    const realm = await OpenRealm();
     realm.write(() => {
       let data = realm.objectForPrimaryKey('FundDetails', fundObject._id);
       data.fund_name =fundObject.fund_name;
