@@ -85,7 +85,7 @@ const ExpesneReasons = () => {
       >
         <View style={styles.mainView}>
           <View style={styles.modalTopView}>
-            <Text style={styles.payable}>Fund Details</Text>
+            <Text style={styles.payable}>Expense Details</Text>
             <View style={styles.modalTopRightView}>
               <TouchableOpacity
                 onPress={() => {

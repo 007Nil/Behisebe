@@ -1,7 +1,7 @@
 import { getAllCreditReasonDetails, saveCreditReason } from "../repositories/CreditReasonRepo";
 
 async function getCreditReason(){
-    return getAllCreditReasonDetails
+    return getAllCreditReasonDetails()
 }
 
 async function saveCreditReasonService(credirObject){

@@ -3,7 +3,7 @@ const CreditReasonModel = {
     properties: {
         _id: "string",
         credit_reason: "string",
-        credit_type: "string"
+        credit_category: "string"
     },
     primaryKey: '_id'
 }

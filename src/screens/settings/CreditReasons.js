@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
 import { React, useState, useEffect } from "react";
 import CommonHeader from "../../common/CommonHeader";
 import {
@@ -11,6 +11,8 @@ import {
   getCreditReason,
   saveCreditReasonService,
 } from "../../services/CreditReasonServices";
+import Modal from "react-native-modal";
+import { CustomFlatList, CustomButton } from "../../component";
 
 const CreditReasons = () => {
   const [creditData, setCreditData] = useState([]);
@@ -29,7 +31,7 @@ const CreditReasons = () => {
     setCreditCatagory("");
     setModalOpen(false);
   };
-  const addCxpenseReason = () => {
+  const addCreditReason = () => {
     if (creditReason === "") {
       alert("Please Add Credir Reason");
       return;
@@ -44,10 +46,10 @@ const CreditReasons = () => {
       credit_reason: creditReason,
       credit_category: creditCatagory,
     };
-    saveCreditReasonService(creditReasonObj);
+    // saveCreditReasonService(creditReasonObj);
     let newCreditReasonDetails = [...creditData, creditReasonObj];
-    setExpenseData(newCreditReasonDetails);
-    resetState();
+    // setCreditData(newCreditReasonDetails);
+    // resetState();
   };
   return (
     <View style={styles.container}>
@@ -59,6 +61,74 @@ const CreditReasons = () => {
         />
         <Text style={styles.searchText}>Search by Credit Reason Name</Text>
       </View>
+      <View style={styles.card}>
+        <CustomFlatList
+          data={creditData}
+          flatLisyType={"creditReasonDetails"}
+          edit_type={"Ctrdit Reason"}
+        />
+      </View>
+      <CustomButton pressEvent={"addCredit"} getModalopen={getModalopen} />
+      <Modal
+        isVisible={modalOpen}
+        backdropOpacity={0.2}
+        style={styles.modaView}
+      >
+        <View style={styles.mainView}>
+          <View style={styles.modalTopView}>
+            <Text style={styles.payable}>Credit Details</Text>
+            <View style={styles.modalTopRightView}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalOpen(false);
+                }}
+              >
+                <Image
+                  source={require("../../images/close.png")}
+                  style={[
+                    styles.backIcon,
+                    { tintColor: "black", width: scale(16) },
+                  ]}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Reason Name"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                  onChangeText={(reason) => setCreditReason(reason)}
+                  value={creditReason}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text style={styles.bankAccount}>{"Reason Catagory"}</Text>
+                </View>
+                <TextInput
+                  style={styles.bankAccount}
+                  onChangeText={(catagory) => setCreditCatagory(catagory)}
+                  value={creditCatagory}
+                />
+              </View>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.confirmPayNow}
+            onPress={addCreditReason}
+          >
+            <Text style={styles.title}>{"Add Credit"}</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };

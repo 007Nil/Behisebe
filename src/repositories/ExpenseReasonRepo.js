@@ -5,14 +5,14 @@ async function getAllExpenseReasonDetails() {
   return realm.objects("ExpenseReason");
 }
 
-async function saveExpenseReason(expoenseObj){
+async function saveExpenseReason(expenseObj){
   const realm = await OpenRealm();
   try {
     realm.write(() => {
       realm.create("ExpenseReason", {
-        _id: expoenseObj._id,
-        expense_reason: expoenseObj.expense_reason,
-        expense_category: expoenseObj.expense_category
+        _id: expenseObj._id,
+        expense_reason: expenseObj.expense_reason,
+        expense_category: expenseObj.expense_category
       });
     });
   } catch (error) {
@@ -20,13 +20,13 @@ async function saveExpenseReason(expoenseObj){
   }
 }
 
-async function updateExpensReasonDetails(expoenseObj){
+async function updateExpensReasonDetails(expenseObj){
   try{
     const realm = await OpenRealm();
     realm.write(() => {
-      let data = realm.objectForPrimaryKey('ExpenseReason', expoenseObj._id);
-      data.expense_reason = expoenseObj.expense_reason,
-      data.expense_category = expoenseObj.expense_category
+      let data = realm.objectForPrimaryKey('ExpenseReason', expenseObj._id);
+      data.expense_reason = expenseObj.expense_reason,
+      data.expense_category = expenseObj.expense_category
     });
   }catch (error){
     console.log(error)
