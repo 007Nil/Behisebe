@@ -1,9 +1,9 @@
-import { FundDetailsModel, ExpenseReasonModel } from "../model/index";
+import { FundDetailsModel, ExpenseReasonModel, CreditReasonModel } from "../model/index";
 import Realm from "realm";
 
 async function OpenRealm() {
     return await Realm.open({
-      schema: [FundDetailsModel, ExpenseReasonModel],
+      schema: [FundDetailsModel, ExpenseReasonModel, CreditReasonModel],
     });
 }
 

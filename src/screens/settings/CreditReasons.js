@@ -1,10 +1,64 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { React, useState, useEffect } from "react";
 import CommonHeader from "../../common/CommonHeader";
+import {
+  moderateScale,
+  moderateVerticalScale,
+  scale,
+  verticalScale,
+} from "react-native-size-matters";
+import {
+  getCreditReason,
+  saveCreditReasonService,
+} from "../../services/CreditReasonServices";
+
 const CreditReasons = () => {
+  const [creditData, setCreditData] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [creditReason, setCreditReason] = useState("");
+  const [creditCatagory, setCreditCatagory] = useState("");
+
+  useEffect(() => {
+    getCreditReason().then((data) => setCreditData(data));
+  }, []);
+  const getModalopen = (modelState) => {
+    setModalOpen(modelState);
+  };
+  const resetState = () => {
+    setCreditReason("");
+    setCreditCatagory("");
+    setModalOpen(false);
+  };
+  const addCxpenseReason = () => {
+    if (creditReason === "") {
+      alert("Please Add Credir Reason");
+      return;
+    }
+    if (creditCatagory === "") {
+      alert("Please Add Credit Catagory");
+      return;
+    }
+    let id = (Math.random() + 1).toString(36).substring(7);
+    let creditReasonObj = {
+      _id: id,
+      credit_reason: creditReason,
+      credit_category: creditCatagory,
+    };
+    saveCreditReasonService(creditReasonObj);
+    let newCreditReasonDetails = [...creditData, creditReasonObj];
+    setExpenseData(newCreditReasonDetails);
+    resetState();
+  };
   return (
     <View style={styles.container}>
-      <CommonHeader title={"Credit Reason Settings"}/>
+      <CommonHeader title={"Credit Reason Settings"} />
+      <View style={styles.searchBox}>
+        <Image
+          source={require("../../images/search.png")}
+          style={styles.search}
+        />
+        <Text style={styles.searchText}>Search by Credit Reason Name</Text>
+      </View>
     </View>
   );
 };
@@ -16,4 +70,96 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f2f2f2",
   },
+  search: {
+    width: scale(15),
+    height: scale(15),
+  },
+  searchBox: {
+    width: "94%",
+    height: verticalScale(40),
+    backgroundColor: "white",
+    alignSelf: "center",
+    marginTop: moderateVerticalScale(10),
+    borderRadius: moderateScale(10),
+    borderWidth: 0.5,
+    borderColor: "#929292",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: moderateScale(15),
+  },
+  searchText: {
+    marginLeft: moderateScale(20),
+    color: "#929292",
+    fontSize: moderateScale(16),
+  },
+  modaView: {
+    margin: 0,
+  },
+  mainView: {
+    backgroundColor: "white",
+    width: "100%",
+
+    position: "absolute",
+    bottom: 0,
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
+    padding: moderateScale(10),
+  },
+  modalTopView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: moderateScale(10),
+  },
+  payable: {
+    fontWeight: "700",
+    color: "black",
+    fontSize: moderateScale(16),
+  },
+  modalTopRightView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backIcon: {
+    width: scale(24),
+    height: scale(24),
+    tintColor: "white",
+  },
+  bankView: {
+    width: "100%",
+    height: verticalScale(50),
+    backgroundColor: "#f2f2f2",
+    alignSelf: "center",
+    marginTop: moderateVerticalScale(15),
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  bankLeftView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  upi_view: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bankAccount: {
+    color: "#929292",
+    fontSize: moderateScale(12),
+  },
+  confirmPayNow: {
+    width: "94%",
+    height: verticalScale(40),
+    backgroundColor: "purple",
+    borderRadius: moderateScale(30),
+    alignSelf: "center",
+    marginTop: moderateVerticalScale(20),
+    marginBottom: moderateVerticalScale(40),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    color: "white",
+    fontSize: moderateScale(20),
+  },
 });
+
