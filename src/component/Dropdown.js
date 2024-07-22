@@ -58,7 +58,7 @@ const Dropdown = (props) => {
                 {props.dropDownType === "expenseReasonDetails"
                   ? item.expense_reason
                   : props.dropDownType === "personDetails"
-                  ? item.name
+                  ? item.person_name
                   : props.dropDownType === "creditReason"
                   ? item.credit_reason
                   : item.fund_name}

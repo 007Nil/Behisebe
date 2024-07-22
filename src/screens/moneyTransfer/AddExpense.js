@@ -23,7 +23,9 @@ import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 
 import { saveExpenseData } from "../../services";
 
-import { expense_reason, persons, funds } from "../../dummy_data/index";
+import { getExpenseReason as getExpenseReasonService } from "../../services/ExpenseReasonService";
+import { getFundDetails as getFundDetailsService } from "../../services/FundServices";
+import { getAllPersonsService } from "../../services/PersonService";
 
 const AddExpense = () => {
   const isFocused = useIsFocused();
@@ -37,16 +39,29 @@ const AddExpense = () => {
       setAmount("");
     }
   }, [isFocused]);
+  useEffect(() => {
+    getAllPersonsService().then((data) => setDbPersonDetails(data));
+    getExpenseReasonService().then((data) => setDbExpenseReason(data));
+    getFundDetailsService().then((data) => setDbFundDetails(data));
+  }, []);
+
   const navigation = useNavigation();
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [isFundChecked, setFundIsChecked] = useState(true);
   const [isCashChecked, setCashIsChecked] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
+
+  
+  const [dbExpenseReason, setDbExpenseReason] = useState([]);
+  const [dbFundDetails, setDbFundDetails] = useState([]);
+  const [dbPersonDetails, setDbPersonDetails] = useState([]);
   //
   const [expenseReason, setExpenseReason] = useState("");
   const [fundDetails, setFundDetails] = useState("");
   const [personDetails, setPersonDetails] = useState("");
+
+
   const toggleFundCheckbox = () => {
     if (!isFundChecked) {
       setCashIsChecked(isFundChecked);
@@ -168,7 +183,7 @@ const AddExpense = () => {
         {!isCashChecked && !isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
-              dropDownValues={funds}
+              dropDownValues={dbFundDetails}
               dropDownType={"fundDetails"}
               getFundDetails={getFundDetails}
             />
@@ -193,7 +208,7 @@ const AddExpense = () => {
         {!isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
-              dropDownValues={expense_reason}
+              dropDownValues={dbExpenseReason}
               dropDownType={"expenseReasonDetails"}
               getExpenseReason={getExpenseReason}
             />
@@ -204,7 +219,7 @@ const AddExpense = () => {
         {expenseReason.expense_reason === "Lend Money" ? (
           <View style={[styles.amountView]}>
             <Dropdown
-              dropDownValues={persons}
+              dropDownValues={dbPersonDetails}
               dropDownType={"personDetails"}
               getPersonDetails={getPersonDetails}
             />

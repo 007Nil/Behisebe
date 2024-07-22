@@ -22,9 +22,21 @@ import Dropdown from "../../component/Dropdown";
 import { SaveCreditData } from "../../services";
 
 import { credit_reason, persons, funds } from "../../dummy_data/index";
+import { getCreditReason as getCreditReasonService } from "../../services/CreditReasonServices";
+import { getFundDetails as getFundDetailsService } from "../../services/FundServices";
+import { getAllPersonsService } from "../../services/PersonService";
 
 const AddCredit = () => {
   const isFocused = useIsFocused();
+  useEffect(() => {
+    getAllPersonsService().then((data) => setDbPersonDetails(data));
+    getCreditReasonService().then((data) => setDbCreditReason(data));
+    getFundDetailsService().then((data) => setDbFundDetails(data));
+  }, []);
+  const [dbCreditReason, setDbCreditReason] = useState([]);
+  const [dbFundDetails, setDbFundDetails] = useState([]);
+  const [dbPersonDetails, setDbPersonDetails] = useState([]);
+
   useEffect(() => {
     if (isFocused) {
       // reset state
@@ -166,7 +178,7 @@ const AddCredit = () => {
         {!isCashChecked && !isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
-              dropDownValues={funds}
+              dropDownValues={dbFundDetails}
               dropDownType={"fundDetails"}
               getFundDetails={getFundDetails}
             />
@@ -191,7 +203,7 @@ const AddCredit = () => {
         {!isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
-              dropDownValues={credit_reason}
+              dropDownValues={dbCreditReason}
               dropDownType={"creditReason"}
               getCreditReason={getCreditReason}
             />
@@ -202,7 +214,7 @@ const AddCredit = () => {
         {creditReason.credit_reason === "Pay Of Debt" ? (
           <View style={[styles.amountView]}>
             <Dropdown
-              dropDownValues={persons}
+              dropDownValues={dbPersonDetails}
               dropDownType={"personDetails"}
               getPersonDetails={getPersonDetails}
             />
