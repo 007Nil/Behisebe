@@ -20,4 +20,18 @@ async function saveCreditReason(creditObj){
   }
 }
 
-export {getAllCreditReasonDetails, saveCreditReason};
+
+async function updateCreditReasonDetails(creditObj){
+  try{
+    const realm = await OpenRealm();
+    realm.write(() => {
+      let data = realm.objectForPrimaryKey('CreditReason', creditObj._id);
+      data.credit_reason = creditObj.credit_reason,
+      data.credit_category = creditObj.credit_category
+    });
+  }catch (error){
+    console.log(error)
+  }
+}
+
+export {getAllCreditReasonDetails, saveCreditReason, updateCreditReasonDetails};

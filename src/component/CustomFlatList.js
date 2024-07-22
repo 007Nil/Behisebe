@@ -22,6 +22,7 @@ import {
 } from "../repositories/FundRepo";
 
 import { updateExpenseReason } from "../services/ExpenseReasonService";
+import { updateCreditReasonService } from "../services/CreditReasonServices";
 
 const CustomFlatList = (props) => {
   const [flatListData, setFlatListData] = useState([]);
@@ -65,6 +66,13 @@ const CustomFlatList = (props) => {
         expense_category: editType,
       };
       updateExpenseReason(newflatListObj);
+    } else if (props.flatLisyType === "creditReasonDetails") {
+      newflatListObj = {
+        _id: formId,
+        credit_reason: editName,
+        credit_category: editType,
+      };
+      updateCreditReasonService(newflatListObj);
     }
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);
@@ -84,6 +92,9 @@ const CustomFlatList = (props) => {
         } else if (props.flatLisyType === "expenseReasonDetails") {
           setEditName(item.expense_reason);
           setEditType(item.expense_category);
+        } else if (props.flatLisyType ===  "creditReasonDetails"){
+          setEditName(item.credit_reason)
+          setEditType(item.credit_category);
         }
         setFlatListIndex(flatListData.indexOf(item));
       }
@@ -121,9 +132,18 @@ const CustomFlatList = (props) => {
                           Type: {item.expense_category}
                         </Text>
                       </View>
-                    ) : (
-                      ""
-                    )}
+                    ) : null}
+
+                    {props.flatLisyType === "creditReasonDetails" ? (
+                      <View>
+                        <Text style={styles.paidTo}>
+                          Name: {item.credit_reason}
+                        </Text>
+                        <Text style={styles.paidTo}>
+                          Type: {item.credit_category}
+                        </Text>
+                      </View>
+                    ) : null}
                   </View>
                 </View>
               </View>

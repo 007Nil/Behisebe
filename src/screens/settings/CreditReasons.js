@@ -9,7 +9,7 @@ import {
 } from "react-native-size-matters";
 import {
   getCreditReason,
-  saveCreditReasonService,
+  saveCreditReasonService
 } from "../../services/CreditReasonServices";
 import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
@@ -21,6 +21,7 @@ const CreditReasons = () => {
   const [creditCatagory, setCreditCatagory] = useState("");
 
   useEffect(() => {
+    
     getCreditReason().then((data) => setCreditData(data));
   }, []);
   const getModalopen = (modelState) => {
@@ -46,10 +47,10 @@ const CreditReasons = () => {
       credit_reason: creditReason,
       credit_category: creditCatagory,
     };
-    // saveCreditReasonService(creditReasonObj);
+    saveCreditReasonService(creditReasonObj);
     let newCreditReasonDetails = [...creditData, creditReasonObj];
-    // setCreditData(newCreditReasonDetails);
-    // resetState();
+    setCreditData(newCreditReasonDetails);
+    resetState();
   };
   return (
     <View style={styles.container}>
