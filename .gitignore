@@ -76,3 +76,5 @@ yarn-error.*
 # @end expo-cli
 
 android
+default.realm
+default.realm.lock
