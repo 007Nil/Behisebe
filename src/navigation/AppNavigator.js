@@ -14,6 +14,7 @@ import {
   Funds,
   ExpesneReasons,
   CreditReasons,
+  Persons,
 } from "../screens/settings/index";
 
 const stack = createStackNavigator();
@@ -64,6 +65,11 @@ const AppNavigator = () => {
         <stack.Screen
           name="CreditReasons"
           component={CreditReasons}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="Persons"
+          component={Persons}
           options={{ headerShown: false }}
         />
         <stack.Screen

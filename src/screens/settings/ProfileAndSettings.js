@@ -142,7 +142,13 @@ const ProfileAndSettings = () => {
               </View>
               <Text style={styles.tranferText}>{"Credit Reason"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}>
+
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigation.navigate("Persons");
+              }}
+            >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
                 <Image
                   source={require("../../images/credit-card.png")}

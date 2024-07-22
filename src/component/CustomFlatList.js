@@ -23,6 +23,7 @@ import {
 
 import { updateExpenseReason } from "../services/ExpenseReasonService";
 import { updateCreditReasonService } from "../services/CreditReasonServices";
+import { updatePersonDetails } from "../repositories/PersonRepo";
 
 const CustomFlatList = (props) => {
   const [flatListData, setFlatListData] = useState([]);
@@ -73,6 +74,12 @@ const CustomFlatList = (props) => {
         credit_category: editType,
       };
       updateCreditReasonService(newflatListObj);
+    }else if (props.flatLisyType === "personDetails") {
+      newflatListObj = {
+        _id: formId,
+        person_name: editName
+      };
+      updatePersonDetails(newflatListObj);
     }
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);
@@ -92,9 +99,11 @@ const CustomFlatList = (props) => {
         } else if (props.flatLisyType === "expenseReasonDetails") {
           setEditName(item.expense_reason);
           setEditType(item.expense_category);
-        } else if (props.flatLisyType ===  "creditReasonDetails"){
-          setEditName(item.credit_reason)
+        } else if (props.flatLisyType === "creditReasonDetails") {
+          setEditName(item.credit_reason);
           setEditType(item.credit_category);
+        }else if (props.flatLisyType === "personDetails") {
+          setEditName(item.person_name);
         }
         setFlatListIndex(flatListData.indexOf(item));
       }
@@ -105,7 +114,6 @@ const CustomFlatList = (props) => {
     <View>
       <FlatList
         contentContainerStyle={{ marginTop: moderateVerticalScale(30) }}
-        // keyExtractor={ item}
         data={flatListData}
         renderItem={({ item, index }) => {
           return (
@@ -144,6 +152,14 @@ const CustomFlatList = (props) => {
                         </Text>
                       </View>
                     ) : null}
+
+                    {props.flatLisyType === "personDetails" ? (
+                      <View>
+                        <Text style={styles.paidTo}>
+                          Name: {item.person_name}
+                        </Text>
+                      </View>
+                    ) : null}
                   </View>
                 </View>
               </View>
@@ -173,22 +189,27 @@ const CustomFlatList = (props) => {
             </View>
           </View>
           <View style={styles.divider}></View>
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>
-                    {props.edit_type.concat(" Name")}
-                  </Text>
+          {props.edit_type == "Fund" || props.edit_type == "Expense Reason" || props.edit_type == "Credit Reason" || props.edit_type == "Person"  ? (
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text style={styles.bankAccount}>
+                      {props.edit_type.concat(" Name")}
+                    </Text>
+                  </View>
+                  <TextInput
+                    style={styles.bankAccount}
+                    value={editName}
+                    onChangeText={(name) => setEditName(name)}
+                  />
                 </View>
-                <TextInput
-                  style={styles.bankAccount}
-                  value={editName}
-                  onChangeText={(name) => setEditName(name)}
-                />
               </View>
             </View>
-          </View>
+          ) : (
+           null
+          )}
+          {props.edit_type == "Fund" || props.edit_type == "Expense Reason" || props.edit_type == "Credit Reason" ? (
           <View style={styles.bankView}>
             <View style={styles.bankLeftView}>
               <View style={{ marginLeft: moderateScale(15) }}>
@@ -204,7 +225,8 @@ const CustomFlatList = (props) => {
                 />
               </View>
             </View>
-          </View>
+          </View>) : ( null)}
+
           {props.edit_type == "Fund" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>

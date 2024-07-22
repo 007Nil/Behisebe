@@ -68,7 +68,7 @@ const CreditReasons = () => {
         <CustomFlatList
           data={creditData}
           flatLisyType={"creditReasonDetails"}
-          edit_type={"Ctrdit Reason"}
+          edit_type={"Credit Reason"}
         />
       </View>
       <CustomButton pressEvent={"addCredit"} getModalopen={getModalopen} />

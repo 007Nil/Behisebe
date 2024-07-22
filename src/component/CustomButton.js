@@ -11,6 +11,8 @@ const CustomButton = (props) => {
   }
   else if (props.pressEvent === "addCredit"){
     buttonText = "Add Credit";
+  } else if (props.pressEvent === "addPerson"){
+    buttonText = "Add Person";
   }
   const handleOnPress = () => {
     if (props.pressEvent === "add_fund") {
@@ -18,6 +20,8 @@ const CustomButton = (props) => {
     }else if (props.pressEvent === "addExpense"){
       props.getModalopen(true);
     }else if (props.pressEvent === "addCredit"){
+      props.getModalopen(true);
+    } else if ( props.pressEvent === "addPerson"){
       props.getModalopen(true);
     }
   };
