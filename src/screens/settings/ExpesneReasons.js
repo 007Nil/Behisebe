@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   TouchableOpacity,
   TextInput,
@@ -9,17 +8,15 @@ import {
 import { React, useState, useEffect } from "react";
 import {
   moderateScale,
-  moderateVerticalScale,
   scale,
-  verticalScale,
 } from "react-native-size-matters";
+
+const styles = require("./styles")
+
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
 import { getExpenseReason, saveExpenseReasonService } from "../../services/ExpenseReasonService";
-
-// Services
-// import { SaveExpenseReason } from "../../services";
 
 const ExpesneReasons = () => {
   const [expenseData ,setExpenseData] = useState([]);
@@ -143,101 +140,3 @@ const ExpesneReasons = () => {
 };
 
 export default ExpesneReasons;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f2f2f2",
-  },
-  search: {
-    width: scale(15),
-    height: scale(15),
-  },
-  searchBox: {
-    width: "94%",
-    height: verticalScale(40),
-    backgroundColor: "white",
-    alignSelf: "center",
-    marginTop: moderateVerticalScale(10),
-    borderRadius: moderateScale(10),
-    borderWidth: 0.5,
-    borderColor: "#929292",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: moderateScale(15),
-  },
-  searchText: {
-    marginLeft: moderateScale(20),
-    color: "#929292",
-    fontSize: moderateScale(16),
-  },
-  modaView: {
-    margin: 0,
-  },
-  mainView: {
-    backgroundColor: "white",
-    width: "100%",
-
-    position: "absolute",
-    bottom: 0,
-    borderTopLeftRadius: moderateScale(20),
-    borderTopRightRadius: moderateScale(20),
-    padding: moderateScale(10),
-  },
-  modalTopView: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: moderateScale(10),
-  },
-  payable: {
-    fontWeight: "700",
-    color: "black",
-    fontSize: moderateScale(16),
-  },
-  modalTopRightView: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  backIcon: {
-    width: scale(24),
-    height: scale(24),
-    tintColor: "white",
-  },
-  bankView: {
-    width: "100%",
-    height: verticalScale(50),
-    backgroundColor: "#f2f2f2",
-    alignSelf: "center",
-    marginTop: moderateVerticalScale(15),
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  bankLeftView: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  upi_view: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  bankAccount: {
-    color: "#929292",
-    fontSize: moderateScale(12),
-  },
-  confirmPayNow: {
-    width: "94%",
-    height: verticalScale(40),
-    backgroundColor: "purple",
-    borderRadius: moderateScale(30),
-    alignSelf: "center",
-    marginTop: moderateVerticalScale(20),
-    marginBottom: moderateVerticalScale(40),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: {
-    color: "white",
-    fontSize: moderateScale(20),
-  },
-});
