@@ -36,6 +36,7 @@ const ExpesneReasons = () => {
     setExpenseReason("");
     setExpenseCatagory("");
     setModalOpen(false);
+    alert("Expense Reason Data Saved!")
   }
   const addExpenseReason = () => {
     if (expenseReason === "") {

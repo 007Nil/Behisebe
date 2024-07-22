@@ -40,6 +40,7 @@ const CustomFlatList = (props) => {
   const handleModal = () => {
     updateFormData();
     setIsModalVisible(() => !isModalVisible);
+    alert("Data Updated")
   };
 
   useEffect(() => {

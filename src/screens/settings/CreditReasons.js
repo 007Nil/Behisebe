@@ -33,6 +33,7 @@ const CreditReasons = () => {
     setCreditReason("");
     setCreditCatagory("");
     setModalOpen(false);
+    alert("Credit Reason Data Saved!")
   };
   const addCreditReason = () => {
     if (creditReason === "") {

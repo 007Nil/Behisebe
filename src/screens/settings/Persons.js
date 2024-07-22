@@ -26,6 +26,7 @@ const Persons = () => {
   const resetState = () => {
     setModalOpen("");
     setModalOpen(false);
+    alert("Person Data Saved!")
   };
   const addPerson = () => {
     if (personName === "") {
