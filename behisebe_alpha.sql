@@ -1,274 +1,238 @@
- CREATE DATABASE IF NOT EXISTS Behisebe;
+CREATE DATABASE IF NOT EXISTS behisebe;
 
-USE Behisebe;
+USE behisebe;
 
-CREATE TABLE
-    User (
-        ID VARCHAR(255) NOT NULL UNIQUE,
-        FirstName VARCHAR(255),
-        LastName VARCHAR(255),
-        Email VARCHAR(255),
-        PRIMARY KEY (ID)
-    );
+CREATE TABLE users (
+    user_id INT NOT NULL UNIQUE AUTO_INCREMENT,
+    firstName VARCHAR(255),
+    lastName VARCHAR(255),
+    username VARCHAR(255),
+    PRIMARY KEY (user_id)
+);
 
-
-CREATE TABLE
-    BankAccountType (
-        ID TINYINT NOT NULL AUTO_INCREMENT UNIQUE,
-        AccountType VARCHAR(255) NOT NULL,
-        PRIMARY KEY (ID)
-    );
+CREATE TABLE fund_account_types (
+    fund_account_type_id INT NOT NULL AUTO_INCREMENT UNIQUE,
+    account_type VARCHAR(255) NOT NULL,
+    PRIMARY KEY (fund_account_type_id)
+);
 
 INSERT INTO
-    BankAccountType (AccountType)
-VALUES ("Current Account"), ("Savings Account"), ("Salary Account"), ("Credit Card");
+    fund_account_types (account_type)
+VALUES ("Current Account"),
+    ("Savings Account"),
+    ("Salary Account"),
+    ("Credit Card");
 
-CREATE TABLE
-    Bank (
-        BankID VARCHAR(255) NOT NULL UNIQUE,
-        BankName VARCHAR(255) NOT NULL,
-        AccountType TINYINT(3),
-        UserID VARCHAR(255),
-        IsDefault TINYINT (1) NOT NULL,
-        AddedOn Date NOT NULL,
-        Notes TEXT,
-        PRIMARY KEY (BankID),
-        FOREIGN KEY (UserID) REFERENCES User(ID) ON DELETE CASCADE,
-        FOREIGN KEY (AccountType) REFERENCES BankAccountType(ID) ON DELETE CASCADE
-    );
+CREATE TABLE fund_details (
+    fund_id VARCHAR(255) NOT NULL UNIQUE,
+    fund_name VARCHAR(255) NOT NULL,
+    account_type_fk INt,
+    user_id_fk INT,
+    added_on Date NOT NULL,
+    notes TEXT,
+    PRIMARY KEY (fund_id),
+    FOREIGN KEY (user_id_fk) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (account_type_fk) REFERENCES fund_account_types (fund_account_type_id) ON DELETE CASCADE
+);
 
 -- Person details related to lend and clear debt
 
-CREATE TABLE
-    Person (
-        ID VARCHAR(255) NOT NULL UNIQUE,
-        Name VARCHAR(255) NOT NULL,
-        UserID VARCHAR(255) NOT NULL,
-        PRIMARY KEY (ID),
-        FOREIGN KEY (UserID) REFERENCES User (ID) ON DELETE CASCADE
-    );
+CREATE TABLE persons (
+    person_id INT NOT NULL UNIQUE AUTO_INCREMENT,
+    person_name VARCHAR(255) NOT NULL,
+    user_id_fk INT NOT NULL,
+    PRIMARY KEY (person_id),
+    FOREIGN KEY (user_id_fk) REFERENCES users (user_id) ON DELETE CASCADE
+);
 
-CREATE TABLE
-    Lend (
-        ID VARCHAR(255) NOT NULL UNIQUE,
-        LendTo VARCHAR(255) NULL,
-        LendFrom VARCHAR(255) NULL,
-        Amount INT NOT NULL,
-        PartialAmount INT NOT NULL DEFAULT 0,
-        FullPayment TINYINT(1) DEFAULT 0,
-        PaymentOnDate DATE NULL,
-        UserID VARCHAR(255) NOT NULL,
-        PRIMARY KEY (ID),
-        FOREIGN KEY (LendTo) REFERENCES Person (ID) ON DELETE CASCADE,
-        FOREIGN KEY (LendFrom) REFERENCES Person (ID) ON DELETE CASCADE,
-        Foreign Key (UserID) REFERENCES User (ID) ON DELETE CASCADE
-    );
+CREATE TABLE lend_details (
+    lend_id VARCHAR(255) NOT NULL UNIQUE,
+    lend_to_fk INT NULL,
+    lend_form_fk INT NULL,
+    amount INT NOT NULL,
+    partial_amount INT NOT NULL DEFAULT 0,
+    full_payment TINYINT(1) DEFAULT 0,
+    payment_one_date DATE NULL,
+    user_id_fk INt NOT NULL,
+    PRIMARY KEY (lend_id),
+    FOREIGN KEY (lend_to_fk) REFERENCES persons (person_id) ON DELETE CASCADE,
+    FOREIGN KEY (lend_form_fk) REFERENCES persons (person_id) ON DELETE CASCADE,
+    Foreign Key (user_id_fk) REFERENCES users (user_id) ON DELETE CASCADE
+);
 
-CREATE TABLE
-    PartialPaymemnt (
-        ID VARCHAR(255) NOT NULL UNIQUE,
-        OnDate DATE NOT NULL,
-        Amount INT NOT NULL,
-        LendId VARCHAR(255) NOT NULL,
-        ByCash TINYINT(1) NULL,
-        BankId VARCHAR(255) NULL,
-        PRIMARY KEY (ID),
-        FOREIGN KEY (LendId) REFERENCES Lend (ID) ON DELETE CASCADE,
-        FOREIGN KEY (BankId) REFERENCES Bank (BankID) ON DELETE CASCADE
-    );
+CREATE TABLE partial_payments (
+    partial_payment_id VARCHAR(255) NOT NULL UNIQUE,
+    on_date DATE NOT NULL,
+    amount INT NOT NULL,
+    lend_id_fk VARCHAR(255) NOT NULL,
+    by_cash TINYINT(1) NULL,
+    fund_id_fk VARCHAR(255) NULL,
+    PRIMARY KEY (partial_payment_id),
+    FOREIGN KEY (lend_id_fk) REFERENCES lend_details (lend_id) ON DELETE CASCADE,
+    FOREIGN KEY (fund_id_fk) REFERENCES fund_details (fund_id) ON DELETE CASCADE
+);
 
 -- Expense related statements
 
-CREATE TABLE
-    ExpenseReason (
-        ID VARCHAR(255) NOT NULL,
-        Reason VARCHAR(255) NOT NULL,
-        UserID VARCHAR(255) NULL,
-        PRIMARY KEY (ID),
-        Foreign Key (UserID) REFERENCES User (ID)
-    );
+CREATE TABLE expense_reasons (
+    expense_reason_id INT NOT NULL AUTO_INCREMENT,
+    expense_reason VARCHAR(255) NOT NULL,
+    user_id_fk INT NULL,
+    PRIMARY KEY (expense_reason_id),
+    Foreign Key (user_id_fk) REFERENCES users (user_id)
+);
 
 INSERT INTO
-    ExpenseReason (ID, Reason, UserID)
-VALUES ("0987654321", "Lend", NULL), (
-        "1234567098",
-        "Pay Of Debt",
-        NULL
-    ), (
-        "6565454378",
-        "Cash Withdrawal",
-        NULL
-    ),(
-        "7676543456",
-        "Pay Credit Card Balance",
-        NULL
-    ),(
-        "1098856458",
-        "Self Transfer",
-        NULL
-    );
+    expense_reasons (expense_reason, user_id_fk)
+VALUES 
+    ("Lend", NULL),
+    ("Pay Of Debt", NULL),
+    ("Cash Withdrawal",NULL),
+    ("Self Transfer",NULL);
 
-CREATE TABLE
-    Expense (
-        ID VARCHAR(255) NOT NULL UNIQUE,
-        BankID VARCHAR(255) NULL,
-        ByCash TINYINT(1) DEFAULT 0,
-        UserID VARCHAR(255) NOT NULL,
-        LendID VARCHAR(255) NULL,
-        LendClose TINYINT(1) NULL,
-        Reason VARCHAR(255) NOT NULL,
-        Date DATE NOT NULL,
-        Notes TEXT,
-        Amount INT NOT NULL,
-        PRIMARY KEY (ID),
-        FOREIGN KEY (BankID) REFERENCES Bank (BankID) ON DELETE CASCADE,
-        FOREIGN KEY (UserID) REFERENCES User (ID) ON DELETE CASCADE,
-        FOREIGN KEY (LendID) REFERENCES Lend (ID) ON DELETE CASCADE,
-        FOREIGN KEY (Reason) REFERENCES ExpenseReason(ID) ON DELETE CASCADE
-    );
+CREATE TABLE expense_details (
+    expense_id VARCHAR(255) NOT NULL UNIQUE,
+    fund_id_fk VARCHAR(255) NULL,
+    by_cash TINYINT(1) DEFAULT 0,
+    user_id_fk INT NOT NULL,
+    lend_id_fk VARCHAR(255) NULL,
+    lend_closed TINYINT(1) NULL,
+    expense_reason_fk INt NOT NULL,
+    expense_date DATE NOT NULL,
+    notes TEXT,
+    amount INT NOT NULL,
+    PRIMARY KEY (expense_id),
+    FOREIGN KEY (fund_id_fk) REFERENCES fund_details (fund_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id_fk) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (lend_id_fk) REFERENCES lend_details (lend_id) ON DELETE CASCADE,
+    FOREIGN KEY (expense_reason_fk) REFERENCES expense_reasons (expense_reason_id) ON DELETE CASCADE
+);
 
 -- Credit Related Tables
 
-CREATE TABLE
-    CreditReason (
-        ID VARCHAR(255) NOT NULL,
-        Reason VARCHAR(255) NOT NULL,
-        UserID VARCHAR(255) NULL,
-        PRIMARY KEY (ID),
-        Foreign Key (UserID) REFERENCES User (ID)
-    );
+CREATE TABLE credit_reasons (
+    credit_reason_id INT NOT NULL AUTO_INCREMENT,
+    credit_reason VARCHAR(255) NOT NULL,
+    user_id_fk INT NULL,
+    PRIMARY KEY (credit_reason_id),
+    Foreign Key (user_id_fk) REFERENCES users (user_id)
+);
 
 INSERT INTO
-    CreditReason (ID, Reason, UserID)
-VALUES ("765654343", "Borrow", NULL), (
-        "098787651",
-        "Pay Of Debt",
-        NULL
-    ), (
-        "565434329",
-        "Added Bank Details",
-        NULL
-    ),(
-        "6765454367",
-        "Credit as Cash",
-        NULL
-    ),(
-        "1698898645",
-        "Self Transfer",
-        NULL
-    );
+    credit_reasons (credit_reason, user_id_fk)
+VALUES 
+    ("Borrow", NULL),
+    ("Pay Of Debt",NULL),
+    ("Added Fund Details",NULL),
+    ("Self Transfer",NULL);
 
-CREATE TABLE
-    Credit (
-        CreditID VARCHAR(255) NOT NULL UNIQUE,
-        BankID VARCHAR(255) NULL,
-        UserID VARCHAR(255) NOT NULL,
-        LendID VARCHAR(255) NULL,
-        LendPaid TINYINT(1) NULL,
-        ByCash TINYINT(1) DEFAULT 0,
-        Reason VARCHAR(255) NOT NULL,
-        Date DATE NOT NULL,
-        Amount INT NOT NULL,
-        Notes TEXT,
-        PRIMARY KEY (CreditID),
-        FOREIGN KEY (BankID) REFERENCES Bank(BankID) ON DELETE CASCADE,
-        FOREIGN KEY (UserID) REFERENCES User (ID) ON DELETE CASCADE,
-        FOREIGN KEY (LendID) REFERENCES Lend (ID) ON DELETE CASCADE,
-        FOREIGN KEY (Reason) REFERENCES CreditReason(ID) ON DELETE CASCADE
-    );
+CREATE TABLE credit_details (
+    credit_id VARCHAR(255) NOT NULL UNIQUE,
+    fund_id_fk VARCHAR(255) NULL,
+    user_id_fk INT NOT NULL,
+    lend_id_fk VARCHAR(255) NULL,
+    is_lend_pad TINYINT(1) NULL,
+    is_by_cash TINYINT(1) DEFAULT 0,
+    credit_reason_fk INt NOT NULL,
+    credit_date DATE NOT NULL,
+    amount INT NOT NULL,
+    notes TEXT,
+    PRIMARY KEY (credit_id),
+    FOREIGN KEY (fund_id_fk) REFERENCES fund_details (fund_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id_fk) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (lend_id_fk) REFERENCES lend_details (lend_id) ON DELETE CASCADE,
+    FOREIGN KEY (credit_reason_fk) REFERENCES credit_reasons (credit_reason_id) ON DELETE CASCADE
+);
 
 -- Closing Balance
 -- Daily Closing
 -- Monthly Closing
 -- Yearly Closing
 
-CREATE TABLE Months (
-    ID INT NOT NULL AUTO_INCREMENT,
-    Name VARCHAR(255) NOT NULL,
-    PRIMARY KEY(ID)
-);
+-- CREATE TABLE Months (
+--     ID INT NOT NULL AUTO_INCREMENT,
+--     Name VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (ID)
+-- );
 
-INSERT INTO Months
-(Name)
-VALUES
-("Jan"),
-("Feb"),
-("Mar"),
-("Apr"),
-("May"),
-("Jun"),
-("Jul"),
-("Aug"),
-("Sep"),
-("Oct"),
-("Nov"),
-("Dec");
+-- INSERT INTO
+--     Months (Name)
+-- VALUES ("Jan"),
+--     ("Feb"),
+--     ("Mar"),
+--     ("Apr"),
+--     ("May"),
+--     ("Jun"),
+--     ("Jul"),
+--     ("Aug"),
+--     ("Sep"),
+--     ("Oct"),
+--     ("Nov"),
+--     ("Dec");
 
+-- CREATE TABLE DailyClosing (
+--     ID VARCHAR(255) NOT NULL UNIQUE,
+--     Date DATE,
+--     Amount INT,
+--     BankId VARCHAR(255) NOT NULL,
+--     UserId VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (ID),
+--     FOREIGN KEY (BankId) REFERENCES Bank (BankID) ON DELETE CASCADE,
+--     FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
+-- );
 
-CREATE TABLE DailyClosing (
-    ID VARCHAR(255) NOT NULL UNIQUE,
-    Date DATE,
-    Amount INT,
-    BankId VARCHAR(255) NOT NULL,
-    UserId VARCHAR(255) NOT NULL,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (BankId) REFERENCES Bank(BankID) ON DELETE CASCADE,
-    FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
-);
+-- CREATE TABLE MonthlyClosing (
+--     ID VARCHAR(255) NOT NULL UNIQUE,
+--     MonthId INT NOT NULL,
+--     Amount INT NOT NULL,
+--     Year VARCHAR(20),
+--     BankId VARCHAR(255) NOT NULL,
+--     UserId VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (ID),
+--     FOREIGN KEY (MonthId) REFERENCES Months (ID) ON DELETE CASCADE,
+--     FOREIGN KEY (BankId) REFERENCES Bank (BankID) ON DELETE CASCADE,
+--     FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
+-- );
 
-CREATE TABLE MonthlyClosing (
-    ID VARCHAR(255) NOT NULL UNIQUE,
-    MonthId INT NOT NULL,
-    Amount INT NOT NULL,
-    Year VARCHAR(20),
-    BankId VARCHAR(255) NOT NULL,
-    UserId VARCHAR(255) NOT NULL,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (MonthId) REFERENCES Months(ID) ON DELETE CASCADE,
-    FOREIGN KEY (BankId) REFERENCES Bank(BankID) ON DELETE CASCADE,
-    FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
-);
+-- CREATE TABLE YearlyClosing (
+--     ID VARCHAR(255) NOT NULL UNIQUE,
+--     Amount INT NOT NULL,
+--     Year VARCHAR(20),
+--     BankId VARCHAR(255) NOT NULL,
+--     UserId VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (ID),
+--     FOREIGN KEY (BankId) REFERENCES Bank (BankID) ON DELETE CASCADE,
+--     FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
+-- );
 
-CREATE TABLE YearlyClosing (
-    ID VARCHAR(255) NOT NULL UNIQUE,
-    Amount INT NOT NULL,
-    Year VARCHAR(20),
-    BankId VARCHAR(255) NOT NULL,
-    UserId VARCHAR(255) NOT NULL,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (BankId) REFERENCES Bank(BankID) ON DELETE CASCADE,
-    FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
-);
+-- -- For Cash transaction
+-- CREATE TABLE DailyClosingCash (
+--     ID VARCHAR(255) NOT NULL UNIQUE,
+--     Date DATE,
+--     Amount INT,
+--     UserId VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (ID),
+--     FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
+-- );
 
--- For Cash transaction
-CREATE TABLE DailyClosingCash (
-    ID VARCHAR(255) NOT NULL UNIQUE,
-    Date DATE,
-    Amount INT,
-    UserId VARCHAR(255) NOT NULL,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
-);
+-- CREATE TABLE MonthlyClosingCash (
+--     ID VARCHAR(255) NOT NULL UNIQUE,
+--     MonthId INT NOT NULL,
+--     Amount INT NOT NULL,
+--     Year VARCHAR(20),
+--     UserId VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (ID),
+--     FOREIGN KEY (MonthId) REFERENCES Months (ID) ON DELETE CASCADE,
+--     FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
+-- );
 
-CREATE TABLE MonthlyClosingCash (
-    ID VARCHAR(255) NOT NULL UNIQUE,
-    MonthId INT NOT NULL,
-    Amount INT NOT NULL,
-    Year VARCHAR(20),
-    UserId VARCHAR(255) NOT NULL,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (MonthId) REFERENCES Months(ID) ON DELETE CASCADE,
-    FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
-);
-
-CREATE TABLE YearlyClosingCash (
-    ID VARCHAR(255) NOT NULL UNIQUE,
-    Amount INT NOT NULL,
-    Year VARCHAR(20),
-    UserId VARCHAR(255) NOT NULL,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
-);
-
+-- CREATE TABLE YearlyClosingCash (
+--     ID VARCHAR(255) NOT NULL UNIQUE,
+--     Amount INT NOT NULL,
+--     Year VARCHAR(20),
+--     UserId VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (ID),
+--     FOREIGN KEY (UserId) REFERENCES User (ID) ON DELETE CASCADE
+-- );
 
 -- DROP DATABASE Behisebe;
