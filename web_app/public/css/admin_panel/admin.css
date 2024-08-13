@@ -8171,6 +8171,22 @@ textarea.form-control-lg {
   background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
 }
 
+.bg-master-background{
+  --bs-bg-opacity: 1;
+  background-color: #D1E9F6;
+}
+
+.bg-form-header{
+  --bs-bg-opacity: 1;
+  background-color: #F6EACB;
+}
+
+.bg-form-inside{
+  --bs-bg-opacity: 1;
+  background-color: #F1D3CE;
+}
+
+
 .bg-light {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
