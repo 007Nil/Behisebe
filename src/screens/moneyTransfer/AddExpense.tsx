@@ -18,14 +18,14 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 
-import PaymentCommonHeader from "../../common/PaymentCommonHeader";
+// import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 // Services
 
-import { saveExpenseData } from "../../services";
+// import { saveExpenseData } from "../../services";
 
-import { getExpenseReason as getExpenseReasonService } from "../../services/ExpenseReasonService";
-import { getFundDetails as getFundDetailsService } from "../../services/FundServices";
-import { getAllPersonsService } from "../../services/PersonService";
+// import { getExpenseReason as getExpenseReasonService } from "../../services/ExpenseReasonService";
+// import { getFundDetails as getFundDetailsService } from "../../services/FundServices";
+// import { getAllPersonsService } from "../../services/PersonService";
 
 const AddExpense = () => {
   const isFocused = useIsFocused();
@@ -39,11 +39,11 @@ const AddExpense = () => {
       setAmount("");
     }
   }, [isFocused]);
-  useEffect(() => {
-    getAllPersonsService().then((data) => setDbPersonDetails(data));
-    getExpenseReasonService().then((data) => setDbExpenseReason(data));
-    getFundDetailsService().then((data) => setDbFundDetails(data));
-  }, []);
+  // useEffect(() => {
+  //   getAllPersonsService().then((data) => setDbPersonDetails(data));
+  //   getExpenseReasonService().then((data) => setDbExpenseReason(data));
+  //   getFundDetailsService().then((data) => setDbFundDetails(data));
+  // }, []);
 
   const navigation = useNavigation();
   const [amount, setAmount] = useState("");
@@ -94,12 +94,12 @@ const AddExpense = () => {
       alert("Please select expense reason");
       isValidFrom = false;
     } else {
-      if (expenseReason.expense_reason === "Lend Money") {
-        if (!personDetails) {
-          alert("Please select person name");
-          isValidFrom = false;
-        }
-      }
+      // if (expenseReason.expense_reason === "Lend Money") {
+      //   if (!personDetails) {
+      //     alert("Please select person name");
+      //     isValidFrom = false;
+      //   }
+      // }
     }
     if (isFundChecked && !fundDetails) {
       alert("Please select a fund");
@@ -115,22 +115,22 @@ const AddExpense = () => {
 
   const saveExpenseDetails = () => {
     let expenseObject = {
-      fundId: isCashChecked ? null : fundDetails._id,
-      isByCash: isCashChecked ? 1 : 0,
-      expenseReason: expenseReason._id,
-      amount: amount,
-      message: message,
+      // fundId: isCashChecked ? null : fundDetails._id,
+      // isByCash: isCashChecked ? 1 : 0,
+      // expenseReason: expenseReason._id,
+      // amount: amount,
+      // message: message,
     };
     //
     //saveExpenseData();
-    setIsSubmit(true);s
-    navigation.navigate("TransferSuccessful");
+    setIsSubmit(true);
+    // navigation.navigate("TransferSuccessful");
   };
 
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <View style={styles.container}>
-      <PaymentCommonHeader headerTitle={"Save Expense"} />
+      {/* <PaymentCommonHeader headerTitle={"Save Expense"} /> */}
       <View style={styles.cardView}>
         <View style={styles.topView}>
           <View style={styles.leftView}>
@@ -146,15 +146,15 @@ const AddExpense = () => {
               />
               <TextInput
                 style={styles.Checkedinput}
-                placeholder={
-                  isFundChecked
-                    ? fundDetails.balance
-                      ? "Balance: " + fundDetails.balance
-                      : fundDetails.limit
-                      ? "Available Limit: " + fundDetails.limit
-                      : ""
-                    : ""
-                }
+                // placeholder={
+                //   isFundChecked
+                //     ? fundDetails.balance
+                //       ? "Balance: " + fundDetails.balance
+                //       : fundDetails.limit
+                //       ? "Available Limit: " + fundDetails.limit
+                //       : ""
+                //     : ""
+                // }
                 editable={false}
               />
             </TouchableOpacity>
@@ -216,7 +216,7 @@ const AddExpense = () => {
         ) : null}
 
         {/* Money Lend */}
-        {expenseReason.expense_reason === "Lend Money" ? (
+        {/* {expenseReason.expense_reason === "Lend Money" ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbPersonDetails}
@@ -224,7 +224,7 @@ const AddExpense = () => {
               getPersonDetails={getPersonDetails}
             />
           </View>
-        ) : null}
+        ) : null} */}
         <View
           style={[
             styles.amountView,
@@ -291,10 +291,10 @@ const AddExpense = () => {
               <View style={styles.bankRightView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
                   <View style={styles.upi_view}>
-                    <Text>{fundDetails.fund_name}</Text>
+                    {/* <Text>{fundDetails.fund_name}</Text> */}
                   </View>
                   <Text style={styles.bankAccount}>
-                    {fundDetails.fund_type}
+                    {/* {fundDetails.fund_type} */}
                   </Text>
                 </View>
               </View>
@@ -311,9 +311,9 @@ const AddExpense = () => {
             <View style={styles.bankRightView}>
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  <Text>{expenseReason.expense_reason}</Text>
+                  {/* <Text>{expenseReason.expense_reason}</Text> */}
                 </View>
-                <Text style={styles.bankAccount}>{expenseReason.category}</Text>
+                {/* <Text style={styles.bankAccount}>{expenseReason.category}</Text> */}
               </View>
             </View>
           </View>
@@ -331,7 +331,7 @@ const AddExpense = () => {
               </View>
             </View>
           </View>
-          {expenseReason.expense_reason === "Lend Money" ? (
+          {/* {expenseReason.expense_reason === "Lend Money" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
@@ -348,7 +348,7 @@ const AddExpense = () => {
             </View>
           ) : (
             ""
-          )}
+          )} */}
           <TouchableOpacity
             style={styles.confirmPayNow}
             onPress={() => {

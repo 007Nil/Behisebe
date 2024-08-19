@@ -4,10 +4,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppScreen from "../screens/AppScreen";
 import {
   AddExpense,
-  AddCredit,
-  ToSelfTransfer,
-  CheckBalance,
-  TransferSuccessful,
+  // AddCredit,
+  // ToSelfTransfer,
+  // CheckBalance,
+  // TransferSuccessful,
 } from "../screens/moneyTransfer/index";
 import ProfileAndSettings from "../screens/settings/ProfileAndSettings";
 import {
@@ -32,6 +32,7 @@ const AppNavigator = () => {
           component={AddExpense}
           options={{ headerShown: false }}
         />
+        {/*
         <stack.Screen
           name="AddCredit"
           component={AddCredit}
@@ -76,7 +77,7 @@ const AppNavigator = () => {
           name="TransferSuccessful"
           component={TransferSuccessful}
           options={{ headerShown: false }}
-        />
+        /> */}
       </stack.Navigator>
     </NavigationContainer>
   );

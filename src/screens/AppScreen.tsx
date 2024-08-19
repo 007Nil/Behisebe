@@ -6,7 +6,7 @@ import { scale, verticalScale } from "react-native-size-matters";
 import { Home, Repay, Statements, History } from "./index";
 
 const AppScreen = () => {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState<number>(0);
   return (
     <View style={styles.container}>
       {selectedTab == 0 ? (

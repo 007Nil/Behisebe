@@ -49,9 +49,11 @@ const Home = () => {
               </View>
               <Text style={styles.tranferText}>{"Debit/Expense"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}  onPress={() => {
-                navigation.navigate("AddCredit");
-              }}>
+            <TouchableOpacity style={styles.transferTab}  
+            // onPress={() => {
+            //     navigation.navigate("AddCredit");
+            //   }}
+              >
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/bank2.png")}
@@ -60,9 +62,11 @@ const Home = () => {
               </View>
               <Text style={styles.tranferText}>{"Credit/Earnings"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab} onPress={() => {
-                navigation.navigate("ToSelfTransfer");
-              }}> 
+            <TouchableOpacity style={styles.transferTab}
+            //  onPress={() => {
+            //   navigation.navigate("ToSelfTransfer");
+            //   }}
+              > 
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/reload.png")}
@@ -71,9 +75,11 @@ const Home = () => {
               </View>
               <Text style={styles.tranferText}>{"To Self Transfer"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab} onPress={() => {
-                navigation.navigate("CheckBalance");
-              }}>
+            <TouchableOpacity style={styles.transferTab} 
+            // onPress={() => {
+            //     navigation.navigate("CheckBalance");
+            //   }}
+              >
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/bank.png")}
@@ -129,15 +135,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowColor: "rgba(0,0,0,.5)",
     backgroundColor: "#f2f2f2",
-    shadowOffset: { x: 0, y: 1 },
-  },
-  updateCard: {
-    width: "94%",
-
-    borderRadius: moderateScale(5),
-    alignSelf: "center",
-    marginTop: moderateVerticalScale(10),
-    backgroundColor: "white",
+    // shadowOffset: { x: 0, y: 1 },
   },
   updateTopView: {
     flexDirection: "row",

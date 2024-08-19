@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
-import { React, useState, useEffect } from "react";
+import React, {FC, useState, useEffect } from "react";
 import { moderateScale, scale } from "react-native-size-matters";
 
 const styles = require("./styles");
@@ -8,23 +8,31 @@ import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
 
-import {
-  getAllPersonsService,
-  savePersonDetailsService,
-} from "../../services/PersonService";
+// import {
+//   getAllPersonsService,
+//   savePersonDetailsService,
+// } from "../../services/PersonService";
 
-const Persons = () => {
-  const [personData, setPersonData] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [personName, setPersonName] = useState("");
-  const getModalopen = (modelState) => {
+interface ModalPropos {
+  modelState: boolean;
+}
+
+interface PersonObj{
+  id: number,
+  personName: string;
+}
+
+const Persons: FC = () => {
+  const [personData, setPersonData] = useState<PersonObj[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [personName, setPersonName] = useState<string>("");
+  const getModalopen = ({modelState}: ModalPropos) => {
     setModalOpen(modelState);
   };
-  useEffect(() => {
-    getAllPersonsService().then((data) => setPersonData(data));
-  }, []);
+  // useEffect(() => {
+  //   getAllPersonsService().then((data) => setPersonData(data));
+  // }, []);
   const resetState = () => {
-    setModalOpen("");
     setModalOpen(false);
     alert("Person Data Saved!")
   };
@@ -38,7 +46,7 @@ const Persons = () => {
       _id: id,
       person_name: personName,
     };
-    savePersonDetailsService(personObj);
+    // savePersonDetailsService(personObj);
     let newPersonData = [...personData, personObj];
     setPersonData(newPersonData);
     resetState();
