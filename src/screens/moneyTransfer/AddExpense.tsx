@@ -18,7 +18,7 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 
-// import PaymentCommonHeader from "../../common/PaymentCommonHeader";
+import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 // Services
 
 // import { saveExpenseData } from "../../services";
@@ -130,7 +130,7 @@ const AddExpense = () => {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <View style={styles.container}>
-      {/* <PaymentCommonHeader headerTitle={"Save Expense"} /> */}
+      <PaymentCommonHeader headerTitle={"Save Expense"} />
       <View style={styles.cardView}>
         <View style={styles.topView}>
           <View style={styles.leftView}>

@@ -2,12 +2,10 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
   Image,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React from "react";
 import {
   moderateScale,
   moderateVerticalScale,
@@ -16,10 +14,10 @@ import {
 } from "react-native-size-matters";
 import { useNavigation } from '@react-navigation/native'
 import HomeCommonHeader from "../common/HomeCommonHeader";
-
+import { type StackNavigation } from "../navigation/AppNavigator";
 
 const Home = () => {
-  const navigation=useNavigation();
+  const { navigate } = useNavigation<StackNavigation>();
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Home"}/>
@@ -38,7 +36,7 @@ const Home = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                navigation.navigate("AddExpense");
+                navigate("AddExpense");
               }}
             >
               <View style={styles.transferCard}>

@@ -1,7 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 
-const PaymentCommonHeader = ({ headerTitle }) => {
+interface PaymentCommonHeaderProps {
+  headerTitle: string
+}
+
+const PaymentCommonHeader = ({ headerTitle }: PaymentCommonHeaderProps) => {
   return (
     <View style={styles.header}>
       <View style={styles.subHeader}>

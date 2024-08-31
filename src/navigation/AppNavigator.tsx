@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer,NavigationProp } from "@react-navigation/native";
 import AppScreen from "../screens/AppScreen";
 import {
   AddExpense,
@@ -9,15 +9,20 @@ import {
   // CheckBalance,
   // TransferSuccessful,
 } from "../screens/moneyTransfer/index";
-import ProfileAndSettings from "../screens/settings/ProfileAndSettings";
-import {
-  Funds,
-  ExpesneReasons,
-  CreditReasons,
-  Persons,
-} from "../screens/settings/index";
+// import ProfileAndSettings from "../screens/settings/ProfileAndSettings";
+// import {
+//   Funds,
+//   ExpesneReasons,
+//   CreditReasons,
+//   Persons,
+// } from "../screens/settings/index";
 
-const stack = createStackNavigator();
+export type ScreenNames = ["App", "AddExpense"] // type these manually
+export type RootStackParamList = Record<ScreenNames[number], undefined>;
+export type StackNavigation = NavigationProp<RootStackParamList>;
+
+// const stack = createStackNavigator();
+const stack = createStackNavigator<RootStackParamList>();
 const AppNavigator = () => {
   return (
     <NavigationContainer>

@@ -2,7 +2,12 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 
-const CommonHeader = ({title}) => {
+interface CommonHeaderProps {
+  title: string
+}
+
+
+const CommonHeader = ({title}: CommonHeaderProps) => {
   return (
     <View style={styles.header}>
       <View style={styles.header2}>
