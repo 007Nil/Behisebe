@@ -1,21 +1,21 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 import { useNavigation } from "@react-navigation/native";
-
+import { type StackNavigation } from "../navigation/AppNavigator";
 interface HomeCommonHeaderProps {
   title: string
 }
 
 const HomeCommonHeader = ({title}: HomeCommonHeaderProps) => {
-  const navigation = useNavigation();
+  const { navigate } = useNavigation<StackNavigation>();
   return (
     <View style={styles.header}>
       <View style={styles.header2}>
         <View style={styles.headerLeftView}>
           <TouchableOpacity
-            // onPress={() => {
-            //   navigation.navigate("ProfileAndSettings");
-            // }}
+            onPress={() => {
+              navigate("ProfileAndSettings");
+            }}
           >
             <View>
               <Image

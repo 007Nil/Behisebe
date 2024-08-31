@@ -46,20 +46,20 @@ const AddExpense = () => {
   // }, []);
 
   const navigation = useNavigation();
-  const [amount, setAmount] = useState("");
-  const [message, setMessage] = useState("");
-  const [isFundChecked, setFundIsChecked] = useState(true);
-  const [isCashChecked, setCashIsChecked] = useState(false);
-  const [isSubmit, setIsSubmit] = useState(false);
+  const [amount, setAmount] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [isFundChecked, setFundIsChecked] = useState<boolean>(true);
+  const [isCashChecked, setCashIsChecked] = useState<boolean>(false);
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
   
   const [dbExpenseReason, setDbExpenseReason] = useState([]);
   const [dbFundDetails, setDbFundDetails] = useState([]);
   const [dbPersonDetails, setDbPersonDetails] = useState([]);
   //
-  const [expenseReason, setExpenseReason] = useState("");
-  const [fundDetails, setFundDetails] = useState("");
-  const [personDetails, setPersonDetails] = useState("");
+  const [expenseReason, setExpenseReason] = useState<string>("");
+  const [fundDetails, setFundDetails] = useState<string>("");
+  const [personDetails, setPersonDetails] = useState<string>("");
 
 
   const toggleFundCheckbox = () => {

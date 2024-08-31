@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import CommonHeader from "../../common/CommonHeader";
 import {
   moderateScale,
@@ -7,10 +7,10 @@ import {
   scale,
   verticalScale,
 } from "react-native-size-matters";
-import {
-  getCreditReason,
-  saveCreditReasonService
-} from "../../services/CreditReasonServices";
+// import {
+//   getCreditReason,
+//   saveCreditReasonService
+// } from "../../services/CreditReasonServices";
 import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
 
@@ -24,7 +24,7 @@ const CreditReasons = () => {
 
   useEffect(() => {
     
-    getCreditReason().then((data) => setCreditData(data));
+    // getCreditReason().then((data) => setCreditData(data));
   }, []);
   const getModalopen = (modelState) => {
     setModalOpen(modelState);
@@ -50,7 +50,7 @@ const CreditReasons = () => {
       credit_reason: creditReason,
       credit_category: creditCatagory,
     };
-    saveCreditReasonService(creditReasonObj);
+    // saveCreditReasonService(creditReasonObj);
     let newCreditReasonDetails = [...creditData, creditReasonObj];
     setCreditData(newCreditReasonDetails);
     resetState();

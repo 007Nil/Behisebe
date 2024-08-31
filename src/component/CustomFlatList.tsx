@@ -16,14 +16,14 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
-import {
-  getFundDetailsById,
-  updateFundDetails,
-} from "../repositories/FundRepo";
+// import {
+//   getFundDetailsById,
+//   updateFundDetails,
+// } from "../repositories/FundRepo";
 
-import { updateExpenseReason } from "../services/ExpenseReasonService";
-import { updateCreditReasonService } from "../services/CreditReasonServices";
-import { updatePersonDetails } from "../repositories/PersonRepo";
+// import { updateExpenseReason } from "../services/ExpenseReasonService";
+// import { updateCreditReasonService } from "../services/CreditReasonServices";
+// import { updatePersonDetails } from "../repositories/PersonRepo";
 
 const CustomFlatList = (props) => {
   const [flatListData, setFlatListData] = useState([]);
@@ -48,67 +48,67 @@ const CustomFlatList = (props) => {
   }, [props.data]);
 
   const updateFormData = () => {
-    let tmpArray = flatListData;
-    const updatedArray = tmpArray.filter(function (ele) {
-      return ele._id !== formId;
-    });
-    if (props.flatLisyType === "fundDetails") {
-      newflatListObj = {
-        _id: formId,
-        fund_name: editName,
-        fund_type: editType,
-        balance: editAmount,
-        is_active: accountState,
-      };
-      updateFundDetails(newflatListObj);
-    } else if (props.flatLisyType === "expenseReasonDetails") {
-      newflatListObj = {
-        _id: formId,
-        expense_reason: editName,
-        expense_category: editType,
-      };
-      updateExpenseReason(newflatListObj);
-    } else if (props.flatLisyType === "creditReasonDetails") {
-      newflatListObj = {
-        _id: formId,
-        credit_reason: editName,
-        credit_category: editType,
-      };
-      updateCreditReasonService(newflatListObj);
-    }else if (props.flatLisyType === "personDetails") {
-      newflatListObj = {
-        _id: formId,
-        person_name: editName
-      };
-      updatePersonDetails(newflatListObj);
-    }
-    updatedArray.splice(flatListIndex, 0, newflatListObj);
-    setFlatListData(updatedArray);
+    // let tmpArray = flatListData;
+    // const updatedArray = tmpArray.filter(function (ele) {
+    //   return ele._id !== formId;
+    // });
+    // if (props.flatLisyType === "fundDetails") {
+    //   newflatListObj = {
+    //     _id: formId,
+    //     fund_name: editName,
+    //     fund_type: editType,
+    //     balance: editAmount,
+    //     is_active: accountState,
+    //   };
+    //   updateFundDetails(newflatListObj);
+    // } else if (props.flatLisyType === "expenseReasonDetails") {
+    //   newflatListObj = {
+    //     _id: formId,
+    //     expense_reason: editName,
+    //     expense_category: editType,
+    //   };
+    //   updateExpenseReason(newflatListObj);
+    // } else if (props.flatLisyType === "creditReasonDetails") {
+    //   newflatListObj = {
+    //     _id: formId,
+    //     credit_reason: editName,
+    //     credit_category: editType,
+    //   };
+    //   updateCreditReasonService(newflatListObj);
+    // }else if (props.flatLisyType === "personDetails") {
+    //   newflatListObj = {
+    //     _id: formId,
+    //     person_name: editName
+    //   };
+    //   updatePersonDetails(newflatListObj);
+    // }
+    // updatedArray.splice(flatListIndex, 0, newflatListObj);
+    // setFlatListData(updatedArray);
   };
 
   const editForm = (item) => {
-    setIsModalVisible(true);
-    flatListData.forEach(async (element) => {
-      if (element._id == item._id) {
-        setFormId(item._id);
-        if (props.flatLisyType === "fundDetails") {
-          setEditName(item.fund_name);
-          setEditType(item.fund_type);
-          setAccountState(item.is_active);
-          let fund_details = await getFundDetailsById(item._id);
-          setEditAmount(fund_details.balance.toString());
-        } else if (props.flatLisyType === "expenseReasonDetails") {
-          setEditName(item.expense_reason);
-          setEditType(item.expense_category);
-        } else if (props.flatLisyType === "creditReasonDetails") {
-          setEditName(item.credit_reason);
-          setEditType(item.credit_category);
-        }else if (props.flatLisyType === "personDetails") {
-          setEditName(item.person_name);
-        }
-        setFlatListIndex(flatListData.indexOf(item));
-      }
-    });
+    // setIsModalVisible(true);
+    // flatListData.forEach(async (element) => {
+    //   if (element._id == item._id) {
+    //     setFormId(item._id);
+    //     if (props.flatLisyType === "fundDetails") {
+    //       setEditName(item.fund_name);
+    //       setEditType(item.fund_type);
+    //       setAccountState(item.is_active);
+    //       let fund_details = await getFundDetailsById(item._id);
+    //       setEditAmount(fund_details.balance.toString());
+    //     } else if (props.flatLisyType === "expenseReasonDetails") {
+    //       setEditName(item.expense_reason);
+    //       setEditType(item.expense_category);
+    //     } else if (props.flatLisyType === "creditReasonDetails") {
+    //       setEditName(item.credit_reason);
+    //       setEditType(item.credit_category);
+    //     }else if (props.flatLisyType === "personDetails") {
+    //       setEditName(item.person_name);
+    //     }
+    //     setFlatListIndex(flatListData.indexOf(item));
+    //   }
+    // });
   };
 
   return (

@@ -16,7 +16,7 @@ const styles = require("./styles")
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
-import { getExpenseReason, saveExpenseReasonService } from "../../services/ExpenseReasonService";
+// import { getExpenseReason, saveExpenseReasonService } from "../../services/ExpenseReasonService";
 
 const ExpesneReasons = () => {
   const [expenseData ,setExpenseData] = useState([]);
@@ -25,7 +25,7 @@ const ExpesneReasons = () => {
   const [expenseCatagory, setExpenseCatagory] = useState("");
 
   useEffect(() => {
-    getExpenseReason().then( data => setExpenseData(data))
+    // getExpenseReason().then( data => setExpenseData(data))
   },[]);
 
 

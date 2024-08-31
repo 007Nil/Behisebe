@@ -17,9 +17,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 import CommonHeader from "../../common/CommonHeader";
-
+import { type StackNavigation } from "../../navigation/AppNavigator";
 const ProfileAndSettings = () => {
-  const navigation = useNavigation();
+  const { navigate } = useNavigation<StackNavigation>();
   return (
     <View style={styles.container}>
       <CommonHeader title={"Profile and Settings"} />
@@ -82,7 +82,7 @@ const ProfileAndSettings = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                navigation.navigate("Funds");
+                navigate("Funds");
               }}
             >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
@@ -103,7 +103,7 @@ const ProfileAndSettings = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                navigation.navigate("ExpesneReasons");
+                // navigate("ExpesneReasons");
               }}
             >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
@@ -124,7 +124,7 @@ const ProfileAndSettings = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                navigation.navigate("CreditReasons");
+                // navigate("CreditReasons");
               }}
             >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
@@ -146,7 +146,7 @@ const ProfileAndSettings = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                navigation.navigate("Persons");
+                // navigate("Persons");
               }}
             >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>

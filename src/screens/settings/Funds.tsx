@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import CommonHeader from "../../common/CommonHeader";
 import {
@@ -17,19 +17,19 @@ import Modal from "react-native-modal";
 const styles = require("./styles")
 
 // Services
-import { SaveFundDetails, getFundDetails } from "../../services/FundServices";
+// import { SaveFundDetails, getFundDetails } from "../../services/FundServices";
 import CustomFlatList from "../../component/CustomFlatList";
 import { CustomButton } from "../../component";
 
 const Funds = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [fundData, setFundData] = useState([]);
-  const [fundName, setFundName] = useState("");
-  const [fundType, setFundType] = useState("");
-  const [fundAmount, setFundAmount] = useState("");
-  useEffect(() => {
-    getFundDetails().then( data => setFundData(data))
-  },[]);
+  const [fundName, setFundName] = useState<string>("");
+  const [fundType, setFundType] = useState<string>("");
+  const [fundAmount, setFundAmount] = useState<string>("");
+  // useEffect(() => {
+  //   getFundDetails().then( data => setFundData(data))
+  // },[]);
   const getModalopen = (modelState) => {
     setModalOpen(modelState);
   };
@@ -61,7 +61,7 @@ const Funds = () => {
       is_active: true,
     };
     // let newFundDetails = [...fundData, fundObject];
-    await SaveFundDetails(fundObject);
+    // await SaveFundDetails(fundObject);
     // setFundData(newFundDetails);
     resetState();
     alert("Fund Information Saved");

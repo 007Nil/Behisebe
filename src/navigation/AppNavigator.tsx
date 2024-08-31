@@ -9,15 +9,15 @@ import {
   // CheckBalance,
   // TransferSuccessful,
 } from "../screens/moneyTransfer/index";
-// import ProfileAndSettings from "../screens/settings/ProfileAndSettings";
-// import {
-//   Funds,
-//   ExpesneReasons,
-//   CreditReasons,
-//   Persons,
-// } from "../screens/settings/index";
+import ProfileAndSettings from "../screens/settings/ProfileAndSettings";
+import {
+  Funds,
+  // ExpesneReasons,
+  // CreditReasons,
+  // Persons,
+} from "../screens/settings/index";
 
-export type ScreenNames = ["App", "AddExpense"] // type these manually
+export type ScreenNames = ["App", "AddExpense","ProfileAndSettings","Funds"] // type these manually
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -53,16 +53,19 @@ const AppNavigator = () => {
           component={CheckBalance}
           options={{ headerShown: false }}
         />
+        */}
         <stack.Screen
           name="ProfileAndSettings"
           component={ProfileAndSettings}
           options={{ headerShown: false }}
         />
+        
         <stack.Screen
           name="Funds"
           component={Funds}
           options={{ headerShown: false }}
         />
+        {/*
         <stack.Screen
           name="ExpesneReasons"
           component={ExpesneReasons}
