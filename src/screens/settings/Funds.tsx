@@ -18,25 +18,27 @@ const styles = require("./styles")
 
 // Services
 // import { SaveFundDetails, getFundDetails } from "../../services/FundServices";
+import { SaveFundDetailsService } from "../../services/FundDetailsServices";
 import CustomFlatList from "../../component/CustomFlatList";
 import { CustomButton } from "../../component";
+import { FundDetailsModel } from "../../model";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [fundData, setFundData] = useState([]);
+  const [fundData, setFundData] = useState<FundDetailsModel[]>([]);
   const [fundName, setFundName] = useState<string>("");
   const [fundType, setFundType] = useState<string>("");
-  const [fundAmount, setFundAmount] = useState<string>("");
+  const [fundAmount, setFundAmount] = useState<number>(0);
   // useEffect(() => {
   //   getFundDetails().then( data => setFundData(data))
   // },[]);
-  const getModalopen = (modelState) => {
+  const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
   };
   const resetState = () => {
     setFundName("");
     setFundType("");
-    setFundAmount("");
+    setFundAmount(0);
     setModalOpen(false);
   };
   const addFunds = async () => {
@@ -48,21 +50,20 @@ const Funds = () => {
       alert("Fund Type cannot emply");
       return;
     }
-    if (fundAmount === "") {
-      alert("Amount cannot emply");
+    if (fundAmount == 0) {
+      alert("Amount cannot 0");
       return;
     }
-    let id = (Math.random() + 1).toString(36).substring(7);
     let fundObject = {
-      _id: id,
       fund_name: fundName,
       fund_type: fundType,
       balance: fundAmount,
       is_active: true,
     };
-    // let newFundDetails = [...fundData, fundObject];
-    // await SaveFundDetails(fundObject);
-    // setFundData(newFundDetails);
+    let newFundDetails = [...fundData, fundObject];
+    await SaveFundDetailsService(fundObject);
+    setFundData(newFundDetails);
+    console.log(fundObject)
     resetState();
     alert("Fund Information Saved");
   };
@@ -144,8 +145,8 @@ const Funds = () => {
                 <TextInput
                   style={styles.bankAccount}
                   keyboardType="number-pad"
-                  onChangeText={(amount) => setFundAmount(amount)}
-                  value={fundAmount}
+                  onChangeText={(amount) => setFundAmount(Number(amount))}
+                  value={String(fundAmount)}
                 />
               </View>
             </View>

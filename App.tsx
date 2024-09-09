@@ -5,31 +5,28 @@ import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqli
 
 export default function App() {
   return (
-    <SQLiteProvider databaseName="behisebe" onInit={migrateDbIfNeeded}>
+    <SQLiteProvider databaseName="behisebe.db" onInit={migrateDbIfNeeded}>
       <AppNavigator />
     </SQLiteProvider>
   );
 }
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
+  
   await db.execAsync(`
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS fund_account_types (
-    fund_account_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    account_type TEXT NOT NULL
-);
 
-INSERT INTO fund_account_types (account_type) VALUES ("Current Account"),("Savings Account"),("Salary Account"),("Credit Card");
+DROP TABLE IF EXISTS fund_details;
 
-CREATE TABLE fund_details (
+CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    fund_name TEXT NOT NULL,
-    account_type_fk INt,
-    added_on real NOT NULL,
+    fund_name TEXT NOT NULL UNIQUE,
+    fund_type TEXT NOT NULL,
     notes TEXT,
-    FOREIGN KEY (account_type_fk) REFERENCES fund_account_types (fund_account_type_id) ON DELETE CASCADE
+    is_active INTEGER,
+    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 `);
