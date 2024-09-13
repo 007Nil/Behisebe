@@ -104,7 +104,9 @@ const CustomFlatList = ({ data, flatLisyType, editType }: CustomFlatListProps) =
         setFromId(item.fund_id);
         setEditName(item.fund_name);
         setFormEditType(item.fund_type);
-        setAccountState(item.is_active);
+        if (item.is_active){
+          setAccountState(true);
+        }
         setEditAmount(item.balance);
       }
       // } else if (flatLisyType === "expenseReasonDetails") {
@@ -117,7 +119,7 @@ const CustomFlatList = ({ data, flatLisyType, editType }: CustomFlatListProps) =
       //   setEditName(item.person_name);
       // }
       setFlatListIndex(flatListData.indexOf(item));
-      // console.log(flatListIndex)
+
     };
 
   return (
