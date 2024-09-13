@@ -8,7 +8,7 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   moderateScale,
   moderateVerticalScale,
@@ -25,104 +25,113 @@ import Modal from "react-native-modal";
 // import { updateCreditReasonService } from "../services/CreditReasonServices";
 // import { updatePersonDetails } from "../repositories/PersonRepo";
 
-const CustomFlatList = (props) => {
-  const [flatListData, setFlatListData] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [formId, setFormId] = useState("");
-  const [editName, setEditName] = useState("");
-  const [editType, setEditType] = useState("");
-  const [editAmount, setEditAmount] = useState("");
+import { updateFundDetailsService } from "../services/FundDetailsServices";
+
+import { FundDetailsModel } from "../model";
+
+interface CustomFlatListProps {
+  data: FundDetailsModel[];
+  flatLisyType: string;
+  editType: string;
+}
+
+const CustomFlatList = ({ data, flatLisyType, editType }: CustomFlatListProps) => {
+  const [flatListData, setFlatListData] = useState<FundDetailsModel[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [editName, setEditName] = useState<string>("");
+  const [formId, setFromId] =  useState<number>(0);
+  const [formEditType, setFormEditType] = useState<string>("");
+  const [editAmount, setEditAmount] = useState<number>(0);
   const [accountState, setAccountState] = useState(false);
-  const [flatListIndex, setFlatListIndex] = useState(-1);
+  const [flatListIndex, setFlatListIndex] = useState<number>(-1);
 
   const toggleSwitch = () => setAccountState((previousState) => !previousState);
 
   const handleModal = () => {
     updateFormData();
     setIsModalVisible(() => !isModalVisible);
-    alert("Data Updated")
+    alert("Data Updated");
   };
 
   useEffect(() => {
-    setFlatListData(props.data);
-  }, [props.data]);
+    setFlatListData(data);
+  }, [data]);
 
   const updateFormData = () => {
-    // let tmpArray = flatListData;
-    // const updatedArray = tmpArray.filter(function (ele) {
-    //   return ele._id !== formId;
-    // });
-    // if (props.flatLisyType === "fundDetails") {
-    //   newflatListObj = {
-    //     _id: formId,
-    //     fund_name: editName,
-    //     fund_type: editType,
-    //     balance: editAmount,
-    //     is_active: accountState,
-    //   };
-    //   updateFundDetails(newflatListObj);
-    // } else if (props.flatLisyType === "expenseReasonDetails") {
-    //   newflatListObj = {
-    //     _id: formId,
-    //     expense_reason: editName,
-    //     expense_category: editType,
-    //   };
-    //   updateExpenseReason(newflatListObj);
-    // } else if (props.flatLisyType === "creditReasonDetails") {
-    //   newflatListObj = {
-    //     _id: formId,
-    //     credit_reason: editName,
-    //     credit_category: editType,
-    //   };
-    //   updateCreditReasonService(newflatListObj);
-    // }else if (props.flatLisyType === "personDetails") {
-    //   newflatListObj = {
-    //     _id: formId,
-    //     person_name: editName
-    //   };
-    //   updatePersonDetails(newflatListObj);
-    // }
-    // updatedArray.splice(flatListIndex, 0, newflatListObj);
-    // setFlatListData(updatedArray);
-  };
+    let tmpArray = flatListData;
+    const updatedArray = tmpArray.filter(function (ele) {
+      return ele.fund_id !== formId;
+    });
+    if (flatLisyType === "fundDetails") {}
+      let newflatListObj : FundDetailsModel = {
+        fund_id: formId,
+        fund_name: editName,
+        fund_type: formEditType,
+        balance: editAmount,
+        is_active: accountState,
+      };
+      updateFundDetailsService(newflatListObj);
+      // } else if (flatLisyType === "expenseReasonDetails") {
+      //   newflatListObj = {
+      //     _id: formId,
+      //     expense_reason: editName,
+      //     expense_category: editType,
+      //   };
+      //   updateExpenseReason(newflatListObj);
+      // } else if (flatLisyType === "creditReasonDetails") {
+      //   newflatListObj = {
+      //     _id: formId,
+      //     credit_reason: editName,
+      //     credit_category: editType,
+      //   };
+      //   updateCreditReasonService(newflatListObj);
+      // }else if (flatLisyType === "personDetails") {
+      //   newflatListObj = {
+      //     _id: formId,
+      //     person_name: editName
+      //   };
+      //   updatePersonDetails(newflatListObj);
+      // }
+      updatedArray.splice(flatListIndex, 0, newflatListObj);
+      setFlatListData(updatedArray);
+    };
 
-  const editForm = (item) => {
-    // setIsModalVisible(true);
-    // flatListData.forEach(async (element) => {
-    //   if (element._id == item._id) {
-    //     setFormId(item._id);
-    //     if (props.flatLisyType === "fundDetails") {
-    //       setEditName(item.fund_name);
-    //       setEditType(item.fund_type);
-    //       setAccountState(item.is_active);
-    //       let fund_details = await getFundDetailsById(item._id);
-    //       setEditAmount(fund_details.balance.toString());
-    //     } else if (props.flatLisyType === "expenseReasonDetails") {
-    //       setEditName(item.expense_reason);
-    //       setEditType(item.expense_category);
-    //     } else if (props.flatLisyType === "creditReasonDetails") {
-    //       setEditName(item.credit_reason);
-    //       setEditType(item.credit_category);
-    //     }else if (props.flatLisyType === "personDetails") {
-    //       setEditName(item.person_name);
-    //     }
-    //     setFlatListIndex(flatListData.indexOf(item));
-    //   }
-    // });
-  };
+    const editForm = (item: FundDetailsModel) => {
+      setIsModalVisible(true);
+      // console.log(item);
+
+      if (flatLisyType === "fundDetails") {
+        setFromId(item.fund_id);
+        setEditName(item.fund_name);
+        setFormEditType(item.fund_type);
+        setAccountState(item.is_active);
+        setEditAmount(item.balance);
+      }
+      // } else if (flatLisyType === "expenseReasonDetails") {
+      //   setEditName(item.expense_reason);
+      //   setEditType(item.expense_category);
+      // } else if (flatLisyType === "creditReasonDetails") {
+      //   setEditName(item.credit_reason);
+      //   setEditType(item.credit_category);
+      // }else if (flatLisyType === "personDetails") {
+      //   setEditName(item.person_name);
+      // }
+      setFlatListIndex(flatListData.indexOf(item));
+      // console.log(flatListIndex)
+    };
 
   return (
     <View>
       <FlatList
         contentContainerStyle={{ marginTop: moderateVerticalScale(30) }}
         data={flatListData}
-        renderItem={({ item, index }) => {
+        renderItem={({ item }) => {
           return (
             <View style={styles.transactionItem}>
               <View>
                 <View style={styles.topLeftView}>
                   <View style={{ marginLeft: moderateScale(10) }}>
-                    {props.flatLisyType === "fundDetails" ? (
+                    {flatLisyType === "fundDetails" ? (
                       <View>
                         <Text style={styles.paidTo}>{item.fund_name}</Text>
                         <Text style={styles.paidTo}>{item.fund_type}</Text>
@@ -132,7 +141,7 @@ const CustomFlatList = (props) => {
                       </View>
                     ) : null}
 
-                    {props.flatLisyType === "expenseReasonDetails" ? (
+                    {flatLisyType === "expenseReasonDetails" ? (
                       <View>
                         <Text style={styles.paidTo}>
                           Name: {item.expense_reason}
@@ -143,7 +152,7 @@ const CustomFlatList = (props) => {
                       </View>
                     ) : null}
 
-                    {props.flatLisyType === "creditReasonDetails" ? (
+                    {flatLisyType === "creditReasonDetails" ? (
                       <View>
                         <Text style={styles.paidTo}>
                           Name: {item.credit_reason}
@@ -154,7 +163,7 @@ const CustomFlatList = (props) => {
                       </View>
                     ) : null}
 
-                    {props.flatLisyType === "personDetails" ? (
+                    {flatLisyType === "personDetails" ? (
                       <View>
                         <Text style={styles.paidTo}>
                           Name: {item.person_name}
@@ -190,13 +199,13 @@ const CustomFlatList = (props) => {
             </View>
           </View>
           <View style={styles.divider}></View>
-          {props.edit_type == "Fund" || props.edit_type == "Expense Reason" || props.edit_type == "Credit Reason" || props.edit_type == "Person"  ? (
+          {editType == "Fund" || editType == "Expense Reason" || editType == "Credit Reason" || editType == "Person" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
                   <View style={styles.upi_view}>
                     <Text style={styles.bankAccount}>
-                      {props.edit_type.concat(" Name")}
+                      {editType.concat(" Name")}
                     </Text>
                   </View>
                   <TextInput
@@ -208,27 +217,27 @@ const CustomFlatList = (props) => {
               </View>
             </View>
           ) : (
-           null
+            null
           )}
-          {props.edit_type == "Fund" || props.edit_type == "Expense Reason" || props.edit_type == "Credit Reason" ? (
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>
-                    {props.edit_type.concat(" Type")}
-                  </Text>
+          {editType == "Fund" || editType == "Expense Reason" || editType == "Credit Reason" ? (
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text style={styles.bankAccount}>
+                      {editType.concat(" Type")}
+                    </Text>
+                  </View>
+                  <TextInput
+                    style={styles.bankAccount}
+                    value={formEditType}
+                    onChangeText={(type) => setFormEditType(type)}
+                  />
                 </View>
-                <TextInput
-                  style={styles.bankAccount}
-                  value={editType}
-                  onChangeText={(type) => setEditType(type)}
-                />
               </View>
-            </View>
-          </View>) : ( null)}
+            </View>) : (null)}
 
-          {props.edit_type == "Fund" ? (
+          {editType == "Fund" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
@@ -238,8 +247,8 @@ const CustomFlatList = (props) => {
                   <TextInput
                     style={styles.bankAccount}
                     keyboardType="number-pad"
-                    value={editAmount}
-                    onChangeText={(amount) => setEditAmount(amount)}
+                    value={editAmount.toString()}
+                    onChangeText={(amount) => setEditAmount(Number(amount))}
                   />
                 </View>
               </View>
@@ -247,7 +256,7 @@ const CustomFlatList = (props) => {
           ) : (
             ""
           )}
-          {props.edit_type == "Fund" ? (
+          {editType == "Fund" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>

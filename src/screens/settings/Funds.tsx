@@ -14,14 +14,13 @@ import {
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
 
-const styles = require("./styles")
-
-// Services
-// import { SaveFundDetails, getFundDetails } from "../../services/FundServices";
-import { SaveFundDetailsService } from "../../services/FundDetailsServices";
+const styles = require("./styles");
 import CustomFlatList from "../../component/CustomFlatList";
 import { CustomButton } from "../../component";
 import { FundDetailsModel } from "../../model";
+
+// Services
+import { SaveFundDetailsService,addFundDetailsService } from "../../services/FundDetailsServices";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -29,9 +28,9 @@ const Funds = () => {
   const [fundName, setFundName] = useState<string>("");
   const [fundType, setFundType] = useState<string>("");
   const [fundAmount, setFundAmount] = useState<number>(0);
-  // useEffect(() => {
-  //   getFundDetails().then( data => setFundData(data))
-  // },[]);
+  useEffect(() => {
+    addFundDetailsService().then( data => setFundData(data))
+  },[]);
   const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
   };
@@ -79,7 +78,7 @@ const Funds = () => {
         <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>
       </View>
       <View style={styles.card}>
-        <CustomFlatList data={fundData} flatLisyType={"fundDetails"} edit_type={"Fund"} />
+        <CustomFlatList data={fundData} flatLisyType={"fundDetails"} editType={"Fund"} />
       </View>
 
       <CustomButton pressEvent={"add_fund"} getModalopen={getModalopen} />

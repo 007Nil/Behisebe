@@ -18,7 +18,7 @@ PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
 
-DROP TABLE IF EXISTS fund_details;
+--DROP TABLE IF EXISTS fund_details;
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS fund_details (
     fund_type TEXT NOT NULL,
     notes TEXT,
     is_active INTEGER,
+    balance INTEGER,
     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
