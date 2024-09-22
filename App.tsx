@@ -30,6 +30,12 @@ CREATE TABLE IF NOT EXISTS fund_details (
     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS expense_reasons (
+    expense_reason_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    expense_reason_name TEXT NOT NULL UNIQUE,
+    expense_reason_catagory TEXT NOT NULL
+);
+
 `);
   // await db.runAsync('INSERT INTO todos (value, intValue) VALUES (?, ?)', 'hello', 1);
   // await db.runAsync('INSERT INTO todos (value, intValue) VALUES (?, ?)', 'world', 2);

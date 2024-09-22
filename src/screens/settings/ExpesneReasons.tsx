@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   moderateScale,
   scale,
@@ -18,18 +18,20 @@ import Modal from "react-native-modal";
 import { CustomFlatList, CustomButton } from "../../component";
 // import { getExpenseReason, saveExpenseReasonService } from "../../services/ExpenseReasonService";
 
+import { ExpenseReasonModel } from "../../model";
+
 const ExpesneReasons = () => {
-  const [expenseData ,setExpenseData] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [expenseReason, setExpenseReason] = useState("");
-  const [expenseCatagory, setExpenseCatagory] = useState("");
+  const [expenseData ,setExpenseData] = useState<ExpenseReasonModel[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [expenseReason, setExpenseReason] = useState<string>("");
+  const [expenseCatagory, setExpenseCatagory] = useState<string>("");
 
   useEffect(() => {
     // getExpenseReason().then( data => setExpenseData(data))
   },[]);
 
 
-  const getModalopen = (modelState) => {
+  const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
   };
   const resetState = () => {
@@ -53,9 +55,9 @@ const ExpesneReasons = () => {
       expense_reason: expenseReason,
       expense_category: expenseCatagory,
     };
-    saveExpenseReasonService(expenseReasonObj);
+    // saveExpenseReasonService(expenseReasonObj);
     let newExpenseReasonDetails = [...expenseData, expenseReasonObj];
-    setExpenseData(newExpenseReasonDetails);
+    // setExpenseData(newExpenseReasonDetails);
     resetState();
   };
   return (
@@ -72,7 +74,7 @@ const ExpesneReasons = () => {
         <CustomFlatList
           data={expenseData}
           flatLisyType={"expenseReasonDetails"}
-          edit_type={"Expense Reason"}
+          editType={"Expense Reason"}
         />
       </View>
       <CustomButton pressEvent={"addExpense"} getModalopen={getModalopen} />

@@ -25,21 +25,22 @@ import Modal from "react-native-modal";
 // import { updateCreditReasonService } from "../services/CreditReasonServices";
 // import { updatePersonDetails } from "../repositories/PersonRepo";
 
-import { updateFundDetailsService } from "../services/FundDetailsServices";
+import { updateFundDetailsService  } from "../services/FundDetailsServices";
 
-import { FundDetailsModel } from "../model";
+import { FundDetailsModel,ExpenseReasonModel} from "../model";
 
 interface CustomFlatListProps {
   data: FundDetailsModel[];
   flatLisyType: string;
   editType: string;
-}
+};
+
 
 const CustomFlatList = ({ data, flatLisyType, editType }: CustomFlatListProps) => {
   const [flatListData, setFlatListData] = useState<FundDetailsModel[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editName, setEditName] = useState<string>("");
-  const [formId, setFromId] =  useState<number>(0);
+  const [formId, setFromId] = useState<number>(0);
   const [formEditType, setFormEditType] = useState<string>("");
   const [editAmount, setEditAmount] = useState<number>(0);
   const [accountState, setAccountState] = useState(false);
@@ -58,12 +59,16 @@ const CustomFlatList = ({ data, flatLisyType, editType }: CustomFlatListProps) =
   }, [data]);
 
   const updateFormData = () => {
+    
     let tmpArray = flatListData;
+    let newflatListObj: any;
     const updatedArray = tmpArray.filter(function (ele) {
-      return ele.fund_id !== formId;
+      if (flatLisyType === "fundDetails") {
+        return ele.fund_id !== formId;
+      }
     });
-    if (flatLisyType === "fundDetails") {}
-      let newflatListObj : FundDetailsModel = {
+    if (flatLisyType === "fundDetails") {
+      newflatListObj = {
         fund_id: formId,
         fund_name: editName,
         fund_type: formEditType,
@@ -71,56 +76,58 @@ const CustomFlatList = ({ data, flatLisyType, editType }: CustomFlatListProps) =
         is_active: accountState,
       };
       updateFundDetailsService(newflatListObj);
-      // } else if (flatLisyType === "expenseReasonDetails") {
-      //   newflatListObj = {
-      //     _id: formId,
-      //     expense_reason: editName,
-      //     expense_category: editType,
-      //   };
-      //   updateExpenseReason(newflatListObj);
-      // } else if (flatLisyType === "creditReasonDetails") {
-      //   newflatListObj = {
-      //     _id: formId,
-      //     credit_reason: editName,
-      //     credit_category: editType,
-      //   };
-      //   updateCreditReasonService(newflatListObj);
-      // }else if (flatLisyType === "personDetails") {
-      //   newflatListObj = {
-      //     _id: formId,
-      //     person_name: editName
-      //   };
-      //   updatePersonDetails(newflatListObj);
-      // }
-      updatedArray.splice(flatListIndex, 0, newflatListObj);
-      setFlatListData(updatedArray);
-    };
 
-    const editForm = (item: FundDetailsModel) => {
-      setIsModalVisible(true);
-      // console.log(item);
+    }
+    // } else if (flatLisyType === "expenseReasonDetails") {
+    //   newflatListObj = {
+    //     _id: formId,
+    //     expense_reason: editName,
+    //     expense_category: editType,
+    //   };
+    //   updateExpenseReason(newflatListObj);
+    // } else if (flatLisyType === "creditReasonDetails") {
+    //   newflatListObj = {
+    //     _id: formId,
+    //     credit_reason: editName,
+    //     credit_category: editType,
+    //   };
+    //   updateCreditReasonService(newflatListObj);
+    // }else if (flatLisyType === "personDetails") {
+    //   newflatListObj = {
+    //     _id: formId,
+    //     person_name: editName
+    //   };
+    //   updatePersonDetails(newflatListObj);
+    // }
+    updatedArray.splice(flatListIndex, 0, newflatListObj);
+    setFlatListData(updatedArray);
+  };
 
-      if (flatLisyType === "fundDetails") {
-        setFromId(item.fund_id);
-        setEditName(item.fund_name);
-        setFormEditType(item.fund_type);
-        if (item.is_active){
-          setAccountState(true);
-        }
-        setEditAmount(item.balance);
+  const editForm = (item: FundDetailsModel) => {
+    setIsModalVisible(true);
+    // console.log(item);
+
+    if (flatLisyType === "fundDetails") {
+      setFromId(item.fund_id);
+      setEditName(item.fund_name);
+      setFormEditType(item.fund_type);
+      if (item.is_active) {
+        setAccountState(true);
       }
-      // } else if (flatLisyType === "expenseReasonDetails") {
-      //   setEditName(item.expense_reason);
-      //   setEditType(item.expense_category);
-      // } else if (flatLisyType === "creditReasonDetails") {
-      //   setEditName(item.credit_reason);
-      //   setEditType(item.credit_category);
-      // }else if (flatLisyType === "personDetails") {
-      //   setEditName(item.person_name);
-      // }
-      setFlatListIndex(flatListData.indexOf(item));
+      setEditAmount(item.balance);
+    }
+    // } else if (flatLisyType === "expenseReasonDetails") {
+    //   setEditName(item.expense_reason);
+    //   setEditType(item.expense_category);
+    // } else if (flatLisyType === "creditReasonDetails") {
+    //   setEditName(item.credit_reason);
+    //   setEditType(item.credit_category);
+    // }else if (flatLisyType === "personDetails") {
+    //   setEditName(item.person_name);
+    // }
+    setFlatListIndex(flatListData.indexOf(item));
 
-    };
+  };
 
   return (
     <View>
@@ -146,10 +153,10 @@ const CustomFlatList = ({ data, flatLisyType, editType }: CustomFlatListProps) =
                     {flatLisyType === "expenseReasonDetails" ? (
                       <View>
                         <Text style={styles.paidTo}>
-                          Name: {item.expense_reason}
+                          Name: {item.expense_reason_name}
                         </Text>
                         <Text style={styles.paidTo}>
-                          Type: {item.expense_category}
+                          Type: {item.expense_reason_catagory}
                         </Text>
                       </View>
                     ) : null}
