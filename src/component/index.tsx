@@ -1,9 +1,11 @@
 import Dropdown from "./Dropdown";
-import CustomFlatList from "./AddFundCustomFlatList";
+import AddFundCustomFlatList from "./AddFundCustomFlatList";
+import AddExpenseCustomFlatList from "./AddExpenseCustomFlatList";
 import CustomButton from "./CustomButton";
 
 export {
     Dropdown,
-    CustomFlatList,
+    AddFundCustomFlatList,
+    AddExpenseCustomFlatList,
     CustomButton
 }

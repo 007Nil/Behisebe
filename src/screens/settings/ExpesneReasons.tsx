@@ -15,9 +15,9 @@ const styles = require("./styles")
 
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
-import { CustomFlatList, CustomButton } from "../../component";
-// import { getExpenseReason, saveExpenseReasonService } from "../../services/ExpenseReasonService";
+import { AddExpenseCustomFlatList, CustomButton } from "../../component";
 
+import { getAllExpenseReasonDetailsService, addExpenseReasonService } from "../../services/ExpenseDetailsServices"; 
 import { ExpenseReasonModel } from "../../model";
 
 const ExpesneReasons = () => {
@@ -27,37 +27,36 @@ const ExpesneReasons = () => {
   const [expenseCatagory, setExpenseCatagory] = useState<string>("");
 
   useEffect(() => {
-    // getExpenseReason().then( data => setExpenseData(data))
+    getAllExpenseReasonDetailsService().then( data => setExpenseData(data))
   },[]);
 
 
   const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
   };
-  const resetState = () => {
+  const resetState =  () => {
     setExpenseReason("");
     setExpenseCatagory("");
     setModalOpen(false);
     alert("Expense Reason Data Saved!")
   }
-  const addExpenseReason = () => {
+  const addExpenseReason = async () => {
     if (expenseReason === "") {
-      alert("Please Add Expense Reason");
+      alert("Please add Expense Reason");
       return;
     }
     if (expenseCatagory === "") {
-      alert("Please Add Expense Catagory");
+      alert("Please add Expense Catagory");
       return;
     }
-    let id = (Math.random() + 1).toString(36).substring(7);
-    let expenseReasonObj = {
-      _id: id,
-      expense_reason: expenseReason,
-      expense_category: expenseCatagory,
+    let expenseReasonObj :  ExpenseReasonModel
+    expenseReasonObj = {
+      expense_reason_name: expenseReason,
+      expense_reason_catagory: expenseCatagory,
     };
-    // saveExpenseReasonService(expenseReasonObj);
+    await addExpenseReasonService(expenseReasonObj);
     let newExpenseReasonDetails = [...expenseData, expenseReasonObj];
-    // setExpenseData(newExpenseReasonDetails);
+    setExpenseData(newExpenseReasonDetails);
     resetState();
   };
   return (
@@ -71,11 +70,8 @@ const ExpesneReasons = () => {
         <Text style={styles.searchText}>Search by Expense Reason Name</Text>
       </View>
       <View style={styles.card}>
-        <CustomFlatList
-          data={expenseData}
-          flatLisyType={"expenseReasonDetails"}
-          editType={"Expense Reason"}
-        />
+        <AddExpenseCustomFlatList
+          data={expenseData}/>
       </View>
       <CustomButton pressEvent={"addExpense"} getModalopen={getModalopen} />
       <Modal

@@ -65,37 +65,12 @@ const AddFundCustomFlatList = ({ data }: AddFundFlatListProps) => {
       is_active: accountState,
     }
     updateFundDetailsService(newflatListObj);
-
-    // } else if (flatLisyType === "expenseReasonDetails") {
-    //   newflatListObj = {
-    //     _id: formId,
-    //     expense_reason: editName,
-    //     expense_category: editType,
-    //   };
-    //   updateExpenseReason(newflatListObj);
-    // } else if (flatLisyType === "creditReasonDetails") {
-    //   newflatListObj = {
-    //     _id: formId,
-    //     credit_reason: editName,
-    //     credit_category: editType,
-    //   };
-    //   updateCreditReasonService(newflatListObj);
-    // }else if (flatLisyType === "personDetails") {
-    //   newflatListObj = {
-    //     _id: formId,
-    //     person_name: editName
-    //   };
-    //   updatePersonDetails(newflatListObj);
-    // }
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);
   };
 
   const editForm = (item: FundDetailsModel) => {
     setIsModalVisible(true);
-    // console.log(item);
-
-
     setFromId(item.fund_id);
     setEditName(item.fund_name);
     setFormEditType(item.fund_type);
@@ -103,16 +78,6 @@ const AddFundCustomFlatList = ({ data }: AddFundFlatListProps) => {
       setAccountState(true);
     }
     setEditAmount(item.balance);
-
-    // } else if (flatLisyType === "expenseReasonDetails") {
-    //   setEditName(item.expense_reason);
-    //   setEditType(item.expense_category);
-    // } else if (flatLisyType === "creditReasonDetails") {
-    //   setEditName(item.credit_reason);
-    //   setEditType(item.credit_category);
-    // }else if (flatLisyType === "personDetails") {
-    //   setEditName(item.person_name);
-    // }
     setFlatListIndex(flatListData.indexOf(item));
 
   };

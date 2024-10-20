@@ -21,12 +21,12 @@ import { updateExpenseReasonService } from "../services/ExpenseDetailsServices";
 
 import { ExpenseReasonModel } from "../model";
 
-interface ExpenseReasonCustomFlatListProps {
+interface CreditReasonCustomFlatListProps {
   data: ExpenseReasonModel[];
 };
 
 
-const AddExpenseCustomFlatList = ({ data }: ExpenseReasonCustomFlatListProps) => {
+const CreditExpenseCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) => {
   const [flatListData, setFlatListData] = useState<ExpenseReasonModel[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editName, setEditName] = useState<string>("");
@@ -159,4 +159,4 @@ const AddExpenseCustomFlatList = ({ data }: ExpenseReasonCustomFlatListProps) =>
   );
 };
 
-export default AddExpenseCustomFlatList;
+export default CreditExpenseCustomFlatList;
