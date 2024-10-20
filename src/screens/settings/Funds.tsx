@@ -15,7 +15,7 @@ import {
 import Modal from "react-native-modal";
 
 const styles = require("./styles");
-import CustomFlatList from "../../component/CustomFlatList";
+import AddFundCustomFlatList from "../../component/AddFundCustomFlatList";
 import { CustomButton } from "../../component";
 import { FundDetailsModel } from "../../model";
 
@@ -78,7 +78,7 @@ const Funds = () => {
         <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>
       </View>
       <View style={styles.card}>
-        <CustomFlatList data={fundData} flatLisyType={"fundDetails"} editType={"Fund"} />
+        <AddFundCustomFlatList data={fundData}/>
       </View>
 
       <CustomButton pressEvent={"add_fund"} getModalopen={getModalopen} />

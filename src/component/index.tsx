@@ -1,5 +1,5 @@
 import Dropdown from "./Dropdown";
-import CustomFlatList from "./CustomFlatList";
+import CustomFlatList from "./AddFundCustomFlatList";
 import CustomButton from "./CustomButton";
 
 export {
