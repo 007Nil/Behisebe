@@ -1,10 +1,6 @@
-const PersonModel = {
-    name: "Persons",
-    properties: {
-        _id: "string",
-        person_name: "string",
-    },
-    primaryKey: '_id'
+type PersonModel = {
+    person_id: "string",
+    person_name: "string",
 }
 
 export default PersonModel;

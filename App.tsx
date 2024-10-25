@@ -42,6 +42,11 @@ CREATE TABLE IF NOT EXISTS credit_reasons (
     credit_reason_catagory TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS persons (
+    person_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_name TEXT NOT NULL UNIQUE
+);
+
 `);
   // await db.runAsync('INSERT INTO todos (value, intValue) VALUES (?, ?)', 'hello', 1);
   // await db.runAsync('INSERT INTO todos (value, intValue) VALUES (?, ?)', 'world', 2);
