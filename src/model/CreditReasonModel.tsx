@@ -1,11 +1,8 @@
-const CreditReasonModel = {
-    name: "CreditReason",
-    properties: {
-        _id: "string",
-        credit_reason: "string",
-        credit_category: "string"
-    },
-    primaryKey: '_id'
+type CreditReasonModel = {
+    
+        credit_reason_id?: number;
+        credit_reason_name: string;
+        credit_reason_catagory: string;
 }
 
-export default CreditReasonModel
+export default CreditReasonModel;

@@ -18,10 +18,10 @@ async function addExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel): Pr
 
 }
 
-async function updateExpenseReasonDetails(expenseObj: ExpenseReasonModel): Promise<void> {
+async function updateExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel): Promise<void> {
     const db = await openDBConnection();
     await db.runAsync('UPDATE expense_reasons SET expense_reason_name = ?, expense_reason_catagory = ?   WHERE expense_reason_id  = ?',
-        expenseObj.expense_reason_name, expenseObj.expense_reason_catagory, expenseObj.expense_reason_id
+        expenseReasonObj.expense_reason_name, expenseReasonObj.expense_reason_catagory, expenseReasonObj.expense_reason_id
     );
 
 }

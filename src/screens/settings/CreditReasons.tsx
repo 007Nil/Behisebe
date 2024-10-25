@@ -7,26 +7,27 @@ import {
   scale,
   verticalScale,
 } from "react-native-size-matters";
-// import {
-//   getCreditReason,
-//   saveCreditReasonService
-// } from "../../services/CreditReasonServices";
+
 import Modal from "react-native-modal";
-import { CustomFlatList, CustomButton } from "../../component";
+import { AddCreditCustomFlatList, CustomButton } from "../../component";
+
+import { CreditReasonModel } from "../../model";
+
+import { getAllCreditReasonDetailsService, addCreditReasonService } from "../../services/CreditDetailsServices";
 
 const styles = require("./styles")
 
 const CreditReasons = () => {
-  const [creditData, setCreditData] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [creditReason, setCreditReason] = useState("");
-  const [creditCatagory, setCreditCatagory] = useState("");
+  const [creditData, setCreditData] = useState<CreditReasonModel[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [creditReason, setCreditReason] = useState<string>("");
+  const [creditCatagory, setCreditCatagory] = useState<string>("");
 
   useEffect(() => {
     
-    // getCreditReason().then((data) => setCreditData(data));
+    getAllCreditReasonDetailsService().then((data) => setCreditData(data));
   }, []);
-  const getModalopen = (modelState) => {
+  const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
   };
   const resetState = () => {
@@ -44,13 +45,11 @@ const CreditReasons = () => {
       alert("Please Add Credit Catagory");
       return;
     }
-    let id = (Math.random() + 1).toString(36).substring(7);
     let creditReasonObj = {
-      _id: id,
-      credit_reason: creditReason,
-      credit_category: creditCatagory,
+      credit_reason_name: creditReason,
+      credit_reason_catagory: creditCatagory,
     };
-    // saveCreditReasonService(creditReasonObj);
+    addCreditReasonService(creditReasonObj);
     let newCreditReasonDetails = [...creditData, creditReasonObj];
     setCreditData(newCreditReasonDetails);
     resetState();
@@ -66,10 +65,8 @@ const CreditReasons = () => {
         <Text style={styles.searchText}>Search by Credit Reason Name</Text>
       </View>
       <View style={styles.card}>
-        <CustomFlatList
+        <AddCreditCustomFlatList
           data={creditData}
-          flatLisyType={"creditReasonDetails"}
-          edit_type={"Credit Reason"}
         />
       </View>
       <CustomButton pressEvent={"addCredit"} getModalopen={getModalopen} />

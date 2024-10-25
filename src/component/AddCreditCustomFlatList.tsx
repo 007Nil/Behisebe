@@ -17,17 +17,17 @@ import Modal from "react-native-modal";
 
 import { FlatlistStyles as styles } from "./FlatlsitStyles";
 
-import { updateExpenseReasonService } from "../services/ExpenseDetailsServices";
+import { updateCreditReasonService } from "../services/CreditDetailsServices";
 
-import { ExpenseReasonModel } from "../model";
+import { CreditReasonModel } from "../model";
 
 interface CreditReasonCustomFlatListProps {
-  data: ExpenseReasonModel[];
+  data: CreditReasonModel[];
 };
 
 
-const CreditExpenseCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) => {
-  const [flatListData, setFlatListData] = useState<ExpenseReasonModel[]>([]);
+const AddCreditCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) => {
+  const [flatListData, setFlatListData] = useState<CreditReasonModel[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editName, setEditName] = useState<string>("");
   const [editType, setEditType] = useState<string>("");
@@ -47,27 +47,27 @@ const CreditExpenseCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) 
   const updateFormData = () => {
     console.log("HIT")
     let tmpArray = flatListData;
-    let newflatListObj: ExpenseReasonModel;
+    let newflatListObj: CreditReasonModel;
     const updatedArray = tmpArray.filter(function (ele) {
-      return ele.expense_reason_id !== formId;
+      return ele.credit_reason_id !== formId;
     });
 
     newflatListObj = {
-      expense_reason_id: formId,
-      expense_reason_name: editName,
-      expense_reason_catagory: editType,
+      credit_reason_id: formId,
+      credit_reason_name: editName,
+      credit_reason_catagory: editType,
     };
     // console.log(newflatListObj);
-    updateExpenseReasonService(newflatListObj)
+    updateCreditReasonService(newflatListObj)
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);
   };
 
-  const editForm = (item: ExpenseReasonModel) => {
+  const editForm = (item: CreditReasonModel) => {
     setIsModalVisible(true);
-    setFromId(item.expense_reason_id);
-    setEditName(item.expense_reason_name);
-    setEditType(item.expense_reason_catagory);
+    setFromId(item.credit_reason_id);
+    setEditName(item.credit_reason_name);
+    setEditType(item.credit_reason_catagory);
 
     setFlatListIndex(flatListData.indexOf(item));
 
@@ -85,8 +85,8 @@ const CreditExpenseCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) 
                 <View style={styles.topLeftView}>
                   <View style={{ marginLeft: moderateScale(10) }}>
                     <View>
-                      <Text style={styles.paidTo}>{item.expense_reason_name}</Text>
-                      <Text style={styles.paidTo}>{item.expense_reason_catagory}</Text>
+                      <Text style={styles.paidTo}>{item.credit_reason_name}</Text>
+                      <Text style={styles.paidTo}>{item.credit_reason_catagory}</Text>
                     </View>
                   </View>
                 </View>
@@ -123,7 +123,7 @@ const CreditExpenseCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) 
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
                   <Text style={styles.bankAccount}>
-                    {"Expense Name"}
+                    {"credit Name"}
                   </Text>
                 </View>
                 <TextInput
@@ -139,7 +139,7 @@ const CreditExpenseCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) 
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
                   <Text style={styles.bankAccount}>
-                    {("Expense Reason Type")}
+                    {("credit Reason Type")}
                   </Text>
                 </View>
                 <TextInput
@@ -159,4 +159,4 @@ const CreditExpenseCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) 
   );
 };
 
-export default CreditExpenseCustomFlatList;
+export default AddCreditCustomFlatList;
