@@ -1,6 +1,6 @@
 import FundDetailsModel from '../model/FundDetailsModel';
 import { addFundDetails, getAllFundDetails, updateFundDetails } from '../repository/FundDetailsRepo';
-async function addFundDetailsService(): Promise<FundDetailsModel[]> {
+async function getAllFundDetailsService(): Promise<FundDetailsModel[]> {
     return await getAllFundDetails();
 }
 
@@ -16,4 +16,4 @@ async function updateFundDetailsService(fundObj: FundDetailsModel): Promise<void
     await updateFundDetails(fundObj.fund_id, fund_status);
 }
 
-export { SaveFundDetailsService, addFundDetailsService,updateFundDetailsService };
+export { SaveFundDetailsService, getAllFundDetailsService,updateFundDetailsService };

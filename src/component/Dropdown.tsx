@@ -1,24 +1,35 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import SelectDropdown from "react-native-select-dropdown";
+import { CreditReasonModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../model";
 
-const Dropdown = (props) => {
-  const [selecteddropDownValues, setselecteddropDownValues] = useState("");
+type DropDownType = {
+  dropDownValues: FundDetailsModel[] | ExpenseReasonModel[] | PersonModel[]
+  dropDownType: string
+  getExpenseReason?(expenseReasonObj: ExpenseReasonModel): void
+  getFundDetails?(fundObj: FundDetailsModel): void
+  getPersonDetails?(personObj: PersonModel): void
+  getCreditReason?(creditReasonObj: CreditReasonModel): void
+}
+
+const Dropdown = ({dropDownValues,dropDownType,getExpenseReason,getFundDetails,getPersonDetails,getCreditReason}: DropDownType) => {
+  const [selecteddropDownValues, setselecteddropDownValues] = useState<any>("");
   useEffect(() => {
-    if (props.dropDownType === "expenseReasonDetails") {
-      props.getExpenseReason(selecteddropDownValues);
-    } else if (props.dropDownType === "fundDetails") {
-      props.getFundDetails(selecteddropDownValues);
-    } else if (props.dropDownType === "personDetails") {
-      props.getPersonDetails(selecteddropDownValues);
-    } else if (props.dropDownType === "creditReason") {
-      props.getCreditReason(selecteddropDownValues);
+    if (dropDownType === "expenseReasonDetails") {
+      getExpenseReason(selecteddropDownValues);
+    } else if (dropDownType === "fundDetails") {
+      // console.log(selecteddropDownValues)
+      getFundDetails(selecteddropDownValues);
+    } else if (dropDownType === "personDetails") {
+      getPersonDetails(selecteddropDownValues);
+    } else if (dropDownType === "creditReason") {
+      getCreditReason(selecteddropDownValues);
     }
   });
   return (
     <View style={styles.dropdownButtonStyle}>
       <SelectDropdown
-        data={props.dropDownValues}
+        data={dropDownValues}
         search={true}
         onSelect={(selectedItem, index) => {
           setselecteddropDownValues(selectedItem);
@@ -28,18 +39,18 @@ const Dropdown = (props) => {
             <View style={styles.dropdownButtonStyle}>
               <Text style={styles.dropdownButtonTxtStyle}>
                 {(selectedItem &&
-                  (props.dropDownType === "expenseReasonDetails"
-                    ? selectedItem.expense_reason
-                    : props.dropDownType === "personDetails"
-                    ? selectedItem.name
-                    : props.dropDownType === "creditReason"
-                    ? selectedItem.credit_reason
+                  (dropDownType === "expenseReasonDetails"
+                    ? selectedItem.expense_reason_name
+                    : dropDownType === "personDetails"
+                    ? selectedItem.person_name
+                    : dropDownType === "creditReason"
+                    ? selectedItem.credit_reason_name
                     : selectedItem.fund_name)) ||
-                  (props.dropDownType === "expenseReasonDetails"
+                  (dropDownType === "expenseReasonDetails"
                     ? "Select Expense Reason"
-                    : props.dropDownType === "personDetails"
+                    : dropDownType === "personDetails"
                     ? "Select Person name"
-                    : props.dropDownType === "creditReason"
+                    : dropDownType === "creditReason"
                     ? "Select Credit Reason"
                     : "Select a Fund")}
               </Text>
@@ -55,12 +66,12 @@ const Dropdown = (props) => {
               }}
             >
               <Text style={styles.dropdownItemTxtStyle}>
-                {props.dropDownType === "expenseReasonDetails"
-                  ? item.expense_reason
-                  : props.dropDownType === "personDetails"
+                {dropDownType === "expenseReasonDetails"
+                  ? item.expense_reason_name
+                  : dropDownType === "personDetails"
                   ? item.person_name
-                  : props.dropDownType === "creditReason"
-                  ? item.credit_reason
+                  : dropDownType === "creditReason"
+                  ? item.credit_reason_name
                   : item.fund_name}
               </Text>
             </View>

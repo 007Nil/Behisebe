@@ -20,7 +20,7 @@ import { CustomButton } from "../../component";
 import { FundDetailsModel } from "../../model";
 
 // Services
-import { SaveFundDetailsService,addFundDetailsService } from "../../services/FundDetailsServices";
+import { SaveFundDetailsService,getAllFundDetailsService } from "../../services/FundDetailsServices";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -29,7 +29,7 @@ const Funds = () => {
   const [fundType, setFundType] = useState<string>("");
   const [fundAmount, setFundAmount] = useState<number>(0);
   useEffect(() => {
-    addFundDetailsService().then( data => setFundData(data))
+    getAllFundDetailsService().then( data => setFundData(data))
   },[]);
   const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);

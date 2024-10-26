@@ -1,5 +1,5 @@
 import { SQLiteRunResult } from "expo-sqlite";
-import { ExpenseReasonModel } from "../model";
+import { ExpenseReasonModel, ExpenseModel } from "../model";
 import { getAllExpenseReasonDetails, updateExpenseReasonDetails, addExpenseReasonDetails } from "../repository/ExpenseDetailsRepo";
 
 async function getAllExpenseReasonDetailsService(): Promise<ExpenseReasonModel[]> {
@@ -15,8 +15,13 @@ async function updateExpenseReasonService(expeseReasonObj: ExpenseReasonModel) {
     await updateExpenseReasonDetails(expeseReasonObj);
 }
 
+async function saveExpenseDetailsService(expenseObj: ExpenseModel){
+    console.log(expenseObj)
+}
+
 export {
     getAllExpenseReasonDetailsService,
     addExpenseReasonService,
-    updateExpenseReasonService
+    updateExpenseReasonService,
+    saveExpenseDetailsService
 }

@@ -1,4 +1,5 @@
 import { ExpenseReasonModel } from "../model";
+import {ExpenseModel} from "../model";
 import { openDBConnection } from './OpenSqllite';
 import { SQLiteRunResult } from "expo-sqlite";
 
@@ -24,6 +25,10 @@ async function updateExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel):
         expenseReasonObj.expense_reason_name, expenseReasonObj.expense_reason_catagory, expenseReasonObj.expense_reason_id
     );
 
+}
+
+async function addExpenseDetails(expenseModel:ExpenseModel) {
+    
 }
 
 export {

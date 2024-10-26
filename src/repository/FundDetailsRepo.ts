@@ -4,7 +4,7 @@ import { openDBConnection } from './OpenSqllite';
 async function getAllFundDetails(): Promise<FundDetailsModel[]> {
     const db = await openDBConnection();
     const allRows: FundDetailsModel[] = await db.getAllAsync('SELECT * FROM fund_details');
-   
+    console.log(allRows)
     return allRows;
 }
 
@@ -21,8 +21,18 @@ async function updateFundDetails(fund_id: number, fund_status: number): Promise<
 
 }
 
+async function getFundDetailsById(fund_id: number) {
+    
+}
+
+async function updateFundBalance( balance:number, fund_id: number) {
+    const db = await openDBConnection();
+    await db.runAsync('UPDATE fund_details SET balance =?  WHERE fund_id = ?', balance, fund_id);
+}
+
 export {
     addFundDetails,
     getAllFundDetails,
-    updateFundDetails
+    updateFundDetails,
+    updateFundBalance
 };

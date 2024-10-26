@@ -9,5 +9,5 @@ export {
     // AddCredit,
     // ToSelfTransfer,
     // CheckBalance,
-    // TransferSuccessful
+    TransferSuccessful
 }

@@ -14,77 +14,71 @@ import {
   verticalScale,
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import moment from "moment";
-import Dropdown from "../../component/Dropdown";
+import { type StackNavigation } from "../../navigation/AppNavigator";
+import { useNavigation } from "@react-navigation/native";
 
+
+import Dropdown from "../../component/Dropdown";
 import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 // Services
-
-// import { saveExpenseData } from "../../services";
-
-// import { getExpenseReason as getExpenseReasonService } from "../../services/ExpenseReasonService";
-// import { getFundDetails as getFundDetailsService } from "../../services/FundServices";
-// import { getAllPersonsService } from "../../services/PersonService";
-
+import { getAllFundDetailsService } from "../../services/FundDetailsServices";
+import { getAllExpenseReasonDetailsService, saveExpenseDetailsService } from "../../services/ExpenseDetailsServices";
+import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
+import { ExpenseModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../../model";
 const AddExpense = () => {
+  const { navigate } = useNavigation<StackNavigation>();
   const isFocused = useIsFocused();
+  const [amount, setAmount] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+
+
+  const [dbExpenseReason, setDbExpenseReason] = useState<ExpenseReasonModel[]>([]);
+  const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>([]);
+  const [dbPersonDetails, setDbPersonDetails] = useState<PersonModel[]>([]);
+  //
+  const [expenseReason, setExpenseReason] = useState<ExpenseReasonModel>();
+  const [fundDetails, setFundDetails] = useState<FundDetailsModel>(
+    {
+      fund_id: 0,
+      fund_name: "",
+      fund_type: "",
+      balance: 0
+    }
+  );
+  const [personDetails, setPersonDetails] = useState<PersonModel>(
+    {
+      person_id: 0,
+      person_name: ""
+    }
+  );
+
   useEffect(() => {
     if (isFocused) {
       // reset state
       setIsSubmit(false);
-      setFundIsChecked(true);
-      setCashIsChecked(false);
       setMessage("");
       setAmount("");
     }
   }, [isFocused]);
-  // useEffect(() => {
-  //   getAllPersonsService().then((data) => setDbPersonDetails(data));
-  //   getExpenseReasonService().then((data) => setDbExpenseReason(data));
-  //   getFundDetailsService().then((data) => setDbFundDetails(data));
-  // }, []);
-
-  const navigation = useNavigation();
-  const [amount, setAmount] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const [isFundChecked, setFundIsChecked] = useState<boolean>(true);
-  const [isCashChecked, setCashIsChecked] = useState<boolean>(false);
-  const [isSubmit, setIsSubmit] = useState<boolean>(false);
-
-  
-  const [dbExpenseReason, setDbExpenseReason] = useState([]);
-  const [dbFundDetails, setDbFundDetails] = useState([]);
-  const [dbPersonDetails, setDbPersonDetails] = useState([]);
-  //
-  const [expenseReason, setExpenseReason] = useState<string>("");
-  const [fundDetails, setFundDetails] = useState<string>("");
-  const [personDetails, setPersonDetails] = useState<string>("");
+  useEffect(() => {
+    getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
+    getAllExpenseReasonDetailsService().then((data) => setDbExpenseReason(data));
+    getAllFundDetailsService().then((data) => setDbFundDetails(data));
+  }, []);
 
 
-  const toggleFundCheckbox = () => {
-    if (!isFundChecked) {
-      setCashIsChecked(isFundChecked);
-      setFundIsChecked(!isFundChecked);
-    }
-  };
-
-  const toggleCashCheckbox = () => {
-    if (!isCashChecked) {
-      setFundIsChecked(isCashChecked);
-      setCashIsChecked(!isCashChecked);
-    }
-  };
-
-  const getExpenseReason = (expenseReason) => {
+  const getExpenseReason = (expenseReason: ExpenseReasonModel) => {
     setExpenseReason(expenseReason);
   };
 
-  const getFundDetails = (fundDetails) => {
+  const getFundDetails = (fundDetails: FundDetailsModel) => {
     setFundDetails(fundDetails);
   };
 
-  const getPersonDetails = (personDetails) => {
+  const getPersonDetails = (personDetails: PersonModel) => {
     setPersonDetails(personDetails);
   };
 
@@ -94,14 +88,15 @@ const AddExpense = () => {
       alert("Please select expense reason");
       isValidFrom = false;
     } else {
-      // if (expenseReason.expense_reason === "Lend Money") {
-      //   if (!personDetails) {
-      //     alert("Please select person name");
-      //     isValidFrom = false;
-      //   }
-      // }
+      if (expenseReason.expense_reason_name === "Lend Money") {
+        console.log(personDetails)
+        if (!personDetails.person_id) {
+          alert("Please select person name");
+          isValidFrom = false;
+        }
+      }
     }
-    if (isFundChecked && !fundDetails) {
+    if (!fundDetails) {
       alert("Please select a fund");
       isValidFrom = false;
     }
@@ -109,22 +104,25 @@ const AddExpense = () => {
       alert("Please enter amount");
       isValidFrom = false;
     }
-
+    if (Number(amount) > fundDetails.balance) {
+      alert("Insufficient amount");
+      isValidFrom = false;
+    }
     return isValidFrom;
   };
 
   const saveExpenseDetails = () => {
-    let expenseObject = {
-      // fundId: isCashChecked ? null : fundDetails._id,
-      // isByCash: isCashChecked ? 1 : 0,
-      // expenseReason: expenseReason._id,
-      // amount: amount,
-      // message: message,
+    let expenseObject: ExpenseModel = {
+      fund_id_fk: fundDetails.fund_id,
+      expense_reason_id_fk: expenseReason.expense_reason_id,
+      person_id_fk: personDetails.person_id > 0 ? personDetails.person_id : null,
+      amount: Number(amount),
+      message: message.length > 0 ? message : null
     };
     //
-    //saveExpenseData();
+    saveExpenseDetailsService(expenseObject);
     setIsSubmit(true);
-    // navigation.navigate("TransferSuccessful");
+    navigate("TransferSuccessful");
   };
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -134,53 +132,16 @@ const AddExpense = () => {
       <View style={styles.cardView}>
         <View style={styles.topView}>
           <View style={styles.leftView}>
-            {/* For non-cash Payment 
-            e.g. Bank, Credit Card, etc*/}
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={toggleFundCheckbox}
-            >
-              <Text style={{ paddingRight: 10 }}>By Fund</Text>
-              <View
-                style={[styles.checkbox, isFundChecked ? styles.checked : null]}
-              />
-              <TextInput
-                style={styles.Checkedinput}
-                // placeholder={
-                //   isFundChecked
-                //     ? fundDetails.balance
-                //       ? "Balance: " + fundDetails.balance
-                //       : fundDetails.limit
-                //       ? "Available Limit: " + fundDetails.limit
-                //       : ""
-                //     : ""
-                // }
-                editable={false}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        {/* For Cash Payment */}
-        <View style={styles.topView}>
-          <View style={styles.leftView}>
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={toggleCashCheckbox}
-            >
-              <Text style={{ paddingRight: 10 }}>By Cash</Text>
-              <View
-                style={[styles.checkbox, isCashChecked ? styles.checked : null]}
-              />
-              <TextInput
-                style={styles.Checkedinput}
-                placeholder={isCashChecked ? "Balance: 12000" : ""}
-                editable={false}
-              />
-            </TouchableOpacity>
+            <Text style={{ paddingRight: 10 }}>{"Fund Balance: "}</Text>
+            <TextInput
+              style={styles.Checkedinput}
+              value={"" + fundDetails.balance == "undefined" ? "0" : "" + fundDetails.balance}
+              editable={false}
+            />
           </View>
         </View>
         {/* Actual form */}
-        {!isCashChecked && !isSubmit ? (
+        {!isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbFundDetails}
@@ -216,7 +177,7 @@ const AddExpense = () => {
         ) : null}
 
         {/* Money Lend */}
-        {/* {expenseReason.expense_reason === "Lend Money" ? (
+        {"" + expenseReason === "undefined" ? null : expenseReason.expense_reason_name === "Lend Money" ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbPersonDetails}
@@ -224,7 +185,7 @@ const AddExpense = () => {
               getPersonDetails={getPersonDetails}
             />
           </View>
-        ) : null} */}
+        ) : null}
         <View
           style={[
             styles.amountView,
@@ -279,27 +240,25 @@ const AddExpense = () => {
             </View>
           </View>
           <View style={styles.divider}></View>
-          {!isCashChecked ? (
-            <View style={styles.bankView}>
-              <View style={styles.bankLeftView}>
-                <View style={{ marginLeft: moderateScale(15) }}>
-                  <View style={styles.upi_view}>
-                    <Text>Fund Name</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.bankRightView}>
-                <View style={{ marginLeft: moderateScale(15) }}>
-                  <View style={styles.upi_view}>
-                    {/* <Text>{fundDetails.fund_name}</Text> */}
-                  </View>
-                  <Text style={styles.bankAccount}>
-                    {/* {fundDetails.fund_type} */}
-                  </Text>
+          <View style={styles.bankView}>
+            <View style={styles.bankLeftView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text>Fund Name</Text>
                 </View>
               </View>
             </View>
-          ) : null}
+            <View style={styles.bankRightView}>
+              <View style={{ marginLeft: moderateScale(15) }}>
+                <View style={styles.upi_view}>
+                  <Text>{modalOpen ? fundDetails.fund_name : ""}</Text>
+                </View>
+                <Text style={styles.bankAccount}>
+                  {modalOpen ? fundDetails.fund_type : ""}
+                </Text>
+              </View>
+            </View>
+          </View>
           <View style={styles.bankView}>
             <View style={styles.bankLeftView}>
               <View style={{ marginLeft: moderateScale(15) }}>
@@ -311,9 +270,9 @@ const AddExpense = () => {
             <View style={styles.bankRightView}>
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  {/* <Text>{expenseReason.expense_reason}</Text> */}
+                  <Text>{modalOpen ? expenseReason.expense_reason_name : ""}</Text>
                 </View>
-                {/* <Text style={styles.bankAccount}>{expenseReason.category}</Text> */}
+                <Text style={styles.bankAccount}>{modalOpen ? expenseReason.expense_reason_catagory : ""}</Text>
               </View>
             </View>
           </View>
@@ -331,7 +290,7 @@ const AddExpense = () => {
               </View>
             </View>
           </View>
-          {/* {expenseReason.expense_reason === "Lend Money" ? (
+          {modalOpen ? expenseReason.expense_reason_name === "Lend Money" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
@@ -342,13 +301,13 @@ const AddExpense = () => {
               </View>
               <View style={styles.bankRightView}>
                 <View style={styles.upi_view}>
-                  <Text>{personDetails.name}</Text>
+                  <Text>{personDetails.person_name}</Text>
                 </View>
               </View>
             </View>
           ) : (
             ""
-          )} */}
+          ) : ""}
           <TouchableOpacity
             style={styles.confirmPayNow}
             onPress={() => {
@@ -365,6 +324,8 @@ const AddExpense = () => {
 };
 
 export default AddExpense;
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -378,7 +339,7 @@ const styles = StyleSheet.create({
   },
   Checkedinput: {
     width: "100%",
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
     opacity: 1,
   },
   checkboxContainer: {
