@@ -1,6 +1,6 @@
 type PersonModel = {
-    person_id: "string",
-    person_name: "string",
+    person_id?: number,
+    person_name: string,
 }
 
 export default PersonModel;

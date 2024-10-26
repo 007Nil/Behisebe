@@ -17,20 +17,19 @@ import {
   
   import { FlatlistStyles as styles } from "./FlatlsitStyles";
   
-  import { updateCreditReasonService } from "../services/CreditDetailsServices";
+  import { updatePersonService } from "../services/PersonDetailsServices";
   
-  import { CreditReasonModel } from "../model";
+  import { PersonModel } from "../model";
   
-  interface CreditReasonCustomFlatListProps {
-    data: CreditReasonModel[];
+  interface PersonCustomFlatListProps {
+    data: PersonModel[];
   };
   
   
-  const AddCreditCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) => {
-    const [flatListData, setFlatListData] = useState<CreditReasonModel[]>([]);
+  const AddPersonCustomFlatList = ({ data }: PersonCustomFlatListProps) => {
+    const [flatListData, setFlatListData] = useState<PersonModel[]>([]);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [editName, setEditName] = useState<string>("");
-    const [editType, setEditType] = useState<string>("");
     const [formId, setFromId] = useState<number>(0);
     const [flatListIndex, setFlatListIndex] = useState<number>(-1);
   
@@ -45,29 +44,25 @@ import {
     }, [data]);
   
     const updateFormData = () => {
-      console.log("HIT")
       let tmpArray = flatListData;
-      let newflatListObj: CreditReasonModel;
+      let newflatListObj: PersonModel;
       const updatedArray = tmpArray.filter(function (ele) {
-        return ele.credit_reason_id !== formId;
+        return ele.person_id !== formId;
       });
   
       newflatListObj = {
-        credit_reason_id: formId,
-        credit_reason_name: editName,
-        credit_reason_catagory: editType,
+        person_id: formId,
+        person_name: editName
       };
-      // console.log(newflatListObj);
-      updateCreditReasonService(newflatListObj)
+      updatePersonService(newflatListObj)
       updatedArray.splice(flatListIndex, 0, newflatListObj);
       setFlatListData(updatedArray);
     };
   
-    const editForm = (item: CreditReasonModel) => {
+    const editForm = (item: PersonModel) => {
       setIsModalVisible(true);
-      setFromId(item.credit_reason_id);
-      setEditName(item.credit_reason_name);
-      setEditType(item.credit_reason_catagory);
+      setFromId(item.person_id);
+      setEditName(item.person_name);
   
       setFlatListIndex(flatListData.indexOf(item));
   
@@ -85,8 +80,7 @@ import {
                   <View style={styles.topLeftView}>
                     <View style={{ marginLeft: moderateScale(10) }}>
                       <View>
-                        <Text style={styles.paidTo}>{item.credit_reason_name}</Text>
-                        <Text style={styles.paidTo}>{item.credit_reason_catagory}</Text>
+                        <Text style={styles.paidTo}>{item.person_name}</Text>
                       </View>
                     </View>
                   </View>
@@ -134,22 +128,6 @@ import {
                 </View>
               </View>
             </View>
-            <View style={styles.bankView}>
-              <View style={styles.bankLeftView}>
-                <View style={{ marginLeft: moderateScale(15) }}>
-                  <View style={styles.upi_view}>
-                    <Text style={styles.bankAccount}>
-                      {("credit Reason Type")}
-                    </Text>
-                  </View>
-                  <TextInput
-                    style={styles.bankAccount}
-                    value={editType}
-                    onChangeText={(type) => setEditType(type)}
-                  />
-                </View>
-              </View>
-            </View>
             <TouchableOpacity style={styles.confirmPayNow} onPress={handleModal}>
               <Text style={styles.title}>{"Update Details"}</Text>
             </TouchableOpacity>
@@ -159,5 +137,5 @@ import {
     );
   };
   
-  export default AddCreditCustomFlatList;
+  export default AddPersonCustomFlatList;
   

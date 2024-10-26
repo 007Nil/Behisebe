@@ -14,10 +14,10 @@ import {
   Funds,
   ExpesneReasons,
   CreditReasons,
-  // Persons,
+  Persons,
 } from "../screens/settings/index";
 
-export type ScreenNames = ["App", "AddExpense","ProfileAndSettings","Funds","ExpesneReasons","CreditReasons"] // type these manually
+export type ScreenNames = ["App", "AddExpense","ProfileAndSettings","Funds","ExpesneReasons","CreditReasons","Persons"] // type these manually
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -77,12 +77,13 @@ const AppNavigator = () => {
           component={CreditReasons}
           options={{ headerShown: false }}
         />
-         {/*
+    
         <stack.Screen
           name="Persons"
           component={Persons}
           options={{ headerShown: false }}
         />
+             {/*
         <stack.Screen
           name="TransferSuccessful"
           component={TransferSuccessful}

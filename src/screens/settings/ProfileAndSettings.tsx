@@ -146,7 +146,7 @@ const ProfileAndSettings = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                // navigate("Persons");
+                navigate("Persons");
               }}
             >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>

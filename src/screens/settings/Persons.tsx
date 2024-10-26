@@ -6,32 +6,22 @@ const styles = require("./styles");
 
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
-import { CustomFlatList, CustomButton } from "../../component";
+import { AddPersonCustomFlatList, CustomButton } from "../../component";
 
-// import {
-//   getAllPersonsService,
-//   savePersonDetailsService,
-// } from "../../services/PersonService";
 
-interface ModalPropos {
-  modelState: boolean;
-}
-
-interface PersonObj{
-  id: number,
-  personName: string;
-}
+import { getAllPersonDetailsService, addPersonService } from "../../services/PersonDetailsServices";
+import { PersonModel } from "../../model";
 
 const Persons: FC = () => {
-  const [personData, setPersonData] = useState<PersonObj[]>([]);
+  const [personData, setPersonData] = useState<PersonModel[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [personName, setPersonName] = useState<string>("");
-  const getModalopen = ({modelState}: ModalPropos) => {
+  const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
   };
-  // useEffect(() => {
-  //   getAllPersonsService().then((data) => setPersonData(data));
-  // }, []);
+  useEffect(() => {
+    getAllPersonDetailsService().then((data) => setPersonData(data));
+  }, []);
   const resetState = () => {
     setModalOpen(false);
     alert("Person Data Saved!")
@@ -41,12 +31,10 @@ const Persons: FC = () => {
       alert("Please Add Person Name");
       return;
     }
-    let id = (Math.random() + 1).toString(36).substring(7);
     let personObj = {
-      _id: id,
       person_name: personName,
     };
-    // savePersonDetailsService(personObj);
+    addPersonService(personObj);
     let newPersonData = [...personData, personObj];
     setPersonData(newPersonData);
     resetState();
@@ -63,10 +51,8 @@ const Persons: FC = () => {
         <Text style={styles.searchText}>Search by Person Name</Text>
       </View>
       <View style={styles.card}>
-        <CustomFlatList
+        <AddPersonCustomFlatList
           data={personData}
-          flatLisyType={"personDetails"}
-          edit_type={"Person"}
         />
       </View>
       <CustomButton pressEvent={"addPerson"} getModalopen={getModalopen} />
