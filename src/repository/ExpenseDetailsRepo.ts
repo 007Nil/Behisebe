@@ -28,11 +28,12 @@ async function updateExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel):
 }
 
 async function addExpenseDetails(expenseModel:ExpenseModel) {
-    
+    const db = await openDBConnection();
 }
 
 export {
     getAllExpenseReasonDetails,
     addExpenseReasonDetails,
-    updateExpenseReasonDetails
+    updateExpenseReasonDetails,
+    addExpenseDetails
 }

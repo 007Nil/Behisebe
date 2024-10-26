@@ -4,7 +4,6 @@ import { openDBConnection } from './OpenSqllite';
 async function getAllFundDetails(): Promise<FundDetailsModel[]> {
     const db = await openDBConnection();
     const allRows: FundDetailsModel[] = await db.getAllAsync('SELECT * FROM fund_details');
-    console.log(allRows)
     return allRows;
 }
 
@@ -15,24 +14,27 @@ async function addFundDetails(fundObj: FundDetailsModel): Promise<void> {
     );
 }
 
-async function updateFundDetails(fund_id: number, fund_status: number): Promise<void> {
+async function updateFundDetails(fundId: number, fundStatus: number): Promise<void> {
     const db = await openDBConnection();
-    await db.runAsync('UPDATE fund_details SET is_active =?  WHERE fund_id = ?', fund_status, fund_id);
+    await db.runAsync('UPDATE fund_details SET is_active =?  WHERE fund_id = ?', fundStatus, fundId);
 
 }
 
-async function getFundDetailsById(fund_id: number) {
-    
+async function getFundDetailsById(fundId: number): Promise<FundDetailsModel> {
+    const db = await openDBConnection();
+    const fundDetails: FundDetailsModel =  await db.getFirstAsync('SELECT * FROM fund_details WHERE fund_id = ?', fundId);
+    return fundDetails;
 }
 
-async function updateFundBalance( balance:number, fund_id: number) {
+async function updateFundBalance( balance:number, fundId: number) {
     const db = await openDBConnection();
-    await db.runAsync('UPDATE fund_details SET balance =?  WHERE fund_id = ?', balance, fund_id);
+    await db.runAsync('UPDATE fund_details SET balance =?  WHERE fund_id = ?', balance, fundId);
 }
 
 export {
     addFundDetails,
     getAllFundDetails,
     updateFundDetails,
-    updateFundBalance
+    updateFundBalance,
+    getFundDetailsById
 };
