@@ -29,6 +29,11 @@ async function updateExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel):
 
 async function addExpenseDetails(expenseModel:ExpenseModel) {
     const db = await openDBConnection();
+    let sqlResult = await db.runAsync(
+        'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message) VALUES (?, ?, ?, ?, ?)',
+        expenseModel.fund_id_fk,expenseModel.expense_reason_id_fk,expenseModel.person_id_fk,expenseModel.amount, expenseModel.message
+    );
+
 }
 
 export {

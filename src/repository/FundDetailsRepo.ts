@@ -1,6 +1,11 @@
 import FundDetailsModel from '../model/FundDetailsModel';
 import { openDBConnection } from './OpenSqllite';
 
+
+type fundAmountType = {
+    balance: number
+}
+
 async function getAllFundDetails(): Promise<FundDetailsModel[]> {
     const db = await openDBConnection();
     const allRows: FundDetailsModel[] = await db.getAllAsync('SELECT * FROM fund_details');
@@ -31,10 +36,22 @@ async function updateFundBalance( balance:number, fundId: number) {
     await db.runAsync('UPDATE fund_details SET balance =?  WHERE fund_id = ?', balance, fundId);
 }
 
+
+async function getFundBalance(fundId:number): Promise<number> {
+    const db = await openDBConnection();
+    try{
+        const fundAmount: fundAmountType =  await db.getFirstAsync('SELECT balance FROM fund_details WHERE fund_id = ?', fundId);
+        return fundAmount.balance;
+    }catch{
+        return 0;
+    }
+}
+
 export {
     addFundDetails,
     getAllFundDetails,
     updateFundDetails,
     updateFundBalance,
-    getFundDetailsById
+    getFundDetailsById,
+    getFundBalance
 };

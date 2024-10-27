@@ -1,6 +1,6 @@
 import { SQLiteRunResult } from "expo-sqlite";
 import { ExpenseReasonModel, ExpenseModel, FundDetailsModel } from "../model";
-import { getAllExpenseReasonDetails, updateExpenseReasonDetails, addExpenseReasonDetails } from "../repository/ExpenseDetailsRepo";
+import { getAllExpenseReasonDetails, updateExpenseReasonDetails, addExpenseReasonDetails,addExpenseDetails } from "../repository/ExpenseDetailsRepo";
 import { getFundDetailsById, updateFundBalance } from "../repository/FundDetailsRepo";
 
 async function getAllExpenseReasonDetailsService(): Promise<ExpenseReasonModel[]> {
@@ -17,16 +17,11 @@ async function updateExpenseReasonService(expeseReasonObj: ExpenseReasonModel) {
 }
 
 async function saveExpenseDetailsService(expenseObj: ExpenseModel){
-    // Add Expense
-
+    await addExpenseDetails(expenseObj);
     // Update fund balance
     const fundDetails: FundDetailsModel = await getFundDetailsById(expenseObj.fund_id_fk);
     const latestFundAmount = fundDetails.balance - expenseObj.amount;
     await updateFundBalance(latestFundAmount,fundDetails.fund_id);
-    
-
-
-
 }
 
 export {

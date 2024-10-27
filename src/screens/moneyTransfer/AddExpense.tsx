@@ -23,7 +23,7 @@ import { useNavigation } from "@react-navigation/native";
 import Dropdown from "../../component/Dropdown";
 import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 // Services
-import { getAllFundDetailsService } from "../../services/FundDetailsServices";
+import { getAllFundDetailsService, getFundBalanceService } from "../../services/FundDetailsServices";
 import { getAllExpenseReasonDetailsService, saveExpenseDetailsService } from "../../services/ExpenseDetailsServices";
 import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
 import { ExpenseModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../../model";
@@ -33,8 +33,8 @@ const AddExpense = () => {
   const [amount, setAmount] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
-
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [fundAmount, setFundAmount] = useState(Number);
   const [dbExpenseReason, setDbExpenseReason] = useState<ExpenseReasonModel[]>([]);
   const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>([]);
   const [dbPersonDetails, setDbPersonDetails] = useState<PersonModel[]>([]);
@@ -74,8 +74,9 @@ const AddExpense = () => {
     setExpenseReason(expenseReason);
   };
 
-  const getFundDetails = (fundDetails: FundDetailsModel) => {
+  const getFundDetails = async (fundDetails: FundDetailsModel) => {
     setFundDetails(fundDetails);
+    setFundAmount(await getFundBalanceService(fundDetails.fund_id));
   };
 
   const getPersonDetails = (personDetails: PersonModel) => {
@@ -117,7 +118,7 @@ const AddExpense = () => {
       expense_reason_id_fk: expenseReason.expense_reason_id,
       person_id_fk: personDetails.person_id > 0 ? personDetails.person_id : null,
       amount: Number(amount),
-      message: message.length > 0 ? message : null
+      message: message.length > 0 ? message : ""
     };
     //
     saveExpenseDetailsService(expenseObject);
@@ -125,7 +126,6 @@ const AddExpense = () => {
     navigate("TransferSuccessful");
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
   return (
     <View style={styles.container}>
       <PaymentCommonHeader headerTitle={"Save Expense"} />
@@ -135,7 +135,8 @@ const AddExpense = () => {
             <Text style={{ paddingRight: 10 }}>{"Fund Balance: "}</Text>
             <TextInput
               style={styles.Checkedinput}
-              value={"" + fundDetails.balance == "undefined" ? "0" : "" + fundDetails.balance}
+              value={"" + fundDetails.balance == "undefined" ? "0" :
+              "" + fundAmount}
               editable={false}
             />
           </View>

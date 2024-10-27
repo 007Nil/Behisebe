@@ -20,7 +20,7 @@ const Home = () => {
   const { navigate } = useNavigation<StackNavigation>();
   return (
     <View style={styles.container}>
-      <HomeCommonHeader title={"Home"}/>
+      <HomeCommonHeader title={"Home"} />
       <ScrollView>
         <View
           style={[
@@ -47,11 +47,11 @@ const Home = () => {
               </View>
               <Text style={styles.tranferText}>{"Debit/Expense"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab}  
+            <TouchableOpacity style={styles.transferTab}
             // onPress={() => {
             //     navigation.navigate("AddCredit");
             //   }}
-              >
+            >
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/bank2.png")}
@@ -64,7 +64,7 @@ const Home = () => {
             //  onPress={() => {
             //   navigation.navigate("ToSelfTransfer");
             //   }}
-              > 
+            >
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/reload.png")}
@@ -73,11 +73,11 @@ const Home = () => {
               </View>
               <Text style={styles.tranferText}>{"To Self Transfer"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.transferTab} 
+            <TouchableOpacity style={styles.transferTab}
             // onPress={() => {
             //     navigation.navigate("CheckBalance");
             //   }}
-              >
+            >
               <View style={styles.transferCard}>
                 <Image
                   source={require("../images/bank.png")}
@@ -87,7 +87,45 @@ const Home = () => {
               <Text style={styles.tranferText}>{"Check\nBalance"}</Text>
             </TouchableOpacity>
           </View>
+        </View>
 
+        <View
+          style={[
+            styles.moneyTransferCard,
+            {
+              marginBottom: moderateVerticalScale(10),
+              marginTop: moderateVerticalScale(10),
+            },
+          ]}
+        >
+          <View style={styles.transferView}>
+            <TouchableOpacity style={styles.transferTab}
+            onPress={() => {
+                navigate("ExpenseDetails");
+              }}
+            >
+              <View style={styles.transferCard}>
+                <Image
+                  source={require("../images/bank.png")}
+                  style={styles.icons}
+                />
+              </View>
+              <Text style={styles.tranferText}>{"Expense\n Details"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.transferTab}
+            onPress={() => {
+                navigate("CreditDetails");
+              }}
+            >
+              <View style={styles.transferCard}>
+                <Image
+                  source={require("../images/bank2.png")}
+                  style={styles.icons}
+                />
+              </View>
+              <Text style={styles.tranferText}>{"Credit/Details"}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View
