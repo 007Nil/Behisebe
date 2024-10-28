@@ -1,25 +1,34 @@
 import { StyleSheet, View, Text, Button } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { ExpenseModel } from '../model';
+
+// Services
+import { getExpenseDetailsService } from '../services/ExpenseDetailsServices';
 
 type DatePickerProps = {
-  getFromDate(fromdate: string): void
-  getToDate(toDate: string): void
+  datePickerScreen: string
+  getExpenseDetails?(expsneObj: ExpenseModel[]): void
 }
 
-const CustomDateTimePicker = ({getFromDate,getToDate}: DatePickerProps) => {
-
+const CustomDateTimePicker = ({ getExpenseDetails, datePickerScreen }: DatePickerProps) => {
+  // const [listData, setListData] = useState<any>([]);
   useEffect(() => {
-    getFromDate(fromDate.toLocaleString().split(",")[0]);
-    getToDate(toDate.toLocaleString().split(",")[0])
-  });
+    (async () => {
+      if (datePickerScreen === "expenseDetails") {
+        const expenseDetails = await getExpenseDetailsService();
+        getExpenseDetails(expenseDetails);
+      }
+    })();
+  }, []);
+
   const [fromDate, setFromDate] = useState<Date>(new Date());
   const [toDate, setToDate] = useState<Date>(new Date());
   const [valueOf, setValueOf] = useState<string>("");
 
   const onChange = (event, selectedDate: Date) => {
     const currentDate: Date = selectedDate;
-    valueOf === "" ? setFromDate(currentDate) : setToDate(currentDate);
+    valueOf === "fromDate" ? setFromDate(currentDate) : setToDate(currentDate);
   };
 
   const showMode = (currentMode: any, valueType: string) => {
@@ -52,7 +61,7 @@ const CustomDateTimePicker = ({getFromDate,getToDate}: DatePickerProps) => {
         </View>
       </View>
       <View>
-        <View style={[styles.btnContainer, { flexDirection: 'column', padding: 10, alignSelf:'center' }]}>
+        <View style={[styles.btnContainer, { flexDirection: 'column', padding: 10, alignSelf: 'center' }]}>
           <Text>From Date: {fromDate.toLocaleString().split(",")[0]}</Text>
           <Text>To Date: {toDate.toLocaleString().split(",")[0]}</Text>
         </View>

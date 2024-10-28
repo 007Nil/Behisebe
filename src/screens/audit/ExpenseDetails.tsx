@@ -1,37 +1,44 @@
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native'
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
 
 import styles from './styles'
 import HomeCommonHeader from '../../common/HomeCommonHeader'
 import { CustomDateTimePicker, CustomListView } from '../../component'
+import { ExpenseModel } from '../../model'
+import { prepareCustomList } from '../../services/CommonServices'
+import CustomList from '../../model/CustomListModel'
+// import { getExpenseDetailsService } from '../../services/ExpenseDetailsServices'
 
 const ExpenseDetails = () => {
-  const [fromDate, setFromDate] = useState<string>("")
-  const [toDate, setToDate] = useState<string>("")
-  const getFromDate = (data: string) => {
-    console.log("From Date: "+data);
-    setFromDate(data);
+  const [expenseDetails, setExpenseDetails] = useState<CustomList[]>([]);
+  // const []
+
+  const getExpenseDetails = async (data: ExpenseModel[]) => {
+    setExpenseDetails(await prepareCustomList("expenseDetails", data));
+
   };
 
-  const getToDate = (data: string) => {
-    console.log("To Date: "+data);
-    setToDate(data);
-  };
+  // useEffect(() => {
+  //   setExpenseDetails(expenseDetails);
+  //   console.log(expenseDetails);
+  // }, [expenseDetails]);
   return (
     <View style={styles.container}>
-       <HomeCommonHeader title={"Expense Details"}/>
-       <View style={styles.searchBox}>
+      <HomeCommonHeader title={"Expense Details"} />
+      <View style={styles.searchBox}>
         <Image source={require('../../images/search.png')} style={styles.search} />
         <Text style={styles.searchText}>Search by Fund Name or amount</Text>
       </View>
       <View style={styles.card}>
         <View style={styles.filtersView}>
-        <CustomDateTimePicker
-        getFromDate={getFromDate}
-        getToDate={getToDate}/>
+          <CustomDateTimePicker
+            getExpenseDetails={getExpenseDetails}
+            datePickerScreen={"expenseDetails"}
+          />
         </View>
-        {/* <CustomListView/> */}
+        <CustomListView listData={expenseDetails}
+        />
 
       </View>
     </View>

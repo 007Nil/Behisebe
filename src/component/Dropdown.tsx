@@ -18,7 +18,6 @@ const Dropdown = ({dropDownValues,dropDownType,getExpenseReason,getFundDetails,g
     if (dropDownType === "expenseReasonDetails") {
       getExpenseReason(selecteddropDownValues);
     } else if (dropDownType === "fundDetails") {
-      // console.log(selecteddropDownValues)
       getFundDetails(selecteddropDownValues);
     } else if (dropDownType === "personDetails") {
       getPersonDetails(selecteddropDownValues);

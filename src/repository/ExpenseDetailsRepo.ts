@@ -35,10 +35,23 @@ async function addExpenseDetails(expenseModel:ExpenseModel) {
     );
 
 }
+async function getExpenseDetails(): Promise<ExpenseModel[]> {
+    const db = await openDBConnection();
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync('SELECT * FROM expenses ORDER BY Timestamp DESC;');
+    return expenseDetails;
+}
+
+async function getExpenseReasonByID(expenseReasonId: number): Promise<ExpenseReasonModel> {
+    const db = await openDBConnection();
+    const expenseReasonDetails: ExpenseReasonModel =  await db.getFirstAsync('SELECT * FROM expense_reasons WHERE expense_reason_id = ?', expenseReasonId);
+    return expenseReasonDetails;
+}
 
 export {
     getAllExpenseReasonDetails,
     addExpenseReasonDetails,
     updateExpenseReasonDetails,
-    addExpenseDetails
+    addExpenseDetails,
+    getExpenseDetails,
+    getExpenseReasonByID
 }
