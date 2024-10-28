@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
+import React, {useState} from 'react'
 import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
 
 import styles from './styles'
@@ -7,6 +7,17 @@ import HomeCommonHeader from '../../common/HomeCommonHeader'
 import { CustomDateTimePicker, CustomListView } from '../../component'
 
 const ExpenseDetails = () => {
+  const [fromDate, setFromDate] = useState<string>("")
+  const [toDate, setToDate] = useState<string>("")
+  const getFromDate = (data: string) => {
+    console.log("From Date: "+data);
+    setFromDate(data);
+  };
+
+  const getToDate = (data: string) => {
+    console.log("To Date: "+data);
+    setToDate(data);
+  };
   return (
     <View style={styles.container}>
        <HomeCommonHeader title={"Expense Details"}/>
@@ -16,7 +27,9 @@ const ExpenseDetails = () => {
       </View>
       <View style={styles.card}>
         <View style={styles.filtersView}>
-        <CustomDateTimePicker/>
+        <CustomDateTimePicker
+        getFromDate={getFromDate}
+        getToDate={getToDate}/>
         </View>
         {/* <CustomListView/> */}
 

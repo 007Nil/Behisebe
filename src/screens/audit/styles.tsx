@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
         width: '94%',
         backgroundColor: 'white',
         marginTop: moderateVerticalScale(15),
-
         alignSelf: 'center',
         borderRadius: moderateScale(10),
         shadowOpacity: .1,

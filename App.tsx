@@ -17,12 +17,12 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
-
+--DROP TABLE IF EXISTS expenses;
 --DROP TABLE IF EXISTS fund_details;
 --DROP TABLE IF EXISTS expense_reasons;
 --DROP TABLE IF EXISTS credit_reasons;
 --DROP TABLE IF EXISTS persons;
---DROP TABLE IF EXISTS expenses;
+
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,6 +33,10 @@ CREATE TABLE IF NOT EXISTS fund_details (
     balance INTEGER,
     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
+SELECT 'Cash', 'Cash InHand','Cash Fund',1,0
+WHERE NOT EXISTS(SELECT 1 FROM fund_details WHERE fund_id = 1 AND fund_name = 'Cash' AND fund_type = 'Cash InHand');
 
 CREATE TABLE IF NOT EXISTS expense_reasons (
     expense_reason_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,13 +66,10 @@ CREATE TABLE IF NOT EXISTS expenses (
     person_id_fk INTEGER,
     amount INTEGER NOT NULL,
     message TEXT,
+    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fund_id_fk) REFERENCES fund_details(fund_id),
     FOREIGN KEY (expense_reason_id_fk) REFERENCES expense_reasons(expense_reason_id),
     FOREIGN KEY (person_id_fk) REFERENCES persons(person_id)
 )
 `);
-  // await db.runAsync('INSERT INTO todos (value, intValue) VALUES (?, ?)', 'hello', 1);
-  // await db.runAsync('INSERT INTO todos (value, intValue) VALUES (?, ?)', 'world', 2);
-  // CREATE TABLE todos (id INTEGER PRIMARY KEY NOT NULL, value TEXT NOT NULL, intValue INTEGER);
-
 }
