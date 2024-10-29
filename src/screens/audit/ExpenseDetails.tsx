@@ -12,17 +12,14 @@ import CustomList from '../../model/CustomListModel'
 
 const ExpenseDetails = () => {
   const [expenseDetails, setExpenseDetails] = useState<CustomList[]>([]);
-  // const []
 
   const getExpenseDetails = async (data: ExpenseModel[]) => {
-    setExpenseDetails(await prepareCustomList("expenseDetails", data));
+    setExpenseDetails(await prepareCustomList({
+      listType: "expenseDetails",
+      expenseObj: data
+    }));
 
   };
-
-  // useEffect(() => {
-  //   setExpenseDetails(expenseDetails);
-  //   console.log(expenseDetails);
-  // }, [expenseDetails]);
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Expense Details"} />

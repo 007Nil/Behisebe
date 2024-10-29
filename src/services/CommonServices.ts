@@ -3,11 +3,15 @@ import CustomList from "../model/CustomListModel";
 import { getFundDetailsById } from "../repository/FundDetailsRepo";
 import { getExpenseReasonByID } from "../repository/ExpenseDetailsRepo";
 
+type prepareCustomListProps = {
+    listType: string,
+    expenseObj? : ExpenseModel[]
+}
 
-async function prepareCustomList(listType: string, expenseObj: ExpenseModel[]): Promise<CustomList[]> {
+async function prepareCustomList( props : prepareCustomListProps): Promise<CustomList[]> {
     const returnValue: CustomList[] = [];
-    if (listType === "expenseDetails") {
-        expenseObj.forEach(async (eachExpense) => {
+    if (props.listType === "expenseDetails") {
+        props.expenseObj.forEach(async (eachExpense) => {
             let customList: CustomList;
             const fundDetails: FundDetailsModel = await getFundDetailsById(eachExpense.fund_id_fk);
             const expenseReasonDetails: ExpenseReasonModel = await getExpenseReasonByID(eachExpense.expense_reason_id_fk);

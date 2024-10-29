@@ -1,5 +1,5 @@
 import { ExpenseReasonModel } from "../model";
-import {ExpenseModel} from "../model";
+import { ExpenseModel } from "../model";
 import { openDBConnection } from './OpenSqllite';
 import { SQLiteRunResult } from "expo-sqlite";
 
@@ -27,11 +27,11 @@ async function updateExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel):
 
 }
 
-async function addExpenseDetails(expenseModel:ExpenseModel) {
+async function addExpenseDetails(expenseModel: ExpenseModel) {
     const db = await openDBConnection();
     let sqlResult = await db.runAsync(
         'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message) VALUES (?, ?, ?, ?, ?)',
-        expenseModel.fund_id_fk,expenseModel.expense_reason_id_fk,expenseModel.person_id_fk,expenseModel.amount, expenseModel.message
+        expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message
     );
 
 }
@@ -43,15 +43,24 @@ async function getExpenseDetails(): Promise<ExpenseModel[]> {
 
 async function getExpenseReasonByID(expenseReasonId: number): Promise<ExpenseReasonModel> {
     const db = await openDBConnection();
-    const expenseReasonDetails: ExpenseReasonModel =  await db.getFirstAsync('SELECT * FROM expense_reasons WHERE expense_reason_id = ?', expenseReasonId);
+    const expenseReasonDetails: ExpenseReasonModel = await db.getFirstAsync('SELECT * FROM expense_reasons WHERE expense_reason_id = ?', expenseReasonId);
     return expenseReasonDetails;
 }
 
+async function getExpenseByDate(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
+    const db = await openDBConnection();
+    console.log(fromDate);
+    console.log(toDate);
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE DATE(timestamp)<= ? AND DATE(timestamp) >= ? ORDER BY timestamp DESC;", toDate, fromDate);
+    console.log(expenseDetails);
+    return expenseDetails;
+}
 export {
     getAllExpenseReasonDetails,
     addExpenseReasonDetails,
     updateExpenseReasonDetails,
     addExpenseDetails,
     getExpenseDetails,
-    getExpenseReasonByID
+    getExpenseReasonByID,
+    getExpenseByDate
 }

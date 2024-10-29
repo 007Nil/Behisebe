@@ -4,7 +4,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { ExpenseModel } from '../model';
 
 // Services
-import { getExpenseDetailsService } from '../services/ExpenseDetailsServices';
+import { getExpenseByDateService } from '../services/ExpenseDetailsServices';
 
 type DatePickerProps = {
   datePickerScreen: string
@@ -12,42 +12,41 @@ type DatePickerProps = {
 }
 
 const CustomDateTimePicker = ({ getExpenseDetails, datePickerScreen }: DatePickerProps) => {
-  // const [listData, setListData] = useState<any>([]);
+  const [fromDate, setFromDate] = useState<Date>(new Date());
+  const [toDate, setToDate] = useState<Date>(new Date());
+  let dateMode: string;
   useEffect(() => {
     (async () => {
       if (datePickerScreen === "expenseDetails") {
-        const expenseDetails = await getExpenseDetailsService();
+        const expenseDetails = await getExpenseByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
         getExpenseDetails(expenseDetails);
       }
     })();
-  }, []);
-
-  const [fromDate, setFromDate] = useState<Date>(new Date());
-  const [toDate, setToDate] = useState<Date>(new Date());
-  const [valueOf, setValueOf] = useState<string>("");
+  }, [fromDate,toDate]);
 
   const onChange = (event, selectedDate: Date) => {
     const currentDate: Date = selectedDate;
-    valueOf === "fromDate" ? setFromDate(currentDate) : setToDate(currentDate);
+    // console.log(valueOf)
+    dateMode === "fromDate" ? setFromDate(currentDate) : setToDate(currentDate);
   };
 
-  const showMode = (currentMode: any, valueType: string) => {
+  const showMode = (currentMode: any, dateMode1: string) => {
     DateTimePickerAndroid.open({
-      value: valueType == "fromDate" ? fromDate : toDate,
+      value: dateMode1 == "fromDate" ? fromDate : toDate,
       onChange,
       mode: currentMode,
       is24Hour: true,
     });
+    dateMode = dateMode1;
+    // setValueOf("");
   };
 
   const showFromDatepicker = () => {
     showMode("date", "fromDate");
-    setValueOf("fromDate");
   };
 
   const showToTimepicker = () => {
-    showMode('date', "toDate");
-    setValueOf("toDate");
+    showMode("date", "toDate");
   };
 
   return (
