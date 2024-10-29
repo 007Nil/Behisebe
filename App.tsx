@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS fund_details (
     notes TEXT,
     is_active INTEGER,
     balance INTEGER,
-    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
 
 INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS expenses (
     person_id_fk INTEGER,
     amount INTEGER NOT NULL,
     message TEXT,
-    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')),
     FOREIGN KEY (fund_id_fk) REFERENCES fund_details(fund_id),
     FOREIGN KEY (expense_reason_id_fk) REFERENCES expense_reasons(expense_reason_id),
     FOREIGN KEY (person_id_fk) REFERENCES persons(person_id)

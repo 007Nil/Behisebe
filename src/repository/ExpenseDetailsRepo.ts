@@ -37,7 +37,7 @@ async function addExpenseDetails(expenseModel:ExpenseModel) {
 }
 async function getExpenseDetails(): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
-    const expenseDetails: ExpenseModel[] = await db.getAllAsync('SELECT * FROM expenses ORDER BY Timestamp DESC;');
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync('SELECT * FROM expenses ORDER BY timestamp DESC;');
     return expenseDetails;
 }
 

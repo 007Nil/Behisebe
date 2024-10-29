@@ -19,30 +19,30 @@ async function addFundDetails(fundObj: FundDetailsModel): Promise<void> {
     );
 }
 
-async function updateFundDetails(fundId: number, fundStatus: number): Promise<void> {
+async function updateFundDetails(fundObj: FundDetailsModel, fundStatus: number): Promise<void> {
     const db = await openDBConnection();
-    await db.runAsync('UPDATE fund_details SET is_active =?  WHERE fund_id = ?', fundStatus, fundId);
+    await db.runAsync('UPDATE fund_details SET is_active =?, balance = ?  WHERE fund_id = ?', fundStatus, fundObj.balance, fundObj.fund_id);
 
 }
 
 async function getFundDetailsById(fundId: number): Promise<FundDetailsModel> {
     const db = await openDBConnection();
-    const fundDetails: FundDetailsModel =  await db.getFirstAsync('SELECT * FROM fund_details WHERE fund_id = ?', fundId);
+    const fundDetails: FundDetailsModel = await db.getFirstAsync('SELECT * FROM fund_details WHERE fund_id = ?', fundId);
     return fundDetails;
 }
 
-async function updateFundBalance( balance:number, fundId: number) {
+async function updateFundBalance(balance: number, fundId: number) {
     const db = await openDBConnection();
     await db.runAsync('UPDATE fund_details SET balance =?  WHERE fund_id = ?', balance, fundId);
 }
 
 
-async function getFundBalance(fundId:number): Promise<number> {
+async function getFundBalance(fundId: number): Promise<number> {
     const db = await openDBConnection();
-    try{
-        const fundAmount: fundAmountType =  await db.getFirstAsync('SELECT balance FROM fund_details WHERE fund_id = ?', fundId);
+    try {
+        const fundAmount: fundAmountType = await db.getFirstAsync('SELECT balance FROM fund_details WHERE fund_id = ?', fundId);
         return fundAmount.balance;
-    }catch{
+    } catch {
         return 0;
     }
 }

@@ -16,7 +16,7 @@ async function prepareCustomList(listType: string, expenseObj: ExpenseModel[]): 
                 reason: expenseReasonDetails.expense_reason_name,
                 catagory: "expenseDetails",
                 amount: eachExpense.amount.toString(),
-                date: eachExpense.Timestamp
+                date: eachExpense.timestamp
             };
             returnValue.push(customList);
         });

@@ -13,7 +13,7 @@ async function updateFundDetailsService(fundObj: FundDetailsModel): Promise<void
     if (!fundObj.is_active) {
         fund_status = 0;
     }
-    await updateFundDetails(fundObj.fund_id, fund_status);
+    await updateFundDetails(fundObj, fund_status);
 }
 
 async function getFundBalanceService(fundId: number) : Promise<number> {
