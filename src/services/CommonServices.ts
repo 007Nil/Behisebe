@@ -2,7 +2,7 @@ import { CreditModel, CreditReasonModel, ExpenseModel, ExpenseReasonModel, FundD
 import CustomList from "../model/CustomListModel";
 import { getFundDetailsById } from "../repository/FundDetailsRepo";
 import { getExpenseReasonByID } from "../repository/ExpenseDetailsRepo";
-import { getCreditReasonById } from "./CreditDetailsServices";
+import { getCreditReasonById, getCreditReasonByIdService } from "./CreditDetailsServices";
 
 type prepareCustomListProps = {
     listType: string,
@@ -32,7 +32,7 @@ async function prepareCustomList(props: prepareCustomListProps): Promise<CustomL
         props.creditObj.forEach(async eachCredit => {
             let customList: CustomList;
             const fundDetails: FundDetailsModel = await getFundDetailsById(eachCredit.fund_id_fk);
-            const creditReasonDetails: CreditReasonModel = await getCreditReasonById(eachCredit.credit_reason_id_fk);
+            const creditReasonDetails: CreditReasonModel = await getCreditReasonByIdService(eachCredit.credit_reason_id_fk);
             customList = {
                 fund_name: fundDetails.fund_name,
                 reason: creditReasonDetails.credit_reason_name,
@@ -42,7 +42,7 @@ async function prepareCustomList(props: prepareCustomListProps): Promise<CustomL
             };
             returnValue.push(customList);
         });
-        // return returnValue;
+        return returnValue;
     }
     return [];
 

@@ -30,7 +30,9 @@ async function getExpenseDetailsService(): Promise<ExpenseModel[]> {
 }
 
 async function getExpenseByDateService(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
-    return await getExpenseByDate(dateConvert(fromDate), dateConvert(toDate));
+    let fromDateTime = dateConvert(fromDate) + " 00:00:00"
+    let toDateTime = dateConvert(toDate) + " 23:59:59"
+    return await getExpenseByDate(fromDateTime, toDateTime);
 }
 export {
     getAllExpenseReasonDetailsService,

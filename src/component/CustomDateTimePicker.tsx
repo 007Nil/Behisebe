@@ -5,14 +5,15 @@ import { CreditModel, ExpenseModel } from '../model';
 
 // Services
 import { getExpenseByDateService } from '../services/ExpenseDetailsServices';
+import { getCreditByDateService } from '../services/CreditDetailsServices';
 
 type DatePickerProps = {
   datePickerScreen: string
   getExpenseDetails?(expsneObj: ExpenseModel[]): void
-  getCreditDetails? (creditObj: CreditModel[]): void
+  getCreditDetails?(creditObj: CreditModel[]): void
 }
 
-const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails }: DatePickerProps) => {
+const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails, getCreditDetails }: DatePickerProps) => {
   const [fromDate, setFromDate] = useState<Date>(new Date());
   const [toDate, setToDate] = useState<Date>(new Date());
   let dateMode: string;
@@ -20,15 +21,15 @@ const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails }: DatePicke
     (async () => {
       if (datePickerScreen === "expenseDetails") {
         const expenseDetails = await getExpenseByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
-        console.log(expenseDetails)
         getExpenseDetails(expenseDetails);
       }
-      else if (datePickerScreen === "creditDetails"){
-        console.log("HIT");
+      else if (datePickerScreen === "creditDetails") {
+        const creditDetails = await getCreditByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
+        getCreditDetails(creditDetails);
       }
     })();
 
-  }, [fromDate,toDate]);
+  }, [fromDate, toDate]);
 
   const onChange = (event, selectedDate: Date) => {
     const currentDate: Date = selectedDate;

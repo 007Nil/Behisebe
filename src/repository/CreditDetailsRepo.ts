@@ -2,7 +2,7 @@ import { openDBConnection } from './OpenSqllite';
 import { SQLiteRunResult } from "expo-sqlite";
 import { CreditModel, CreditReasonModel } from '../model';
 
-async function getAllCreditReasonDetails(){
+async function getAllCreditReasonDetails() {
     const db = await openDBConnection();
     const allRows: CreditReasonModel[] = await db.getAllAsync('SELECT * FROM credit_reasons');
 
@@ -39,7 +39,7 @@ async function getExpenseReasonByID(creditReasonId: number): Promise<CreditReaso
 
 async function getCreditByDate(fromDate: string, toDate: string): Promise<CreditModel[]> {
     const db = await openDBConnection();
-    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE DATE(timestamp)<= ? AND DATE(timestamp) >= ? ORDER BY timestamp DESC;", toDate, fromDate);
+    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC;", fromDate, toDate);
     return creditDetails;
 }
 
@@ -49,7 +49,12 @@ async function addCreditDetails(creditObj: CreditModel) {
         'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message) VALUES (?, ?, ?, ?, ?)',
         creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount, creditObj.message
     );
+}
 
+async function getCreditReasonById(creditReasonId: number) {
+    const db = await openDBConnection();
+    const creditReasonDetails: CreditReasonModel = await db.getFirstAsync('SELECT * FROM credit_reasons WHERE credit_reason_id = ?', creditReasonId);
+    return creditReasonDetails;
 }
 
 export {
@@ -59,5 +64,6 @@ export {
     getCreditDetails,
     getExpenseReasonByID,
     getCreditByDate,
-    addCreditDetails
+    addCreditDetails,
+    getCreditReasonById
 }

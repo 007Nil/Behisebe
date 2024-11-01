@@ -14,6 +14,7 @@ const CreditDetails = () => {
   const getCreditDetails = async (data: CreditModel[]) => {
     setCreditDetails(await prepareCustomList({
       listType: "creditDetails",
+      expenseObj: [],
       creditObj: data
     }));
   };
