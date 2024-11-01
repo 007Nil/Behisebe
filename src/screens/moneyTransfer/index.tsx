@@ -4,12 +4,14 @@ import ToSelfTransfer from "./ToSelfTransfer";
 import CheckBalance from "./CheckBalance";
 import TransferSuccessful from "./TransferSuccessful";
 import CreditTransferSuccessful from "./CreditTransferSuccessful";
+import SelfTransferSuccessful from "./SelfTransferSuccessful";
 
 export {
     AddExpense,
     AddCredit,
-    // ToSelfTransfer,
+    ToSelfTransfer,
     // CheckBalance,
     TransferSuccessful,
-    CreditTransferSuccessful
+    CreditTransferSuccessful,
+    SelfTransferSuccessful
 }

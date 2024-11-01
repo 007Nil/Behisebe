@@ -13,6 +13,10 @@ export default function App() {
   );
 }
 
+// TODO
+// Add Self Transfer in credit and debit reasons
+// Add Credit Card in FundDetails
+
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
   await db.execAsync(`

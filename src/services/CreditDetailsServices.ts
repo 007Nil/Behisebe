@@ -1,6 +1,6 @@
 import { SQLiteRunResult } from "expo-sqlite";
 import { CreditModel, CreditReasonModel, FundDetailsModel } from "../model";
-import { getAllCreditReasonDetails, addCreditReasonDetails, updateCreditReasonDetails, addCreditDetails, getCreditByDate, getCreditReasonById } from "../repository/CreditDetailsRepo";
+import { getAllCreditReasonDetails, addCreditReasonDetails, updateCreditReasonDetails, addCreditDetails, getCreditByDate, getCreditReasonById, getCreditReasonByName } from "../repository/CreditDetailsRepo";
 import { getFundDetailsById, updateFundBalance } from "../repository/FundDetailsRepo";
 import { dateConvert } from "../utils/AllUtils";
 
@@ -10,7 +10,7 @@ async function getAllCreditReasonDetailsService(): Promise<CreditReasonModel[]> 
 
 async function addCreditReasonService(creditReasonObj: CreditReasonModel) {
     let sqlResult: SQLiteRunResult = await addCreditReasonDetails(creditReasonObj);
-    console.log(sqlResult)
+    // console.log(sqlResult)
 }
 
 async function updateCreditReasonService(creditReasonObj: CreditReasonModel) {
@@ -34,11 +34,17 @@ async function getCreditByDateService(fromDate:string, toDate: string) {
     let toDateTime = dateConvert(toDate) + " 23:59:59"
     return await getCreditByDate(fromDateTime, toDateTime);
 }
+
+async function getCreditReasonDetailsByNameService(creditReasonName:string) {
+    return await getCreditReasonByName(creditReasonName);
+}
+
 export {
     getAllCreditReasonDetailsService,
     addCreditReasonService,
     updateCreditReasonService,
     saveCreditDetailsService,
     getCreditReasonByIdService,
-    getCreditByDateService
+    getCreditByDateService,
+    getCreditReasonDetailsByNameService
 }

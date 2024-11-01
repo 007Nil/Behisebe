@@ -48,7 +48,7 @@ const Home = () => {
               <Text style={styles.tranferText}>{"Debit/Expense"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}
-            onPress={() => {
+              onPress={() => {
                 navigate("AddCredit");
               }}
             >
@@ -61,9 +61,9 @@ const Home = () => {
               <Text style={styles.tranferText}>{"Credit/Earnings"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}
-            //  onPress={() => {
-            //   navigation.navigate("ToSelfTransfer");
-            //   }}
+              onPress={() => {
+                navigate("ToSelfTransfer");
+              }}
             >
               <View style={styles.transferCard}>
                 <Image
@@ -100,7 +100,7 @@ const Home = () => {
         >
           <View style={styles.transferView}>
             <TouchableOpacity style={styles.transferTab}
-            onPress={() => {
+              onPress={() => {
                 navigate("ExpenseDetails");
               }}
             >
@@ -113,7 +113,7 @@ const Home = () => {
               <Text style={styles.tranferText}>{"Expense\n Details"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}
-            onPress={() => {
+              onPress={() => {
                 navigate("CreditDetails");
               }}
             >

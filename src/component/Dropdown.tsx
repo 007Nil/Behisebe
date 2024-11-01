@@ -4,21 +4,32 @@ import SelectDropdown from "react-native-select-dropdown";
 import { CreditReasonModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../model";
 
 type DropDownType = {
-  dropDownValues: FundDetailsModel[] | ExpenseReasonModel[] | PersonModel[] | CreditReasonModel[]
-  dropDownType: string
-  getExpenseReason?(expenseReasonObj: ExpenseReasonModel): void
-  getFundDetails?(fundObj: FundDetailsModel): void
-  getPersonDetails?(personObj: PersonModel): void
-  getCreditReason?(creditReasonObj: CreditReasonModel): void
+  dropDownValues: FundDetailsModel[] | ExpenseReasonModel[] | PersonModel[] | CreditReasonModel[],
+  dropDownType: string,
+  getExpenseReason?(expenseReasonObj: ExpenseReasonModel): void,
+  getFundDetails?(fundObj: FundDetailsModel): void,
+  getPersonDetails?(personObj: PersonModel): void,
+  getCreditReason?(creditReasonObj: CreditReasonModel): void,
+  getTransferFromFundDetails?(fundObj: FundDetailsModel): void,
+  getTransferToFundDetails?(fundObj: FundDetailsModel): void,
+  fundValuetype?: string,
 }
 
-const Dropdown = ({dropDownValues,dropDownType,getExpenseReason,getFundDetails,getPersonDetails,getCreditReason}: DropDownType) => {
+const Dropdown = ({ dropDownValues, dropDownType, fundValuetype,
+  getExpenseReason, getFundDetails, getPersonDetails,
+  getCreditReason, getTransferFromFundDetails, getTransferToFundDetails }: DropDownType) => {
   const [selecteddropDownValues, setselecteddropDownValues] = useState<any>("");
   useEffect(() => {
     if (dropDownType === "expenseReasonDetails") {
       getExpenseReason(selecteddropDownValues);
     } else if (dropDownType === "fundDetails") {
-      getFundDetails(selecteddropDownValues);
+      if (fundValuetype === "transferFrom") {
+        getTransferFromFundDetails(selecteddropDownValues);
+      } else if (fundValuetype === "transferTo") {
+        getTransferToFundDetails(selecteddropDownValues);
+      } else if (fundValuetype === "getFundDetails") {
+        getFundDetails(selecteddropDownValues);
+      }
     } else if (dropDownType === "personDetails") {
       getPersonDetails(selecteddropDownValues);
     } else if (dropDownType === "creditReason") {
@@ -41,17 +52,17 @@ const Dropdown = ({dropDownValues,dropDownType,getExpenseReason,getFundDetails,g
                   (dropDownType === "expenseReasonDetails"
                     ? selectedItem.expense_reason_name
                     : dropDownType === "personDetails"
-                    ? selectedItem.person_name
-                    : dropDownType === "creditReason"
-                    ? selectedItem.credit_reason_name
-                    : selectedItem.fund_name)) ||
+                      ? selectedItem.person_name
+                      : dropDownType === "creditReason"
+                        ? selectedItem.credit_reason_name
+                        : selectedItem.fund_name)) ||
                   (dropDownType === "expenseReasonDetails"
                     ? "Select Expense Reason"
                     : dropDownType === "personDetails"
-                    ? "Select Person name"
-                    : dropDownType === "creditReason"
-                    ? "Select Credit Reason"
-                    : "Select a Fund")}
+                      ? "Select Person name"
+                      : dropDownType === "creditReason"
+                        ? "Select Credit Reason"
+                        : "Select a Fund")}
               </Text>
             </View>
           );
@@ -68,10 +79,10 @@ const Dropdown = ({dropDownValues,dropDownType,getExpenseReason,getFundDetails,g
                 {dropDownType === "expenseReasonDetails"
                   ? item.expense_reason_name
                   : dropDownType === "personDetails"
-                  ? item.person_name
-                  : dropDownType === "creditReason"
-                  ? item.credit_reason_name
-                  : item.fund_name}
+                    ? item.person_name
+                    : dropDownType === "creditReason"
+                      ? item.credit_reason_name
+                      : item.fund_name}
               </Text>
             </View>
           );

@@ -57,6 +57,12 @@ async function getCreditReasonById(creditReasonId: number) {
     return creditReasonDetails;
 }
 
+async function getCreditReasonByName(creditReasonName: string) {
+    const db = await openDBConnection();
+    const creditReasonDetails: CreditReasonModel = await db.getFirstAsync('SELECT * FROM credit_reasons WHERE credit_reason_name = ?', creditReasonName);
+    return creditReasonDetails;
+}
+
 export {
     getAllCreditReasonDetails,
     addCreditReasonDetails,
@@ -65,5 +71,6 @@ export {
     getExpenseReasonByID,
     getCreditByDate,
     addCreditDetails,
-    getCreditReasonById
+    getCreditReasonById,
+    getCreditReasonByName
 }

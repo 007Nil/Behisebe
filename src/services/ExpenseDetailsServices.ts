@@ -1,6 +1,6 @@
 import { SQLiteRunResult } from "expo-sqlite";
 import { ExpenseReasonModel, ExpenseModel, FundDetailsModel } from "../model";
-import { getAllExpenseReasonDetails, updateExpenseReasonDetails, addExpenseReasonDetails, addExpenseDetails, getExpenseDetails, getExpenseByDate } from "../repository/ExpenseDetailsRepo";
+import { getAllExpenseReasonDetails, updateExpenseReasonDetails, addExpenseReasonDetails, addExpenseDetails, getExpenseDetails, getExpenseByDate, getExpenseReasonByName } from "../repository/ExpenseDetailsRepo";
 import { getFundDetailsById, updateFundBalance } from "../repository/FundDetailsRepo";
 import { dateConvert } from "../utils/AllUtils";
 
@@ -29,6 +29,10 @@ async function getExpenseDetailsService(): Promise<ExpenseModel[]> {
     return await getExpenseDetails();
 }
 
+async function getExpenseReasonByNameService(expenseReasonName:string): Promise<ExpenseReasonModel> {
+    return await getExpenseReasonByName(expenseReasonName);
+}
+
 async function getExpenseByDateService(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
     let fromDateTime = dateConvert(fromDate) + " 00:00:00"
     let toDateTime = dateConvert(toDate) + " 23:59:59"
@@ -40,5 +44,6 @@ export {
     updateExpenseReasonService,
     saveExpenseDetailsService,
     getExpenseDetailsService,
-    getExpenseByDateService
+    getExpenseByDateService,
+    getExpenseReasonByNameService
 }
