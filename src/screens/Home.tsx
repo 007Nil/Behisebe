@@ -48,9 +48,9 @@ const Home = () => {
               <Text style={styles.tranferText}>{"Debit/Expense"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}
-            // onPress={() => {
-            //     navigation.navigate("AddCredit");
-            //   }}
+            onPress={() => {
+                navigate("AddCredit");
+              }}
             >
               <View style={styles.transferCard}>
                 <Image

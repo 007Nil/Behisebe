@@ -4,7 +4,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import { CreditReasonModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../model";
 
 type DropDownType = {
-  dropDownValues: FundDetailsModel[] | ExpenseReasonModel[] | PersonModel[]
+  dropDownValues: FundDetailsModel[] | ExpenseReasonModel[] | PersonModel[] | CreditReasonModel[]
   dropDownType: string
   getExpenseReason?(expenseReasonObj: ExpenseReasonModel): void
   getFundDetails?(fundObj: FundDetailsModel): void

@@ -18,68 +18,69 @@ import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 import Modal from "react-native-modal";
 import moment from "moment";
 import Dropdown from "../../component/Dropdown";
+import { CreditModel, CreditReasonModel, FundDetailsModel, PersonModel } from "../../model";
+import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
+import { getAllFundDetailsService, getFundBalanceService } from "../../services/FundDetailsServices";
+import { getAllCreditReasonDetailsService, saveCreditDetailsService } from "../../services/CreditDetailsServices";
+import { type StackNavigation } from "../../navigation/AppNavigator";
 
-import { SaveCreditData } from "../../services";
-
-import { credit_reason, persons, funds } from "../../dummy_data/index";
-import { getCreditReason as getCreditReasonService } from "../../services/CreditReasonServices";
-import { getFundDetails as getFundDetailsService } from "../../services/FundServices";
-import { getAllPersonsService } from "../../services/PersonService";
 
 const AddCredit = () => {
   const isFocused = useIsFocused();
+  const { navigate } = useNavigation<StackNavigation>();
+
+  const [dbCreditReason, setDbCreditReason] = useState<CreditReasonModel[]>([]);
+  const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>([]);
+  const [dbPersonDetails, setDbPersonDetails] = useState<PersonModel[]>([]);
+
+  const navigation = useNavigation();
+
+  const [creditReason, setCreditReason] = useState<CreditReasonModel>({
+    credit_reason_catagory: "",
+    credit_reason_name: ""
+  });
+  const [fundDetails, setFundDetails] = useState<FundDetailsModel>(
+    {
+      fund_id: 0,
+      fund_name: "",
+      fund_type: "",
+      balance: 0
+    }
+  );
+  const [personDetails, setPersonDetails] = useState<PersonModel>(
+    {
+      person_id: 0,
+      person_name: ""
+    }
+  );
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const [amount, setAmount] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [fundAmount, setFundAmount] = useState(Number);
+
   useEffect(() => {
-    getAllPersonsService().then((data) => setDbPersonDetails(data));
-    getCreditReasonService().then((data) => setDbCreditReason(data));
-    getFundDetailsService().then((data) => setDbFundDetails(data));
+    getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
+    getAllCreditReasonDetailsService().then((data) => setDbCreditReason(data));
+    getAllFundDetailsService().then((data) => setDbFundDetails(data));
   }, []);
-  const [dbCreditReason, setDbCreditReason] = useState([]);
-  const [dbFundDetails, setDbFundDetails] = useState([]);
-  const [dbPersonDetails, setDbPersonDetails] = useState([]);
 
   useEffect(() => {
     if (isFocused) {
-      // reset state
       setIsSubmit(false);
-      setFundIsChecked(true);
-      setCashIsChecked(false);
       setMessage("");
       setAmount("");
     }
   }, [isFocused]);
-  const navigation = useNavigation();
-  const [amount, setAmount] = useState("");
-  const [message, setMessage] = useState("");
-  const [isFundChecked, setFundIsChecked] = useState(true);
-  const [isCashChecked, setCashIsChecked] = useState(false);
 
-  const [creditReason, setCreditReason] = useState("");
-  const [fundDetails, setFundDetails] = useState("");
-  const [personDetails, setPersonDetails] = useState("");
-  const [isSubmit, setIsSubmit] = useState(false);
-  const toggleFundCheckbox = () => {
-    if (!isFundChecked) {
-      setCashIsChecked(isFundChecked);
-      setFundIsChecked(!isFundChecked);
-    }
-  };
-
-  const toggleCashCheckbox = () => {
-    if (!isCashChecked) {
-      setFundIsChecked(isCashChecked);
-      setCashIsChecked(!isCashChecked);
-    }
-  };
-
-  const getFundDetails = (fundDetails) => {
+  const getFundDetails = async (fundDetails: FundDetailsModel) => {
     setFundDetails(fundDetails);
+    setFundAmount(await getFundBalanceService(fundDetails.fund_id));
   };
-
-  const getPersonDetails = (personDetails) => {
+  const getPersonDetails = (personDetails: PersonModel) => {
     setPersonDetails(personDetails);
   };
 
-  const getCreditReason = (creditReason) => {
+  const getCreditReason = (creditReason: CreditReasonModel) => {
     setCreditReason(creditReason);
   };
 
@@ -89,14 +90,15 @@ const AddCredit = () => {
       alert("Please select expense reason");
       isValidFrom = false;
     } else {
-      if (creditReason.credit_reason === "Pay Of Debt") {
+      console.log(creditReason);
+      if (creditReason.credit_reason_name === "Pay Of Debt") {
         if (!personDetails) {
           alert("Please select person name");
           isValidFrom = false;
         }
       }
     }
-    if (isFundChecked && !fundDetails) {
+    if (!fundDetails) {
       alert("Please select a fund");
       isValidFrom = false;
     }
@@ -109,16 +111,17 @@ const AddCredit = () => {
   };
 
   const saveCreditDetails = () => {
-    let creditObject = {
-      fundId: isCashChecked ? null : fundDetails._id,
-      isByCash: isCashChecked ? 1 : 0,
-      creditReason: creditReason._id,
-      amount: amount,
-      message: message,
+    const creditObject: CreditModel = {
+      fund_id_fk: fundDetails.fund_id,
+      credit_reason_id_fk: creditReason.credit_reason_id,
+      person_id_fk: personDetails.person_id > 0 ? personDetails.person_id : null,
+      amount: Number(amount),
+      message: message.length > 0 ? message : ""
     };
+    console.log(creditObject);
+    saveCreditDetailsService(creditObject);
     setIsSubmit(true);
-    SaveCreditData();
-    navigation.navigate("TransferSuccessful");
+    navigate("CreditTransferSuccessful");
   };
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -129,53 +132,18 @@ const AddCredit = () => {
       <View style={styles.cardView}>
         <View style={styles.topView}>
           <View style={styles.leftView}>
-            {/* For non-cash Payment 
-          e.g. Bank, Credit Card, etc*/}
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={toggleFundCheckbox}
-            >
-              <Text style={{ paddingRight: 10 }}>By Fund</Text>
-              <View
-                style={[styles.checkbox, isFundChecked ? styles.checked : null]}
-              />
-              <TextInput
-                style={styles.Checkedinput}
-                placeholder={
-                  isFundChecked
-                    ? fundDetails.balance
-                      ? "Balance: " + fundDetails.balance
-                      : fundDetails.limit
-                      ? "Available Limit: " + fundDetails.limit
-                      : ""
-                    : ""
-                }
-                editable={false}
-              />
-            </TouchableOpacity>
+            <Text style={{ paddingRight: 10 }}>{"Fund Balance: "}</Text>
+            <TextInput
+              style={styles.Checkedinput}
+              value={"" + fundDetails.balance == "undefined" ? "0" :
+                "" + fundAmount}
+              editable={false}
+            />
           </View>
         </View>
-        {/* For Cash Payment */}
-        <View style={styles.topView}>
-          <View style={styles.leftView}>
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={toggleCashCheckbox}
-            >
-              <Text style={{ paddingRight: 10 }}>By Cash</Text>
-              <View
-                style={[styles.checkbox, isCashChecked ? styles.checked : null]}
-              />
-              <TextInput
-                style={styles.Checkedinput}
-                placeholder={isCashChecked ? "Balance: 12000" : ""}
-                editable={false}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+
         {/* Actual form */}
-        {!isCashChecked && !isSubmit ? (
+        {!isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbFundDetails}
@@ -199,7 +167,7 @@ const AddCredit = () => {
             onChangeText={(txt) => setAmount(txt)}
           />
         </View>
-        {/* Reason for expense */}
+        {/* Reason for credit */}
         {!isSubmit ? (
           <View style={[styles.amountView]}>
             <Dropdown
@@ -211,7 +179,7 @@ const AddCredit = () => {
         ) : null}
 
         {/* Money Lend */}
-        {creditReason.credit_reason === "Pay Of Debt" ? (
+        {"" + creditReason === "undefined" ? null : creditReason.credit_reason_name === "Lend Money" ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbPersonDetails}
@@ -219,7 +187,9 @@ const AddCredit = () => {
               getPersonDetails={getPersonDetails}
             />
           </View>
-        ) : null}
+        ) : (
+          null
+        )}
         <View
           style={[
             styles.amountView,
@@ -285,9 +255,8 @@ const AddCredit = () => {
             <View style={styles.bankRightView}>
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  <Text>{fundDetails.fund_name}</Text>
+                  <Text>{modalOpen ? fundDetails.fund_name : ""}</Text>
                 </View>
-                <Text style={styles.bankAccount}>{fundDetails.fund_type}</Text>
               </View>
             </View>
           </View>
@@ -302,9 +271,9 @@ const AddCredit = () => {
             <View style={styles.bankRightView}>
               <View style={{ marginLeft: moderateScale(15) }}>
                 <View style={styles.upi_view}>
-                  <Text>{creditReason.credit_reason}</Text>
+                  <Text>{modalOpen ? creditReason.credit_reason_name : ""}</Text>
                 </View>
-                <Text style={styles.bankAccount}>{creditReason.category}</Text>
+                <Text style={styles.bankAccount}>{modalOpen ? creditReason.credit_reason_catagory : ""}</Text>
               </View>
             </View>
           </View>
@@ -322,24 +291,24 @@ const AddCredit = () => {
               </View>
             </View>
           </View>
-          {creditReason.credit_reason === "Pay Of Debt" ? (
+          {modalOpen ? creditReason.credit_reason_name === "Lend Money" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
                   <View style={styles.upi_view}>
-                    <Text>Lend From</Text>
+                    <Text>Lend To</Text>
                   </View>
                 </View>
               </View>
               <View style={styles.bankRightView}>
                 <View style={styles.upi_view}>
-                  <Text>{personDetails.name}</Text>
+                  <Text>{personDetails.person_name}</Text>
                 </View>
               </View>
             </View>
           ) : (
             ""
-          )}
+          ) : ""}
           <TouchableOpacity
             style={styles.confirmPayNow}
             onPress={() => {
@@ -352,6 +321,7 @@ const AddCredit = () => {
         </View>
       </Modal>
     </View>
+
   );
 };
 

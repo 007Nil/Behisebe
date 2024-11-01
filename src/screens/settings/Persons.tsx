@@ -24,6 +24,7 @@ const Persons: FC = () => {
   }, []);
   const resetState = () => {
     setModalOpen(false);
+    setPersonName("");
     alert("Person Data Saved!")
   };
   const addPerson = () => {

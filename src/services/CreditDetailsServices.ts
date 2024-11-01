@@ -1,6 +1,7 @@
 import { SQLiteRunResult } from "expo-sqlite";
-import { CreditReasonModel } from "../model";
-import { getAllCreditReasonDetails, addCreditReasonDetails, updateCreditReasonDetails } from "../repository/CreditDetailsRepo";
+import { CreditModel, CreditReasonModel, FundDetailsModel } from "../model";
+import { getAllCreditReasonDetails, addCreditReasonDetails, updateCreditReasonDetails, addCreditDetails } from "../repository/CreditDetailsRepo";
+import { getFundDetailsById, updateFundBalance } from "../repository/FundDetailsRepo";
 
 async function getAllCreditReasonDetailsService(): Promise<CreditReasonModel[]> {
     return await getAllCreditReasonDetails();
@@ -15,8 +16,17 @@ async function updateCreditReasonService(creditReasonObj: CreditReasonModel) {
     await updateCreditReasonDetails(creditReasonObj);
 }
 
+async function saveCreditDetailsService(creditObj: CreditModel) {
+    await addCreditDetails(creditObj);
+    // Update fund balance
+    const fundDetails: FundDetailsModel = await getFundDetailsById(creditObj.fund_id_fk);
+    const latestFundAmount = fundDetails.balance + creditObj.amount;
+    await updateFundBalance(latestFundAmount, fundDetails.fund_id);
+}
+
 export {
     getAllCreditReasonDetailsService,
     addCreditReasonService,
-    updateCreditReasonService
+    updateCreditReasonService,
+    saveCreditDetailsService
 }

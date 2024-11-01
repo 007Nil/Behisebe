@@ -1,9 +1,11 @@
 import "react-native-gesture-handler";
 import React from "react";
 import AppNavigator from "./src/navigation/AppNavigator";
-import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
+import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
+
 
 export default function App() {
+
   return (
     <SQLiteProvider databaseName="behisebe.db" onInit={migrateDbIfNeeded}>
       <AppNavigator />
@@ -12,7 +14,7 @@ export default function App() {
 }
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
-  
+
   await db.execAsync(`
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
@@ -70,6 +72,20 @@ CREATE TABLE IF NOT EXISTS expenses (
     FOREIGN KEY (fund_id_fk) REFERENCES fund_details(fund_id),
     FOREIGN KEY (expense_reason_id_fk) REFERENCES expense_reasons(expense_reason_id),
     FOREIGN KEY (person_id_fk) REFERENCES persons(person_id)
-)
+);
+
+CREATE TABLE IF NOT EXISTS credits (
+    credit_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fund_id_fk INTEGER NOT NULL,
+    credit_reason_id_fk INTEGER NOT NULL,
+    person_id_fk INTEGER,
+    amount INTEGER NOT NULL,
+    message TEXT,
+    timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')),
+    FOREIGN KEY (fund_id_fk) REFERENCES fund_details(fund_id),
+    FOREIGN KEY (credit_reason_id_fk) REFERENCES credit_reasons(credit_reason_id),
+    FOREIGN KEY (person_id_fk) REFERENCES persons(person_id)
+);
+
 `);
 }
