@@ -118,7 +118,6 @@ const AddCredit = () => {
       amount: Number(amount),
       message: message.length > 0 ? message : ""
     };
-    console.log(creditObject);
     saveCreditDetailsService(creditObject);
     setIsSubmit(true);
     navigate("CreditTransferSuccessful");

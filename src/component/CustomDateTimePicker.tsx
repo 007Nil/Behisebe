@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Button } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { ExpenseModel } from '../model';
+import { CreditModel, ExpenseModel } from '../model';
 
 // Services
 import { getExpenseByDateService } from '../services/ExpenseDetailsServices';
@@ -9,9 +9,10 @@ import { getExpenseByDateService } from '../services/ExpenseDetailsServices';
 type DatePickerProps = {
   datePickerScreen: string
   getExpenseDetails?(expsneObj: ExpenseModel[]): void
+  getCreditDetails? (creditObj: CreditModel[]): void
 }
 
-const CustomDateTimePicker = ({ getExpenseDetails, datePickerScreen }: DatePickerProps) => {
+const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails }: DatePickerProps) => {
   const [fromDate, setFromDate] = useState<Date>(new Date());
   const [toDate, setToDate] = useState<Date>(new Date());
   let dateMode: string;
@@ -19,14 +20,18 @@ const CustomDateTimePicker = ({ getExpenseDetails, datePickerScreen }: DatePicke
     (async () => {
       if (datePickerScreen === "expenseDetails") {
         const expenseDetails = await getExpenseByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
+        console.log(expenseDetails)
         getExpenseDetails(expenseDetails);
       }
+      else if (datePickerScreen === "creditDetails"){
+        console.log("HIT");
+      }
     })();
+
   }, [fromDate,toDate]);
 
   const onChange = (event, selectedDate: Date) => {
     const currentDate: Date = selectedDate;
-    // console.log(valueOf)
     dateMode === "fromDate" ? setFromDate(currentDate) : setToDate(currentDate);
   };
 

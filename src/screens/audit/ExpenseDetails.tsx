@@ -1,6 +1,5 @@
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
 
 import styles from './styles'
 import HomeCommonHeader from '../../common/HomeCommonHeader'
@@ -16,9 +15,9 @@ const ExpenseDetails = () => {
   const getExpenseDetails = async (data: ExpenseModel[]) => {
     setExpenseDetails(await prepareCustomList({
       listType: "expenseDetails",
-      expenseObj: data
+      expenseObj: data,
+      creditObj: []
     }));
-
   };
   return (
     <View style={styles.container}>
@@ -30,8 +29,8 @@ const ExpenseDetails = () => {
       <View style={styles.card}>
         <View style={styles.filtersView}>
           <CustomDateTimePicker
-            getExpenseDetails={getExpenseDetails}
             datePickerScreen={"expenseDetails"}
+            getExpenseDetails={getExpenseDetails}
           />
         </View>
         <CustomListView listData={expenseDetails}

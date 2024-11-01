@@ -24,9 +24,14 @@ async function saveCreditDetailsService(creditObj: CreditModel) {
     await updateFundBalance(latestFundAmount, fundDetails.fund_id);
 }
 
+async function getCreditReasonById(creditReasonId: number) {
+    return await getCreditReasonById(creditReasonId);
+}
+
 export {
     getAllCreditReasonDetailsService,
     addCreditReasonService,
     updateCreditReasonService,
-    saveCreditDetailsService
+    saveCreditDetailsService,
+    getCreditReasonById
 }

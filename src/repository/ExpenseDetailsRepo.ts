@@ -48,8 +48,10 @@ async function getExpenseReasonByID(expenseReasonId: number): Promise<ExpenseRea
 }
 
 async function getExpenseByDate(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
+    console.log(fromDate);
+    console.log(toDate);
     const db = await openDBConnection();
-    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE DATE(timestamp)<= ? AND DATE(timestamp) >= ? ORDER BY timestamp DESC;", toDate, fromDate);
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC;",fromDate+" 00:00:00",toDate+" 23:59:59");
     return expenseDetails;
 }
 export {
