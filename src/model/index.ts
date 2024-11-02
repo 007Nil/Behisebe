@@ -5,6 +5,9 @@ import PersonModel from "./PersonModel";
 import ExpenseModel from "./ExpenseModel";
 import CreditModel from "./CreditModel";
 import SelfTransferModel from "./SelfTransferModel";
+import LendMoneyModel from "./LendMoneyModel";
+import MoneyBorrowModel from "./MoneyBorrowModel";
+import MoneyRepayModel from "./MoneyRepayModel";
 export {
     FundDetailsModel,
     ExpenseReasonModel,
@@ -12,5 +15,8 @@ export {
     PersonModel,
     ExpenseModel,
     CreditModel,
-    SelfTransferModel
+    SelfTransferModel,
+    LendMoneyModel,
+    MoneyBorrowModel,
+    MoneyRepayModel
 }

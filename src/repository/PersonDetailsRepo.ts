@@ -26,8 +26,14 @@ async function updatePersonDetails(personObj: PersonModel): Promise<void> {
 
 }
 
+async function getPersonDetailsById(personId:number): Promise<PersonModel> {
+    const db = await openDBConnection();
+    const personDetails: PersonModel = await db.getFirstAsync('SELECT * FROM persons WHERE person_id = ?', personId);
+    return personDetails;
+}
 export {
     getAllPersonDetails,
     addPersonDetails,
-    updatePersonDetails
+    updatePersonDetails,
+    getPersonDetailsById
 }

@@ -57,7 +57,12 @@ async function getExpenseReasonByName(expReasonName: string) {
     const db = await openDBConnection();
     const expenseReasonDetails: ExpenseReasonModel = await db.getFirstAsync('SELECT * FROM expense_reasons WHERE expense_reason_name = ?', expReasonName);
     return expenseReasonDetails;
+}
 
+async function getLendMoneyExpenseDetails() {
+    const db = await openDBConnection();
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE expense_reason_id_fk = 1");
+    return expenseDetails;
 }
 
 export {
@@ -68,5 +73,6 @@ export {
     getExpenseDetails,
     getExpenseReasonByID,
     getExpenseByDate,
-    getExpenseReasonByName
+    getExpenseReasonByName,
+    getLendMoneyExpenseDetails
 }

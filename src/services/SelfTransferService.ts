@@ -20,10 +20,7 @@ async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
     }
     await saveExpenseDetailsService(expenseObj);
 
-    // update debited fund balance
-    let debitedFundDetails: FundDetailsModel = await getFundDetailsById(debitedFundId);
-    let updatedAmount: number = debitedFundDetails.balance - selfTransferObj.amount;
-    await updateFundBalance(updatedAmount, debitedFundId);
+
 
     // Save credit
     let creditReasonModel: CreditReasonModel = await getCreditReasonDetailsByNameService("Self Transfer");
@@ -36,11 +33,6 @@ async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
     }
 
     await saveCreditDetailsService(creditObj);
-
-    // Update credited fund balance
-    let creditedFundDetails: FundDetailsModel = await getFundDetailsById(creditedFundId);
-    updatedAmount = creditedFundDetails.balance + selfTransferObj.amount;
-    await updateFundBalance(updatedAmount, creditedFundId);
 }
 
 export {

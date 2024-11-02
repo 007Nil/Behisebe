@@ -179,7 +179,7 @@ const AddCredit = () => {
         ) : null}
 
         {/* Money Lend */}
-        {"" + creditReason === "undefined" ? null : creditReason.credit_reason_name === "Lend Money" ? (
+        {"" + creditReason === "undefined" ? null : creditReason.credit_reason_name === "Money Lend" ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbPersonDetails}
@@ -291,7 +291,7 @@ const AddCredit = () => {
               </View>
             </View>
           </View>
-          {modalOpen ? creditReason.credit_reason_name === "Lend Money" ? (
+          {modalOpen ? creditReason.credit_reason_name === "Money Lend" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
