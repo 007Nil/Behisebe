@@ -14,13 +14,12 @@ import {
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
 
-const styles = require("./styles");
-import AddFundCustomFlatList from "../../component/AddFundCustomFlatList";
+import styles from "./styles"; import AddFundCustomFlatList from "../../component/AddFundCustomFlatList";
 import { CustomButton } from "../../component";
 import { FundDetailsModel } from "../../model";
 
 // Services
-import { SaveFundDetailsService,getAllFundDetailsService } from "../../services/FundDetailsServices";
+import { SaveFundDetailsService, getAllFundDetailsService } from "../../services/FundDetailsServices";
 
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -28,9 +27,10 @@ const Funds = () => {
   const [fundName, setFundName] = useState<string>("");
   const [fundType, setFundType] = useState<string>("");
   const [fundAmount, setFundAmount] = useState<number>(0);
+  const [searchText, setSearchText] = useState<string>("");
   useEffect(() => {
-    getAllFundDetailsService().then( data => setFundData(data))
-  },[]);
+    getAllFundDetailsService().then(data => setFundData(data))
+  }, []);
   const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
   };
@@ -66,6 +66,11 @@ const Funds = () => {
     resetState();
     alert("Fund Information Saved");
   };
+
+  const searchData = (text: string) =>{
+    setSearchText(text);
+    console.log(text);
+  }
   return (
     <View style={styles.container}>
       <CommonHeader title={"Fund Settings"} />
@@ -75,10 +80,14 @@ const Funds = () => {
           source={require("../../images/search.png")}
           style={styles.search}
         />
-        <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>
+        <TextInput style={styles.searchText}
+         placeholder="Search by name ,number or UPI ID"
+         value={searchText}
+         onChangeText={(text) => searchData(text)}
+        />
       </View>
       <View style={styles.card}>
-        <AddFundCustomFlatList data={fundData}/>
+        <AddFundCustomFlatList data={fundData} />
       </View>
 
       <CustomButton pressEvent={"add_fund"} getModalopen={getModalopen} />

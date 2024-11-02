@@ -68,6 +68,19 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: moderateScale(20),
     },
+    card: {
+        width: '94%',
+        backgroundColor: 'white',
+        marginTop: moderateVerticalScale(15),
+        alignSelf: 'center',
+        borderRadius: moderateScale(10),
+        shadowOpacity: .1,
+        shadowColor: 'rgba(0,0,0,.5)',
+        shadowOffset: {
+            width: 1,
+            height: 1
+        }
+    },
     cardView: {
         width: "94%",
         alignSelf: "center",

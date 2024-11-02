@@ -11,9 +11,10 @@ type DatePickerProps = {
   datePickerScreen: string
   getExpenseDetails?(expsneObj: ExpenseModel[]): void
   getCreditDetails?(creditObj: CreditModel[]): void
+  getTransactionHistory?([expenseObj, creditObj]: [ExpenseModel[],CreditModel[]]): void
 }
 
-const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails, getCreditDetails }: DatePickerProps) => {
+const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails, getCreditDetails,getTransactionHistory }: DatePickerProps) => {
   const [fromDate, setFromDate] = useState<Date>(new Date());
   const [toDate, setToDate] = useState<Date>(new Date());
   let dateMode: string;
@@ -26,6 +27,11 @@ const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails, getCreditDe
       else if (datePickerScreen === "creditDetails") {
         const creditDetails = await getCreditByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
         getCreditDetails(creditDetails);
+      }
+      else if (datePickerScreen === "transactionHistory") {
+        const expenseDetails = await getExpenseByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
+        const creditDetails = await getCreditByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
+        getTransactionHistory([expenseDetails,creditDetails]);
       }
     })();
 
@@ -44,7 +50,6 @@ const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails, getCreditDe
       is24Hour: true,
     });
     dateMode = dateMode1;
-    // setValueOf("");
   };
 
   const showFromDatepicker = () => {

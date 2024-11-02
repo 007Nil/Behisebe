@@ -11,6 +11,21 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f2f2f2'
     },
+    confirmPayNow: {
+        width: "94%",
+        height: verticalScale(40),
+        backgroundColor: "purple",
+        borderRadius: moderateScale(30),
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(20),
+        marginBottom: moderateVerticalScale(40),
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    title: {
+        color: "white",
+        fontSize: moderateScale(20),
+    },
     amountView: {
         width: "94%",
         height: verticalScale(45),
@@ -54,10 +69,19 @@ const styles = StyleSheet.create({
         shadowOpacity: .1,
         shadowColor: 'rgba(0,0,0,.5)',
         shadowOffset: {
-            x: 1,
-            y: 1
+            width: 1,
+            height: 1
         }
     },
+    proceedToPay: {
+        width: "100%",
+        height: verticalScale(60),
+        justifyContent: "center",
+        alignItems: "center",
+        position: "absolute",
+        backgroundColor: "green",
+        bottom: 0,
+      },
     filtersView: {
         width: '90%',
         justifyContent: 'space-between',
@@ -118,7 +142,7 @@ const styles = StyleSheet.create({
     },
     time: {
         marginLeft: moderateScale(20),
-        marginTop: moderateVerticalScale(20),
+        marginTop: moderateVerticalScale(10),
         color: '#929292'
     },
     amount: {

@@ -8,9 +8,14 @@ async function getAllCreditReasonDetailsService(): Promise<CreditReasonModel[]> 
     return await getAllCreditReasonDetails();
 }
 
+async function getValidCreditReasonDetailsService(): Promise<CreditReasonModel[]> {
+    const allCreditReasonDetails: CreditReasonModel[] = await getAllCreditReasonDetails();
+    const validCreditReasonDetails: CreditReasonModel[] = allCreditReasonDetails.filter(obj => obj.credit_reason_name !== "Self Transfer");
+    return validCreditReasonDetails;
+}
+
 async function addCreditReasonService(creditReasonObj: CreditReasonModel) {
     let sqlResult: SQLiteRunResult = await addCreditReasonDetails(creditReasonObj);
-    // console.log(sqlResult)
 }
 
 async function updateCreditReasonService(creditReasonObj: CreditReasonModel) {
@@ -29,13 +34,13 @@ async function getCreditReasonByIdService(creditReasonId: number) {
     return await getCreditReasonById(creditReasonId);
 }
 
-async function getCreditByDateService(fromDate:string, toDate: string) {
+async function getCreditByDateService(fromDate: string, toDate: string) {
     let fromDateTime = dateConvert(fromDate) + " 00:00:00"
     let toDateTime = dateConvert(toDate) + " 23:59:59"
     return await getCreditByDate(fromDateTime, toDateTime);
 }
 
-async function getCreditReasonDetailsByNameService(creditReasonName:string) {
+async function getCreditReasonDetailsByNameService(creditReasonName: string) {
     return await getCreditReasonByName(creditReasonName);
 }
 
@@ -46,5 +51,6 @@ export {
     saveCreditDetailsService,
     getCreditReasonByIdService,
     getCreditByDateService,
-    getCreditReasonDetailsByNameService
+    getCreditReasonDetailsByNameService,
+    getValidCreditReasonDetailsService
 }

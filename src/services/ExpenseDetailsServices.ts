@@ -8,6 +8,12 @@ async function getAllExpenseReasonDetailsService(): Promise<ExpenseReasonModel[]
     return await getAllExpenseReasonDetails();
 }
 
+async function getValidExpenseReasonDetailsService(): Promise<ExpenseReasonModel[]> {
+    const allExpenseReasonDetails: ExpenseReasonModel[] = await getAllExpenseReasonDetails();
+    const validExpenseReasonDetails: ExpenseReasonModel[] = allExpenseReasonDetails.filter(obj => obj.expense_reason_name !== "Self Transfer");
+    return validExpenseReasonDetails;
+}
+
 async function addExpenseReasonService(exposeReasonObj: ExpenseReasonModel) {
     let sqlResult: SQLiteRunResult = await addExpenseReasonDetails(exposeReasonObj);
     console.log(sqlResult)
@@ -45,5 +51,6 @@ export {
     saveExpenseDetailsService,
     getExpenseDetailsService,
     getExpenseByDateService,
-    getExpenseReasonByNameService
+    getExpenseReasonByNameService,
+    getValidExpenseReasonDetailsService
 }

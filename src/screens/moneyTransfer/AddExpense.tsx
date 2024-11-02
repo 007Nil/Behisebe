@@ -22,8 +22,8 @@ import styles from "./styles";
 import Dropdown from "../../component/Dropdown";
 import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 // Services
-import { getAllFundDetailsService, getFundBalanceService } from "../../services/FundDetailsServices";
-import { getAllExpenseReasonDetailsService, saveExpenseDetailsService } from "../../services/ExpenseDetailsServices";
+import { getAllFundDetailsService, getFundBalanceService, getValidFundDetailsService } from "../../services/FundDetailsServices";
+import { getAllExpenseReasonDetailsService, getValidExpenseReasonDetailsService, saveExpenseDetailsService } from "../../services/ExpenseDetailsServices";
 import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
 import { ExpenseModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../../model";
 
@@ -65,8 +65,8 @@ const AddExpense = () => {
   }, [isFocused]);
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
-    getAllExpenseReasonDetailsService().then((data) => setDbExpenseReason(data));
-    getAllFundDetailsService().then((data) => setDbFundDetails(data));
+    getValidExpenseReasonDetailsService().then((data) => setDbExpenseReason(data));
+    getValidFundDetailsService().then((data) => setDbFundDetails(data));
   }, []);
 
 

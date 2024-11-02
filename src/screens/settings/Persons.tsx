@@ -2,8 +2,7 @@ import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import React, {FC, useState, useEffect } from "react";
 import { moderateScale, scale } from "react-native-size-matters";
 
-const styles = require("./styles");
-
+import styles from "./styles";
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { AddPersonCustomFlatList, CustomButton } from "../../component";

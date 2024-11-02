@@ -10,7 +10,7 @@ export {
     AddExpense,
     AddCredit,
     ToSelfTransfer,
-    // CheckBalance,
+    CheckBalance,
     TransferSuccessful,
     CreditTransferSuccessful,
     SelfTransferSuccessful

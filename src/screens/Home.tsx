@@ -74,9 +74,9 @@ const Home = () => {
               <Text style={styles.tranferText}>{"To Self Transfer"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}
-            // onPress={() => {
-            //     navigation.navigate("CheckBalance");
-            //   }}
+            onPress={() => {
+                navigate("CheckBalance");
+              }}
             >
               <View style={styles.transferCard}>
                 <Image

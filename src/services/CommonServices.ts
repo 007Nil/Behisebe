@@ -50,16 +50,11 @@ async function prepareCustomList(props: prepareCustomListProps): Promise<CustomL
 }
 
 
-async function getTransactionHistoryByDate(): Promise<CustomList[]> {
-    const expenseDetails: ExpenseModel[] = await getExpenseDetails();
-    const creditDetails: CreditModel[] = await getCreditDetails();
-
+async function getTransactionHistoryService(expenseDetails: ExpenseModel[],creditDetails: CreditModel[]): Promise<CustomList[]> {
     const expenseCustomList: CustomList[] = await prepareCustomList({ listType: "expenseDetails", expenseObj: expenseDetails });
     const creditCustomList: CustomList[] = await prepareCustomList({ listType: "creditDetails", creditObj: creditDetails });
     let transactionHistoryUnsorted: CustomList[] = expenseCustomList.concat(creditCustomList);
 
-    // console.log("-------------------------");
-    // console.log(creditCustomList)
     let transactionHistory = transactionHistoryUnsorted.sort(
         (a, b) =>
             new Date(b.date).getTime() - new Date(a.date).getTime(),
@@ -70,5 +65,5 @@ async function getTransactionHistoryByDate(): Promise<CustomList[]> {
 
 export {
     prepareCustomList,
-    getTransactionHistoryByDate,
+    getTransactionHistoryService,
 }

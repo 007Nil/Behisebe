@@ -7,7 +7,7 @@ import {
     verticalScale,
   } from "react-native-size-matters";
 
-module.exports = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
@@ -181,15 +181,6 @@ module.exports = StyleSheet.create({
     marginTop: moderateVerticalScale(20),
     opacity: 0.4,
   },
-  bankView: {
-    width: "100%",
-    height: verticalScale(50),
-    backgroundColor: "#f2f2f2",
-    alignSelf: "center",
-    marginTop: moderateVerticalScale(15),
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
   bankLeftView: {
     flexDirection: "row",
     alignItems: "center",
@@ -224,3 +215,5 @@ module.exports = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default styles;

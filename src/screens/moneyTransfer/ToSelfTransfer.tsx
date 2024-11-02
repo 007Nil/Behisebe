@@ -22,7 +22,7 @@ import styles from "./styles";
 import Dropdown from "../../component/Dropdown";
 import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 import { FundDetailsModel, SelfTransferModel } from "../../model";
-import { getAllFundDetailsService } from "../../services/FundDetailsServices";
+import { getAllFundDetailsService, getValidFundDetailsService } from "../../services/FundDetailsServices";
 import { startSelfTransaction } from "../../services/SelfTransferService";
 
 
@@ -46,7 +46,7 @@ const ToSelfTransfer = () => {
   }
 
   useEffect(() => {
-    getAllFundDetailsService().then((data) => setDbFundDetails(data));
+    getValidFundDetailsService().then((data) => setDbFundDetails(data));
   }, []);
 
   useEffect(() => {
@@ -63,6 +63,14 @@ const ToSelfTransfer = () => {
     }
     if (!tranferToFundDetails) {
       alert("Please select the Transfer To Fund");
+      return false;
+    }
+    if (tranferFromFundDetails.balance < Number(transferAmount)){
+      alert(tranferFromFundDetails.fund_name+" fund does not have sufficient amount");
+      return false;
+    }
+    if (tranferFromFundDetails.fund_name === tranferToFundDetails.fund_name){
+      alert("Cannot Tranfser the money to same fund");
       return false;
     }
     return true;

@@ -8,7 +8,7 @@ type fundAmountType = {
 
 async function getAllFundDetails(): Promise<FundDetailsModel[]> {
     const db = await openDBConnection();
-    const allRows: FundDetailsModel[] = await db.getAllAsync('SELECT * FROM fund_details');
+    const allRows: FundDetailsModel[] = await db.getAllAsync('SELECT * FROM fund_details ORDER BY timestamp DESC;');
     return allRows;
 }
 

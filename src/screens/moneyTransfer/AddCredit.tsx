@@ -20,8 +20,8 @@ import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 import { CreditModel, CreditReasonModel, FundDetailsModel, PersonModel } from "../../model";
 import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
-import { getAllFundDetailsService, getFundBalanceService } from "../../services/FundDetailsServices";
-import { getAllCreditReasonDetailsService, saveCreditDetailsService } from "../../services/CreditDetailsServices";
+import { getAllFundDetailsService, getFundBalanceService, getValidFundDetailsService } from "../../services/FundDetailsServices";
+import { getAllCreditReasonDetailsService, getValidCreditReasonDetailsService, saveCreditDetailsService } from "../../services/CreditDetailsServices";
 import { type StackNavigation } from "../../navigation/AppNavigator";
 
 
@@ -60,8 +60,8 @@ const AddCredit = () => {
 
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
-    getAllCreditReasonDetailsService().then((data) => setDbCreditReason(data));
-    getAllFundDetailsService().then((data) => setDbFundDetails(data));
+    getValidCreditReasonDetailsService().then((data) => setDbCreditReason(data));
+    getValidFundDetailsService().then((data) => setDbFundDetails(data));
   }, []);
 
   useEffect(() => {

@@ -11,8 +11,7 @@ import {
   scale,
 } from "react-native-size-matters";
 
-const styles = require("./styles")
-
+import styles from "./styles";
 import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { AddExpenseCustomFlatList, CustomButton } from "../../component";

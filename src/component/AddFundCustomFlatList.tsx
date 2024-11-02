@@ -15,7 +15,7 @@ import {
 } from "react-native-size-matters";
 import Modal from "react-native-modal";
 
-import {FlatlistStyles as styles} from "./FlatlsitStyles";
+import { FlatlistStyles as styles } from "./FlatlsitStyles";
 
 import { updateFundDetailsService } from "../services/FundDetailsServices";
 
@@ -23,10 +23,11 @@ import { FundDetailsModel } from "../model";
 
 type AddFundFlatListProps = {
   data: FundDetailsModel[];
+  screenName?: string
 };
 
 
-const AddFundCustomFlatList = ({ data }: AddFundFlatListProps) => {
+const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
   const [flatListData, setFlatListData] = useState<FundDetailsModel[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editName, setEditName] = useState<string>("");
@@ -69,6 +70,9 @@ const AddFundCustomFlatList = ({ data }: AddFundFlatListProps) => {
     setFlatListData(updatedArray);
   };
 
+  const viewBalance = (item: FundDetailsModel) => {
+    alert(item.balance);
+  }
   const editForm = (item: FundDetailsModel) => {
     setIsModalVisible(true);
     setFromId(item.fund_id);
@@ -103,99 +107,109 @@ const AddFundCustomFlatList = ({ data }: AddFundFlatListProps) => {
                   </View>
                 </View>
               </View>
-              <View style={{ alignItems: "flex-end" }}>
-                <TouchableOpacity onPress={() => editForm(item)}>
-                  <Text style={styles.amount}>{"Edit"}</Text>
-                </TouchableOpacity>
-              </View>
+              {screenName !== "checkBalance" ?
+                <View style={{ alignItems: "flex-end" }}>
+                  <TouchableOpacity onPress={() => editForm(item)}>
+                    <Text style={styles.amount}>{"Edit"}</Text>
+                  </TouchableOpacity>
+                </View>
+                :
+                <View style={{ alignItems: "flex-end" }}>
+                  <TouchableOpacity onPress={() => viewBalance(item)}>
+                    <Text style={styles.amount}>{"View Balance"}</Text>
+                  </TouchableOpacity>
+                </View>
+              }
             </View>
           );
         }}
       />
-      <Modal isVisible={isModalVisible} backdropOpacity={0.2}>
-        <View style={styles.mainView}>
-          <View style={styles.modalTopView}>
-            <Text style={styles.payable}>Edit Details</Text>
-            <View style={styles.modalTopRightView}>
-              <TouchableOpacity onPress={handleModal}>
-                <Image
-                  source={require("../images/close.png")}
-                  style={[
-                    styles.backIcon,
-                    { tintColor: "black", width: scale(16) },
-                  ]}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.divider}></View>
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>
-                    {"Fund Name"}
-                  </Text>
-                </View>
-                <TextInput
-                  style={styles.bankAccount}
-                  value={editName}
-                  onChangeText={(name) => setEditName(name)}
-                />
+      {screenName !== "checkBalance" ?
+        <Modal isVisible={isModalVisible} backdropOpacity={0.2}>
+          <View style={styles.mainView}>
+            <View style={styles.modalTopView}>
+              <Text style={styles.payable}>Edit Details</Text>
+              <View style={styles.modalTopRightView}>
+                <TouchableOpacity onPress={handleModal}>
+                  <Image
+                    source={require("../images/close.png")}
+                    style={[
+                      styles.backIcon,
+                      { tintColor: "black", width: scale(16) },
+                    ]}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
-          </View>
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>
-                    {"Fund Type"}
-                  </Text>
+            <View style={styles.divider}></View>
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text style={styles.bankAccount}>
+                      {"Fund Name"}
+                    </Text>
+                  </View>
+                  <TextInput
+                    style={styles.bankAccount}
+                    value={editName}
+                    onChangeText={(name) => setEditName(name)}
+                  />
                 </View>
-                <TextInput
-                  style={styles.bankAccount}
-                  value={formEditType}
-                  onChangeText={(type) => setFormEditType(type)}
-                />
               </View>
             </View>
-          </View>
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>{"Amount / Limit"}</Text>
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text style={styles.bankAccount}>
+                      {"Fund Type"}
+                    </Text>
+                  </View>
+                  <TextInput
+                    style={styles.bankAccount}
+                    value={formEditType}
+                    onChangeText={(type) => setFormEditType(type)}
+                  />
                 </View>
-                <TextInput
-                  style={styles.bankAccount}
-                  keyboardType="number-pad"
-                  value={editAmount.toString()}
-                  onChangeText={(amount) => setEditAmount(Number(amount))}
-                />
               </View>
             </View>
-          </View>
-          <View style={styles.bankView}>
-            <View style={styles.bankLeftView}>
-              <View style={{ marginLeft: moderateScale(15) }}>
-                <View style={styles.upi_view}>
-                  <Text style={styles.bankAccount}>{"Fund Status"}</Text>
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text style={styles.bankAccount}>{"Amount / Limit"}</Text>
+                  </View>
+                  <TextInput
+                    style={styles.bankAccount}
+                    keyboardType="number-pad"
+                    value={editAmount.toString()}
+                    onChangeText={(amount) => setEditAmount(Number(amount))}
+                  />
                 </View>
-                <Switch
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={accountState ? "#f5dd4b" : "#f4f3f4"}
-                  onValueChange={toggleSwitch}
-                  value={accountState}
-                />
               </View>
             </View>
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text style={styles.bankAccount}>{"Fund Status"}</Text>
+                  </View>
+                  <Switch
+                    trackColor={{ false: "#767577", true: "#81b0ff" }}
+                    thumbColor={accountState ? "#f5dd4b" : "#f4f3f4"}
+                    onValueChange={toggleSwitch}
+                    value={accountState}
+                  />
+                </View>
+              </View>
+            </View>
+            <TouchableOpacity style={styles.confirmPayNow} onPress={handleModal}>
+              <Text style={styles.title}>{"Update Details"}</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.confirmPayNow} onPress={handleModal}>
-            <Text style={styles.title}>{"Update Details"}</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+        </Modal>
+        : null}
     </View>
   );
 };

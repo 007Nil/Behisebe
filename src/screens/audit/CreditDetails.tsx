@@ -32,11 +32,12 @@ const CreditDetails = () => {
             datePickerScreen={"creditDetails"}
           />
         </View>
-        <View style={[styles.card,{paddingBottom:100}]}>
-          <CustomListView listData={creditDetails}
-          />
-        </View>
       </View>
+      <View style={[styles.card, { paddingBottom: 100 }]}>
+        <CustomListView listData={creditDetails}
+        />
+      </View>
+
     </View>
   )
 }

@@ -2,67 +2,42 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react
 import React, { useEffect, useState } from 'react'
 import HomeCommonHeader from '../common/HomeCommonHeader'
 import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
-import { getTransactionHistoryByDate } from '../services/CommonServices'
+import { getTransactionHistoryService } from '../services/CommonServices'
 import CustomList from '../model/CustomListModel'
+import { CustomDateTimePicker, CustomListView } from '../component'
+import { CreditModel, ExpenseModel } from '../model'
 const History = () => {
   const [transactionHistory, setTransactionHistory] = useState<CustomList[]>();
-  useEffect(() => {
-    async () => {
-      setTransactionHistory(await getTransactionHistoryByDate());
-    }
+  // useEffect(() => {
+  //   async () => {
+  //     setTransactionHistory(await getTransactionHistoryByDate());
+  //   }
 
-  }, [transactionHistory]);
+  // }, [transactionHistory]);
+
+  const getTransactionHistory = async ([expenseObj, creditObj]: [ExpenseModel[], CreditModel[]]) => {
+    setTransactionHistory(await getTransactionHistoryService(expenseObj, creditObj));
+  }
   return (
     <View style={styles.container}>
-      <HomeCommonHeader title={"History"} />
+      <HomeCommonHeader title={"Transaction History"} />
       <View style={styles.searchBox}>
         <Image source={require('../images/search.png')} style={styles.search} />
-        <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>
+        <Text style={styles.searchText}>Search by Fund Name or amount</Text>
       </View>
       <View style={styles.card}>
         <View style={styles.filtersView}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity style={styles.dropdownView}>
-              <Text>Month</Text>
-              <Image source={require('../images/down.png')} style={styles.icon} />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.dropdownView, { marginLeft: moderateScale(15) }]}>
-              <Text>Categories</Text>
-              <Image source={require('../images/down.png')} style={styles.icon} />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.dropdownView}>
-            <Text>Filter</Text>
-            <Image source={require('../images/down.png')} style={styles.icon} />
-          </TouchableOpacity>
+          <CustomDateTimePicker
+            getTransactionHistory={getTransactionHistory}
+            datePickerScreen={"transactionHistory"}
+          />
         </View>
-        <FlatList contentContainerStyle={{ marginTop: moderateVerticalScale(30) }} data={[1]} renderItem={({ item, index }) => {
-          return (
-            <View style={styles.transactionItem}>
-              <View>
-                <View style={styles.topLeftView}>
-                  <View style={styles.iconView}>
-                    <Image source={index % 2 == 0 ? require('../images/down-right.png') : require('../images/creadited.png')} style={styles.icon2} />
-
-                  </View>
-                  <View style={{ marginLeft: moderateScale(10) }}>
-                    <Text style={styles.paidTo}>paid to</Text>
-                    <Text style={styles.name}>Gaurav</Text>
-                  </View>
-                </View>
-                <Text style={styles.time}>Yesterday</Text>
-              </View>
-              <View style={{ alignItems: 'flex-end' }}>
-                <Text style={styles.amount}>{' ₹ 10000'}</Text>
-                <View style={styles.bankView}>
-                  <Text style={[styles.time, { marginTop: 0 }]}>{index % 2 == 0 ? 'debited from' : 'credited to'}</Text>
-                  <Image source={require('../images/bank_logo.png')} style={styles.logo} />
-                </View>
-              </View>
-            </View>
-          )
-        }} />
       </View>
+      <View style={[styles.card, { paddingBottom: 100 }]}>
+        <CustomListView listData={transactionHistory}
+        />
+      </View>
+
     </View>
   )
 }

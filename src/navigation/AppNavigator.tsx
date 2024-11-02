@@ -6,7 +6,7 @@ import {
   AddExpense,
   AddCredit,
   ToSelfTransfer,
-  // CheckBalance,
+  CheckBalance,
   SelfTransferSuccessful,
   TransferSuccessful,
   CreditTransferSuccessful
@@ -25,7 +25,7 @@ export type ScreenNames = ["App", "AddExpense", "ProfileAndSettings",
   "Funds", "ExpesneReasons", "CreditReasons",
   "Persons", "TransferSuccessful", "CreditDetails",
   "ExpenseDetails", "AddCredit", "CreditTransferSuccessful",
-  "ToSelfTransfer","SelfTransferSuccessful"];
+  "ToSelfTransfer","SelfTransferSuccessful","CheckBalance"];
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -63,13 +63,13 @@ const AppNavigator = () => {
           component={SelfTransferSuccessful}
           options={{ headerShown: false }}
         />
-        {/*
+      
         <stack.Screen
           name="CheckBalance"
           component={CheckBalance}
           options={{ headerShown: false }}
         />
-        */}
+        
         <stack.Screen
           name="CreditTransferSuccessful"
           component={CreditTransferSuccessful}

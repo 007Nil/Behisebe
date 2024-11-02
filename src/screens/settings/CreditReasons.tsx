@@ -15,7 +15,8 @@ import { CreditReasonModel } from "../../model";
 
 import { getAllCreditReasonDetailsService, addCreditReasonService } from "../../services/CreditDetailsServices";
 
-const styles = require("./styles")
+
+import styles from "./styles";
 
 const CreditReasons = () => {
   const [creditData, setCreditData] = useState<CreditReasonModel[]>([]);

@@ -24,10 +24,13 @@ PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
 --DROP TABLE IF EXISTS expenses;
+--DROP TABLE IF EXISTS credits;
+--DROP TABLE IF EXISTS expenses;
 --DROP TABLE IF EXISTS fund_details;
 --DROP TABLE IF EXISTS expense_reasons;
 --DROP TABLE IF EXISTS credit_reasons;
 --DROP TABLE IF EXISTS persons;
+
 
 
 CREATE TABLE IF NOT EXISTS fund_details (
@@ -44,6 +47,10 @@ INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
 SELECT 'Cash', 'Cash InHand','Cash Fund',1,0
 WHERE NOT EXISTS(SELECT 1 FROM fund_details WHERE fund_id = 1 AND fund_name = 'Cash' AND fund_type = 'Cash InHand');
 
+INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
+SELECT 'dummy card', 'Credit Card','',0,0
+WHERE NOT EXISTS(SELECT 1 FROM fund_details WHERE fund_id = 2 AND fund_name = 'dummy card' AND fund_type = 'Credit Card');
+
 CREATE TABLE IF NOT EXISTS expense_reasons (
     expense_reason_id INTEGER PRIMARY KEY AUTOINCREMENT,
     expense_reason_name TEXT NOT NULL UNIQUE,
@@ -54,11 +61,25 @@ INSERT INTO expense_reasons(expense_reason_name,expense_reason_catagory)
 SELECT 'Lend Money', 'Personal Expense'
 WHERE NOT EXISTS(SELECT 1 FROM expense_reasons WHERE expense_reason_id = 1 AND expense_reason_name = 'Lend Money' AND expense_reason_catagory='Personal Expense');
 
+
+INSERT INTO expense_reasons(expense_reason_name,expense_reason_catagory) 
+SELECT 'Self Transfer', 'Self Transfer'
+WHERE NOT EXISTS(SELECT 1 FROM expense_reasons WHERE expense_reason_id = 2 AND expense_reason_name = 'Self Transfer' AND expense_reason_catagory='Self Transfer');
+
 CREATE TABLE IF NOT EXISTS credit_reasons (
     credit_reason_id INTEGER PRIMARY KEY AUTOINCREMENT,
     credit_reason_name TEXT NOT NULL UNIQUE,
     credit_reason_catagory TEXT NOT NULL
 );
+
+INSERT INTO credit_reasons(credit_reason_name,credit_reason_catagory) 
+SELECT 'Self Transfer', 'Self Transfer'
+WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 1 AND credit_reason_name = 'Self Transfer' AND credit_reason_catagory='Self Transfer');
+
+INSERT INTO credit_reasons(credit_reason_name,credit_reason_catagory) 
+SELECT 'Lend Money', 'Personal Credit'
+WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 2 AND credit_reason_name = 'Lend Money' AND credit_reason_catagory='Personal Credit');
+
 
 CREATE TABLE IF NOT EXISTS persons (
     person_id INTEGER PRIMARY KEY AUTOINCREMENT,
