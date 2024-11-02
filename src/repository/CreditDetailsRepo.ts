@@ -28,6 +28,7 @@ async function updateCreditReasonDetails(creditReasonObj: CreditReasonModel): Pr
 async function getCreditDetails(): Promise<CreditModel[]> {
     const db = await openDBConnection();
     const creditDetails: CreditModel[] = await db.getAllAsync('SELECT * FROM credits ORDER BY timestamp DESC;');
+    // console.log(creditDetails)
     return creditDetails;
 }
 

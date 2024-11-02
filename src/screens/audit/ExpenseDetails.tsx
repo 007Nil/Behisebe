@@ -33,8 +33,13 @@ const ExpenseDetails = () => {
             getExpenseDetails={getExpenseDetails}
           />
         </View>
-        <CustomListView listData={expenseDetails}
-        />
+        <View style={{}}>
+          <CustomListView listData={expenseDetails}
+          />
+        </View>
+        <View>
+          <Text>dsdsdds</Text>
+        </View>
 
       </View>
     </View>

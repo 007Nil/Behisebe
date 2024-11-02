@@ -11,6 +11,19 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f2f2f2'
     },
+    amountView: {
+        width: "94%",
+        height: verticalScale(45),
+        borderWidth: 0.5,
+        alignSelf: "center",
+        borderColor: "#929292",
+        borderRadius: moderateScale(5),
+        flexDirection: "row",
+        paddingLeft: moderateScale(10),
+        paddingRight: moderateScale(10),
+        alignItems: "center",
+        marginTop: moderateVerticalScale(20),
+    },
     searchBox: {
         width: '94%',
         height: verticalScale(40),

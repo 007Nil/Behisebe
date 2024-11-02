@@ -20,23 +20,24 @@ const CreditDetails = () => {
   };
   return (
     <View style={styles.container}>
-    <HomeCommonHeader title={"Credit Details"} />
-    <View style={styles.searchBox}>
-      <Image source={require('../../images/search.png')} style={styles.search} />
-      <Text style={styles.searchText}>Search by Fund Name or amount</Text>
-    </View>
-    <View style={styles.card}>
-      <View style={styles.filtersView}>
-        <CustomDateTimePicker
-          getCreditDetails={getCreditDetails}
-          datePickerScreen={"creditDetails"}
-        />
+      <HomeCommonHeader title={"Credit Details"} />
+      <View style={styles.searchBox}>
+        <Image source={require('../../images/search.png')} style={styles.search} />
+        <Text style={styles.searchText}>Search by Fund Name or amount</Text>
       </View>
-      <CustomListView listData={creditDetails}
-      />
-
+      <View style={styles.card}>
+        <View style={styles.filtersView}>
+          <CustomDateTimePicker
+            getCreditDetails={getCreditDetails}
+            datePickerScreen={"creditDetails"}
+          />
+        </View>
+        <View style={[styles.card,{paddingBottom:100}]}>
+          <CustomListView listData={creditDetails}
+          />
+        </View>
+      </View>
     </View>
-  </View>
   )
 }
 

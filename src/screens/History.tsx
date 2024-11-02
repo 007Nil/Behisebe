@@ -1,12 +1,20 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import HomeCommonHeader from '../common/HomeCommonHeader'
 import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
-
+import { getTransactionHistoryByDate } from '../services/CommonServices'
+import CustomList from '../model/CustomListModel'
 const History = () => {
+  const [transactionHistory, setTransactionHistory] = useState<CustomList[]>();
+  useEffect(() => {
+    async () => {
+      setTransactionHistory(await getTransactionHistoryByDate());
+    }
+
+  }, [transactionHistory]);
   return (
     <View style={styles.container}>
-      <HomeCommonHeader title={"History"}/>
+      <HomeCommonHeader title={"History"} />
       <View style={styles.searchBox}>
         <Image source={require('../images/search.png')} style={styles.search} />
         <Text style={styles.searchText}>Search by name ,number or UPI ID</Text>
@@ -44,11 +52,11 @@ const History = () => {
                 </View>
                 <Text style={styles.time}>Yesterday</Text>
               </View>
-              <View style={{alignItems:'flex-end'}}>
+              <View style={{ alignItems: 'flex-end' }}>
                 <Text style={styles.amount}>{' ₹ 10000'}</Text>
                 <View style={styles.bankView}>
                   <Text style={[styles.time, { marginTop: 0 }]}>{index % 2 == 0 ? 'debited from' : 'credited to'}</Text>
-                  <Image source={require('../images/bank_logo.png')} style={styles.logo}/>
+                  <Image source={require('../images/bank_logo.png')} style={styles.logo} />
                 </View>
               </View>
             </View>
@@ -171,9 +179,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: moderateVerticalScale(20)
   },
-  logo:{
-    width:scale(12),
-    height:scale(12),
-    marginLeft:moderateScale(15)
+  logo: {
+    width: scale(12),
+    height: scale(12),
+    marginLeft: moderateScale(15)
   }
 })
