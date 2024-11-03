@@ -62,14 +62,14 @@ const Repay = () => {
     setMessage(item.message);
     setFlatListIndex(dbMoneyReplayDetails.indexOf(item));
     setIsModalVisible(true);
-
-
   }
 
-  const handleModal = () => {
-    updateFormData();
-    setIsModalVisible(() => !isModalVisible);
-    alert("Data Updated");
+  const handleModal = (clicktype?: string) => {
+    if (clicktype === "closeClick") {
+      setIsModalVisible(() => !isModalVisible);
+    } else {
+      updateFormData();
+    }
   }
 
   const getFundDetails = async (fundDetails: FundDetailsModel) => {
@@ -77,6 +77,14 @@ const Repay = () => {
   };
 
   const updateFormData = async () => {
+    if (!fundetails) {
+      alert("Please select a fund");
+      return;
+    }
+    if ((prevAlreadyPay + payNow) > amount){
+      alert("Invalid amount");
+      return;
+    }
     let tmpFlatlistData = dbMoneyReplayDetails;
     const updatedArray = tmpFlatlistData.filter(function (ele) {
       return btnPressValue === "getLendInfo" ? ele.expense_id !== formId : [];
@@ -86,16 +94,19 @@ const Repay = () => {
       expense_id: expenseId,
       credit_id: creditId,
       amount: amount,
-      paid_amount: prevAlreadyPay + payNow,
+      paid_amount: payNow,
       date: btnPressValue === "getLendInfo" ? lendOnDate : "",
       fundName: fundName,
       personName: personName,
       message: message,
       transaction_fund_id: fundetails.fund_id
     }
+    // console.log(newRepayDate);
     await updateLendMoneyDetailsService(newRepayDate);
     updatedArray.splice(flatListIndex, 0, newRepayDate);
     setDbMoneyReplayDetails(updatedArray);
+    alert("Data Updated");
+    setIsModalVisible(() => !isModalVisible);
   }
 
   return (
@@ -122,21 +133,17 @@ const Repay = () => {
                       <View style={styles.topLeftView}>
                         <View style={{ marginLeft: moderateScale(10) }}>
                           <View>
-                            <Text style={styles.paidTo}>{"Money Lend To"}</Text>
-                            <Text style={styles.paidTo}>{item.personName}</Text>
-                            <Text style={styles.paidTo}>{"Amount"}</Text>
-                            <Text style={styles.paidTo}>{item.amount}</Text>
-                            <Text style={styles.paidTo}>{"Date"}</Text>
-                            <Text style={styles.paidTo}>{item.date}</Text>
-                            <Text style={styles.paidTo}>{"Already paid"}</Text>
-                            <Text style={styles.paidTo}>{item.paid_amount}</Text>
+                            <Text style={styles.paidTo}>{"Money Lend To: " + item.personName}</Text>
+                            <Text style={styles.paidTo}>{"Lend Amount: " + item.amount}</Text>
+                            <Text style={styles.paidTo}>{"Date: " + item.date}</Text>
+                            <Text style={styles.paidTo}>{"Due Amount: " + (item.amount - item.paid_amount)}</Text>
+                            <Text style={styles.paidTo}>{"Already paid: " + item.paid_amount}</Text>
                             {item.message !== "" ?
                               <View>
                                 <Text style={styles.paidTo}>{"Message"}</Text>
                                 <Text style={styles.paidTo}>{item.message}</Text>
                               </View> : null
                             }
-
                           </View>
                         </View>
                       </View>
@@ -159,7 +166,7 @@ const Repay = () => {
               <View style={styles.modalTopView}>
                 <Text style={styles.payable}>Edit Details</Text>
                 <View style={styles.modalTopRightView}>
-                  <TouchableOpacity onPress={handleModal}>
+                  <TouchableOpacity onPress={() => handleModal("closeClick")}>
                     <Image
                       source={require("../images/close.png")}
                       style={[
@@ -282,7 +289,7 @@ const Repay = () => {
                   </View>
                 </View>
               </View>
-              <TouchableOpacity style={styles.confirmPayNow} onPress={handleModal}>
+              <TouchableOpacity style={styles.confirmPayNow} onPress={() => handleModal("")}>
                 <Text style={styles.title}>{"Update Details"}</Text>
               </TouchableOpacity>
             </View>

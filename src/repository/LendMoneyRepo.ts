@@ -1,12 +1,6 @@
 import { openDBConnection } from './OpenSqllite';
 import { LendMoneyModel } from '../model';
 
-// async function getAllFundDetails(): Promise<FundDetailsModel[]> {
-//     const db = await openDBConnection();
-//     const allRows: FundDetailsModel[] = await db.getAllAsync('SELECT * FROM fund_details ORDER BY timestamp DESC;');
-//     return allRows;
-// }
-
 async function addLendMoneyDetails(lendMoneyObj: LendMoneyModel): Promise<void> {
     const db = await openDBConnection();
     await db.runAsync('INSERT INTO money_lends (expense_id_fk, paid_amount) VALUES (?, ?)',

@@ -29,6 +29,7 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
+
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
     fund_name TEXT NOT NULL UNIQUE,
