@@ -157,6 +157,72 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row'
     },
+    mainView: {
+        backgroundColor: "white",
+        width: "100%",
+        position: "absolute",
+        borderTopLeftRadius: moderateScale(20),
+        borderTopRightRadius: moderateScale(20),
+        padding: moderateScale(10),
+    },
+    modalTopView: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: moderateScale(10),
+    },
+    payable: {
+        fontWeight: "700",
+        color: "black",
+        fontSize: moderateScale(16),
+    },
+    modalTopRightView: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    backIcon: {
+        width: scale(24),
+        height: scale(24),
+        tintColor: "white",
+    },
+    divider: {
+        width: "100%",
+        height: verticalScale(0.5),
+        backgroundColor: "#929292",
+        marginTop: moderateVerticalScale(20),
+        opacity: 0.4,
+    },
+    bankView: {
+        flexDirection: "row",
+        marginTop: moderateVerticalScale(20),
+    },
+    bankLeftView: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    upi_view: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    bankAccount: {
+        color: "#929292",
+        fontSize: moderateScale(12),
+    },
+    confirmPayNow: {
+        width: "94%",
+        height: verticalScale(40),
+        backgroundColor: "purple",
+        borderRadius: moderateScale(30),
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(20),
+        marginBottom: moderateVerticalScale(40),
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    title: {
+        color: "white",
+        fontSize: moderateScale(20),
+    },
     topLeftView: {
         flexDirection: 'row',
         alignItems: 'center',

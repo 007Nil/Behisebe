@@ -7,6 +7,7 @@ type MoneyRepayModel = {
     fundName: string,
     message?: string,
     personName: string
+    transaction_fund_id: number
 }
 
 export default MoneyRepayModel
