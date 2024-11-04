@@ -21,10 +21,14 @@ async function prepareCustomList(props: prepareCustomListProps): Promise<CustomL
             const expenseReasonDetails: ExpenseReasonModel = await getExpenseReasonByID(eachExpense.expense_reason_id_fk);
             customList = {
                 fund_name: fundDetails.fund_name,
+                fund_id: fundDetails.fund_id,
                 reason: expenseReasonDetails.expense_reason_name,
+                expense_id: eachExpense.expense_id,
+                credit_id: null,
                 catagory: "expenseDetails",
                 amount: eachExpense.amount.toString(),
-                date: eachExpense.timestamp
+                date: eachExpense.timestamp,
+                reason_id: eachExpense.expense_reason_id_fk
             };
             returnValue.push(customList);
         }
@@ -36,10 +40,14 @@ async function prepareCustomList(props: prepareCustomListProps): Promise<CustomL
             const creditReasonDetails: CreditReasonModel = await getCreditReasonByIdService(eachCredit.credit_reason_id_fk);
             customList = {
                 fund_name: fundDetails.fund_name,
+                fund_id: fundDetails.fund_id,
+                credit_id: eachCredit.credit_id,
+                expense_id: null,
                 reason: creditReasonDetails.credit_reason_name,
                 catagory: "creditDetails",
                 amount: eachCredit.amount.toString(),
-                date: eachCredit.timestamp
+                date: eachCredit.timestamp,
+                reason_id: eachCredit.credit_reason_id_fk
             };
             returnValue.push(customList);
         }

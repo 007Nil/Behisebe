@@ -60,8 +60,14 @@ const AddCredit = () => {
 
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
-    getValidCreditReasonDetailsService().then((data) => setDbCreditReason(data));
-    getValidFundDetailsService().then((data) => setDbFundDetails(data));
+    getValidCreditReasonDetailsService().then((data) => {
+      data  = data.filter( obj => obj.credit_reason_name !== "Replay Money Lend");
+      setDbCreditReason(data)});
+    getValidFundDetailsService().then((data) => {
+      // Remove Credit Card
+      data  = data.filter( obj => obj.fund_type !== "Credit Card");
+      setDbFundDetails(data)
+    });
   }, []);
 
   useEffect(() => {
@@ -163,7 +169,6 @@ const AddCredit = () => {
             style={styles.input}
             keyboardType="number-pad"
             value={amount}
-            autoFocus={true}
             onChangeText={(txt) => setAmount(txt)}
           />
         </View>

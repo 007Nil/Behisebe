@@ -35,8 +35,8 @@ async function getCreditReasonByIdService(creditReasonId: number) {
 }
 
 async function getCreditByDateService(fromDate: string, toDate: string) {
-    let fromDateTime = dateConvert(fromDate) + " 00:00:00"
-    let toDateTime = dateConvert(toDate) + " 23:59:59"
+    let fromDateTime = fromDate + " 00:00:00"
+    let toDateTime = toDate + " 23:59:59"
     return await getCreditByDate(fromDateTime, toDateTime);
 }
 

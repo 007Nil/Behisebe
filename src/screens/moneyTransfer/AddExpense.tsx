@@ -22,8 +22,8 @@ import styles from "./styles";
 import Dropdown from "../../component/Dropdown";
 import PaymentCommonHeader from "../../common/PaymentCommonHeader";
 // Services
-import { getAllFundDetailsService, getFundBalanceService, getValidFundDetailsService } from "../../services/FundDetailsServices";
-import { getAllExpenseReasonDetailsService, getValidExpenseReasonDetailsService, saveExpenseDetailsService } from "../../services/ExpenseDetailsServices";
+import { getFundBalanceService, getValidFundDetailsService } from "../../services/FundDetailsServices";
+import { getValidExpenseReasonDetailsService, saveExpenseDetailsService } from "../../services/ExpenseDetailsServices";
 import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
 import { ExpenseModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../../model";
 
@@ -65,7 +65,9 @@ const AddExpense = () => {
   }, [isFocused]);
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
-    getValidExpenseReasonDetailsService().then((data) => setDbExpenseReason(data));
+    getValidExpenseReasonDetailsService().then((data) => {
+      data  = data.filter( obj => obj.expense_reason_name !== "Replay Borrowed Money");
+      setDbExpenseReason(data)});
     getValidFundDetailsService().then((data) => setDbFundDetails(data));
   }, []);
 

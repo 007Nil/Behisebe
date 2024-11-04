@@ -11,10 +11,35 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f2f2f2'
     },
+    input: {
+        backgroundColor: "#f2f2f2",
+        width: "100%",
+        height: 40,
+        paddingHorizontal: 10,
+        opacity: 1, // Optional: you can adjust opacity to visually indicate that the input is disabled
+    },
+    Checkedinput: {
+        width: "50%",
+        marginRight: 10,
+        paddingHorizontal: 10,
+        backgroundColor: "#f2f2f2",
+        opacity: 1,
+    },
     confirmPayNow: {
         width: "94%",
         height: verticalScale(40),
         backgroundColor: "purple",
+        borderRadius: moderateScale(30),
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(20),
+        marginBottom: moderateVerticalScale(40),
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    delete: {
+        width: "94%",
+        height: verticalScale(40),
+        backgroundColor: "red",
         borderRadius: moderateScale(30),
         alignSelf: "center",
         marginTop: moderateVerticalScale(20),
@@ -61,17 +86,49 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(16)
     },
     card: {
-        width: '94%',
-        backgroundColor: 'white',
-        marginTop: moderateVerticalScale(15),
-        alignSelf: 'center',
+        width: "94%",
+        height: "50%",
+        backgroundColor: "white",
+        marginTop: moderateVerticalScale(10),
+
+        alignSelf: "center",
         borderRadius: moderateScale(10),
-        shadowOpacity: .1,
-        shadowColor: 'rgba(0,0,0,.5)',
+        shadowOpacity: 0.1,
+        shadowColor: "rgba(0,0,0,.5)",
         shadowOffset: {
             width: 1,
-            height: 1
-        }
+            height: 1,
+        },
+    },
+    card1: {
+        width: "94%",
+        height: "18%",
+        backgroundColor: "white",
+        marginTop: moderateVerticalScale(10),
+
+        alignSelf: "center",
+        borderRadius: moderateScale(10),
+        shadowOpacity: 0.1,
+        shadowColor: "rgba(0,0,0,.5)",
+        shadowOffset: {
+            width: 1,
+            height: 1,
+        },
+    },
+    card3: {
+        width: "94%",
+        height: "8%",
+        backgroundColor: "white",
+        marginTop: moderateVerticalScale(10),
+        flexDirection: "column",
+        alignSelf: "center",
+        borderRadius: moderateScale(10),
+        shadowOpacity: 0.1,
+        shadowColor: "rgba(0,0,0,.5)",
+        shadowOffset: {
+            width: 1,
+            height: 1,
+        },
     },
     proceedToPay: {
         width: "100%",
@@ -81,7 +138,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         backgroundColor: "green",
         bottom: 0,
-      },
+    },
     filtersView: {
         width: '90%',
         justifyContent: 'space-between',
@@ -110,7 +167,7 @@ const styles = StyleSheet.create({
     },
     transactionItem: {
         width: '94%',
-        height: 100,
+        height: 120,
         justifyContent: 'space-between',
         flexDirection: 'row'
     },
@@ -153,11 +210,97 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: moderateVerticalScale(20)
     },
+    bankView1: {
+        flexDirection: 'row',
+        marginTop: moderateVerticalScale(10)
+    },
+    appButtonText: {
+        fontSize: 12,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "#009688",
+        borderRadius: 10,
+        paddingVertical: 5,
+        paddingHorizontal: 12
+    },
+    appButtonContainerDelete: {
+        elevation: 8,
+        backgroundColor: "red",
+        borderRadius: 10,
+        paddingVertical: 5,
+        paddingHorizontal: 12
+    },
     logo: {
         width: scale(12),
         height: scale(12),
         marginLeft: moderateScale(15)
-    }
+    },
+    modaView: {
+        margin: 0,
+    },
+    mainView: {
+        backgroundColor: "white",
+        width: "100%",
+        position: "absolute",
+        bottom: 0,
+        borderTopLeftRadius: moderateScale(20),
+        borderTopRightRadius: moderateScale(20),
+        padding: moderateScale(10),
+    },
+    modalTopView: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: moderateScale(10),
+    },
+    payable: {
+        fontWeight: "700",
+        color: "black",
+        fontSize: moderateScale(16),
+    },
+    modalTopRightView: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    confirmAmount: {
+        fontSize: 30,
+        fontWeight: "600",
+        color: "black",
+        marginRight: moderateScale(20),
+    },
+    divider: {
+        width: "100%",
+        height: verticalScale(0.5),
+        backgroundColor: "#929292",
+        marginTop: moderateVerticalScale(20),
+        opacity: 0.4,
+    },
+    backIcon: {
+        width: scale(24),
+        height: scale(24),
+        tintColor: "white",
+    },
+    bankLeftView: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    bankRightView: {
+        flexDirection: "row",
+        alignItems: "flex-end",
+    },
+    upi_view: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    bankAccount: {
+        color: "#929292",
+        fontSize: moderateScale(12),
+    },
 })
 
 export default styles;

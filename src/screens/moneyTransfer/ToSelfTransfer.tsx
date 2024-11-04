@@ -46,7 +46,11 @@ const ToSelfTransfer = () => {
   }
 
   useEffect(() => {
-    getValidFundDetailsService().then((data) => setDbFundDetails(data));
+    getValidFundDetailsService().then((data) => {
+      // Remove Credit Card
+      data = data.filter(obj => obj.fund_type !== "Credit Card");
+      setDbFundDetails(data)
+    });
   }, []);
 
   useEffect(() => {
@@ -65,11 +69,11 @@ const ToSelfTransfer = () => {
       alert("Please select the Transfer To Fund");
       return false;
     }
-    if (tranferFromFundDetails.balance < Number(transferAmount)){
-      alert(tranferFromFundDetails.fund_name+" fund does not have sufficient amount");
+    if (tranferFromFundDetails.balance < Number(transferAmount)) {
+      alert(tranferFromFundDetails.fund_name + " fund does not have sufficient amount");
       return false;
     }
-    if (tranferFromFundDetails.fund_name === tranferToFundDetails.fund_name){
+    if (tranferFromFundDetails.fund_name === tranferToFundDetails.fund_name) {
       alert("Cannot Tranfser the money to same fund");
       return false;
     }

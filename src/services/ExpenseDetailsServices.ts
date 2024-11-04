@@ -1,6 +1,6 @@
 import { SQLiteRunResult } from "expo-sqlite";
 import { ExpenseReasonModel, ExpenseModel, FundDetailsModel } from "../model";
-import { getAllExpenseReasonDetails, updateExpenseReasonDetails, addExpenseReasonDetails, addExpenseDetails, getExpenseDetails, getExpenseByDate, getExpenseReasonByName } from "../repository/ExpenseDetailsRepo";
+import { getAllExpenseReasonDetails, updateExpenseReasonDetails, addExpenseReasonDetails, addExpenseDetails, getExpenseDetails, getExpenseByDate, getExpenseReasonByName, updateExpenseDetails, deleteExpenseData } from "../repository/ExpenseDetailsRepo";
 import { getFundDetailsById, updateFundBalance } from "../repository/FundDetailsRepo";
 import { dateConvert } from "../utils/AllUtils";
 
@@ -30,6 +30,9 @@ async function saveExpenseDetailsService(expenseObj: ExpenseModel) {
     const latestFundAmount = fundDetails.balance - expenseObj.amount;
     await updateFundBalance(latestFundAmount, fundDetails.fund_id);
 }
+async function updateExpenseDetailsService(expObj :ExpenseModel) {
+    await updateExpenseDetails(expObj)
+}
 
 async function getExpenseDetailsService(): Promise<ExpenseModel[]> {
     return await getExpenseDetails();
@@ -40,9 +43,13 @@ async function getExpenseReasonByNameService(expenseReasonName:string): Promise<
 }
 
 async function getExpenseByDateService(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
-    let fromDateTime = dateConvert(fromDate) + " 00:00:00"
-    let toDateTime = dateConvert(toDate) + " 23:59:59"
+    let fromDateTime = fromDate + " 00:00:00"
+    let toDateTime = toDate + " 23:59:59"
     return await getExpenseByDate(fromDateTime, toDateTime);
+}
+
+async function deleteExpenseDataService(expId:number) {
+    await deleteExpenseData(expId);
 }
 export {
     getAllExpenseReasonDetailsService,
@@ -52,5 +59,7 @@ export {
     getExpenseDetailsService,
     getExpenseByDateService,
     getExpenseReasonByNameService,
-    getValidExpenseReasonDetailsService
+    getValidExpenseReasonDetailsService,
+    updateExpenseDetailsService,
+    deleteExpenseDataService
 }

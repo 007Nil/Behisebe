@@ -27,6 +27,20 @@ async function updateExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel):
 
 }
 
+async function updateExpenseDetails(expenseModel: ExpenseModel) {
+    const db = await openDBConnection();
+    let sqlResult = await db.runAsync(
+        'UPDATE expenses SET amount = ? WHERE expense_id = ?',
+        expenseModel.amount, expenseModel.expense_id
+    );
+}
+
+async function deleteExpenseData(expID:number) {
+    // DELETE FROM artists_backup
+    const db = await openDBConnection();
+    await db.runAsync("DELETE FROM expenses WHERE expense_id = ?",expID);
+}
+
 async function addExpenseDetails(expenseModel: ExpenseModel) {
     const db = await openDBConnection();
     let sqlResult = await db.runAsync(
@@ -48,6 +62,7 @@ async function getExpenseReasonByID(expenseReasonId: number): Promise<ExpenseRea
 }
 
 async function getExpenseByDate(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
+    console.log("from Date:"+fromDate);
     const db = await openDBConnection();
     const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC;", fromDate, toDate);
     return expenseDetails;
@@ -64,7 +79,6 @@ async function getLendMoneyExpenseDetails() {
     const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE expense_reason_id_fk = 1");
     return expenseDetails;
 }
-
 export {
     getAllExpenseReasonDetails,
     addExpenseReasonDetails,
@@ -74,5 +88,7 @@ export {
     getExpenseReasonByID,
     getExpenseByDate,
     getExpenseReasonByName,
-    getLendMoneyExpenseDetails
+    getLendMoneyExpenseDetails,
+    updateExpenseDetails,
+    deleteExpenseData
 }

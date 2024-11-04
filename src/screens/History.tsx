@@ -33,8 +33,8 @@ const History = () => {
           />
         </View>
       </View>
-      <View style={[styles.card, { paddingBottom: 100 }]}>
-        <CustomListView listData={transactionHistory}
+      <View style={styles.card1}>
+        <CustomListView listData={transactionHistory} pageName='history'
         />
       </View>
 
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '94%',
+    height: '18%',
     backgroundColor: 'white',
     marginTop: moderateVerticalScale(15),
 
@@ -79,8 +80,23 @@ const styles = StyleSheet.create({
     shadowOpacity: .1,
     shadowColor: 'rgba(0,0,0,.5)',
     shadowOffset: {
-      x: 1,
-      y: 1
+      height: 1,
+      width: 1
+    }
+  },
+  card1: {
+    width: '94%',
+    height: '50%',
+    backgroundColor: 'white',
+    marginTop: moderateVerticalScale(15),
+
+    alignSelf: 'center',
+    borderRadius: moderateScale(10),
+    shadowOpacity: .1,
+    shadowColor: 'rgba(0,0,0,.5)',
+    shadowOffset: {
+      height: 1,
+      width: 1
     }
   },
   filtersView: {

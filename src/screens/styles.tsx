@@ -234,6 +234,21 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '94%',
+        height: '15%',
+        backgroundColor: 'white',
+        marginTop: moderateVerticalScale(15),
+        alignSelf: 'center',
+        borderRadius: moderateScale(10),
+        shadowOpacity: .1,
+        shadowColor: 'rgba(0,0,0,.5)',
+        shadowOffset: {
+            width: 1,
+            height: 1
+        }
+    },
+    card2: {
+        width: '94%',
+        height: '68%',
         backgroundColor: 'white',
         marginTop: moderateVerticalScale(15),
         alignSelf: 'center',

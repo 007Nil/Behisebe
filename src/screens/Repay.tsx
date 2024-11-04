@@ -114,7 +114,7 @@ const Repay = () => {
     <View style={styles.container}>
       <HomeCommonHeader title={"Replay"} />
       <View style={styles.container}>
-        <View style={{ flexDirection: 'column' }}>
+        <View style={styles.card}>
           <View style={{ padding: 10 }}>
             <Button onPress={getBorrowMoneyInfo} title="Borrow Money Details" />
           </View>
@@ -122,8 +122,8 @@ const Repay = () => {
             <Button onPress={getMoneyLendInfo} title="Lend Money Details" />
           </View>
         </View>
-        <View style={styles.card}>
-          <View style={{ height: '80%' }}>
+        <View style={styles.card2}>
+          <View>
             <FlatList
               contentContainerStyle={{ marginTop: moderateVerticalScale(30) }}
               data={dbMoneyReplayDetails}

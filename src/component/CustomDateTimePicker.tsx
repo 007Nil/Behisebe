@@ -6,6 +6,7 @@ import { CreditModel, ExpenseModel } from '../model';
 // Services
 import { getExpenseByDateService } from '../services/ExpenseDetailsServices';
 import { getCreditByDateService } from '../services/CreditDetailsServices';
+import { dateConvert } from '../utils/AllUtils';
 
 type DatePickerProps = {
   datePickerScreen: string
@@ -21,16 +22,16 @@ const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails, getCreditDe
   useEffect(() => {
     (async () => {
       if (datePickerScreen === "expenseDetails") {
-        const expenseDetails = await getExpenseByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
+        const expenseDetails = await getExpenseByDateService(dateConvert(fromDate).toLocaleString(), dateConvert(toDate).toLocaleString());
         getExpenseDetails(expenseDetails);
       }
       else if (datePickerScreen === "creditDetails") {
-        const creditDetails = await getCreditByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
+        const creditDetails = await getCreditByDateService(dateConvert(fromDate).toLocaleString(), dateConvert(toDate).toLocaleString());
         getCreditDetails(creditDetails);
       }
       else if (datePickerScreen === "transactionHistory") {
-        const expenseDetails = await getExpenseByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
-        const creditDetails = await getCreditByDateService(fromDate.toLocaleString().split(",")[0], toDate.toLocaleString().split(",")[0]);
+        const expenseDetails = await getExpenseByDateService(dateConvert(fromDate), dateConvert(toDate).toLocaleString());
+        const creditDetails = await getCreditByDateService(dateConvert(fromDate), dateConvert(toDate).toLocaleString());
         getTransactionHistory([expenseDetails,creditDetails]);
       }
     })();
