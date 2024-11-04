@@ -64,6 +64,12 @@ async function getCreditReasonByName(creditReasonName: string) {
     return creditReasonDetails;
 }
 
+async function getBorrowMoneyCreditDetails(): Promise<CreditModel[]> {
+    const db = await openDBConnection();
+    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE credit_reason_id_fk = ? ORDER BY timestamp DESC;", 2);
+    return creditDetails;
+}
+
 export {
     getAllCreditReasonDetails,
     addCreditReasonDetails,
@@ -73,5 +79,6 @@ export {
     getCreditByDate,
     addCreditDetails,
     getCreditReasonById,
-    getCreditReasonByName
+    getCreditReasonByName,
+    getBorrowMoneyCreditDetails
 }

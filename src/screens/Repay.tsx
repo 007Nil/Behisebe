@@ -39,8 +39,9 @@ const Repay = () => {
     getValidFundDetailsService().then((data) => setDbFundDetails(data));
   }, []);
 
-  const getBorrowMoneyInfo = () => {
+  const getBorrowMoneyInfo = async () => {
     setBtnPressValue("getBorrowInfo");
+    setDbMoneyReplayDetails(await getMoneyRepayDetailsService("getBorrowInfo"))
   }
 
   const getMoneyLendInfo = async () => {
@@ -51,7 +52,7 @@ const Repay = () => {
   const viewDetails = (item: MoneyRepayModel) => {
   }
   const updateData = (item: MoneyRepayModel) => {
-    setFromId(btnPressValue === "getLendInfo" ? item.expense_id : 0);
+    setFromId(btnPressValue === "getLendInfo" ? item.expense_id : item.credit_id);
     setPersonName(item.personName);
     setAmount(item.amount);
     setFundName(item.fundName);
@@ -81,13 +82,13 @@ const Repay = () => {
       alert("Please select a fund");
       return;
     }
-    if ((prevAlreadyPay + payNow) > amount){
+    if ((prevAlreadyPay + payNow) > amount) {
       alert("Invalid amount");
       return;
     }
     let tmpFlatlistData = dbMoneyReplayDetails;
     const updatedArray = tmpFlatlistData.filter(function (ele) {
-      return btnPressValue === "getLendInfo" ? ele.expense_id !== formId : [];
+      return btnPressValue === "getLendInfo" ? ele.expense_id !== formId : ele.credit_id != formId;
     }
     );
     let newRepayDate: MoneyRepayModel = {
@@ -95,17 +96,17 @@ const Repay = () => {
       credit_id: creditId,
       amount: amount,
       paid_amount: payNow,
-      date: btnPressValue === "getLendInfo" ? lendOnDate : "",
+      date: lendOnDate,
       fundName: fundName,
       personName: personName,
       message: message,
       transaction_fund_id: fundetails.fund_id
     }
-    // console.log(newRepayDate);
-    await updateLendMoneyDetailsService(newRepayDate);
+    await updateLendMoneyDetailsService(newRepayDate, btnPressValue);
     updatedArray.splice(flatListIndex, 0, newRepayDate);
     setDbMoneyReplayDetails(updatedArray);
     alert("Data Updated");
+    btnPressValue === "getLendInfo" ? getMoneyLendInfo() : getBorrowMoneyInfo();
     setIsModalVisible(() => !isModalVisible);
   }
 
@@ -133,17 +134,13 @@ const Repay = () => {
                       <View style={styles.topLeftView}>
                         <View style={{ marginLeft: moderateScale(10) }}>
                           <View>
-                            <Text style={styles.paidTo}>{"Money Lend To: " + item.personName}</Text>
-                            <Text style={styles.paidTo}>{"Lend Amount: " + item.amount}</Text>
-                            <Text style={styles.paidTo}>{"Date: " + item.date}</Text>
+                            <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend To: " + item.personName :
+                              "Borrow From: " + item.personName}</Text>
+                            <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend Amount: " + item.amount :
+                              "Borrow Amount: " + item.amount}</Text>
+                            <Text style={styles.paidTo}>{"On Date: " + item.date}</Text>
                             <Text style={styles.paidTo}>{"Due Amount: " + (item.amount - item.paid_amount)}</Text>
                             <Text style={styles.paidTo}>{"Already paid: " + item.paid_amount}</Text>
-                            {item.message !== "" ?
-                              <View>
-                                <Text style={styles.paidTo}>{"Message"}</Text>
-                                <Text style={styles.paidTo}>{item.message}</Text>
-                              </View> : null
-                            }
                           </View>
                         </View>
                       </View>
@@ -199,7 +196,7 @@ const Repay = () => {
                   <View style={{ marginLeft: moderateScale(15) }}>
                     <View style={styles.upi_view}>
                       <Text style={styles.bankAccount}>
-                        {"Lend Amount"}
+                        {btnPressValue === "getLendInfo" ? "Lend Amount" : "Borrow Amount"}
                       </Text>
                     </View>
                     <TextInput
@@ -231,7 +228,7 @@ const Repay = () => {
                   <View style={{ marginLeft: moderateScale(15) }}>
                     <View style={styles.upi_view}>
                       <Text style={styles.bankAccount}>
-                        {"Lend On Date"}
+                        {btnPressValue === "getLendInfo" ? "Lend On Date" : "Borrow On Date"}
                       </Text>
                     </View>
                     <TextInput
