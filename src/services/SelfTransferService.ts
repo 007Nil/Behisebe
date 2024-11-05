@@ -4,6 +4,7 @@ import { getExpenseReasonByNameService, saveExpenseDetailsService, } from "./Exp
 import { getCreditReasonDetailsByNameService, saveCreditDetailsService } from "./CreditDetailsServices";
 import { updateFundBalance, getFundDetailsById } from "../repository/FundDetailsRepo";
 import { SelfTransferModel } from "../model";
+import { updateExpenseDetailsCreditId } from "../repository/ExpenseDetailsRepo";
 
 async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
     let debitedFundId: number = selfTransferObj.transferFromFundId;
@@ -18,7 +19,7 @@ async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
         amount: selfTransferObj.amount,
         message: selfTransferObj.message
     }
-    await saveExpenseDetailsService(expenseObj);
+    const expId : number = await saveExpenseDetailsService(expenseObj);
 
 
 
@@ -29,10 +30,14 @@ async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
         fund_id_fk: creditedFundId,
         amount: selfTransferObj.amount,
         person_id_fk: null,
-        message: selfTransferObj.message
+        message: selfTransferObj.message,
+        expense_id: expId
     }
 
-    await saveCreditDetailsService(creditObj);
+    const creditId = await saveCreditDetailsService(creditObj);
+
+    // Update the expense
+    await updateExpenseDetailsCreditId(expId,creditId);
 }
 
 export {

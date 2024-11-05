@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     },
     transactionItem: {
         width: '94%',
-        height: 120,
+        height: 150,
         justifyContent: 'space-between',
         flexDirection: 'row'
     },
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     name: {
         color: '#4f4f4f',
         fontSize: moderateScale(16)
+
     },
     time: {
         marginLeft: moderateScale(20),
@@ -211,6 +212,10 @@ const styles = StyleSheet.create({
         marginTop: moderateVerticalScale(20)
     },
     bankView1: {
+        flexDirection: 'row',
+        marginTop: moderateVerticalScale(10)
+    },
+    bankView3: {
         flexDirection: 'row',
         marginTop: moderateVerticalScale(10)
     },

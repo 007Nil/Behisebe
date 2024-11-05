@@ -6,16 +6,19 @@ import styles from '../screens/audit/styles'
 import CustomList from '../model/CustomListModel'
 import Modal from "react-native-modal";
 import { TextInput } from 'react-native-gesture-handler'
-import { ExpenseModel, FundDetailsModel } from '../model'
+import { CreditModel, ExpenseModel, FundDetailsModel } from '../model'
 import { deleteExpenseDataService, saveExpenseDetailsService, updateExpenseDetailsService } from '../services/ExpenseDetailsServices'
 import { getFundBalance, updateFundBalance } from '../repository/FundDetailsRepo'
+import { expense_reason } from '../dummy_data'
+import { getExpenseByID } from '../repository/ExpenseDetailsRepo'
+import { getCreditDetailsById } from '../repository/CreditDetailsRepo'
 
 type CustomListProps = {
     listData: CustomList[],
     pageName?: string
 }
 
-const CustomListView = ({ listData,pageName}: CustomListProps) => {
+const CustomListView = ({ listData, pageName }: CustomListProps) => {
     const [flatListData, setFlatListData] = useState<CustomList[]>([]);
 
     const [reason, setReason] = useState<string>("");
@@ -40,7 +43,6 @@ const CustomListView = ({ listData,pageName}: CustomListProps) => {
     }, [listData]);
 
     const updateData = (item: CustomList, deleteTrue?: boolean) => {
-        console.log(item);
         setReason(item.reason);
         setCatagory(item.catagory);
         setDate(item.date);
@@ -57,9 +59,21 @@ const CustomListView = ({ listData,pageName}: CustomListProps) => {
         }
     };
     const deleteFromDatabase = async () => {
-        console.log(catagory)
         if (catagory === "expenseDetails") {
+            // Need to fix this logic
+            if (reason === "Self Transfer"){
+                const expenseData: ExpenseModel = await getExpenseByID(expenseId);
+                const creditId: number = expenseData.credit_id;
+                const creditObj : CreditModel = await getCreditDetailsById(creditId);
+                const debitedAmount: number = creditObj.amount;
+                let fundBalance: number = await getFundBalance(creditObj.fund_id_fk);            
+                let updatedFundAmount: number = fundBalance - debitedAmount
+                await updateFundBalance(updatedFundAmount, creditObj.fund_id_fk);
+            }
+
             deleteExpenseDataService(expenseId);
+            let fundBalance: number = await getFundBalance(fundId)
+            await updateFundBalance((fundBalance + Number(amount)), fundId);
             setModal2Open(false);
             alert("Opeartion Successful");
         } else if (catagory === "creditDetails") {
@@ -106,7 +120,6 @@ const CustomListView = ({ listData,pageName}: CustomListProps) => {
                 data={flatListData}
                 renderItem={({ item, index }) => {
                     return (
-                        // <TouchableOpacity>
                         <View style={styles.transactionItem}>
                             <View>
                                 <View style={styles.topLeftView}>
@@ -115,33 +128,38 @@ const CustomListView = ({ listData,pageName}: CustomListProps) => {
 
                                     </View>
                                     <View style={{ marginLeft: moderateScale(10) }}>
-                                        <Text style={styles.paidTo}>{item.reason}</Text>
+                                        <Text style={styles.paidTo}>{item.reason === "Repay Borrowed Money" ? "Repay Money" : item.reason}</Text>
                                     </View>
                                 </View>
-                                <Text style={styles.time}>{item.date}</Text>
+                                <Text style={styles.time}>{"On Date"}</Text>
+                                <Text style={[{ fontWeight: "bold", marginLeft: moderateScale(20), marginTop: moderateVerticalScale(10), }]}>{item.date}</Text>
+
                             </View>
                             <View style={{ alignItems: 'flex-end' }}>
                                 <Text style={styles.amount}>{' ₹ ' + item.amount}</Text>
                                 <View style={styles.bankView}>
-                                    <Text style={[styles.time, { marginTop: 0 }]}>{item.catagory === "expenseDetails" ? 'debited from ' + item.fund_name : 'credited to ' + item.fund_name}</Text>
+                                    <Text style={[styles.time, { marginTop: 0 }]}>{item.catagory === "expenseDetails" ? 'debited from ' : 'credited to'}</Text>
 
                                 </View>
-                                {pageName !== "history"? 
-                                <View style={styles.bankView1}>
-                                    <TouchableOpacity style={[styles.appButtonContainer]}
-                                        onPress={() => updateData(item, false)}>
-                                        <Text style={styles.appButtonText}>Update</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.appButtonContainerDelete]}
-                                        onPress={() => updateData(item, true)}>
-                                        <Text style={styles.appButtonText}>Delete</Text>
-                                    </TouchableOpacity>
+                                <View style={styles.bankView3}>
+                                    <Text style={[{ marginTop: 0, fontWeight: "bold" }]}>{item.fund_name}</Text>
 
                                 </View>
-                                : null}
+                                {pageName !== "history" ?
+                                    <View style={styles.bankView1}>
+                                        <TouchableOpacity style={[styles.appButtonContainer]}
+                                            onPress={() => updateData(item, false)}>
+                                            <Text style={styles.appButtonText}>Update</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={[styles.appButtonContainerDelete]}
+                                            onPress={() => updateData(item, true)}>
+                                            <Text style={styles.appButtonText}>Delete</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+                                    : null}
                             </View>
                         </View>
-                        // </TouchableOpacity>
                     )
                 }} />
             <Modal
@@ -251,13 +269,27 @@ const CustomListView = ({ listData,pageName}: CustomListProps) => {
                             </TouchableOpacity>
                         </View>
                     </View>
+
+                    <View style={styles.divider}></View>
+                    {reason === "Self Transfer" ?
+                        <View style={styles.bankView}>
+                            <View style={styles.bankLeftView}>
+                                <View style={{ marginLeft: moderateScale(15) }}>
+                                    <View style={styles.upi_view}>
+                                        <Text>{"Self Transfer detected. It will also delete the extry from Credit Details. Please be carefull next time"}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        : null}
                     <TouchableOpacity
                         style={styles.delete}
                         onPress={() => {
                             deleteFromDatabase();
                         }}
                     >
-                        <Text style={styles.title}>{"Delete"}</Text>
+                        <Text style={styles.title}>{reason === "Self Transfer" ?
+                            "Confirm Delete" : "Delete"}</Text>
                     </TouchableOpacity>
 
                 </View>

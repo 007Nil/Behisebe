@@ -61,7 +61,7 @@ const AddCredit = () => {
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
     getValidCreditReasonDetailsService().then((data) => {
-      data  = data.filter( obj => obj.credit_reason_name !== "Replay Money Lend");
+      data  = data.filter( obj => obj.credit_reason_name !== "Repay Money Lend");
       setDbCreditReason(data)});
     getValidFundDetailsService().then((data) => {
       // Remove Credit Card

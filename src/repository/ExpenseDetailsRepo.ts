@@ -19,6 +19,13 @@ async function addExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel): Pr
 
 }
 
+async function updateExpenseDetailsCreditId(expId: number, creditId: number) {
+    const db = await openDBConnection();
+    await db.runAsync('UPDATE expenses SET credit_id = ? WHERE expense_id  = ?',
+        creditId, expId
+    );
+}
+
 async function updateExpenseReasonDetails(expenseReasonObj: ExpenseReasonModel): Promise<void> {
     const db = await openDBConnection();
     await db.runAsync('UPDATE expense_reasons SET expense_reason_name = ?, expense_reason_catagory = ?   WHERE expense_reason_id  = ?',
@@ -35,18 +42,19 @@ async function updateExpenseDetails(expenseModel: ExpenseModel) {
     );
 }
 
-async function deleteExpenseData(expID:number) {
+async function deleteExpenseData(expID: number) {
     // DELETE FROM artists_backup
     const db = await openDBConnection();
-    await db.runAsync("DELETE FROM expenses WHERE expense_id = ?",expID);
+    await db.runAsync("DELETE FROM expenses WHERE expense_id = ?", expID);
 }
 
-async function addExpenseDetails(expenseModel: ExpenseModel) {
+async function addExpenseDetails(expenseModel: ExpenseModel): Promise<number> {
     const db = await openDBConnection();
-    let sqlResult = await db.runAsync(
-        'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message) VALUES (?, ?, ?, ?, ?)',
-        expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message
+    let sqlResult: SQLiteRunResult = await db.runAsync(
+        'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id) VALUES (?, ?, ?, ?, ?, ?)',
+        expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id
     );
+    return sqlResult.lastInsertRowId
 
 }
 async function getExpenseDetails(): Promise<ExpenseModel[]> {
@@ -61,8 +69,15 @@ async function getExpenseReasonByID(expenseReasonId: number): Promise<ExpenseRea
     return expenseReasonDetails;
 }
 
+async function getExpenseByID(expId: number): Promise<ExpenseModel> {
+    const db = await openDBConnection();
+    const expDetails: ExpenseModel = await db.getFirstAsync('SELECT * FROM expenses WHERE expenseid = ?', expId);
+    return expDetails;
+}
+
+
 async function getExpenseByDate(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
-    console.log("from Date:"+fromDate);
+    console.log("from Date:" + fromDate);
     const db = await openDBConnection();
     const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC;", fromDate, toDate);
     return expenseDetails;
@@ -90,5 +105,7 @@ export {
     getExpenseReasonByName,
     getLendMoneyExpenseDetails,
     updateExpenseDetails,
-    deleteExpenseData
+    deleteExpenseData,
+    updateExpenseDetailsCreditId,
+    getExpenseByID
 }

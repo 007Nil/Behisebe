@@ -28,14 +28,7 @@ async function updateCreditReasonDetails(creditReasonObj: CreditReasonModel): Pr
 async function getCreditDetails(): Promise<CreditModel[]> {
     const db = await openDBConnection();
     const creditDetails: CreditModel[] = await db.getAllAsync('SELECT * FROM credits ORDER BY timestamp DESC;');
-    // console.log(creditDetails)
     return creditDetails;
-}
-
-async function getExpenseReasonByID(creditReasonId: number): Promise<CreditReasonModel> {
-    const db = await openDBConnection();
-    const creditReasonDetails: CreditReasonModel = await db.getFirstAsync('SELECT * FROM credit_reasons WHERE credit_reason_id = ?', creditReasonId);
-    return creditReasonDetails;
 }
 
 async function getCreditByDate(fromDate: string, toDate: string): Promise<CreditModel[]> {
@@ -44,12 +37,20 @@ async function getCreditByDate(fromDate: string, toDate: string): Promise<Credit
     return creditDetails;
 }
 
-async function addCreditDetails(creditObj: CreditModel) {
+async function getCreditDetailsById(creditId: number): Promise<CreditModel> {
+    const db = await openDBConnection();
+    const creditDetails: CreditModel = await db.getFirstAsync('SELECT * FROM credits WHERE credit_id = ? ORDER BY timestamp DESC;',creditId);
+    return creditDetails;
+}
+
+
+async function addCreditDetails(creditObj: CreditModel): Promise<number> {
     const db = await openDBConnection();
     let sqlResult = await db.runAsync(
-        'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message) VALUES (?, ?, ?, ?, ?)',
-        creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount, creditObj.message
+        'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message,expense_id) VALUES (?, ?, ?, ?, ?,?)',
+        creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount, creditObj.message, creditObj.expense_id
     );
+    return sqlResult.lastInsertRowId;
 }
 
 async function getCreditReasonById(creditReasonId: number) {
@@ -75,10 +76,10 @@ export {
     addCreditReasonDetails,
     updateCreditReasonDetails,
     getCreditDetails,
-    getExpenseReasonByID,
     getCreditByDate,
     addCreditDetails,
     getCreditReasonById,
     getCreditReasonByName,
-    getBorrowMoneyCreditDetails
+    getBorrowMoneyCreditDetails,
+    getCreditDetailsById
 }

@@ -112,7 +112,7 @@ const Repay = () => {
 
   return (
     <View style={styles.container}>
-      <HomeCommonHeader title={"Replay"} />
+      <HomeCommonHeader title={"Repay"} />
       <View style={styles.container}>
         <View style={styles.card}>
           <View style={{ padding: 10 }}>
@@ -133,7 +133,8 @@ const Repay = () => {
                     <View>
                       <View style={styles.topLeftView}>
                         <View style={{ marginLeft: moderateScale(10) }}>
-                          <View>
+                          <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend To:" : "Borrow From: "}</Text>
+                          {/* <View>
                             <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend To: " + item.personName :
                               "Borrow From: " + item.personName}</Text>
                             <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend Amount: " + item.amount :
@@ -141,9 +142,12 @@ const Repay = () => {
                             <Text style={styles.paidTo}>{"On Date: " + item.date}</Text>
                             <Text style={styles.paidTo}>{"Due Amount: " + (item.amount - item.paid_amount)}</Text>
                             <Text style={styles.paidTo}>{"Already paid: " + item.paid_amount}</Text>
-                          </View>
+                          </View> */}
                         </View>
+
                       </View>
+                      <Text style={[styles.paidTo,{marginLeft: moderateScale(20),
+        marginTop: moderateVerticalScale(5),}]}>{"On Date"}</Text>
                     </View>
                     <View style={{ alignItems: "flex-end", padding: 10 }}>
                       <TouchableOpacity onPress={() => viewDetails(item)}>

@@ -6,6 +6,7 @@ type ExpenseModel = {
     person_id_fk?: number // If person id is there then money lend to some one
     message?: string
     timestamp?: string
+    credit_id? : number
 }
 
 export default ExpenseModel;

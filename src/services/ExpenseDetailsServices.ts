@@ -23,12 +23,17 @@ async function updateExpenseReasonService(expeseReasonObj: ExpenseReasonModel) {
     await updateExpenseReasonDetails(expeseReasonObj);
 }
 
-async function saveExpenseDetailsService(expenseObj: ExpenseModel) {
-    await addExpenseDetails(expenseObj);
+async function saveExpenseDetailsService(expenseObj: ExpenseModel): Promise<number> {
+    if (typeof(expenseObj.credit_id) == "undefined" || expenseObj.credit_id == null){
+        expenseObj.credit_id = null
+    }
+    const rowID: number = await addExpenseDetails(expenseObj);
     // Update fund balance
     const fundDetails: FundDetailsModel = await getFundDetailsById(expenseObj.fund_id_fk);
     const latestFundAmount = fundDetails.balance - expenseObj.amount;
     await updateFundBalance(latestFundAmount, fundDetails.fund_id);
+
+    return rowID;
 }
 async function updateExpenseDetailsService(expObj :ExpenseModel) {
     await updateExpenseDetails(expObj)

@@ -22,12 +22,13 @@ async function updateCreditReasonService(creditReasonObj: CreditReasonModel) {
     await updateCreditReasonDetails(creditReasonObj);
 }
 
-async function saveCreditDetailsService(creditObj: CreditModel) {
-    await addCreditDetails(creditObj);
+async function saveCreditDetailsService(creditObj: CreditModel): Promise<number> {
+    const rowID: number  = await addCreditDetails(creditObj);
     // Update fund balance
     const fundDetails: FundDetailsModel = await getFundDetailsById(creditObj.fund_id_fk);
     const latestFundAmount = fundDetails.balance + creditObj.amount;
     await updateFundBalance(latestFundAmount, fundDetails.fund_id);
+    return rowID;
 }
 
 async function getCreditReasonByIdService(creditReasonId: number) {

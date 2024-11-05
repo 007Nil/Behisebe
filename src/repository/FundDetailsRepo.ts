@@ -1,3 +1,4 @@
+import { SQLiteRunResult } from 'expo-sqlite';
 import FundDetailsModel from '../model/FundDetailsModel';
 import { openDBConnection } from './OpenSqllite';
 
@@ -35,6 +36,7 @@ async function getFundDetailsById(fundId: number): Promise<FundDetailsModel> {
 async function updateFundBalance(balance: number, fundId: number) {
     const db = await openDBConnection();
     await db.runAsync('UPDATE fund_details SET balance =?  WHERE fund_id = ?', balance, fundId);
+    
 }
 
 

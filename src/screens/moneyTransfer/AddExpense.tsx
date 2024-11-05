@@ -66,7 +66,7 @@ const AddExpense = () => {
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
     getValidExpenseReasonDetailsService().then((data) => {
-      data  = data.filter( obj => obj.expense_reason_name !== "Replay Borrowed Money");
+      data  = data.filter( obj => obj.expense_reason_name !== "Repay Borrowed Money");
       setDbExpenseReason(data)});
     getValidFundDetailsService().then((data) => setDbFundDetails(data));
   }, []);
