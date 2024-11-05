@@ -71,7 +71,7 @@ async function getExpenseReasonByID(expenseReasonId: number): Promise<ExpenseRea
 
 async function getExpenseByID(expId: number): Promise<ExpenseModel> {
     const db = await openDBConnection();
-    const expDetails: ExpenseModel = await db.getFirstAsync('SELECT * FROM expenses WHERE expenseid = ?', expId);
+    const expDetails: ExpenseModel = await db.getFirstAsync('SELECT * FROM expenses WHERE expense_id = ?', expId);
     return expDetails;
 }
 

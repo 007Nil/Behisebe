@@ -43,6 +43,13 @@ async function getCreditDetailsById(creditId: number): Promise<CreditModel> {
     return creditDetails;
 }
 
+async function deleteCreditData(creditId: number) {
+    // DELETE FROM artists_backup
+    const db = await openDBConnection();
+    await db.runAsync("DELETE FROM credits WHERE credit_id = ?", creditId);
+}
+
+
 
 async function addCreditDetails(creditObj: CreditModel): Promise<number> {
     const db = await openDBConnection();
@@ -81,5 +88,6 @@ export {
     getCreditReasonById,
     getCreditReasonByName,
     getBorrowMoneyCreditDetails,
-    getCreditDetailsById
+    getCreditDetailsById,
+    deleteCreditData
 }

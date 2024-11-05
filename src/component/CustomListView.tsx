@@ -11,7 +11,7 @@ import { deleteExpenseDataService, saveExpenseDetailsService, updateExpenseDetai
 import { getFundBalance, updateFundBalance } from '../repository/FundDetailsRepo'
 import { expense_reason } from '../dummy_data'
 import { getExpenseByID } from '../repository/ExpenseDetailsRepo'
-import { getCreditDetailsById } from '../repository/CreditDetailsRepo'
+import { deleteCreditData, getCreditDetailsById } from '../repository/CreditDetailsRepo'
 
 type CustomListProps = {
     listData: CustomList[],
@@ -69,6 +69,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 let fundBalance: number = await getFundBalance(creditObj.fund_id_fk);            
                 let updatedFundAmount: number = fundBalance - debitedAmount
                 await updateFundBalance(updatedFundAmount, creditObj.fund_id_fk);
+                await deleteCreditData(creditId);
             }
 
             deleteExpenseDataService(expenseId);
