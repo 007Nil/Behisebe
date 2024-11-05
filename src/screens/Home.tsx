@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native'
 import HomeCommonHeader from "../common/HomeCommonHeader";
 import { type StackNavigation } from "../navigation/AppNavigator";
 import styles from "./styles";
+import { CustomBarChart } from "../component";
 const Home = () => {
   const { navigate } = useNavigation<StackNavigation>();
   return (
@@ -74,7 +75,7 @@ const Home = () => {
               <Text style={styles.tranferText}>{"To Self Transfer"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.transferTab}
-            onPress={() => {
+              onPress={() => {
                 navigate("CheckBalance");
               }}
             >
@@ -135,6 +136,7 @@ const Home = () => {
           ]}
         >
           <Text style={styles.heading}>Expense Charts</Text>
+          <CustomBarChart />
         </View>
         <View
           style={[

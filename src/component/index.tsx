@@ -6,7 +6,7 @@ import AddPersonCustomFlatList from "./AddPersonCustomFlatlist";
 import CustomButton from "./CustomButton";
 import CustomListView from "./CustomListView";
 import CustomDateTimePicker from "./CustomDateTimePicker";
-
+import CustomBarChart from "./CustomBarChart";
 export {
     Dropdown,
     AddFundCustomFlatList,
@@ -15,5 +15,6 @@ export {
     AddPersonCustomFlatList,
     CustomButton,
     CustomListView,
-    CustomDateTimePicker
+    CustomDateTimePicker,
+    CustomBarChart
 }
