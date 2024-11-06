@@ -167,7 +167,13 @@ const styles = StyleSheet.create({
     },
     transactionItem: {
         width: '94%',
-        height: 150,
+        height: 180,
+        justifyContent: 'space-between',
+        flexDirection: 'row'
+    },
+    transactionItemHistroy: {
+        width: '94%',
+        height: 130,
         justifyContent: 'space-between',
         flexDirection: 'row'
     },

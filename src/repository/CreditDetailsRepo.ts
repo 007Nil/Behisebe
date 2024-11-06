@@ -78,6 +78,14 @@ async function getBorrowMoneyCreditDetails(): Promise<CreditModel[]> {
     return creditDetails;
 }
 
+async function updateCreditDetails(creditModel: CreditModel) {
+    const db = await openDBConnection();
+    let sqlResult = await db.runAsync(
+        'UPDATE credits SET amount = ? WHERE credit_id = ?',
+        creditModel.amount, creditModel.credit_id
+    );
+}
+
 export {
     getAllCreditReasonDetails,
     addCreditReasonDetails,
@@ -89,5 +97,6 @@ export {
     getCreditReasonByName,
     getBorrowMoneyCreditDetails,
     getCreditDetailsById,
-    deleteCreditData
+    deleteCreditData,
+    updateCreditDetails
 }

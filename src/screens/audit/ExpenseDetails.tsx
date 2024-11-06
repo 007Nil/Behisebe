@@ -49,7 +49,7 @@ const ExpenseDetails = () => {
       </View>
       <View style={styles.card3}>
         <View style={styles.filtersView}>
-          <Text style={{fontSize: 20}}>{"Total Credit:  "+totalExpense}</Text>
+          <Text style={{fontSize: 20}}>{"Total Expense:  "+totalExpense}</Text>
         </View>
       </View>
     </View>

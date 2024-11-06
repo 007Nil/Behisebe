@@ -6,12 +6,15 @@ import styles from '../screens/audit/styles'
 import CustomList from '../model/CustomListModel'
 import Modal from "react-native-modal";
 import { TextInput } from 'react-native-gesture-handler'
-import { CreditModel, ExpenseModel, FundDetailsModel } from '../model'
+import { CreditModel, ExpenseModel, FundDetailsModel, LendMoneyModel, MoneyBorrowModel } from '../model'
 import { deleteExpenseDataService, saveExpenseDetailsService, updateExpenseDetailsService } from '../services/ExpenseDetailsServices'
 import { getFundBalance, updateFundBalance } from '../repository/FundDetailsRepo'
 import { expense_reason } from '../dummy_data'
 import { getExpenseByID } from '../repository/ExpenseDetailsRepo'
-import { deleteCreditData, getCreditDetailsById } from '../repository/CreditDetailsRepo'
+import { deleteCreditData, getBorrowMoneyCreditDetails, getCreditDetailsById } from '../repository/CreditDetailsRepo'
+import { getLendMoneyByExpenseId } from '../repository/LendMoneyRepo'
+import { updateCreditDetailsService } from '../services/CreditDetailsServices'
+import { getBorrowMoneyByCreditId } from '../repository/MoneyBorrowRepo'
 
 type CustomListProps = {
     listData: CustomList[],
@@ -59,17 +62,29 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
         }
     };
     const deleteFromDatabase = async () => {
+        if  (reason === "Repay Money Lend" || reason === "Repay Borrowed Money") {
+            alert("Cannot Modify this entry. Please modify from Repay option")
+            return;
+        }
         if (catagory === "expenseDetails") {
             // Need to fix this logic
-            if (reason === "Self Transfer"){
+            if (reason === "Self Transfer") {
                 const expenseData: ExpenseModel = await getExpenseByID(expenseId);
                 const creditId: number = expenseData.credit_id;
-                const creditObj : CreditModel = await getCreditDetailsById(creditId);
+                const creditObj: CreditModel = await getCreditDetailsById(creditId);
                 const debitedAmount: number = creditObj.amount;
-                let fundBalance: number = await getFundBalance(creditObj.fund_id_fk);            
+                let fundBalance: number = await getFundBalance(creditObj.fund_id_fk);
                 let updatedFundAmount: number = fundBalance - debitedAmount
                 await updateFundBalance(updatedFundAmount, creditObj.fund_id_fk);
                 await deleteCreditData(creditId);
+            }else if  (reason === "Lend Money") {
+                // console.log("HIT")
+                const lendMoneyDetails:  LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
+                console.log(lendMoneyDetails.length);
+                if (lendMoneyDetails.length != 0){
+                    alert("Cannot Delete This Entry. Since you already get the partial payment");
+                    return;
+                }
             }
 
             deleteExpenseDataService(expenseId);
@@ -78,15 +93,29 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             setModal2Open(false);
             alert("Opeartion Successful");
         } else if (catagory === "creditDetails") {
-
+            alert("Will Implement");
         }
     }
+
     const updateDatabase = async () => {
+        if  (reason === "Repay Money Lend" || reason === "Repay Borrowed Money") {
+            alert("Cannot Modify this entry. Please modify from Repay option")
+            return;
+        }
         if (updatedAmount === "" || updatedAmount === "0") {
             alert("Invalid Amount");
             return;
         }
+
         if (catagory === "expenseDetails") {
+            if  (reason === "Lend Money") {
+                const lendMoneyDetails:  LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
+                console.log(lendMoneyDetails.length);
+                if (lendMoneyDetails.length != 0){
+                    alert("Cannot Update This Entry. Since you already get the partial payment");
+                    return;
+                }
+            }
             let updatedExpenseModel: ExpenseModel = {
                 fund_id_fk: fundId,
                 expense_id: expenseId,
@@ -104,10 +133,33 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             }
             await updateFundBalance(updatedFundAmount, fundId);
             setModalOpen(false);
-            alert("Opeartion Successful");
+            alert("Expense Data Updated");
         } else if (catagory === "creditDetails") {
+            if (reason === "Money Lend"){
+                const borrowMoneyDetails:  MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
+                if (borrowMoneyDetails.length != 0){
+                    alert("Cannot Update This Entry. Since you already paid partial payment");
+                    return;
+                }
+            }
+            let updateCreditObj: CreditModel = {
+                credit_id: creditId,
+                fund_id_fk: fundId,
+                credit_reason_id_fk: reasonId,
+                amount: Number(updatedAmount)
+            }
+            await updateCreditDetailsService(updateCreditObj);
+
+            let updatedFundAmount: number = 0;
+            let fundBalance: number = await getFundBalance(fundId);
+            if (Number(updatedAmount) > Number(amount)) {
+                updatedFundAmount = fundBalance + Number(updatedAmount)
+            } else {
+                updatedFundAmount = fundBalance - Number(updatedAmount)
+            }
+            await updateFundBalance(updatedFundAmount, fundId);
             setModalOpen(false);
-            alert("Opeartion Successful");
+            alert("Credit Data Updated");
         }
 
 
@@ -121,7 +173,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 data={flatListData}
                 renderItem={({ item, index }) => {
                     return (
-                        <View style={styles.transactionItem}>
+                        <View style={pageName !== "history"? styles.transactionItem: styles.transactionItemHistroy}>
                             <View>
                                 <View style={styles.topLeftView}>
                                     <View style={styles.iconView}>
@@ -277,7 +329,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                             <View style={styles.bankLeftView}>
                                 <View style={{ marginLeft: moderateScale(15) }}>
                                     <View style={styles.upi_view}>
-                                        <Text>{"Self Transfer detected. It will also delete the extry from Credit Details. Please be carefull next time"}</Text>
+                                        <Text>{"Self Transfer detected. It will also delete the entry from Credit Details. Please be carefull next time"}</Text>
                                     </View>
                                 </View>
                             </View>

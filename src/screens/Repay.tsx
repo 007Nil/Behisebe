@@ -31,7 +31,7 @@ const Repay = () => {
   const [flatListIndex, setFlatListIndex] = useState<number>(-1);
   const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>();
   const [fundetails, setFundDetails] = useState<FundDetailsModel>();
-
+  const [viewDetailsModel, setViewDetailsModal] = useState<boolean>(false);
   const prevAlreadyPay: number = usePrevious(alreadyPaid);
 
 
@@ -49,8 +49,7 @@ const Repay = () => {
     setDbMoneyReplayDetails(await getMoneyRepayDetailsService("getLendInfo"))
   }
 
-  const viewDetails = (item: MoneyRepayModel) => {
-  }
+
   const updateData = (item: MoneyRepayModel) => {
     setFromId(btnPressValue === "getLendInfo" ? item.expense_id : item.credit_id);
     setPersonName(item.personName);
@@ -71,6 +70,17 @@ const Repay = () => {
     } else {
       updateFormData();
     }
+  }
+  const handleModal2 = (clicktype?: string) => {
+    if (clicktype === "closeClick") {
+      setViewDetailsModal(() => !viewDetailsModel);
+    } else {
+      
+    }
+  }
+
+  const viewDetails = (item: MoneyRepayModel) => {
+    setViewDetailsModal(true);
   }
 
   const getFundDetails = async (fundDetails: FundDetailsModel) => {
@@ -131,37 +141,59 @@ const Repay = () => {
                 return (
                   <View style={styles.transactionItem}>
                     <View>
-                      <View style={styles.topLeftView}>
-                        <View style={{ marginLeft: moderateScale(10) }}>
-                          <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend To:" : "Borrow From: "}</Text>
-                          {/* <View>
-                            <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend To: " + item.personName :
-                              "Borrow From: " + item.personName}</Text>
-                            <Text style={styles.paidTo}>{btnPressValue === "getLendInfo" ? "Lend Amount: " + item.amount :
-                              "Borrow Amount: " + item.amount}</Text>
-                            <Text style={styles.paidTo}>{"On Date: " + item.date}</Text>
-                            <Text style={styles.paidTo}>{"Due Amount: " + (item.amount - item.paid_amount)}</Text>
-                            <Text style={styles.paidTo}>{"Already paid: " + item.paid_amount}</Text>
-                          </View> */}
-                        </View>
+                      <Text style={[styles.paidTo, {
+                        marginLeft: moderateScale(20),
+                        marginTop: moderateVerticalScale(5),
+                      }]}>
+                        {btnPressValue === "getLendInfo" ? "Lend To" : "Borrow From"}</Text>
 
+                      <Text style={[styles.paidTo, {
+                        marginLeft: moderateScale(20),
+                        marginTop: moderateVerticalScale(5),
+                      }]}>{"On Date"}</Text>
+                      <Text style={[styles.paidTo, {
+                        marginLeft: moderateScale(20),
+                        marginTop: moderateVerticalScale(5),
+                      }]}>{"Due Amount"}</Text>
+                      <Text style={[styles.paidTo, {
+                        marginLeft: moderateScale(20),
+                        marginTop: moderateVerticalScale(5),
+                      }]}>{"Already paid"}</Text>
+                    </View>
+
+                    <View style={{ alignItems: "flex-start", paddingTop: 5 }}>
+                      <Text style={[styles.paidTo, {
+                        marginLeft: moderateScale(20), marginEnd: moderateVerticalScale(50)
+                      }]}>{item.personName}</Text>
+                      {/* <View style={styles.bankView}> */}
+                      <Text
+                        style={[styles.paidTo, { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
+                        {item.date}</Text>
+                      <Text
+                        style={[styles.paidTo, { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
+                        {(item.amount - item.paid_amount)}</Text>
+                      <Text
+                        style={[styles.paidTo,
+                        { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
+                        {(item.paid_amount)}</Text>
+
+                      <View style={styles.bankView1}>
+                        <TouchableOpacity style={styles.appButtonContainer}
+                          onPress={() => viewDetails(item)}>
+                          <Text style={styles.appButtonText}>{"View Details"}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.appButtonContainer}
+                          onPress={() => updateData(item)}>
+                          <Text style={styles.appButtonText}>{"Update Data"}</Text>
+                        </TouchableOpacity>
                       </View>
-                      <Text style={[styles.paidTo,{marginLeft: moderateScale(20),
-        marginTop: moderateVerticalScale(5),}]}>{"On Date"}</Text>
-                    </View>
-                    <View style={{ alignItems: "flex-end", padding: 10 }}>
-                      <TouchableOpacity onPress={() => viewDetails(item)}>
-                        <Text style={styles.amount}>{"View Details"}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => updateData(item)}>
-                        <Text style={styles.amount}>{"Update Data"}</Text>
-                      </TouchableOpacity>
-                    </View>
+                    </View >
                   </View>
                 );
               }}
             />
           </View>
+          {/* Update */}
           <Modal isVisible={isModalVisible} backdropOpacity={0.2}>
             <View style={styles.mainView}>
               <View style={styles.modalTopView}>
@@ -293,6 +325,28 @@ const Repay = () => {
               <TouchableOpacity style={styles.confirmPayNow} onPress={() => handleModal("")}>
                 <Text style={styles.title}>{"Update Details"}</Text>
               </TouchableOpacity>
+            </View>
+          </Modal>
+
+
+          <Modal isVisible={viewDetailsModel} backdropOpacity={0.2}>
+            <View style={styles.mainView}>
+              <View style={styles.modalTopView}>
+                <Text style={styles.payable}>Edit Details</Text>
+                <View style={styles.modalTopRightView}>
+                  <TouchableOpacity onPress={() => handleModal2("closeClick")}>
+                    <Image
+                      source={require("../images/close.png")}
+                      style={[
+                        styles.backIcon,
+                        { tintColor: "black", width: scale(16) },
+                      ]}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.divider}></View>
+
             </View>
           </Modal>
         </View>

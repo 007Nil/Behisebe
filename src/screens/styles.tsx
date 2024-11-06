@@ -11,7 +11,24 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#f2f2f2",
     },
-
+    appButtonText: {
+        fontSize: 12,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "#009688",
+        borderRadius: 10,
+        paddingVertical: 5,
+        paddingHorizontal: 12
+    },
+    bankView1: {
+        flexDirection: 'row',
+        marginTop: moderateVerticalScale(10)
+    },
     icons: {
         width: scale(22),
         height: scale(22),
@@ -263,6 +280,11 @@ const styles = StyleSheet.create({
     amount: {
         fontWeight: '500',
         fontSize: 14,
+    },
+    amount1: {
+        fontWeight: '500',
+        fontSize: 14,
+        alignItems: "flex-start"
     },
 });
 

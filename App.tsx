@@ -3,6 +3,7 @@ import React from "react";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 
+// Add investments and goals
 
 export default function App() {
 
@@ -29,15 +30,15 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
+--DROP TABLE IF EXISTS money_lends;
 --DROP TABLE IF EXISTS money_borrows;
 --DROP TABLE IF EXISTS expenses;
---DROP TABLE IF EXISTS money_lends;
 --DROP TABLE IF EXISTS credits;
 --DROP TABLE IF EXISTS expenses;
 --DROP TABLE IF EXISTS fund_details;
 --DROP TABLE IF EXISTS expense_reasons;
 --DROP TABLE IF EXISTS credit_reasons;
-DROP TABLE IF EXISTS persons;
+--DROP TABLE IF EXISTS persons;
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
