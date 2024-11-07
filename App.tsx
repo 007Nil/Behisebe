@@ -4,7 +4,6 @@ import AppNavigator from "./src/navigation/AppNavigator";
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 
 // Add investments and goals
-
 export default function App() {
 
   return (
@@ -70,8 +69,8 @@ SELECT 'Self Transfer', 'Self Transfer'
 WHERE NOT EXISTS(SELECT 1 FROM expense_reasons WHERE expense_reason_id = 2 AND expense_reason_name = 'Self Transfer' AND expense_reason_catagory='Self Transfer');
 
 INSERT INTO expense_reasons(expense_reason_name,expense_reason_catagory) 
-SELECT 'Repay Borrowed Money', 'Personal Expense'
-WHERE NOT EXISTS(SELECT 1 FROM expense_reasons WHERE expense_reason_id = 3 AND expense_reason_name = 'Repay Borrowed Money' AND expense_reason_catagory='Personal Expense');
+SELECT 'Pay Back', 'Personal Expense'
+WHERE NOT EXISTS(SELECT 1 FROM expense_reasons WHERE expense_reason_id = 3 AND expense_reason_name = 'Pay Back' AND expense_reason_catagory='Personal Expense');
 
 CREATE TABLE IF NOT EXISTS credit_reasons (
     credit_reason_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,12 +83,12 @@ SELECT 'Self Transfer', 'Self Transfer'
 WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 1 AND credit_reason_name = 'Self Transfer' AND credit_reason_catagory='Self Transfer');
 
 INSERT INTO credit_reasons(credit_reason_name,credit_reason_catagory) 
-SELECT 'Money Lend', 'Personal Credit'
-WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 2 AND credit_reason_name = 'Money Lend' AND credit_reason_catagory='Personal Credit');
+SELECT 'Borrow Money', 'Personal Credit'
+WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 2 AND credit_reason_name = 'Borrow Money' AND credit_reason_catagory='Personal Credit');
 
 INSERT INTO credit_reasons(credit_reason_name,credit_reason_catagory) 
-SELECT 'Repay Money Lend', 'Personal Credit'
-WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 3 AND credit_reason_name = 'Repay Money Lend' AND credit_reason_catagory='Personal Credit');
+SELECT 'Pay Back', 'Personal Credit'
+WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 3 AND credit_reason_name = 'Pay Back' AND credit_reason_catagory='Personal Credit');
 
 
 CREATE TABLE IF NOT EXISTS persons (

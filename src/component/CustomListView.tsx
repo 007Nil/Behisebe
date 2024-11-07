@@ -62,7 +62,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
         }
     };
     const deleteFromDatabase = async () => {
-        if  (reason === "Repay Money Lend" || reason === "Repay Borrowed Money") {
+        if  (reason === "Pay Back" || reason === "Pay Back") {
             alert("Cannot Modify this entry. Please modify from Repay option")
             return;
         }
@@ -98,7 +98,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
     }
 
     const updateDatabase = async () => {
-        if  (reason === "Repay Money Lend" || reason === "Repay Borrowed Money") {
+        if  (reason === "Pay Back" || reason === "Pay Back") {
             alert("Cannot Modify this entry. Please modify from Repay option")
             return;
         }
@@ -135,7 +135,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             setModalOpen(false);
             alert("Expense Data Updated");
         } else if (catagory === "creditDetails") {
-            if (reason === "Money Lend"){
+            if (reason === "Borrow Money"){
                 const borrowMoneyDetails:  MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
                 if (borrowMoneyDetails.length != 0){
                     alert("Cannot Update This Entry. Since you already paid partial payment");
@@ -181,7 +181,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
 
                                     </View>
                                     <View style={{ marginLeft: moderateScale(10) }}>
-                                        <Text style={styles.paidTo}>{item.reason === "Repay Borrowed Money" ? "Repay Money" : item.reason}</Text>
+                                        <Text style={styles.paidTo}>{item.reason}</Text>
                                     </View>
                                 </View>
                                 <Text style={styles.time}>{"On Date"}</Text>

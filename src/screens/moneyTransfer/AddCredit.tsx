@@ -61,7 +61,7 @@ const AddCredit = () => {
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
     getValidCreditReasonDetailsService().then((data) => {
-      data  = data.filter( obj => obj.credit_reason_name !== "Repay Money Lend");
+      data  = data.filter( obj => obj.credit_reason_name !== "Pay Back");
       setDbCreditReason(data)});
     getValidFundDetailsService().then((data) => {
       // Remove Credit Card
@@ -183,8 +183,8 @@ const AddCredit = () => {
           </View>
         ) : null}
 
-        {/* Money Lend */}
-        {"" + creditReason === "undefined" ? null : creditReason.credit_reason_name === "Money Lend" ? (
+        {/* Borrow Money */}
+        {"" + creditReason === "undefined" ? null : creditReason.credit_reason_name === "Borrow Money" ? (
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbPersonDetails}
@@ -296,7 +296,7 @@ const AddCredit = () => {
               </View>
             </View>
           </View>
-          {modalOpen ? creditReason.credit_reason_name === "Money Lend" ? (
+          {modalOpen ? creditReason.credit_reason_name === "Borrow Money" ? (
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
