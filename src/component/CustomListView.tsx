@@ -62,10 +62,6 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
         }
     };
     const deleteFromDatabase = async () => {
-        if  (reason === "Pay Back" || reason === "Pay Back") {
-            alert("Cannot Modify this entry. Please modify from Repay option")
-            return;
-        }
         if (catagory === "expenseDetails") {
             // Need to fix this logic
             if (reason === "Self Transfer") {
@@ -77,11 +73,11 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 let updatedFundAmount: number = fundBalance - debitedAmount
                 await updateFundBalance(updatedFundAmount, creditObj.fund_id_fk);
                 await deleteCreditData(creditId);
-            }else if  (reason === "Lend Money") {
+            } else if (reason === "Lend Money") {
                 // console.log("HIT")
-                const lendMoneyDetails:  LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
+                const lendMoneyDetails: LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
                 console.log(lendMoneyDetails.length);
-                if (lendMoneyDetails.length != 0){
+                if (lendMoneyDetails.length != 0) {
                     alert("Cannot Delete This Entry. Since you already get the partial payment");
                     return;
                 }
@@ -98,24 +94,12 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
     }
 
     const updateDatabase = async () => {
-        if  (reason === "Pay Back" || reason === "Pay Back") {
-            alert("Cannot Modify this entry. Please modify from Repay option")
-            return;
-        }
         if (updatedAmount === "" || updatedAmount === "0") {
             alert("Invalid Amount");
             return;
         }
 
         if (catagory === "expenseDetails") {
-            if  (reason === "Lend Money") {
-                const lendMoneyDetails:  LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
-                console.log(lendMoneyDetails.length);
-                if (lendMoneyDetails.length != 0){
-                    alert("Cannot Update This Entry. Since you already get the partial payment");
-                    return;
-                }
-            }
             let updatedExpenseModel: ExpenseModel = {
                 fund_id_fk: fundId,
                 expense_id: expenseId,
@@ -135,9 +119,9 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             setModalOpen(false);
             alert("Expense Data Updated");
         } else if (catagory === "creditDetails") {
-            if (reason === "Borrow Money"){
-                const borrowMoneyDetails:  MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
-                if (borrowMoneyDetails.length != 0){
+            if (reason === "Borrow Money") {
+                const borrowMoneyDetails: MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
+                if (borrowMoneyDetails.length != 0) {
                     alert("Cannot Update This Entry. Since you already paid partial payment");
                     return;
                 }
@@ -166,6 +150,10 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
 
     };
 
+    const cancleOperation = () => {
+        alert("Cannot Update This Entry. Since you already get the partial payment");
+    }
+
     return (
         <View>
             <FlatList
@@ -173,7 +161,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 data={flatListData}
                 renderItem={({ item, index }) => {
                     return (
-                        <View style={pageName !== "history"? styles.transactionItem: styles.transactionItemHistroy}>
+                        <View style={pageName !== "history" ? styles.transactionItem : styles.transactionItemHistroy}>
                             <View>
                                 <View style={styles.topLeftView}>
                                     <View style={styles.iconView}>
@@ -201,11 +189,11 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                                 {pageName !== "history" ?
                                     <View style={styles.bankView1}>
                                         <TouchableOpacity style={[styles.appButtonContainer]}
-                                            onPress={() => updateData(item, false)}>
+                                            onPress={() => { item.reason === "Pay Back" ? cancleOperation() : updateData(item, false) }}>
                                             <Text style={styles.appButtonText}>Update</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.appButtonContainerDelete]}
-                                            onPress={() => updateData(item, true)}>
+                                            onPress={() => { item.reason === "Pay Back" ? cancleOperation() : updateData(item, true) }}>
                                             <Text style={styles.appButtonText}>Delete</Text>
                                         </TouchableOpacity>
 
