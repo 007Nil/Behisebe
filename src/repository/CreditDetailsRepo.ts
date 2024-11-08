@@ -39,7 +39,7 @@ async function getCreditByDate(fromDate: string, toDate: string): Promise<Credit
 
 async function getCreditDetailsById(creditId: number): Promise<CreditModel> {
     const db = await openDBConnection();
-    const creditDetails: CreditModel = await db.getFirstAsync('SELECT * FROM credits WHERE credit_id = ? ORDER BY timestamp DESC;',creditId);
+    const creditDetails: CreditModel = await db.getFirstAsync('SELECT * FROM credits WHERE credit_id = ? ORDER BY timestamp DESC;', creditId);
     return creditDetails;
 }
 
@@ -86,6 +86,11 @@ async function updateCreditDetails(creditModel: CreditModel) {
     );
 }
 
+async function deleteCreditDetails(creditId: number) {
+    const db = await openDBConnection();
+    await db.runAsync('DELETE FROM credits WHERE credit_id = ?',creditId);
+}
+
 export {
     getAllCreditReasonDetails,
     addCreditReasonDetails,
@@ -98,5 +103,6 @@ export {
     getBorrowMoneyCreditDetails,
     getCreditDetailsById,
     deleteCreditData,
-    updateCreditDetails
+    updateCreditDetails,
+    deleteCreditDetails
 }

@@ -13,7 +13,7 @@ import { expense_reason } from '../dummy_data'
 import { getExpenseByID } from '../repository/ExpenseDetailsRepo'
 import { deleteCreditData, getBorrowMoneyCreditDetails, getCreditDetailsById } from '../repository/CreditDetailsRepo'
 import { getLendMoneyByExpenseId } from '../repository/LendMoneyRepo'
-import { updateCreditDetailsService } from '../services/CreditDetailsServices'
+import { deleteCreditDetailsService, updateCreditDetailsService } from '../services/CreditDetailsServices'
 import { getBorrowMoneyByCreditId } from '../repository/MoneyBorrowRepo'
 
 type CustomListProps = {
@@ -68,17 +68,16 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 const expenseData: ExpenseModel = await getExpenseByID(expenseId);
                 const creditId: number = expenseData.credit_id;
                 const creditObj: CreditModel = await getCreditDetailsById(creditId);
-                const debitedAmount: number = creditObj.amount;
+                const creditedAmount: number = creditObj.amount;
                 let fundBalance: number = await getFundBalance(creditObj.fund_id_fk);
-                let updatedFundAmount: number = fundBalance - debitedAmount
+                let updatedFundAmount: number = fundBalance - creditedAmount;
                 await updateFundBalance(updatedFundAmount, creditObj.fund_id_fk);
                 await deleteCreditData(creditId);
             } else if (reason === "Lend Money") {
-                // console.log("HIT")
                 const lendMoneyDetails: LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
-                console.log(lendMoneyDetails.length);
                 if (lendMoneyDetails.length != 0) {
                     alert("Cannot Delete This Entry. Since you already get the partial payment");
+                    setModal2Open(false);
                     return;
                 }
             }
@@ -89,7 +88,26 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             setModal2Open(false);
             alert("Opeartion Successful");
         } else if (catagory === "creditDetails") {
-            alert("Will Implement");
+            if (reason === "Self Transfer") {
+                const creditData: CreditModel = await getCreditDetailsById(creditId);
+                const expense_id = creditData.expense_id;
+                const expenseDetails : ExpenseModel = await getExpenseByID(expense_id);
+                let fundBalance: number = await getFundBalance(expenseDetails.fund_id_fk);
+                const debitedAmount: number = fundBalance + expenseDetails.amount;
+                let updatedFundAmount: number = fundBalance + debitedAmount;
+                await updateFundBalance(updatedFundAmount, expenseDetails.fund_id_fk);
+                await deleteExpenseDataService(expense_id);
+            } else if (reason === "Borrow Money") {
+                const borrowMoneyDetails: MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
+                if (borrowMoneyDetails.length > 0){
+                    alert("Cannot Delete This Entry. Since you already paid the partial payment");
+                    setModal2Open(false);
+                    return;
+                }
+            }
+            await deleteCreditDetailsService(creditId);
+            setModal2Open(false);
+            alert("Opeartion Successful");
         }
     }
 
