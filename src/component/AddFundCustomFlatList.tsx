@@ -103,6 +103,11 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
                       <Text style={styles.paidTo}>
                         {item.is_active ? "Active" : "Inactive"}
                       </Text>
+                      {screenName === "checkBalance" && item.fund_type === "Credit Card" ?
+                        <Text style={styles.paidTo}>
+                          {"Limit: "+item.credit_limit}
+                        </Text>
+                        : null}
                     </View>
                   </View>
                 </View>

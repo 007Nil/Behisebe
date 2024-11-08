@@ -131,20 +131,12 @@ const Home = () => {
 
         <View
           style={[
-            styles.rechargeAndBills,
+            styles.rechargeAndBills1,
             { marginBottom: moderateVerticalScale(10) },
           ]}
         >
-          <Text style={styles.heading}>Expense Charts</Text>
+          <Text style={styles.heading}>Weekely Expense Charts</Text>
           <CustomBarChart />
-        </View>
-        <View
-          style={[
-            styles.rechargeAndBills,
-            { marginBottom: moderateVerticalScale(10) },
-          ]}
-        >
-          <Text style={styles.heading}>More Charts</Text>
         </View>
       </ScrollView>
     </View>

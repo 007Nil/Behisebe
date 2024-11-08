@@ -12,12 +12,13 @@ type DropDownType = {
   getCreditReason?(creditReasonObj: CreditReasonModel): void,
   getTransferFromFundDetails?(fundObj: FundDetailsModel): void,
   getTransferToFundDetails?(fundObj: FundDetailsModel): void,
+  getCreditCardFundDetails?(fundObj: FundDetailsModel): void
   fundValuetype?: string,
 }
 
 const Dropdown = ({ dropDownValues, dropDownType, fundValuetype,
   getExpenseReason, getFundDetails, getPersonDetails,
-  getCreditReason, getTransferFromFundDetails, getTransferToFundDetails }: DropDownType) => {
+  getCreditReason, getTransferFromFundDetails, getTransferToFundDetails, getCreditCardFundDetails }: DropDownType) => {
   const [selecteddropDownValues, setselecteddropDownValues] = useState<any>("");
   useEffect(() => {
     if (dropDownType === "expenseReasonDetails") {
@@ -34,6 +35,8 @@ const Dropdown = ({ dropDownValues, dropDownType, fundValuetype,
       getPersonDetails(selecteddropDownValues);
     } else if (dropDownType === "creditReason") {
       getCreditReason(selecteddropDownValues);
+    } else if (dropDownType === "creditCardDetails") {
+      getCreditCardFundDetails(selecteddropDownValues);
     }
   });
   return (

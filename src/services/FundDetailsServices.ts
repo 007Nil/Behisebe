@@ -7,7 +7,7 @@ async function getAllFundDetailsService(): Promise<FundDetailsModel[]> {
 
 async function getValidFundDetailsService(): Promise<FundDetailsModel[]> {
     const allFundDetails: FundDetailsModel[] = await getAllFundDetails();
-    const validFundDetailsService = allFundDetails.filter(obj => obj.balance !== 0);
+    const validFundDetailsService = allFundDetails.filter(obj => obj.is_active !== false);
     return validFundDetailsService;
 }
 

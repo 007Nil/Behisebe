@@ -58,6 +58,7 @@ const Funds = () => {
       fund_type: fundType,
       balance: fundAmount,
       is_active: true,
+      credit_limit: fundType === "Credit Card" ? fundAmount : null
     };
     let newFundDetails = [...fundData, fundObject];
     await SaveFundDetailsService(fundObject);
