@@ -27,11 +27,19 @@ async function saveExpenseDetailsService(expenseObj: ExpenseModel): Promise<numb
     if (typeof(expenseObj.credit_id) == "undefined" || expenseObj.credit_id == null){
         expenseObj.credit_id = null
     }
+
     const rowID: number = await addExpenseDetails(expenseObj);
     // Update fund balance
     const fundDetails: FundDetailsModel = await getFundDetailsById(expenseObj.fund_id_fk);
     const latestFundAmount = fundDetails.balance - expenseObj.amount;
     await updateFundBalance(latestFundAmount, fundDetails.fund_id);
+
+    if (expenseObj.expense_reason_id_fk == 4){
+        // Credit Card Payment
+        const creditCardDetails = await getFundDetailsById(expenseObj.credit_card_fund_id);
+        const updatedAmount = creditCardDetails.balance + expenseObj.amount;
+        await updateFundBalance(updatedAmount, creditCardDetails.fund_id);
+    }
 
     return rowID;
 }

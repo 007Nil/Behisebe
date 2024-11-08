@@ -89,11 +89,18 @@ async function getExpenseReasonByName(expReasonName: string) {
     return expenseReasonDetails;
 }
 
-async function getLendMoneyExpenseDetails() {
+async function getLendMoneyExpenseDetails(): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
     const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE expense_reason_id_fk = 1");
     return expenseDetails;
 }
+
+async function getWeekExpense(): Promise<ExpenseModel[]> {
+    const db = await openDBConnection();
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE DATE(timeStamp) >= DATE('now', 'weekday 0', '-7 days')");
+    return expenseDetails;
+}
+
 export {
     getAllExpenseReasonDetails,
     addExpenseReasonDetails,
@@ -107,5 +114,6 @@ export {
     updateExpenseDetails,
     deleteExpenseData,
     updateExpenseDetailsCreditId,
-    getExpenseByID
+    getExpenseByID,
+    getWeekExpense
 }

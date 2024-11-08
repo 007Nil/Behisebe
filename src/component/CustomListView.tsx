@@ -13,7 +13,7 @@ import { expense_reason } from '../dummy_data'
 import { getExpenseByID } from '../repository/ExpenseDetailsRepo'
 import { deleteCreditData, getBorrowMoneyCreditDetails, getCreditDetailsById } from '../repository/CreditDetailsRepo'
 import { getLendMoneyByExpenseId } from '../repository/LendMoneyRepo'
-import { updateCreditDetailsService } from '../services/CreditDetailsServices'
+import { deleteCreditDetailsService, updateCreditDetailsService } from '../services/CreditDetailsServices'
 import { getBorrowMoneyByCreditId } from '../repository/MoneyBorrowRepo'
 
 type CustomListProps = {
@@ -62,27 +62,22 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
         }
     };
     const deleteFromDatabase = async () => {
-        if  (reason === "Repay Money Lend" || reason === "Repay Borrowed Money") {
-            alert("Cannot Modify this entry. Please modify from Repay option")
-            return;
-        }
         if (catagory === "expenseDetails") {
             // Need to fix this logic
             if (reason === "Self Transfer") {
                 const expenseData: ExpenseModel = await getExpenseByID(expenseId);
                 const creditId: number = expenseData.credit_id;
                 const creditObj: CreditModel = await getCreditDetailsById(creditId);
-                const debitedAmount: number = creditObj.amount;
+                const creditedAmount: number = creditObj.amount;
                 let fundBalance: number = await getFundBalance(creditObj.fund_id_fk);
-                let updatedFundAmount: number = fundBalance - debitedAmount
+                let updatedFundAmount: number = fundBalance - creditedAmount;
                 await updateFundBalance(updatedFundAmount, creditObj.fund_id_fk);
                 await deleteCreditData(creditId);
-            }else if  (reason === "Lend Money") {
-                // console.log("HIT")
-                const lendMoneyDetails:  LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
-                console.log(lendMoneyDetails.length);
-                if (lendMoneyDetails.length != 0){
+            } else if (reason === "Lend Money") {
+                const lendMoneyDetails: LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
+                if (lendMoneyDetails.length != 0) {
                     alert("Cannot Delete This Entry. Since you already get the partial payment");
+                    setModal2Open(false);
                     return;
                 }
             }
@@ -93,29 +88,36 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             setModal2Open(false);
             alert("Opeartion Successful");
         } else if (catagory === "creditDetails") {
-            alert("Will Implement");
+            if (reason === "Self Transfer") {
+                const creditData: CreditModel = await getCreditDetailsById(creditId);
+                const expense_id = creditData.expense_id;
+                const expenseDetails : ExpenseModel = await getExpenseByID(expense_id);
+                let fundBalance: number = await getFundBalance(expenseDetails.fund_id_fk);
+                const debitedAmount: number = fundBalance + expenseDetails.amount;
+                let updatedFundAmount: number = fundBalance + debitedAmount;
+                await updateFundBalance(updatedFundAmount, expenseDetails.fund_id_fk);
+                await deleteExpenseDataService(expense_id);
+            } else if (reason === "Borrow Money") {
+                const borrowMoneyDetails: MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
+                if (borrowMoneyDetails.length > 0){
+                    alert("Cannot Delete This Entry. Since you already paid the partial payment");
+                    setModal2Open(false);
+                    return;
+                }
+            }
+            await deleteCreditDetailsService(creditId);
+            setModal2Open(false);
+            alert("Opeartion Successful");
         }
     }
 
     const updateDatabase = async () => {
-        if  (reason === "Repay Money Lend" || reason === "Repay Borrowed Money") {
-            alert("Cannot Modify this entry. Please modify from Repay option")
-            return;
-        }
         if (updatedAmount === "" || updatedAmount === "0") {
             alert("Invalid Amount");
             return;
         }
 
         if (catagory === "expenseDetails") {
-            if  (reason === "Lend Money") {
-                const lendMoneyDetails:  LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
-                console.log(lendMoneyDetails.length);
-                if (lendMoneyDetails.length != 0){
-                    alert("Cannot Update This Entry. Since you already get the partial payment");
-                    return;
-                }
-            }
             let updatedExpenseModel: ExpenseModel = {
                 fund_id_fk: fundId,
                 expense_id: expenseId,
@@ -135,9 +137,9 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             setModalOpen(false);
             alert("Expense Data Updated");
         } else if (catagory === "creditDetails") {
-            if (reason === "Money Lend"){
-                const borrowMoneyDetails:  MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
-                if (borrowMoneyDetails.length != 0){
+            if (reason === "Borrow Money") {
+                const borrowMoneyDetails: MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
+                if (borrowMoneyDetails.length != 0) {
                     alert("Cannot Update This Entry. Since you already paid partial payment");
                     return;
                 }
@@ -166,6 +168,10 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
 
     };
 
+    const cancleOperation = () => {
+        alert("Cannot Update This Entry. Since you already get the partial payment");
+    }
+
     return (
         <View>
             <FlatList
@@ -173,7 +179,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 data={flatListData}
                 renderItem={({ item, index }) => {
                     return (
-                        <View style={pageName !== "history"? styles.transactionItem: styles.transactionItemHistroy}>
+                        <View style={pageName !== "history" ? styles.transactionItem : styles.transactionItemHistroy}>
                             <View>
                                 <View style={styles.topLeftView}>
                                     <View style={styles.iconView}>
@@ -181,7 +187,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
 
                                     </View>
                                     <View style={{ marginLeft: moderateScale(10) }}>
-                                        <Text style={styles.paidTo}>{item.reason === "Repay Borrowed Money" ? "Repay Money" : item.reason}</Text>
+                                        <Text style={styles.paidTo}>{item.reason}</Text>
                                     </View>
                                 </View>
                                 <Text style={styles.time}>{"On Date"}</Text>
@@ -201,11 +207,11 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                                 {pageName !== "history" ?
                                     <View style={styles.bankView1}>
                                         <TouchableOpacity style={[styles.appButtonContainer]}
-                                            onPress={() => updateData(item, false)}>
+                                            onPress={() => { item.reason === "Pay Back" ? cancleOperation() : updateData(item, false) }}>
                                             <Text style={styles.appButtonText}>Update</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.appButtonContainerDelete]}
-                                            onPress={() => updateData(item, true)}>
+                                            onPress={() => { item.reason === "Pay Back" ? cancleOperation() : updateData(item, true) }}>
                                             <Text style={styles.appButtonText}>Delete</Text>
                                         </TouchableOpacity>
 

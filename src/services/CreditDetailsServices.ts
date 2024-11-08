@@ -1,6 +1,6 @@
 import { SQLiteRunResult } from "expo-sqlite";
 import { CreditModel, CreditReasonModel, FundDetailsModel } from "../model";
-import { getAllCreditReasonDetails, addCreditReasonDetails, updateCreditReasonDetails, addCreditDetails, getCreditByDate, getCreditReasonById, getCreditReasonByName, updateCreditDetails } from "../repository/CreditDetailsRepo";
+import { getAllCreditReasonDetails, addCreditReasonDetails, updateCreditReasonDetails, addCreditDetails, getCreditByDate, getCreditReasonById, getCreditReasonByName, updateCreditDetails, deleteCreditDetails } from "../repository/CreditDetailsRepo";
 import { getFundDetailsById, updateFundBalance } from "../repository/FundDetailsRepo";
 import { dateConvert } from "../utils/AllUtils";
 
@@ -49,6 +49,10 @@ async function updateCreditDetailsService(creditObj:CreditModel) {
     await updateCreditDetails(creditObj);
 }
 
+async function deleteCreditDetailsService(creditId: number){
+    await deleteCreditDetails(creditId)
+}
+
 export {
     getAllCreditReasonDetailsService,
     addCreditReasonService,
@@ -58,5 +62,6 @@ export {
     getCreditByDateService,
     getCreditReasonDetailsByNameService,
     getValidCreditReasonDetailsService,
-    updateCreditDetailsService
+    updateCreditDetailsService,
+    deleteCreditDetailsService
 }

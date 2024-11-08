@@ -34,11 +34,13 @@ const AddExpense = () => {
   const [message, setMessage] = useState<string>("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [fundAmount, setFundAmount] = useState(Number);
+  const [fundAmount, setFundAmount] = useState<Number>(0);
+  const [creditFundAmount, setCreditFundAmount] = useState<number>(0);
   const [dbExpenseReason, setDbExpenseReason] = useState<ExpenseReasonModel[]>([]);
   const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>([]);
   const [dbPersonDetails, setDbPersonDetails] = useState<PersonModel[]>([]);
-  //
+  const [dbCreditCardFundDetails, setDbCreditCardFundDetail] = useState<FundDetailsModel[]>();
+  
   const [expenseReason, setExpenseReason] = useState<ExpenseReasonModel>();
   const [fundDetails, setFundDetails] = useState<FundDetailsModel>(
     {
@@ -54,6 +56,11 @@ const AddExpense = () => {
       person_name: ""
     }
   );
+  const [creditCardDetails, setCreditCardDetails] = useState<FundDetailsModel>({
+    balance: 0,
+    fund_name: "",
+    fund_type: ""
+  });
 
   useEffect(() => {
     if (isFocused) {
@@ -61,14 +68,28 @@ const AddExpense = () => {
       setIsSubmit(false);
       setMessage("");
       setAmount("");
+      setPersonDetails({
+        person_name: ""
+      })
+      setCreditCardDetails({
+        balance: 0,
+        fund_name: "",
+        fund_type: ""
+      })
     }
   }, [isFocused]);
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
     getValidExpenseReasonDetailsService().then((data) => {
-      data  = data.filter( obj => obj.expense_reason_name !== "Repay Borrowed Money");
-      setDbExpenseReason(data)});
-    getValidFundDetailsService().then((data) => setDbFundDetails(data));
+      data = data.filter(obj => obj.expense_reason_name !== "Pay Back");
+      setDbExpenseReason(data)
+    });
+    getValidFundDetailsService().then((data) => {
+      setDbFundDetails(data)
+      // setCreditCardFundDetail
+      data = data.filter(obj => obj.fund_type === "Credit Card");
+      setDbCreditCardFundDetail(data);
+    });
   }, []);
 
 
@@ -85,33 +106,56 @@ const AddExpense = () => {
     setPersonDetails(personDetails);
   };
 
+  const getCreditCardFundDetails = async (fundObj: FundDetailsModel) => {
+    // console.log(fundObj);
+    setCreditCardDetails(fundObj);
+    setCreditFundAmount(await getFundBalanceService(fundObj.fund_id));
+  }
   const checkExpenseForm = () => {
-    let isValidFrom = true;
+    if (!fundDetails) {
+      alert("Please select a fund");
+      return false;
+    }
+    if (amount === "") {
+      alert("Please enter amount");
+      return false;
+    }
+    if (Number(amount) > fundDetails.balance) {
+      alert("Insufficient amount");
+      return false;
+    }
     if (!expenseReason) {
       alert("Please select expense reason");
-      isValidFrom = false;
+      return false;
     } else {
       if (expenseReason.expense_reason_name === "Lend Money") {
         console.log(personDetails)
         if (!personDetails.person_id) {
           alert("Please select person name");
-          isValidFrom = false;
+          return false;
+        }
+      } else if (expenseReason.expense_reason_name === "Credit Card Bill") {
+        console.log(creditCardDetails)
+        if (!creditCardDetails) {
+          alert("Please enter Credit Card Name");
+          return false;
+        } else if (creditFundAmount === creditCardDetails.credit_limit) {
+          alert("Credit Card Balance: " + creditFundAmount + " and limit: " + creditCardDetails.credit_limit + " is same. Do not give extra money to Credit Card company!!!..");
+          return false;
+        } else if ((Number(amount) + Number(creditFundAmount)) > creditCardDetails.credit_limit) {
+          alert("Credit Card expense is " + creditFundAmount + ". You need to pay"+(Number(creditCardDetails.credit_limit)-creditFundAmount)+". Do not give extra money to Credit Card company!!!..");
+          return false;
+        }else if (fundDetails.fund_type ===  creditCardDetails.fund_type){
+          alert("Select a differnet fund for payment. Always pay Credit Card using Saving Account/Debit Card. Credit card to Credit card payment does not make sense...");
+          return;
+        } else if (fundDetails.fund_type === "Cash"){
+          alert("Cannot Pay Credit Card using Cash!!!...")
+          return false;
         }
       }
     }
-    if (!fundDetails) {
-      alert("Please select a fund");
-      isValidFrom = false;
-    }
-    if (amount === "") {
-      alert("Please enter amount");
-      isValidFrom = false;
-    }
-    if (Number(amount) > fundDetails.balance) {
-      alert("Insufficient amount");
-      isValidFrom = false;
-    }
-    return isValidFrom;
+
+    return true;
   };
 
   const saveExpenseDetails = () => {
@@ -120,7 +164,8 @@ const AddExpense = () => {
       expense_reason_id_fk: expenseReason.expense_reason_id,
       person_id_fk: personDetails.person_id > 0 ? personDetails.person_id : null,
       amount: Number(amount),
-      message: message.length > 0 ? message : ""
+      message: message.length > 0 ? message : "",
+      credit_card_fund_id: creditCardDetails.fund_id > 0 ? creditCardDetails.fund_id : null
     };
     //
     saveExpenseDetailsService(expenseObject);
@@ -187,6 +232,15 @@ const AddExpense = () => {
               dropDownValues={dbPersonDetails}
               dropDownType={"personDetails"}
               getPersonDetails={getPersonDetails}
+            />
+          </View>
+        ) : null}
+        {"" + expenseReason === "undefined" ? null : expenseReason.expense_reason_name === "Credit Card Bill" ? (
+          <View style={[styles.amountView]}>
+            <Dropdown
+              dropDownValues={dbCreditCardFundDetails}
+              dropDownType={"creditCardDetails"}
+              getCreditCardFundDetails={getCreditCardFundDetails}
             />
           </View>
         ) : null}
