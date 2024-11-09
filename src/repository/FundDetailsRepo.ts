@@ -23,8 +23,7 @@ async function addFundDetails(fundObj: FundDetailsModel): Promise<void> {
 
 async function updateFundDetails(fundObj: FundDetailsModel, fundStatus: number): Promise<void> {
     const db = await openDBConnection();
-    await db.runAsync('UPDATE fund_details SET is_active =?, balance = ?  WHERE fund_id = ?', fundStatus, fundObj.balance, fundObj.fund_id);
-
+    await db.runAsync('UPDATE fund_details SET is_active =?, balance = ?, credit_limit = ?  WHERE fund_id = ?', fundStatus, fundObj.balance, fundObj.credit_limit, fundObj.fund_id);
 }
 
 async function getFundDetailsById(fundId: number): Promise<FundDetailsModel> {

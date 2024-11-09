@@ -20,6 +20,7 @@ import { FlatlistStyles as styles } from "./FlatlsitStyles";
 import { updateFundDetailsService } from "../services/FundDetailsServices";
 
 import { FundDetailsModel } from "../model";
+import { getFundDetailsById } from "../repository/FundDetailsRepo";
 
 type AddFundFlatListProps = {
   data: FundDetailsModel[];
@@ -35,21 +36,27 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
   const [formEditType, setFormEditType] = useState<string>("");
   const [editAmount, setEditAmount] = useState<number>(0);
   const [accountState, setAccountState] = useState(false);
+  const [creditLimit, setCreditLimit] = useState<number>(0);
+  const [newCreditLimit, setNewCreditLimit] = useState<number>(0);
   const [flatListIndex, setFlatListIndex] = useState<number>(-1);
 
   const toggleSwitch = () => setAccountState((previousState) => !previousState);
 
-  const handleModal = () => {
-    updateFormData();
-    setIsModalVisible(() => !isModalVisible);
-    alert("Data Updated");
+  const handleModal = (clickType: string) => {
+    if (clickType === "closeModal") {
+      setIsModalVisible(() => !isModalVisible);
+    } else {
+      updateFormData();
+      setIsModalVisible(() => !isModalVisible);
+      alert("Data Updated");
+    }
   };
 
   useEffect(() => {
     setFlatListData(data);
   }, [data]);
 
-  const updateFormData = () => {
+  const updateFormData = async () => {
 
     let tmpArray = flatListData;
     let newflatListObj: FundDetailsModel;
@@ -57,6 +64,13 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
       return ele.fund_id !== formId;
     }
     );
+    if (creditLimit) {
+      const fundDetails: FundDetailsModel = await getFundDetailsById(formId);
+      if (creditLimit < fundDetails.credit_limit) {
+        alert("Credit Limit Can only Increase!!!");
+        return;
+      }
+    }
 
     newflatListObj = {
       fund_id: formId,
@@ -64,7 +78,9 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
       fund_type: formEditType,
       balance: editAmount,
       is_active: accountState,
-    }
+      credit_limit: creditLimit
+    };
+    console.log(newflatListObj);
     updateFundDetailsService(newflatListObj);
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);
@@ -78,6 +94,7 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
     setFromId(item.fund_id);
     setEditName(item.fund_name);
     setFormEditType(item.fund_type);
+    setCreditLimit(item.credit_limit);
     if (item.is_active) {
       setAccountState(true);
     }
@@ -105,7 +122,7 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
                       </Text>
                       {screenName === "checkBalance" && item.fund_type === "Credit Card" ?
                         <Text style={styles.paidTo}>
-                          {"Limit: "+item.credit_limit}
+                          {"Limit: " + item.credit_limit}
                         </Text>
                         : null}
                     </View>
@@ -135,7 +152,7 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
             <View style={styles.modalTopView}>
               <Text style={styles.payable}>Edit Details</Text>
               <View style={styles.modalTopRightView}>
-                <TouchableOpacity onPress={handleModal}>
+                <TouchableOpacity onPress={() => handleModal("closeModal")}>
                   <Image
                     source={require("../images/close.png")}
                     style={[
@@ -183,7 +200,7 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
                   <View style={styles.upi_view}>
-                    <Text style={styles.bankAccount}>{"Amount / Limit"}</Text>
+                    <Text style={styles.bankAccount}>{"Amount"}</Text>
                   </View>
                   <TextInput
                     style={styles.bankAccount}
@@ -194,6 +211,24 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
                 </View>
               </View>
             </View>
+            {creditLimit ?
+              <View style={styles.bankView}>
+                <View style={styles.bankLeftView}>
+                  <View style={{ marginLeft: moderateScale(15) }}>
+                    <View style={styles.upi_view}>
+                      <Text style={styles.bankAccount}>{"Limit"}</Text>
+                    </View>
+                    <TextInput
+                      style={styles.bankAccount}
+                      keyboardType="number-pad"
+                      value={creditLimit.toString()}
+                      onChangeText={(amount) => setCreditLimit(Number(amount))}
+                    />
+                  </View>
+                </View>
+              </View>
+              : null}
+
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
@@ -209,7 +244,7 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
                 </View>
               </View>
             </View>
-            <TouchableOpacity style={styles.confirmPayNow} onPress={handleModal}>
+            <TouchableOpacity style={styles.confirmPayNow} onPress={() => handleModal("")}>
               <Text style={styles.title}>{"Update Details"}</Text>
             </TouchableOpacity>
           </View>
