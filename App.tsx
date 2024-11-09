@@ -39,8 +39,6 @@ CREATE TABLE IF NOT EXISTS fund_details (
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
 
-ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL);
-
 INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
 SELECT 'Cash', 'Cash InHand','Cash Fund',1,0
 WHERE NOT EXISTS(SELECT 1 FROM fund_details WHERE fund_id = 1 AND fund_name = 'Cash' AND fund_type = 'Cash InHand');
@@ -160,6 +158,12 @@ CREATE TABLE IF NOT EXISTS money_borrows (
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')),
     FOREIGN KEY (credit_id_fk) REFERENCES credits(credit_id)
 );
-
 `);
+
+// 
+const count = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ',"fund_details","credit_limit");
+if (count["count(*)"] < 1){
+    await db.runAsync("ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL)");
+}
+
 }
