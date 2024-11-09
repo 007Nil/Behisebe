@@ -56,7 +56,6 @@ const AddCreditCustomFlatList = ({ data }: CreditReasonCustomFlatListProps) => {
       credit_reason_name: editName,
       credit_reason_catagory: editType,
     };
-    // console.log(newflatListObj);
     updateCreditReasonService(newflatListObj)
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);

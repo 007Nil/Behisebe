@@ -80,7 +80,6 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
       is_active: accountState,
       credit_limit: creditLimit
     };
-    console.log(newflatListObj);
     updateFundDetailsService(newflatListObj);
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);

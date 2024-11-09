@@ -56,7 +56,6 @@ const AddExpenseCustomFlatList = ({ data }: ExpenseReasonCustomFlatListProps) =>
       expense_reason_name: editName,
       expense_reason_catagory: editType,
     };
-    // console.log(newflatListObj);
     updateExpenseReasonService(newflatListObj)
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);

@@ -91,7 +91,6 @@ const AddCredit = () => {
   };
 
   const getUpdatedDate = (date: string) => {
-    // console.log(date);
     setUpdatedDate(date);
   };
 
@@ -105,7 +104,6 @@ const AddCredit = () => {
       alert("Please select expense reason");
       return false;
     } else {
-      console.log(creditReason);
       if (creditReason.credit_reason_name === "Pay Of Debt") {
         if (!personDetails) {
           alert("Please select person name");
@@ -148,7 +146,6 @@ const AddCredit = () => {
       message: message.length > 0 ? message : "",
       timestamp: updatedDate == "" ? null : updatedDate
     };
-    console.log(creditObject)
     saveCreditDetailsService(creditObject);
     setIsSubmit(true);
     navigate("CreditTransferSuccessful");

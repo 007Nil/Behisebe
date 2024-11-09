@@ -8,7 +8,6 @@ async function getAllPersonDetailsService(): Promise<PersonModel[]> {
 
 async function addPersonService(personObj: PersonModel) {
     let sqlResult: SQLiteRunResult = await addPersonDetails(personObj);
-    console.log(sqlResult)
 }
 
 async function updatePersonService(personObj: PersonModel) {

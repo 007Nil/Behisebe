@@ -36,7 +36,7 @@ const Funds = () => {
   });
   useEffect(() => {
     getAllFundDetailsService().then(data => setFundData(data))
-    getAllFundTypes().then(data => {console.log(data);setDbFundType(data)})
+    getAllFundTypes().then(data => { setDbFundType(data) })
   }, []);
   const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
@@ -76,18 +76,15 @@ const Funds = () => {
       is_active: true,
       credit_limit: creditAmount
     };
-    console.log(fundObject);
-    // let newFundDetails = [...fundData, fundObject];
-    // await SaveFundDetailsService(fundObject);
-    // setFundData(newFundDetails);
-    // console.log(fundObject)
-    // resetState();
-    // alert("Fund Information Saved");
+    let newFundDetails = [...fundData, fundObject];
+    await SaveFundDetailsService(fundObject);
+    setFundData(newFundDetails);
+    resetState();
+    alert("Fund Information Saved");
   };
 
   const searchData = (text: string) => {
     setSearchText(text);
-    console.log(text);
   }
 
   const getFundTypeDetails = async (fundTypeObj: FundTypeModel) => {

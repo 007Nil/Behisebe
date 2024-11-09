@@ -95,7 +95,6 @@ const AddExpense = () => {
   }, []);
 
   const getUpdatedDate = (date: string) => {
-    // console.log(date);
     setUpdatedDate(date);
   };
   const getExpenseReason = (expenseReason: ExpenseReasonModel) => {
@@ -133,13 +132,11 @@ const AddExpense = () => {
       return false;
     } else {
       if (expenseReason.expense_reason_name === "Lend Money") {
-        console.log(personDetails)
         if (!personDetails.person_id) {
           alert("Please select person name");
           return false;
         }
       } else if (expenseReason.expense_reason_name === "Credit Card Bill") {
-        console.log(creditCardDetails)
         if (!creditCardDetails) {
           alert("Please enter Credit Card Name");
           return false;
