@@ -16,11 +16,12 @@ import Modal from "react-native-modal";
 
 import styles from "./styles"; import AddFundCustomFlatList from "../../component/AddFundCustomFlatList";
 import { CustomButton } from "../../component";
-import { FundDetailsModel } from "../../model";
+import { FundDetailsModel, FundTypeModel } from "../../model";
 
 // Services
 import { SaveFundDetailsService, getAllFundDetailsService } from "../../services/FundDetailsServices";
-
+import { Dropdown } from "../../component";
+import { getAllFundTypes } from "../../repository/FundDetailsRepo";
 const Funds = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [fundData, setFundData] = useState<FundDetailsModel[]>([]);
@@ -29,8 +30,13 @@ const Funds = () => {
   const [fundAmount, setFundAmount] = useState<number>(0);
   const [creditAmount, setCreditAmount] = useState<number>(null);
   const [searchText, setSearchText] = useState<string>("");
+  const [dbfundType, setDbFundType] = useState<FundTypeModel[]>();
+  const [selectFundType, setSelectFundType] = useState<FundTypeModel>({
+    fund_type_name: ""
+  });
   useEffect(() => {
     getAllFundDetailsService().then(data => setFundData(data))
+    getAllFundTypes().then(data => {console.log(data);setDbFundType(data)})
   }, []);
   const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
@@ -54,11 +60,11 @@ const Funds = () => {
       alert("Balance cannot 0");
       return;
     }
-    if (fundType === "Credit Card"){
-      if (creditAmount == 0){
+    if (fundType === "Credit Card") {
+      if (creditAmount == 0) {
         alert("For a Credit Card Limit cannot be 0");
         return;
-      } else if (creditAmount < fundAmount){
+      } else if (creditAmount < fundAmount) {
         alert("Card Balance is greater that Card limit. That's not possible");
         return;
       }
@@ -70,18 +76,24 @@ const Funds = () => {
       is_active: true,
       credit_limit: creditAmount
     };
-    let newFundDetails = [...fundData, fundObject];
-    await SaveFundDetailsService(fundObject);
-    setFundData(newFundDetails);
-    console.log(fundObject)
-    resetState();
-    alert("Fund Information Saved");
+    console.log(fundObject);
+    // let newFundDetails = [...fundData, fundObject];
+    // await SaveFundDetailsService(fundObject);
+    // setFundData(newFundDetails);
+    // console.log(fundObject)
+    // resetState();
+    // alert("Fund Information Saved");
   };
 
   const searchData = (text: string) => {
     setSearchText(text);
     console.log(text);
   }
+
+  const getFundTypeDetails = async (fundTypeObj: FundTypeModel) => {
+    setSelectFundType(fundTypeObj);
+    setFundType(fundTypeObj.fund_type_name);
+  };
   return (
     <View style={styles.container}>
       <CommonHeader title={"Fund Settings"} />
@@ -147,10 +159,16 @@ const Funds = () => {
                 <View style={styles.upi_view}>
                   <Text style={styles.bankAccount}>{"Fund Type"}</Text>
                 </View>
-                <TextInput
+                {/* <TextInput
                   style={styles.bankAccount}
                   onChangeText={(type) => setFundType(type)}
                   value={fundType}
+                /> */}
+                <Dropdown
+                  dropDownValues={dbfundType}
+                  dropDownType={"getFundTypeDetails"}
+                  getFundTypeDetails={getFundTypeDetails}
+                  fundValuetype="getFundTypeDetails"
                 />
               </View>
             </View>
@@ -170,7 +188,7 @@ const Funds = () => {
               </View>
             </View>
           </View>
-          {fundType === "Credit Card" ?
+          {selectFundType.fund_type_name === "Credit Card" ?
             <View style={styles.bankView}>
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
@@ -181,7 +199,7 @@ const Funds = () => {
                     style={styles.bankAccount}
                     keyboardType="number-pad"
                     onChangeText={(amount) => setCreditAmount(Number(amount))}
-                    value={creditAmount? String(creditAmount): "0"}
+                    value={creditAmount ? String(creditAmount) : "0"}
                   />
                 </View>
               </View>

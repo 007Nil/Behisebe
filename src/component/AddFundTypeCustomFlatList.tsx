@@ -50,7 +50,6 @@ const AddFundTypeCustomFlatList = ({ data }: FundTypeCustomFlatListProps) => {
     };
 
     const editForm = (item: FundTypeModel) => {
-        console.log("HIT")
         setFromId(item.fund_type_id);
         setEditName(item.fund_type_name);
         setFlatListIndex(flatListData.indexOf(item));

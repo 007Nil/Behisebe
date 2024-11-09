@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import SelectDropdown from "react-native-select-dropdown";
-import { CreditReasonModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../model";
+import { CreditReasonModel, ExpenseReasonModel, FundDetailsModel, FundTypeModel, PersonModel } from "../model";
 
 type DropDownType = {
-  dropDownValues: FundDetailsModel[] | ExpenseReasonModel[] | PersonModel[] | CreditReasonModel[],
+  dropDownValues: FundDetailsModel[] | ExpenseReasonModel[] | PersonModel[] | CreditReasonModel[] | FundTypeModel[],
   dropDownType: string,
   getExpenseReason?(expenseReasonObj: ExpenseReasonModel): void,
   getFundDetails?(fundObj: FundDetailsModel): void,
@@ -12,13 +12,15 @@ type DropDownType = {
   getCreditReason?(creditReasonObj: CreditReasonModel): void,
   getTransferFromFundDetails?(fundObj: FundDetailsModel): void,
   getTransferToFundDetails?(fundObj: FundDetailsModel): void,
-  getCreditCardFundDetails?(fundObj: FundDetailsModel): void
+  getCreditCardFundDetails?(fundObj: FundDetailsModel): void,
+  getFundTypeDetails?(fundTypeObj: FundTypeModel): void,
   fundValuetype?: string,
 }
 
 const Dropdown = ({ dropDownValues, dropDownType, fundValuetype,
   getExpenseReason, getFundDetails, getPersonDetails,
-  getCreditReason, getTransferFromFundDetails, getTransferToFundDetails, getCreditCardFundDetails }: DropDownType) => {
+  getCreditReason, getTransferFromFundDetails, getTransferToFundDetails,
+  getCreditCardFundDetails, getFundTypeDetails }: DropDownType) => {
   const [selecteddropDownValues, setselecteddropDownValues] = useState<any>("");
   useEffect(() => {
     if (dropDownType === "expenseReasonDetails") {
@@ -37,6 +39,8 @@ const Dropdown = ({ dropDownValues, dropDownType, fundValuetype,
       getCreditReason(selecteddropDownValues);
     } else if (dropDownType === "creditCardDetails") {
       getCreditCardFundDetails(selecteddropDownValues);
+    } else if (dropDownType === "getFundTypeDetails") {
+      getFundTypeDetails(selecteddropDownValues);
     }
   });
   return (
@@ -58,14 +62,18 @@ const Dropdown = ({ dropDownValues, dropDownType, fundValuetype,
                       ? selectedItem.person_name
                       : dropDownType === "creditReason"
                         ? selectedItem.credit_reason_name
-                        : selectedItem.fund_name)) ||
+                        : dropDownType === "fundDetails" ?
+                          selectedItem.fund_name :
+                          selectedItem.fund_type_name)) ||
                   (dropDownType === "expenseReasonDetails"
                     ? "Select Expense Reason"
                     : dropDownType === "personDetails"
                       ? "Select Person name"
                       : dropDownType === "creditReason"
                         ? "Select Credit Reason"
-                        : "Select a Fund")}
+                        : dropDownType === "fundDetails" ?
+                          "Select a Fund" :
+                          "Select Fund Type")}
               </Text>
             </View>
           );
@@ -85,7 +93,9 @@ const Dropdown = ({ dropDownValues, dropDownType, fundValuetype,
                     ? item.person_name
                     : dropDownType === "creditReason"
                       ? item.credit_reason_name
-                      : item.fund_name}
+                      : dropDownType === "fundDetails" ?
+                        item.fund_name :
+                        item.fund_type_name}
               </Text>
             </View>
           );

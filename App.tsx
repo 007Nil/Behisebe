@@ -50,15 +50,14 @@ CREATE TABLE IF NOT EXISTS fund_details (
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
 
-CREATE TABLE IF NOT EXISTS fund_types (
-    fund_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    fund_type_name TEXT NOT NULL UNIQUE
-);
-
 INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
 SELECT 'Cash', 'Cash InHand','Cash Fund',1,0
 WHERE NOT EXISTS(SELECT 1 FROM fund_details WHERE fund_id = 1 AND fund_name = 'Cash' AND fund_type = 'Cash InHand');
 
+CREATE TABLE IF NOT EXISTS fund_types (
+    fund_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fund_type_name TEXT NOT NULL UNIQUE
+);
 
 INSERT INTO fund_types(fund_type_name)
 SELECT 'Credit Card'

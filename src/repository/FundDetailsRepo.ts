@@ -50,7 +50,7 @@ async function getFundBalance(fundId: number): Promise<number> {
     }
 }
 
-async function getFundTypes(): Promise<FundTypeModel[]> {
+async function getAllFundTypes(): Promise<FundTypeModel[]> {
     const db = await openDBConnection();
     const allRows: FundTypeModel[] = await db.getAllAsync('SELECT * FROM fund_types;');
     return allRows;
@@ -74,7 +74,7 @@ export {
     updateFundBalance,
     getFundDetailsById,
     getFundBalance,
-    getFundTypes,
+    getAllFundTypes,
     saveFundTypes,
     updateFundTypes
 };

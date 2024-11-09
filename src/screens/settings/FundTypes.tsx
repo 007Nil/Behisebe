@@ -6,13 +6,13 @@ import CommonHeader from "../../common/CommonHeader";
 import Modal from "react-native-modal";
 import { FundTypeModel } from "../../model";
 import { AddFundTypeCustomFlatList, CustomButton } from "../../component";
-import { getFundTypes, saveFundTypes } from "../../repository/FundDetailsRepo";
+import { getAllFundTypes, saveFundTypes } from "../../repository/FundDetailsRepo";
 const FundTypes = () => {
   const [fundTypes, setFundTypes] = useState<FundTypeModel[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [fundTypeName, setfundTypeName] = useState<string>("");
   useEffect(() => {
-    getFundTypes().then((data) => setFundTypes(data));
+    getAllFundTypes().then((data) => setFundTypes(data));
   }, []);
   const getModalopen = (modelState: boolean) => {
     setModalOpen(modelState);
