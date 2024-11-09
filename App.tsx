@@ -29,15 +29,15 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
---DROP TABLE IF EXISTS money_lends;
---DROP TABLE IF EXISTS money_borrows;
---DROP TABLE IF EXISTS expenses;
---DROP TABLE IF EXISTS credits;
---DROP TABLE IF EXISTS expenses;
---DROP TABLE IF EXISTS fund_details;
---DROP TABLE IF EXISTS expense_reasons;
---DROP TABLE IF EXISTS credit_reasons;
---DROP TABLE IF EXISTS persons;
+DROP TABLE IF EXISTS money_lends;
+DROP TABLE IF EXISTS money_borrows;
+DROP TABLE IF EXISTS expenses;
+DROP TABLE IF EXISTS credits;
+DROP TABLE IF EXISTS expenses;
+DROP TABLE IF EXISTS fund_details;
+DROP TABLE IF EXISTS expense_reasons;
+DROP TABLE IF EXISTS credit_reasons;
+DROP TABLE IF EXISTS persons;
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,9 +46,10 @@ CREATE TABLE IF NOT EXISTS fund_details (
     notes TEXT,
     is_active INTEGER NOT NULL,
     balance INTEGER NOT NULL,
-    credit_limit INTEGER DEFAULT (NULL),
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
+
+ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL);
 
 INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
 SELECT 'Cash', 'Cash InHand','Cash Fund',1,0
