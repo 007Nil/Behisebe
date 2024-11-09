@@ -8,6 +8,7 @@ import CustomListView from "./CustomListView";
 import CustomDateTimePicker from "./CustomDateTimePicker";
 import CustomBarChart from "./CustomBarChart";
 import CustomDatePicker from "./CustomDatePicker";
+import AddFundTypeCustomFlatList from "./AddFundTypeCustomFlatList";
 export {
     Dropdown,
     AddFundCustomFlatList,
@@ -18,5 +19,6 @@ export {
     CustomListView,
     CustomDateTimePicker,
     CustomBarChart,
-    CustomDatePicker
+    CustomDatePicker,
+    AddFundTypeCustomFlatList
 }

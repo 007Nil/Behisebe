@@ -8,7 +8,7 @@ import SelfTransferModel from "./SelfTransferModel";
 import LendMoneyModel from "./LendMoneyModel";
 import MoneyBorrowModel from "./MoneyBorrowModel";
 import MoneyRepayModel from "./MoneyRepayModel";
-import FundTypeModel from "./FundTypeMpdel";
+import FundTypeModel from "./FundTypeModel";
 export {
     FundDetailsModel,
     ExpenseReasonModel,

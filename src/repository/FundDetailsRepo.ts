@@ -56,7 +56,7 @@ async function getFundTypes(): Promise<FundTypeModel[]> {
     return allRows;
 }
 
-async function addFundTypes(fundTypeObj: FundTypeModel) {
+async function saveFundTypes(fundTypeObj: FundTypeModel) {
     const db = await openDBConnection();
     await db.runAsync('INSERT INTO fund_types (fund_type_name) VALUES (?)', fundTypeObj.fund_type_name);
 }
@@ -75,6 +75,6 @@ export {
     getFundDetailsById,
     getFundBalance,
     getFundTypes,
-    addFundTypes,
+    saveFundTypes,
     updateFundTypes
 };
