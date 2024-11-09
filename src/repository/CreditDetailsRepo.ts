@@ -53,11 +53,20 @@ async function deleteCreditData(creditId: number) {
 
 async function addCreditDetails(creditObj: CreditModel): Promise<number> {
     const db = await openDBConnection();
-    let sqlResult = await db.runAsync(
-        'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message,expense_id) VALUES (?, ?, ?, ?, ?,?)',
-        creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount, creditObj.message, creditObj.expense_id
-    );
-    return sqlResult.lastInsertRowId;
+    if (creditObj.timestamp != null || creditObj.timestamp !== "undefined") {
+        let sqlResult = await db.runAsync(
+            'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message,expense_id,timestamp) VALUES (?, ?, ?, ?, ?,?,?)',
+            creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount,
+            creditObj.message, creditObj.expense_id, creditObj.timestamp
+        );
+        return sqlResult.lastInsertRowId;
+    } else {
+        let sqlResult = await db.runAsync(
+            'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message,expense_id) VALUES (?, ?, ?, ?, ?,?)',
+            creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount, creditObj.message, creditObj.expense_id
+        );
+        return sqlResult.lastInsertRowId;
+    }
 }
 
 async function getCreditReasonById(creditReasonId: number) {
@@ -88,7 +97,7 @@ async function updateCreditDetails(creditModel: CreditModel) {
 
 async function deleteCreditDetails(creditId: number) {
     const db = await openDBConnection();
-    await db.runAsync('DELETE FROM credits WHERE credit_id = ?',creditId);
+    await db.runAsync('DELETE FROM credits WHERE credit_id = ?', creditId);
 }
 
 export {

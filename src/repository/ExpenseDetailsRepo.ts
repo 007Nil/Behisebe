@@ -50,11 +50,20 @@ async function deleteExpenseData(expID: number) {
 
 async function addExpenseDetails(expenseModel: ExpenseModel): Promise<number> {
     const db = await openDBConnection();
-    let sqlResult: SQLiteRunResult = await db.runAsync(
-        'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id) VALUES (?, ?, ?, ?, ?, ?)',
-        expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id
-    );
-    return sqlResult.lastInsertRowId
+    if (expenseModel.timestamp != null || expenseModel.timestamp !== "undefined") {
+        let sqlResult: SQLiteRunResult = await db.runAsync(
+            'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk,
+            expenseModel.amount, expenseModel.message, expenseModel.credit_id, expenseModel.timestamp
+        );
+        return sqlResult.lastInsertRowId;
+    } else {
+        let sqlResult: SQLiteRunResult = await db.runAsync(
+            'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id) VALUES (?, ?, ?, ?, ?, ?)',
+            expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id
+        );
+        return sqlResult.lastInsertRowId;
+    }
 
 }
 async function getExpenseDetails(): Promise<ExpenseModel[]> {

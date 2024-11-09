@@ -22,16 +22,16 @@ const CustomDateTimePicker = ({ datePickerScreen, getExpenseDetails, getCreditDe
   useEffect(() => {
     (async () => {
       if (datePickerScreen === "expenseDetails") {
-        const expenseDetails = await getExpenseByDateService(dateConvert(fromDate).toLocaleString(), dateConvert(toDate).toLocaleString());
+        const expenseDetails = await getExpenseByDateService(dateConvert(fromDate), dateConvert(toDate));
         getExpenseDetails(expenseDetails);
       }
       else if (datePickerScreen === "creditDetails") {
-        const creditDetails = await getCreditByDateService(dateConvert(fromDate).toLocaleString(), dateConvert(toDate).toLocaleString());
+        const creditDetails = await getCreditByDateService(dateConvert(fromDate), dateConvert(toDate));
         getCreditDetails(creditDetails);
       }
       else if (datePickerScreen === "transactionHistory") {
-        const expenseDetails = await getExpenseByDateService(dateConvert(fromDate), dateConvert(toDate).toLocaleString());
-        const creditDetails = await getCreditByDateService(dateConvert(fromDate), dateConvert(toDate).toLocaleString());
+        const expenseDetails = await getExpenseByDateService(dateConvert(fromDate), dateConvert(toDate));
+        const creditDetails = await getCreditByDateService(dateConvert(fromDate), dateConvert(toDate));
         getTransactionHistory([expenseDetails,creditDetails]);
       }
     })();
