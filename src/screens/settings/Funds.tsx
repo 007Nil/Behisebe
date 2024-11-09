@@ -156,11 +156,6 @@ const Funds = () => {
                 <View style={styles.upi_view}>
                   <Text style={styles.bankAccount}>{"Fund Type"}</Text>
                 </View>
-                {/* <TextInput
-                  style={styles.bankAccount}
-                  onChangeText={(type) => setFundType(type)}
-                  value={fundType}
-                /> */}
                 <Dropdown
                   dropDownValues={dbfundType}
                   dropDownType={"getFundTypeDetails"}

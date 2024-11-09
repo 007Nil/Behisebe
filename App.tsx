@@ -61,23 +61,23 @@ CREATE TABLE IF NOT EXISTS fund_types (
 
 INSERT INTO fund_types(fund_type_name)
 SELECT 'Credit Card'
-WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 1 and fund_type_name = 'Credit Card');
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Credit Card');
 
 INSERT INTO fund_types(fund_type_name)
 SELECT 'Savings Account'
-WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 2 and fund_type_name = 'Savings Account');
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Savings Account');
 
 INSERT INTO fund_types(fund_type_name)
 SELECT 'Cash Fund'
-WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 3 and fund_type_name = 'Cash Fund');
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Cash Fund');
 
 INSERT INTO fund_types(fund_type_name)
 SELECT 'Investment'
-WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 4 and fund_type_name = 'Investment');
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Investment');
 
 INSERT INTO fund_types(fund_type_name)
 SELECT 'Salary Account'
-WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 5 and fund_type_name = 'Salary Account');
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Salary Account');
 
 
 CREATE TABLE IF NOT EXISTS expense_reasons (

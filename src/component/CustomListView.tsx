@@ -207,11 +207,11 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                                 {pageName !== "history" ?
                                     <View style={styles.bankView1}>
                                         <TouchableOpacity style={[styles.appButtonContainer]}
-                                            onPress={() => { item.reason === "Pay Back" ? cancleOperation() : updateData(item, false) }}>
+                                            onPress={() => { item.reason === "Pay Back" || item.reason === "Credit Card Bill" ? cancleOperation() : updateData(item, false) }}>
                                             <Text style={styles.appButtonText}>Update</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.appButtonContainerDelete]}
-                                            onPress={() => { item.reason === "Pay Back" ? cancleOperation() : updateData(item, true) }}>
+                                            onPress={() => { item.reason === "Pay Back" || item.reason === "Credit Card Bill" ? cancleOperation() : updateData(item, true) }}>
                                             <Text style={styles.appButtonText}>Delete</Text>
                                         </TouchableOpacity>
 
