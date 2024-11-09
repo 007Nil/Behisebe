@@ -100,6 +100,28 @@ const ProfileAndSettings = () => {
               </View>
               <Text style={styles.tranferText}>{"Funds"}</Text>
             </TouchableOpacity>
+            {/* Fund Types */}
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigate("Funds");
+              }}
+            >
+              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
+                <Image
+                  source={require("../../images/mobile.png")}
+                  style={[
+                    styles.icons,
+                    {
+                      tintColor: "purple",
+                      width: scale(30),
+                      height: scale(30),
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={styles.tranferText}>{"Fund Type"}</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {

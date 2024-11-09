@@ -50,10 +50,36 @@ CREATE TABLE IF NOT EXISTS fund_details (
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
 
+CREATE TABLE IF NOT EXISTS fund_types (
+    fund_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fund_type_name TEXT NOT NULL UNIQUE
+);
 
 INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
 SELECT 'Cash', 'Cash InHand','Cash Fund',1,0
 WHERE NOT EXISTS(SELECT 1 FROM fund_details WHERE fund_id = 1 AND fund_name = 'Cash' AND fund_type = 'Cash InHand');
+
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Credit Card'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 1 and fund_type_name = 'Credit Card');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Savings Account'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 2 and fund_type_name = 'Savings Account');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Cash Fund'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 3 and fund_type_name = 'Cash Fund');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Investment'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 4 and fund_type_name = 'Investment');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Salary Account'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_id = 5 and fund_type_name = 'Salary Account');
+
 
 CREATE TABLE IF NOT EXISTS expense_reasons (
     expense_reason_id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,6 +1,8 @@
 import { SQLiteRunResult } from 'expo-sqlite';
 import FundDetailsModel from '../model/FundDetailsModel';
 import { openDBConnection } from './OpenSqllite';
+import { FundTypeModel } from '../model';
+import FundTypes from '../screens/settings/FundTypes';
 
 
 type fundAmountType = {
@@ -48,11 +50,31 @@ async function getFundBalance(fundId: number): Promise<number> {
     }
 }
 
+async function getFundTypes(): Promise<FundTypeModel[]> {
+    const db = await openDBConnection();
+    const allRows: FundTypeModel[] = await db.getAllAsync('SELECT * FROM fund_types;');
+    return allRows;
+}
+
+async function addFundTypes(fundTypeObj: FundTypeModel) {
+    const db = await openDBConnection();
+    await db.runAsync('INSERT INTO fund_types (fund_type_name) VALUES (?)', fundTypeObj.fund_type_name);
+}
+
+async function updateFundTypes(fundTypeObj: FundTypeModel) {
+    const db = await openDBConnection();
+    await db.runAsync('UPDATE fund_types SET fund_type_name = ? WHERE fund_type_id = ?',
+        fundTypeObj.fund_type_name, fundTypeObj.fund_type_id);
+}
+
 export {
     addFundDetails,
     getAllFundDetails,
     updateFundDetails,
     updateFundBalance,
     getFundDetailsById,
-    getFundBalance
+    getFundBalance,
+    getFundTypes,
+    addFundTypes,
+    updateFundTypes
 };
