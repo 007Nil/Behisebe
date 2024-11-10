@@ -144,7 +144,7 @@ const AddCredit = () => {
       person_id_fk: personDetails.person_id > 0 ? personDetails.person_id : null,
       amount: Number(amount),
       message: message.length > 0 ? message : "",
-      timestamp: updatedDate == "" ? null : updatedDate
+      timestamp: updatedDate == "" ? "" : updatedDate
     };
     saveCreditDetailsService(creditObject);
     setIsSubmit(true);

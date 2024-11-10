@@ -167,7 +167,7 @@ const AddExpense = () => {
       amount: Number(amount),
       message: message.length > 0 ? message : "",
       credit_card_fund_id: creditCardDetails.fund_id > 0 ? creditCardDetails.fund_id : null,
-      timestamp: updatedDate == "" ? null : updatedDate
+      timestamp: updatedDate == "" ? "" : updatedDate
     };
     saveExpenseDetailsService(expenseObject);
     setIsSubmit(true);

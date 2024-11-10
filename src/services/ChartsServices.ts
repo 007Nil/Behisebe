@@ -17,9 +17,8 @@ async function generateWeeklyBarChartData(): Promise<BarChartModel[]> {
     let sundayAmount: number = 0;
     const weekExenseObj = await getWeekExpense();
     for (const eachExp of weekExenseObj) {
-
+        
         const dayName: string = getDayName(eachExp.timestamp);
-
         if (dayName === "Monday") {
             mondayAmount = mondayAmount + eachExp.amount;
         } else if (dayName === "Tuesday") {
