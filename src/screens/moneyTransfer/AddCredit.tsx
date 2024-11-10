@@ -20,9 +20,10 @@ import moment from "moment";
 import Dropdown from "../../component/Dropdown";
 import { CreditModel, CreditReasonModel, FundDetailsModel, PersonModel } from "../../model";
 import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
-import { getAllFundDetailsService, getFundBalanceService, getValidFundDetailsService } from "../../services/FundDetailsServices";
-import { getAllCreditReasonDetailsService, getValidCreditReasonDetailsService, saveCreditDetailsService } from "../../services/CreditDetailsServices";
+import { getFundBalanceService, getValidFundDetailsService } from "../../services/FundDetailsServices";
+import { getValidCreditReasonDetailsService, saveCreditDetailsService } from "../../services/CreditDetailsServices";
 import { type StackNavigation } from "../../navigation/AppNavigator";
+import { CustomDatePicker } from "../../component";
 
 
 const AddCredit = () => {
@@ -32,6 +33,7 @@ const AddCredit = () => {
   const [dbCreditReason, setDbCreditReason] = useState<CreditReasonModel[]>([]);
   const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>([]);
   const [dbPersonDetails, setDbPersonDetails] = useState<PersonModel[]>([]);
+  const [updatedDate, setUpdatedDate] = useState<string>("");
 
   const navigation = useNavigation();
 
@@ -61,11 +63,12 @@ const AddCredit = () => {
   useEffect(() => {
     getAllPersonDetailsService().then((data) => setDbPersonDetails(data));
     getValidCreditReasonDetailsService().then((data) => {
-      data  = data.filter( obj => obj.credit_reason_name !== "Pay Back");
-      setDbCreditReason(data)});
+      data = data.filter(obj => obj.credit_reason_name !== "Pay Back");
+      setDbCreditReason(data)
+    });
     getValidFundDetailsService().then((data) => {
       // Remove Credit Card
-      data  = data.filter( obj => obj.fund_type !== "Credit Card");
+      data = data.filter(obj => obj.fund_type !== "Credit Card");
       setDbFundDetails(data)
     });
   }, []);
@@ -75,6 +78,7 @@ const AddCredit = () => {
       setIsSubmit(false);
       setMessage("");
       setAmount("");
+      setUpdatedDate("");
     }
   }, [isFocused]);
 
@@ -86,6 +90,10 @@ const AddCredit = () => {
     setPersonDetails(personDetails);
   };
 
+  const getUpdatedDate = (date: string) => {
+    setUpdatedDate(date);
+  };
+
   const getCreditReason = (creditReason: CreditReasonModel) => {
     setCreditReason(creditReason);
   };
@@ -94,35 +102,49 @@ const AddCredit = () => {
     let isValidFrom = true;
     if (!creditReason) {
       alert("Please select expense reason");
-      isValidFrom = false;
+      return false;
     } else {
-      console.log(creditReason);
       if (creditReason.credit_reason_name === "Pay Of Debt") {
         if (!personDetails) {
           alert("Please select person name");
-          isValidFrom = false;
+          return false;
         }
       }
     }
     if (!fundDetails) {
       alert("Please select a fund");
-      isValidFrom = false;
+      return false;
     }
     if (amount === "") {
       alert("Please enter amount");
-      isValidFrom = false;
+      return false;
     }
 
-    return isValidFrom;
+    return true;
   };
 
+  const displayUpdatedDate = (date: string): string => {
+    const dateTimeSplit : string[] = date.split(" ");
+    const date1 :  string = dateTimeSplit[0];
+    const time: string = dateTimeSplit[1];
+
+    const dateSlice = date1.split("-");
+
+    const year = dateSlice[0];
+    const month = dateSlice[1];
+    const day = dateSlice[2];
+
+    const returnDate = day+"/"+month+"/"+year+" "+time
+    return returnDate; 
+  }
   const saveCreditDetails = () => {
     const creditObject: CreditModel = {
       fund_id_fk: fundDetails.fund_id,
       credit_reason_id_fk: creditReason.credit_reason_id,
       person_id_fk: personDetails.person_id > 0 ? personDetails.person_id : null,
       amount: Number(amount),
-      message: message.length > 0 ? message : ""
+      message: message.length > 0 ? message : "",
+      timestamp: updatedDate == "" ? "" : updatedDate
     };
     saveCreditDetailsService(creditObject);
     setIsSubmit(true);
@@ -291,8 +313,12 @@ const AddCredit = () => {
               </View>
             </View>
             <View style={styles.bankRightView}>
-              <View style={styles.upi_view}>
-                <Text>{moment().format("DD/MM/YYYY HH:mm:ss")}</Text>
+            <View style={styles.upi_view}>
+                <Text>
+                  {updatedDate === "" ? moment().format("DD/MM/YYYY HH:mm:ss"): displayUpdatedDate(updatedDate)}
+                </Text>
+                <CustomDatePicker
+                getUpdatedDate={getUpdatedDate}/>
               </View>
             </View>
           </View>

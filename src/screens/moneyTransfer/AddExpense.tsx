@@ -26,6 +26,7 @@ import { getFundBalanceService, getValidFundDetailsService } from "../../service
 import { getValidExpenseReasonDetailsService, saveExpenseDetailsService } from "../../services/ExpenseDetailsServices";
 import { getAllPersonDetailsService } from "../../services/PersonDetailsServices";
 import { ExpenseModel, ExpenseReasonModel, FundDetailsModel, PersonModel } from "../../model";
+import { CustomDatePicker } from "../../component";
 
 const AddExpense = () => {
   const { navigate } = useNavigation<StackNavigation>();
@@ -40,7 +41,7 @@ const AddExpense = () => {
   const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>([]);
   const [dbPersonDetails, setDbPersonDetails] = useState<PersonModel[]>([]);
   const [dbCreditCardFundDetails, setDbCreditCardFundDetail] = useState<FundDetailsModel[]>();
-  
+  const [updatedDate, setUpdatedDate] = useState<string>("");
   const [expenseReason, setExpenseReason] = useState<ExpenseReasonModel>();
   const [fundDetails, setFundDetails] = useState<FundDetailsModel>(
     {
@@ -70,12 +71,13 @@ const AddExpense = () => {
       setAmount("");
       setPersonDetails({
         person_name: ""
-      })
+      });
       setCreditCardDetails({
         balance: 0,
         fund_name: "",
         fund_type: ""
-      })
+      });
+      setUpdatedDate("");
     }
   }, [isFocused]);
   useEffect(() => {
@@ -92,7 +94,9 @@ const AddExpense = () => {
     });
   }, []);
 
-
+  const getUpdatedDate = (date: string) => {
+    setUpdatedDate(date);
+  };
   const getExpenseReason = (expenseReason: ExpenseReasonModel) => {
     setExpenseReason(expenseReason);
   };
@@ -107,7 +111,6 @@ const AddExpense = () => {
   };
 
   const getCreditCardFundDetails = async (fundObj: FundDetailsModel) => {
-    // console.log(fundObj);
     setCreditCardDetails(fundObj);
     setCreditFundAmount(await getFundBalanceService(fundObj.fund_id));
   }
@@ -129,13 +132,11 @@ const AddExpense = () => {
       return false;
     } else {
       if (expenseReason.expense_reason_name === "Lend Money") {
-        console.log(personDetails)
         if (!personDetails.person_id) {
           alert("Please select person name");
           return false;
         }
       } else if (expenseReason.expense_reason_name === "Credit Card Bill") {
-        console.log(creditCardDetails)
         if (!creditCardDetails) {
           alert("Please enter Credit Card Name");
           return false;
@@ -143,12 +144,12 @@ const AddExpense = () => {
           alert("Credit Card Balance: " + creditFundAmount + " and limit: " + creditCardDetails.credit_limit + " is same. Do not give extra money to Credit Card company!!!..");
           return false;
         } else if ((Number(amount) + Number(creditFundAmount)) > creditCardDetails.credit_limit) {
-          alert("Credit Card expense is " + creditFundAmount + ". You need to pay"+(Number(creditCardDetails.credit_limit)-creditFundAmount)+". Do not give extra money to Credit Card company!!!..");
+          alert("Credit Card expense is " + creditFundAmount + ". You need to pay" + (Number(creditCardDetails.credit_limit) - creditFundAmount) + ". Do not give extra money to Credit Card company!!!..");
           return false;
-        }else if (fundDetails.fund_type ===  creditCardDetails.fund_type){
+        } else if (fundDetails.fund_type === creditCardDetails.fund_type) {
           alert("Select a differnet fund for payment. Always pay Credit Card using Saving Account/Debit Card. Credit card to Credit card payment does not make sense...");
           return;
-        } else if (fundDetails.fund_type === "Cash"){
+        } else if (fundDetails.fund_type === "Cash") {
           alert("Cannot Pay Credit Card using Cash!!!...")
           return false;
         }
@@ -165,9 +166,9 @@ const AddExpense = () => {
       person_id_fk: personDetails.person_id > 0 ? personDetails.person_id : null,
       amount: Number(amount),
       message: message.length > 0 ? message : "",
-      credit_card_fund_id: creditCardDetails.fund_id > 0 ? creditCardDetails.fund_id : null
+      credit_card_fund_id: creditCardDetails.fund_id > 0 ? creditCardDetails.fund_id : null,
+      timestamp: updatedDate == "" ? "" : updatedDate
     };
-    //
     saveExpenseDetailsService(expenseObject);
     setIsSubmit(true);
     navigate("TransferSuccessful");
@@ -344,7 +345,11 @@ const AddExpense = () => {
             </View>
             <View style={styles.bankRightView}>
               <View style={styles.upi_view}>
-                <Text>{moment().format("DD/MM/YYYY HH:mm:ss")}</Text>
+                <Text>
+                  {updatedDate === "" ? moment().format("DD/MM/YYYY HH:mm:ss"): updatedDate}
+                </Text>
+                <CustomDatePicker
+                getUpdatedDate={getUpdatedDate}/>
               </View>
             </View>
           </View>

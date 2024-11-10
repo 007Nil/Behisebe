@@ -206,6 +206,17 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    confirmPayNow2: {
+        width: "94%",
+        height: verticalScale(40),
+        backgroundColor: "green",
+        borderRadius: moderateScale(30),
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(20),
+        marginBottom: moderateVerticalScale(40),
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 export default styles;

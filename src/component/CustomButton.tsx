@@ -6,24 +6,29 @@ const CustomButton = (props) => {
   let buttonText = ""
   if (props.pressEvent === "add_fund") {
     buttonText = "Add Fund";
-  }else if (props.pressEvent === "addExpense"){
+  } else if (props.pressEvent === "addExpense") {
     buttonText = "Add Expense";
   }
-  else if (props.pressEvent === "addCredit"){
+  else if (props.pressEvent === "addCredit") {
     buttonText = "Add Credit";
-  } else if (props.pressEvent === "addPerson"){
+  } else if (props.pressEvent === "addPerson") {
     buttonText = "Add Person";
+  } else if (props.pressEvent === "addFundType") {
+    buttonText = "Add Fund Type";
   }
   const handleOnPress = () => {
     if (props.pressEvent === "add_fund") {
       props.getModalopen(true);
-    }else if (props.pressEvent === "addExpense"){
+    } else if (props.pressEvent === "addExpense") {
       props.getModalopen(true);
-    }else if (props.pressEvent === "addCredit"){
+    } else if (props.pressEvent === "addCredit") {
       props.getModalopen(true);
-    } else if ( props.pressEvent === "addPerson"){
+    } else if (props.pressEvent === "addPerson") {
+      props.getModalopen(true);
+    } else if (props.pressEvent === "addFundType") {
       props.getModalopen(true);
     }
+
   };
   return (
     <TouchableOpacity style={[styles.proceedToPay]} onPress={handleOnPress}>

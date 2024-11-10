@@ -29,16 +29,6 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
 
---DROP TABLE IF EXISTS money_lends;
---DROP TABLE IF EXISTS money_borrows;
---DROP TABLE IF EXISTS expenses;
---DROP TABLE IF EXISTS credits;
---DROP TABLE IF EXISTS expenses;
---DROP TABLE IF EXISTS fund_details;
---DROP TABLE IF EXISTS expense_reasons;
---DROP TABLE IF EXISTS credit_reasons;
---DROP TABLE IF EXISTS persons;
-
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
     fund_name TEXT NOT NULL UNIQUE,
@@ -46,14 +36,38 @@ CREATE TABLE IF NOT EXISTS fund_details (
     notes TEXT,
     is_active INTEGER NOT NULL,
     balance INTEGER NOT NULL,
-    credit_limit INTEGER DEFAULT (NULL),
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
-
 
 INSERT INTO fund_details(fund_name,fund_type,notes,is_active,balance)
 SELECT 'Cash', 'Cash InHand','Cash Fund',1,0
 WHERE NOT EXISTS(SELECT 1 FROM fund_details WHERE fund_id = 1 AND fund_name = 'Cash' AND fund_type = 'Cash InHand');
+
+CREATE TABLE IF NOT EXISTS fund_types (
+    fund_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fund_type_name TEXT NOT NULL UNIQUE
+);
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Credit Card'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Credit Card');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Savings Account'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Savings Account');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Cash Fund'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Cash Fund');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Investment'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Investment');
+
+INSERT INTO fund_types(fund_type_name)
+SELECT 'Salary Account'
+WHERE NOT EXISTS(SELECT 1 FROM fund_types WHERE fund_type_name = 'Salary Account');
+
 
 CREATE TABLE IF NOT EXISTS expense_reasons (
     expense_reason_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -144,6 +158,12 @@ CREATE TABLE IF NOT EXISTS money_borrows (
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')),
     FOREIGN KEY (credit_id_fk) REFERENCES credits(credit_id)
 );
-
 `);
+
+// 
+const count = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ',"fund_details","credit_limit");
+if (count["count(*)"] < 1){
+    await db.runAsync("ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL)");
+}
+
 }

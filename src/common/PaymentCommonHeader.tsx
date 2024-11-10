@@ -10,17 +10,17 @@ const PaymentCommonHeader = ({ headerTitle }: PaymentCommonHeaderProps) => {
     <View style={styles.header}>
       <View style={styles.subHeader}>
         <TouchableOpacity style={styles.backBtn}>
-          <Image
+          {/* <Image
             source={require("../images/left.png")}
             style={styles.backIcon}
-          />
+          /> */}
         </TouchableOpacity>
         <Text style={styles.title}> {headerTitle}</Text>
         <TouchableOpacity style={styles.backBtn}>
-          <Image
+          {/* <Image
             source={require("../images/help.png")}
             style={styles.backIcon}
-          />
+          /> */}
         </TouchableOpacity>
       </View>
     </View>

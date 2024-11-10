@@ -34,6 +34,7 @@ async function getCreditDetails(): Promise<CreditModel[]> {
 async function getCreditByDate(fromDate: string, toDate: string): Promise<CreditModel[]> {
     const db = await openDBConnection();
     const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC;", fromDate, toDate);
+
     return creditDetails;
 }
 
@@ -53,11 +54,20 @@ async function deleteCreditData(creditId: number) {
 
 async function addCreditDetails(creditObj: CreditModel): Promise<number> {
     const db = await openDBConnection();
-    let sqlResult = await db.runAsync(
-        'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message,expense_id) VALUES (?, ?, ?, ?, ?,?)',
-        creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount, creditObj.message, creditObj.expense_id
-    );
-    return sqlResult.lastInsertRowId;
+    if (creditObj.timestamp != "") {
+        let sqlResult = await db.runAsync(
+            'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message,expense_id,timestamp) VALUES (?, ?, ?, ?, ?,?,?)',
+            creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount,
+            creditObj.message, creditObj.expense_id, creditObj.timestamp
+        );
+        return sqlResult.lastInsertRowId;
+    } else {
+        let sqlResult = await db.runAsync(
+            'INSERT INTO credits (fund_id_fk,credit_reason_id_fk,person_id_fk, amount, message,expense_id) VALUES (?, ?, ?, ?, ?,?)',
+            creditObj.fund_id_fk, creditObj.credit_reason_id_fk, creditObj.person_id_fk, creditObj.amount, creditObj.message, creditObj.expense_id
+        );
+        return sqlResult.lastInsertRowId;
+    }
 }
 
 async function getCreditReasonById(creditReasonId: number) {
@@ -88,7 +98,7 @@ async function updateCreditDetails(creditModel: CreditModel) {
 
 async function deleteCreditDetails(creditId: number) {
     const db = await openDBConnection();
-    await db.runAsync('DELETE FROM credits WHERE credit_id = ?',creditId);
+    await db.runAsync('DELETE FROM credits WHERE credit_id = ?', creditId);
 }
 
 export {

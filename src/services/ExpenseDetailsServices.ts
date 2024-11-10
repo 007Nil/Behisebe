@@ -16,7 +16,6 @@ async function getValidExpenseReasonDetailsService(): Promise<ExpenseReasonModel
 
 async function addExpenseReasonService(exposeReasonObj: ExpenseReasonModel) {
     let sqlResult: SQLiteRunResult = await addExpenseReasonDetails(exposeReasonObj);
-    console.log(sqlResult)
 }
 
 async function updateExpenseReasonService(expeseReasonObj: ExpenseReasonModel) {

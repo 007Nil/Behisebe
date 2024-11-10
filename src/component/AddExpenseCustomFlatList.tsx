@@ -45,7 +45,6 @@ const AddExpenseCustomFlatList = ({ data }: ExpenseReasonCustomFlatListProps) =>
   }, [data]);
 
   const updateFormData = () => {
-    console.log("HIT")
     let tmpArray = flatListData;
     let newflatListObj: ExpenseReasonModel;
     const updatedArray = tmpArray.filter(function (ele) {
@@ -57,7 +56,6 @@ const AddExpenseCustomFlatList = ({ data }: ExpenseReasonCustomFlatListProps) =>
       expense_reason_name: editName,
       expense_reason_catagory: editType,
     };
-    // console.log(newflatListObj);
     updateExpenseReasonService(newflatListObj)
     updatedArray.splice(flatListIndex, 0, newflatListObj);
     setFlatListData(updatedArray);

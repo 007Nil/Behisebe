@@ -50,12 +50,20 @@ async function deleteExpenseData(expID: number) {
 
 async function addExpenseDetails(expenseModel: ExpenseModel): Promise<number> {
     const db = await openDBConnection();
-    let sqlResult: SQLiteRunResult = await db.runAsync(
-        'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id) VALUES (?, ?, ?, ?, ?, ?)',
-        expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id
-    );
-    return sqlResult.lastInsertRowId
-
+    if ( expenseModel.timestamp  !== "") {
+        let sqlResult: SQLiteRunResult = await db.runAsync(
+            'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk,
+            expenseModel.amount, expenseModel.message, expenseModel.credit_id, expenseModel.timestamp
+        );
+        return sqlResult.lastInsertRowId;
+    } else {
+        let sqlResult: SQLiteRunResult = await db.runAsync(
+            'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id) VALUES (?, ?, ?, ?, ?, ?)',
+            expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id
+        );
+        return sqlResult.lastInsertRowId;
+    }
 }
 async function getExpenseDetails(): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
@@ -77,7 +85,6 @@ async function getExpenseByID(expId: number): Promise<ExpenseModel> {
 
 
 async function getExpenseByDate(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
-    console.log("from Date:" + fromDate);
     const db = await openDBConnection();
     const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC;", fromDate, toDate);
     return expenseDetails;
