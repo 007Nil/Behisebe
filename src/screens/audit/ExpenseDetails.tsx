@@ -11,15 +11,15 @@ import CustomList from '../../model/CustomListModel'
 
 const ExpenseDetails = () => {
   const [expenseDetails, setExpenseDetails] = useState<CustomList[]>([]);
-  const [totalExpense, setTotalExpense] = useState<Number>(0);
+  const [totalExpense, setTotalExpense] = useState<number>(0);
 
   useEffect(() => {
     let totalAmount = 0;
-     for (const eachExp of expenseDetails){
+    for (const eachExp of expenseDetails) {
       totalAmount = totalAmount + Number(eachExp.amount);
-     }
-     setTotalExpense(totalAmount);
-    }, [expenseDetails]);
+    }
+    setTotalExpense(totalAmount);
+  }, [expenseDetails]);
 
   const getExpenseDetails = async (data: ExpenseModel[]) => {
     setExpenseDetails(await prepareCustomList({
@@ -28,6 +28,16 @@ const ExpenseDetails = () => {
       creditObj: []
     }));
   };
+  const updateTotalAmount = (amount: number, openartion: string) => {
+    if (openartion === "plus") {
+      console.log(totalExpense)
+      console.log(amount)
+      setTotalExpense(totalExpense + amount)
+    } else {
+      setTotalExpense(totalExpense - amount)
+    }
+  }
+
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Expense Details"} />
@@ -44,12 +54,12 @@ const ExpenseDetails = () => {
         </View>
       </View>
       <View style={styles.card}>
-        <CustomListView listData={expenseDetails}
+        <CustomListView listData={expenseDetails} updateTotalAmount={updateTotalAmount}
         />
       </View>
       <View style={styles.card3}>
         <View style={styles.filtersView}>
-          <Text style={{fontSize: 20}}>{"Total Expense:  "+totalExpense}</Text>
+          <Text style={{ fontSize: 20 }}>{"Total Expense:  " + totalExpense}</Text>
         </View>
       </View>
     </View>

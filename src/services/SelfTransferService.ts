@@ -17,7 +17,8 @@ async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
         expense_reason_id_fk: expenseReasonObj.expense_reason_id,
         person_id_fk: null,
         amount: selfTransferObj.amount,
-        message: selfTransferObj.message
+        message: selfTransferObj.message,
+        timestamp: ""
     }
     const expId : number = await saveExpenseDetailsService(expenseObj);
 
@@ -31,7 +32,8 @@ async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
         amount: selfTransferObj.amount,
         person_id_fk: null,
         message: selfTransferObj.message,
-        expense_id: expId
+        expense_id: expId,
+        timestamp: ""
     }
 
     const creditId = await saveCreditDetailsService(creditObj);

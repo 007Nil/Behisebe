@@ -14,12 +14,23 @@ const CreditDetails = () => {
 
 
   useEffect(() => {
-  let totalAmount = 0;
-   for (const eachCredit of creditDetails){
-    totalAmount = totalAmount + Number(eachCredit.amount);
-   }
-   setTotalCredit(totalAmount);
+    let totalAmount = 0;
+    for (const eachCredit of creditDetails) {
+      totalAmount = totalAmount + Number(eachCredit.amount);
+    }
+    setTotalCredit(totalAmount);
   }, [creditDetails]);
+
+  const updateTotalAmount = (amount: number, openartion: string) => {
+    if (openartion === "plus") {
+      console.log(totalCredit)
+      console.log(amount)
+      setTotalCredit(totalCredit + amount)
+    } else {
+      setTotalCredit(totalCredit - amount)
+    }
+  }
+
 
   const getCreditDetails = async (data: CreditModel[]) => {
     setCreditDetails(await prepareCustomList({
@@ -44,12 +55,14 @@ const CreditDetails = () => {
         </View>
       </View>
       <View style={styles.card}>
-        <CustomListView listData={creditDetails}
+        <CustomListView
+          listData={creditDetails}
+          updateTotalAmount={updateTotalAmount}
         />
       </View>
       <View style={styles.card3}>
         <View style={styles.filtersView}>
-          <Text style={{fontSize: 20}}>{"Total Credit:  "+totalCredit}</Text>
+          <Text style={{ fontSize: 20 }}>{"Total Credit:  " + totalCredit}</Text>
         </View>
       </View>
 

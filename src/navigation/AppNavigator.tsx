@@ -17,17 +17,21 @@ import {
   ExpesneReasons,
   CreditReasons,
   Persons,
-  FundTypes
+  FundTypes,
+  AllCredit,
+  AllExpense,
+  UpdateProfile
 } from "../screens/settings/index";
 
-import { ExpenseDetails, CreditDetails } from "../screens/audit";
+import { ExpenseDetails, CreditDetails, CreditAnalyze, ExpenseAnalyze } from "../screens/audit";
 
 export type ScreenNames = ["App", "AddExpense", "ProfileAndSettings",
   "Funds", "ExpesneReasons", "CreditReasons",
   "Persons", "TransferSuccessful", "CreditDetails",
   "ExpenseDetails", "AddCredit", "CreditTransferSuccessful",
   "ToSelfTransfer", "SelfTransferSuccessful", "CheckBalance",
-  "FundType"];
+  "FundType", "CreditAnalyze", "ExpenseAnalyze",
+  "AllCredit", "AllExpense", "UpdateProfile"];
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -126,6 +130,34 @@ const AppNavigator = () => {
           component={CreditDetails}
           options={{ headerShown: false }}
         />
+        <stack.Screen
+          name="ExpenseAnalyze"
+          component={ExpenseAnalyze}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="CreditAnalyze"
+          component={CreditAnalyze}
+          options={{ headerShown: false }}
+        />
+
+        <stack.Screen
+          name="AllCredit"
+          component={AllCredit}
+          options={{ headerShown: false }}
+        />
+
+        <stack.Screen
+          name="AllExpense"
+          component={AllExpense}
+          options={{ headerShown: false }}
+        />
+        <stack.Screen
+          name="UpdateProfile"
+          component={UpdateProfile}
+          options={{ headerShown: false }}
+        />
+
       </stack.Navigator>
     </NavigationContainer>
   );
