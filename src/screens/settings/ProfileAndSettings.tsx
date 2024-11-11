@@ -59,10 +59,14 @@ const ProfileAndSettings = () => {
               }}
             >
               <View>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigate("UpdateProfile");
+                  }}>
                   <Image
                     source={require("../../images/next.png")}
                     style={{ height: scale(30), width: scale(30) }}
+
                   />
                 </TouchableOpacity>
               </View>
@@ -201,7 +205,7 @@ const ProfileAndSettings = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                navigate("Funds");
+                navigate("AllCredit");
               }}
             >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>
@@ -223,7 +227,7 @@ const ProfileAndSettings = () => {
             <TouchableOpacity
               style={styles.transferTab}
               onPress={() => {
-                navigate("FundType");
+                navigate("AllExpense");
               }}
             >
               <View style={[styles.transferCard, { backgroundColor: "white" }]}>

@@ -14,10 +14,7 @@ const CommonHeader = ({title}: CommonHeaderProps) => {
         <View style={styles.headerLeftView}>
           <TouchableOpacity>
             <View>
-              <Image
-                source={require("../images/left.png")}
-                style={styles.leftIcon}
-              />
+ 
             </View>
           </TouchableOpacity>
           <View style={{ marginLeft: moderateScale(10) }}>

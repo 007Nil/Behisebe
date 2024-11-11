@@ -129,7 +129,7 @@ const Home = () => {
 
             <TouchableOpacity style={styles.transferTab}
               onPress={() => {
-                navigate("CreditDetails");
+                navigate("ExpenseAnalyze");
               }}
             >
               <View style={styles.transferCard}>
@@ -143,7 +143,7 @@ const Home = () => {
 
             <TouchableOpacity style={styles.transferTab}
               onPress={() => {
-                navigate("CreditDetails");
+                navigate("CreditAnalyze");
               }}
             >
               <View style={styles.transferCard}>

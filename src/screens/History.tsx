@@ -8,12 +8,6 @@ import { CustomDateTimePicker, CustomListView } from '../component'
 import { CreditModel, ExpenseModel } from '../model'
 const History = () => {
   const [transactionHistory, setTransactionHistory] = useState<CustomList[]>();
-  // useEffect(() => {
-  //   async () => {
-  //     setTransactionHistory(await getTransactionHistoryByDate());
-  //   }
-
-  // }, [transactionHistory]);
 
   const getTransactionHistory = async ([expenseObj, creditObj]: [ExpenseModel[], CreditModel[]]) => {
     setTransactionHistory(await getTransactionHistoryService(expenseObj, creditObj));
