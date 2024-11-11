@@ -17,10 +17,11 @@ import { getBorrowMoneyByCreditId } from '../repository/MoneyBorrowRepo'
 
 type CustomListProps = {
     listData: CustomList[],
+    updateTotalAmount?(amount: number, openration: string): void,
     pageName?: string
 }
 
-const CustomListView = ({ listData, pageName }: CustomListProps) => {
+const CustomListView = ({ listData, pageName, updateTotalAmount }: CustomListProps) => {
     const [flatListData, setFlatListData] = useState<CustomList[]>([]);
 
     const [reason, setReason] = useState<string>("");
@@ -117,7 +118,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 const expense_id = creditData.expense_id;
                 const expenseDetails: ExpenseModel = await getExpenseByID(expense_id);
                 let fundBalance: number = await getFundBalance(expenseDetails.fund_id_fk);
-                const debitedAmount: number = fundBalance + expenseDetails.amount;
+                const debitedAmount: number = expenseDetails.amount;
                 let updatedFundAmount: number = fundBalance + debitedAmount;
                 await updateFundBalance(updatedFundAmount, expenseDetails.fund_id_fk);
                 await deleteExpenseDataService(expense_id);
@@ -140,6 +141,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
         }
         updatedArray.splice(flatListIndex, 0);
         setFlatListData(updatedArray);
+        updateTotalAmount(Number(amount), "minus");
     }
 
     const updateDatabase = async () => {
@@ -161,21 +163,27 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             reason_id: reasonId,
         }
         let updatedArray: CustomList[];
-
+        let operation: string = "minus";
+        let amountDiff : number = 0;
         if (catagory === "expenseDetails") {
             updatedArray = tmpArray.filter(function (ele) {
                 return ele.expense_id !== formId;
             });
             let updatedFundAmount: number = 0;
             let fundBalance: number = await getFundBalance(fundId);
+
             if (Number(updatedAmount) > Number(amount)) {
-                updatedFundAmount = fundBalance - (Number(updatedAmount) - Number(amount));
+                amountDiff = Number(updatedAmount) - Number(amount)
+                updatedFundAmount = fundBalance - amountDiff;
+                operation = "plus";
                 if (updatedFundAmount < 0) {
                     alert("Cannot update this entry. This fund does not have sufficient balance");
                     return;
                 }
             } else {
-                updatedFundAmount = fundBalance + (Number(amount) - Number(updatedAmount));
+                amountDiff = Number(amount) - Number(updatedAmount)
+                updatedFundAmount = fundBalance + amountDiff;
+
             }
             if (reason === "Lend Money") {
                 const lendMoneyDetails: LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
@@ -222,7 +230,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
 
             setModalOpen(false);
             alert("Expense Data Updated");
-
+            updateTotalAmount(amountDiff, operation);
         } else if (catagory === "creditDetails") {
 
             updatedArray = tmpArray.filter(function (ele) {
@@ -231,9 +239,12 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             let updatedFundAmount: number = 0;
             let fundBalance: number = await getFundBalance(fundId);
             if (Number(updatedAmount) > Number(amount)) {
-                updatedFundAmount = fundBalance + (Number(updatedAmount) - Number(amount));
+                operation = "plus";
+                amountDiff = Number(updatedAmount) - Number(amount);
+                updatedFundAmount = fundBalance + amountDiff;
             } else {
-                updatedFundAmount = fundBalance - (Number(amount) - Number(updatedAmount));
+                amountDiff = Number(amount) - Number(updatedAmount);
+                updatedFundAmount = fundBalance - amountDiff;
                 if (updatedFundAmount < 0) {
                     alert("Cannot delete this entry. Fund balance cannot be less that 0");
                     return;
@@ -253,9 +264,9 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
                 let updatedExpenseFundAmount: number = 0;
                 let expenseFundBalance: number = await getFundBalance(expenseObj.fund_id_fk);
                 if (Number(updatedAmount) > Number(amount)) {
-                    updatedExpenseFundAmount = expenseFundBalance + (Number(updatedAmount) - Number(amount));
+                    updatedExpenseFundAmount = expenseFundBalance - (Number(updatedAmount) - Number(amount));
                 } else {
-                    updatedExpenseFundAmount = expenseFundBalance - (Number(amount) - Number(updatedAmount));
+                    updatedExpenseFundAmount = expenseFundBalance + (Number(amount) - Number(updatedAmount));
                     if (updatedExpenseFundAmount < 0) {
                         alert("Cannot delete this entry. Fund balance cannot be less that 0");
                         return;
@@ -284,6 +295,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             await updateFundBalance(updatedFundAmount, fundId);
             setModalOpen(false);
             alert("Credit Data Updated");
+            updateTotalAmount(amountDiff, operation);
         }
         updatedArray.splice(flatListIndex, 0, newflatListObj);
         setFlatListData(updatedArray);
