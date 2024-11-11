@@ -12,12 +12,13 @@ const CreditTransferSuccessful = () => {
     const { navigate } = useNavigation<StackNavigation>();
 
     return (
-        <View>
+        <View style={styles.container}>
             <PaymentCommonHeader headerTitle={"Operation Successful"} />
             <Text style={{ textAlign: "center", justifyContent: "center", paddingTop: moderateScale(200), }}>
                 <Ionicons name="checkmark-circle" size={100} color="green" />
             </Text>
             <View style={styles.mainView}>
+
                 <TouchableOpacity style={[styles.confirmPayNow2]}
                     onPress={() => {
                         navigate("AddCredit");

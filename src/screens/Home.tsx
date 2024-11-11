@@ -124,7 +124,35 @@ const Home = () => {
                   style={styles.icons}
                 />
               </View>
-              <Text style={styles.tranferText}>{"Credit/Details"}</Text>
+              <Text style={styles.tranferText}>{"Credit\n Details"}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.transferTab}
+              onPress={() => {
+                navigate("CreditDetails");
+              }}
+            >
+              <View style={styles.transferCard}>
+                <Image
+                  source={require("../images/bank2.png")}
+                  style={styles.icons}
+                />
+              </View>
+              <Text style={styles.tranferText}>{"Expense\n Analyze"}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.transferTab}
+              onPress={() => {
+                navigate("CreditDetails");
+              }}
+            >
+              <View style={styles.transferCard}>
+                <Image
+                  source={require("../images/bank2.png")}
+                  style={styles.icons}
+                />
+              </View>
+              <Text style={styles.tranferText}>{"Credit\n Analyze"}</Text>
             </TouchableOpacity>
           </View>
         </View>

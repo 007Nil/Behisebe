@@ -96,7 +96,8 @@ async function updateLendMoneyDetailsService(moneyRepayObj: MoneyRepayModel, ope
             amount: moneyRepayObj.paid_amount,
             credit_reason_id_fk: 3,
             fund_id_fk: moneyRepayObj.transaction_fund_id,
-            message: "Payment from " + moneyRepayObj.personName
+            message: "Payment from " + moneyRepayObj.personName,
+            timestamp: "",
         }
         saveCreditDetailsService(creditObj);
         // Save date to money_lends
@@ -111,7 +112,8 @@ async function updateLendMoneyDetailsService(moneyRepayObj: MoneyRepayModel, ope
             amount: moneyRepayObj.paid_amount,
             expense_reason_id_fk: 3,
             fund_id_fk: moneyRepayObj.transaction_fund_id,
-            message: "Payment to " + moneyRepayObj.personName
+            message: "Payment to " + moneyRepayObj.personName,
+            timestamp: ""
         }
 
         await saveExpenseDetailsService(expenseObj);

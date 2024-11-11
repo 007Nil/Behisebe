@@ -187,6 +187,61 @@ const ProfileAndSettings = () => {
               <Text style={styles.tranferText}>{"Persons"}</Text>
             </TouchableOpacity>
           </View>
+
+
+        </View>
+        <View
+          style={[
+            styles.settingsArea,
+            { marginBottom: moderateVerticalScale(10) },
+          ]}
+        >
+          <Text style={styles.heading}>Money Transfer</Text>
+          <View style={styles.transferView}>
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigate("Funds");
+              }}
+            >
+              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
+                <Image
+                  source={require("../../images/mobile.png")}
+                  style={[
+                    styles.icons,
+                    {
+                      tintColor: "purple",
+                      width: scale(30),
+                      height: scale(30),
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={styles.tranferText}>{"All Credit"}</Text>
+            </TouchableOpacity>
+            {/* Fund Types */}
+            <TouchableOpacity
+              style={styles.transferTab}
+              onPress={() => {
+                navigate("FundType");
+              }}
+            >
+              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
+                <Image
+                  source={require("../../images/mobile.png")}
+                  style={[
+                    styles.icons,
+                    {
+                      tintColor: "purple",
+                      width: scale(30),
+                      height: scale(30),
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={styles.tranferText}>{"All Expense"}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </View>

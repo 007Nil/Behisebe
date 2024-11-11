@@ -149,7 +149,7 @@ const ToSelfTransfer = () => {
           setModalOpen(checkSelfTransferForm());
         }}
       >
-        <Text style={styles.payNowText}>Save Expense</Text>
+        <Text style={styles.payNowText}>Proceed</Text>
       </TouchableOpacity>
       <Modal
         isVisible={modalOpen}

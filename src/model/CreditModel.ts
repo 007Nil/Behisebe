@@ -5,7 +5,7 @@ type CreditModel = {
     amount: number,
     person_id_fk?: number, // If person id is there then money lend to some one
     message?: string,
-    timestamp?: string,
+    timestamp: string,
     expense_id?: number,
 }
 

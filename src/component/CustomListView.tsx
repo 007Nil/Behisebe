@@ -9,7 +9,6 @@ import { TextInput } from 'react-native-gesture-handler'
 import { CreditModel, ExpenseModel, FundDetailsModel, LendMoneyModel, MoneyBorrowModel } from '../model'
 import { deleteExpenseDataService, saveExpenseDetailsService, updateExpenseDetailsService } from '../services/ExpenseDetailsServices'
 import { getFundBalance, updateFundBalance } from '../repository/FundDetailsRepo'
-import { expense_reason } from '../dummy_data'
 import { getExpenseByID } from '../repository/ExpenseDetailsRepo'
 import { deleteCreditData, getBorrowMoneyCreditDetails, getCreditDetailsById } from '../repository/CreditDetailsRepo'
 import { getLendMoneyByExpenseId } from '../repository/LendMoneyRepo'
@@ -29,7 +28,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
     const [date, setDate] = useState<string>("");
     const [amount, setAmount] = useState<string>("");
     const [fundName, setFundName] = useState<string>("");
-
+    const [formId, setFromId] = useState<number>(0);
     const [reasonId, setReasonId] = useState<number>(0);
     const [expenseId, setExpesneId] = useState<number>(0);
     const [creditId, setCreditId] = useState<number>(0);
@@ -37,8 +36,7 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
     const [updatedAmount, setUpdatedAmount] = useState<string>("");
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [modal2Open, setModal2Open] = useState<boolean>(false);
-
-
+    const [flatListIndex, setFlatListIndex] = useState<number>(-1);
 
 
     useEffect(() => {
@@ -55,6 +53,13 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
         setCreditId(item.credit_id);
         setFundId(item.fund_id);
         setReasonId(item.reason_id);
+        if (!item.credit_id) {
+            setFromId(item.expense_id);
+        } else {
+            setFromId(item.credit_id);
+        }
+
+        setFlatListIndex(flatListData.indexOf(item));
         if (deleteTrue) {
             setModal2Open(true);
         } else {
@@ -62,8 +67,24 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
         }
     };
     const deleteFromDatabase = async () => {
+        let tmpArray = flatListData;
+        const newflatListObj: CustomList = {
+            amount: updatedAmount,
+            catagory: catagory,
+            date: date,
+            fund_name: fundName,
+            reason: reason,
+            credit_id: creditId,
+            expense_id: expenseId,
+            fund_id: fundId,
+            reason_id: reasonId,
+        }
+        let updatedArray: CustomList[];
+
         if (catagory === "expenseDetails") {
-            // Need to fix this logic
+            updatedArray = tmpArray.filter(function (ele) {
+                return ele.expense_id !== formId;
+            });
             if (reason === "Self Transfer") {
                 const expenseData: ExpenseModel = await getExpenseByID(expenseId);
                 const creditId: number = expenseData.credit_id;
@@ -88,27 +109,37 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             setModal2Open(false);
             alert("Opeartion Successful");
         } else if (catagory === "creditDetails") {
+            updatedArray = tmpArray.filter(function (ele) {
+                return ele.credit_id !== formId;
+            });
             if (reason === "Self Transfer") {
                 const creditData: CreditModel = await getCreditDetailsById(creditId);
                 const expense_id = creditData.expense_id;
-                const expenseDetails : ExpenseModel = await getExpenseByID(expense_id);
+                const expenseDetails: ExpenseModel = await getExpenseByID(expense_id);
                 let fundBalance: number = await getFundBalance(expenseDetails.fund_id_fk);
                 const debitedAmount: number = fundBalance + expenseDetails.amount;
                 let updatedFundAmount: number = fundBalance + debitedAmount;
                 await updateFundBalance(updatedFundAmount, expenseDetails.fund_id_fk);
                 await deleteExpenseDataService(expense_id);
             } else if (reason === "Borrow Money") {
+                updatedArray = tmpArray.filter(function (ele) {
+                    return ele.credit_id !== formId;
+                });
                 const borrowMoneyDetails: MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
-                if (borrowMoneyDetails.length > 0){
+                if (borrowMoneyDetails.length > 0) {
                     alert("Cannot Delete This Entry. Since you already paid the partial payment");
                     setModal2Open(false);
                     return;
                 }
             }
             await deleteCreditDetailsService(creditId);
+            let fundBalance: number = await getFundBalance(fundId)
+            await updateFundBalance((fundBalance - Number(amount)), fundId);
             setModal2Open(false);
             alert("Opeartion Successful");
         }
+        updatedArray.splice(flatListIndex, 0);
+        setFlatListData(updatedArray);
     }
 
     const updateDatabase = async () => {
@@ -117,55 +148,145 @@ const CustomListView = ({ listData, pageName }: CustomListProps) => {
             return;
         }
 
+        let tmpArray = flatListData;
+        const newflatListObj: CustomList = {
+            amount: updatedAmount,
+            catagory: catagory,
+            date: date,
+            fund_name: fundName,
+            reason: reason,
+            credit_id: creditId,
+            expense_id: expenseId,
+            fund_id: fundId,
+            reason_id: reasonId,
+        }
+        let updatedArray: CustomList[];
+
         if (catagory === "expenseDetails") {
+            updatedArray = tmpArray.filter(function (ele) {
+                return ele.expense_id !== formId;
+            });
+            let updatedFundAmount: number = 0;
+            let fundBalance: number = await getFundBalance(fundId);
+            if (Number(updatedAmount) > Number(amount)) {
+                updatedFundAmount = fundBalance - (Number(updatedAmount) - Number(amount));
+                if (updatedFundAmount < 0) {
+                    alert("Cannot update this entry. This fund does not have sufficient balance");
+                    return;
+                }
+            } else {
+                updatedFundAmount = fundBalance + (Number(amount) - Number(updatedAmount));
+            }
+            if (reason === "Lend Money") {
+                const lendMoneyDetails: LendMoneyModel[] = await getLendMoneyByExpenseId(expenseId);
+                if (lendMoneyDetails.length != 0) {
+                    alert("Cannot Delete This Entry. Since you already get the partial payment");
+                    return;
+                }
+            }
+            if (reason === "Self Transfer") {
+                const expenseData: ExpenseModel = await getExpenseByID(expenseId);
+                const creditId: number = expenseData.credit_id;
+                const creditObj: CreditModel = await getCreditDetailsById(creditId);
+                let updatedCreditFundAmount: number = 0;
+                let creditFundBalance: number = await getFundBalance(creditObj.fund_id_fk);
+                if (Number(updatedAmount) > Number(amount)) {
+                    updatedCreditFundAmount = creditFundBalance + (Number(updatedAmount) - Number(amount));
+                } else {
+                    updatedCreditFundAmount = creditFundBalance - (Number(amount) - Number(updatedAmount));
+                    if (updatedCreditFundAmount < 0) {
+                        alert("Cannot delete this entry. Fund balance cannot be less that 0");
+                        return;
+                    }
+                }
+                await updateFundBalance(updatedCreditFundAmount, creditObj.fund_id_fk);
+                let updateCreditObj: CreditModel = {
+                    credit_id: creditObj.credit_id,
+                    fund_id_fk: creditObj.fund_id_fk,
+                    credit_reason_id_fk: creditObj.credit_reason_id_fk,
+                    amount: Number(updatedAmount),
+                    timestamp: date
+                }
+                await updateCreditDetailsService(updateCreditObj);
+            }
             let updatedExpenseModel: ExpenseModel = {
                 fund_id_fk: fundId,
                 expense_id: expenseId,
                 amount: Number(updatedAmount),
-                expense_reason_id_fk: reasonId
+                expense_reason_id_fk: reasonId,
+                timestamp: date
             }
-
             await updateExpenseDetailsService(updatedExpenseModel);
+
+            await updateFundBalance(updatedFundAmount, fundId);
+
+            setModalOpen(false);
+            alert("Expense Data Updated");
+
+        } else if (catagory === "creditDetails") {
+
+            updatedArray = tmpArray.filter(function (ele) {
+                return ele.credit_id !== formId;
+            });
             let updatedFundAmount: number = 0;
             let fundBalance: number = await getFundBalance(fundId);
             if (Number(updatedAmount) > Number(amount)) {
-                updatedFundAmount = fundBalance - Number(updatedAmount)
+                updatedFundAmount = fundBalance + (Number(updatedAmount) - Number(amount));
             } else {
-                updatedFundAmount = fundBalance + Number(updatedAmount)
+                updatedFundAmount = fundBalance - (Number(amount) - Number(updatedAmount));
+                if (updatedFundAmount < 0) {
+                    alert("Cannot delete this entry. Fund balance cannot be less that 0");
+                    return;
+                }
             }
-            await updateFundBalance(updatedFundAmount, fundId);
-            setModalOpen(false);
-            alert("Expense Data Updated");
-        } else if (catagory === "creditDetails") {
             if (reason === "Borrow Money") {
                 const borrowMoneyDetails: MoneyBorrowModel[] = await getBorrowMoneyByCreditId(creditId);
                 if (borrowMoneyDetails.length != 0) {
-                    alert("Cannot Update This Entry. Since you already paid partial payment");
+                    alert("Cannot Delete This Entry. Since you already get the partial payment");
                     return;
                 }
+            }
+            if (reason === "Self Transfer") {
+                const creditData: CreditModel = await getCreditDetailsById(creditId);
+                const expenseId: number = creditData.expense_id;
+                const expenseObj: ExpenseModel = await getExpenseByID(expenseId);
+                let updatedExpenseFundAmount: number = 0;
+                let expenseFundBalance: number = await getFundBalance(expenseObj.fund_id_fk);
+                if (Number(updatedAmount) > Number(amount)) {
+                    updatedExpenseFundAmount = expenseFundBalance + (Number(updatedAmount) - Number(amount));
+                } else {
+                    updatedExpenseFundAmount = expenseFundBalance - (Number(amount) - Number(updatedAmount));
+                    if (updatedExpenseFundAmount < 0) {
+                        alert("Cannot delete this entry. Fund balance cannot be less that 0");
+                        return;
+                    }
+                }
+                await updateFundBalance(updatedExpenseFundAmount, expenseObj.fund_id_fk);
+                let updateExpenseObj: ExpenseModel = {
+                    expense_id: expenseObj.expense_id,
+                    fund_id_fk: expenseObj.fund_id_fk,
+                    expense_reason_id_fk: expenseObj.expense_reason_id_fk,
+                    amount: Number(updatedAmount),
+                    timestamp: date
+                }
+                await updateExpenseDetailsService(updateExpenseObj);
             }
             let updateCreditObj: CreditModel = {
                 credit_id: creditId,
                 fund_id_fk: fundId,
                 credit_reason_id_fk: reasonId,
-                amount: Number(updatedAmount)
+                amount: Number(updatedAmount),
+                timestamp: date
             }
             await updateCreditDetailsService(updateCreditObj);
 
-            let updatedFundAmount: number = 0;
-            let fundBalance: number = await getFundBalance(fundId);
-            if (Number(updatedAmount) > Number(amount)) {
-                updatedFundAmount = fundBalance + Number(updatedAmount)
-            } else {
-                updatedFundAmount = fundBalance - Number(updatedAmount)
-            }
+
             await updateFundBalance(updatedFundAmount, fundId);
             setModalOpen(false);
             alert("Credit Data Updated");
         }
-
-
-
+        updatedArray.splice(flatListIndex, 0, newflatListObj);
+        setFlatListData(updatedArray);
     };
 
     const cancleOperation = () => {
