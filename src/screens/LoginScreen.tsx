@@ -27,14 +27,17 @@ const LoginScreen = () => {
         setPasswordVisible(!passwordVisible);
     };
 
-    const registerUser = async () => {
+    const registerUser = (): boolean => {
+        let isValid = true
         if (userName === "") {
             alert("Username is Empty!")
-            return
-        }
-        if (password === "") {
+            isValid = false
+        } else if (password === "") {
             alert("PIN is emply");
-            return
+            isValid = false
+        } else if (password.length > 4) {
+            alert("Only 4 Digit PIN Allowed");
+            isValid = false
         }
 
         const userObj: UserModel = {
@@ -42,7 +45,10 @@ const LoginScreen = () => {
             passwd: convertToMD5(password)
         }
         // console.log(userObj);
-        saveUserData(userObj)
+        if (isValid) {
+            saveUserData(userObj);
+        }
+        return isValid;
     }
 
     return (
@@ -78,10 +84,12 @@ const LoginScreen = () => {
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={() => { 
-                registerUser();
-                navigate("RegisterDone");
-                  }}>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                const isValid = registerUser();
+                if (isValid) {
+                    navigate("RegisterDone");
+                }
+            }}>
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
         </View>

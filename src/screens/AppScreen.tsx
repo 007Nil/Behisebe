@@ -10,7 +10,7 @@ import { useIsFocused } from "@react-navigation/native";
 const AppScreen = () => {
   const isFocused = useIsFocused();
   const [userCount, setUserCount] = useState<number>(-1);
-  const [selectedTab, setSelectedTab] = useState<number>(-1);
+  const [selectedTab, setSelectedTab] = useState<number>(0);
 
   useEffect(() => {
     (async () => {
@@ -18,7 +18,6 @@ const AppScreen = () => {
       console.log(dbUserCount);
       if (dbUserCount > 0) {
         setUserCount(dbUserCount);
-        setSelectedTab(0);
       }
     })();
 
@@ -29,7 +28,6 @@ const AppScreen = () => {
       // reset state
       getUserCount().then((data) => {
         setUserCount(data);
-        setSelectedTab(0);
       })
     }
   }, [isFocused]);
