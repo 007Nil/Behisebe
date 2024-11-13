@@ -20,8 +20,15 @@ async function getUserPasswd(): Promise<string> {
     return passwd["passwd"];
 }
 
+async function getUserName(): Promise<string> {
+    const db = await openDBConnection();
+    const username : string = await db.getFirstAsync('SELECT user_name FROM user WHERE user_id = 1');
+    return username["user_name"];
+}
+
 export {
     getUserCount,
     saveUserData,
-    getUserPasswd
+    getUserPasswd,
+    getUserName
 }

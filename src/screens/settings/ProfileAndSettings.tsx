@@ -6,7 +6,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   moderateScale,
   scale,
@@ -18,8 +18,17 @@ import { useNavigation } from "@react-navigation/native";
 
 import CommonHeader from "../../common/CommonHeader";
 import { type StackNavigation } from "../../navigation/AppNavigator";
+import { getUserName } from "../../repository/UsersRepo";
 const ProfileAndSettings = () => {
+
+  const [userName, setUserName] = useState<string>("");
+
+  useEffect(() =>{
+    getUserName().then((data) => setUserName(data))
+  });
+
   const { navigate } = useNavigation<StackNavigation>();
+
   return (
     <View style={styles.container}>
       <CommonHeader title={"Profile and Settings"} />
@@ -48,7 +57,7 @@ const ProfileAndSettings = () => {
               }}
             >
               <View>
-                <Text style={styles.userDetails}>sagniks</Text>
+                <Text style={styles.userDetails}>{userName}</Text>
               </View>
             </View>
             <View
@@ -81,7 +90,7 @@ const ProfileAndSettings = () => {
             { marginBottom: moderateVerticalScale(10) },
           ]}
         >
-          <Text style={styles.heading}>Settings</Text>
+          <Text>Settings</Text>
           <View style={styles.transferView}>
             <TouchableOpacity
               style={styles.transferTab}
@@ -200,7 +209,7 @@ const ProfileAndSettings = () => {
             { marginBottom: moderateVerticalScale(10) },
           ]}
         >
-          <Text style={styles.heading}>Money Transfer</Text>
+          <Text>Money Transfer</Text>
           <View style={styles.transferView}>
             <TouchableOpacity
               style={styles.transferTab}
@@ -208,7 +217,7 @@ const ProfileAndSettings = () => {
                 navigate("AllCredit");
               }}
             >
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
+              <View style={[{ backgroundColor: "white" }]}>
                 <Image
                   source={require("../../images/mobile.png")}
                   style={[
@@ -230,7 +239,7 @@ const ProfileAndSettings = () => {
                 navigate("AllExpense");
               }}
             >
-              <View style={[styles.transferCard, { backgroundColor: "white" }]}>
+              <View style={[{ backgroundColor: "white" }]}>
                 <Image
                   source={require("../../images/mobile.png")}
                   style={[
