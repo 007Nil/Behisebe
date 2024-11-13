@@ -12,7 +12,7 @@ export default function App() {
     </SQLiteProvider>
   );
 }
-
+// DROP TABLE IF EXISTS user;
 // DROP TABLE IF EXISTS money_lends;
 // DROP TABLE IF EXISTS money_borrows;
 // DROP TABLE IF EXISTS expenses;
@@ -22,6 +22,8 @@ export default function App() {
 // DROP TABLE IF EXISTS expense_reasons;
 // DROP TABLE IF EXISTS credit_reasons;
 // DROP TABLE IF EXISTS persons;
+// DROP TABLE IF EXISTS fund_types;
+
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
 

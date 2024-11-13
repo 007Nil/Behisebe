@@ -108,6 +108,12 @@ async function getWeekExpense(): Promise<ExpenseModel[]> {
     return expenseDetails;
 }
 
+async function getExpenseDetailsByFundId(fundId: number): Promise<ExpenseModel[]>{
+    const db = await openDBConnection();
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE fund_id_fk = ?",fundId);
+    return expenseDetails;
+}
+
 export {
     getAllExpenseReasonDetails,
     addExpenseReasonDetails,
@@ -122,5 +128,6 @@ export {
     deleteExpenseData,
     updateExpenseDetailsCreditId,
     getExpenseByID,
-    getWeekExpense
+    getWeekExpense,
+    getExpenseDetailsByFundId,
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, NavigationProp } from "@react-navigation/native";
-import AppScreen from "../screens/AppScreen";
 import {
   AddExpense,
   AddCredit,
@@ -21,7 +20,11 @@ import {
   AllCredit,
   AllExpense,
   UpdateProfile
+
 } from "../screens/settings/index";
+
+import { WelcomeScreen, Home, RegisterDone } from "../screens";
+import AppScreen from "../screens/AppScreen";
 
 import { ExpenseDetails, CreditDetails, CreditAnalyze, ExpenseAnalyze } from "../screens/audit";
 
@@ -31,7 +34,7 @@ export type ScreenNames = ["App", "AddExpense", "ProfileAndSettings",
   "ExpenseDetails", "AddCredit", "CreditTransferSuccessful",
   "ToSelfTransfer", "SelfTransferSuccessful", "CheckBalance",
   "FundType", "CreditAnalyze", "ExpenseAnalyze",
-  "AllCredit", "AllExpense", "UpdateProfile"];
+  "AllCredit", "AllExpense", "UpdateProfile", "WelcomeScreen", "Home", "RegisterDone"];
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -158,6 +161,23 @@ const AppNavigator = () => {
           options={{ headerShown: false }}
         />
 
+        <stack.Screen
+          name="WelcomeScreen"
+          component={WelcomeScreen}
+          options={{ headerShown: false }}
+        />
+        
+        <stack.Screen
+          name="RegisterDone"
+          component={RegisterDone}
+          options={{ headerShown: false }}
+        />
+
+        <stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
       </stack.Navigator>
     </NavigationContainer>
   );

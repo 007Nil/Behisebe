@@ -4,12 +4,50 @@ import HomeCommonHeader from '../common/HomeCommonHeader'
 import { moderateScale, moderateVerticalScale, scale, verticalScale } from 'react-native-size-matters'
 import { getTransactionHistoryService } from '../services/CommonServices'
 import CustomList from '../model/CustomListModel'
-import { CustomDateTimePicker, CustomListView } from '../component'
-import { CreditModel, ExpenseModel } from '../model'
+import { CustomDateTimePicker, CustomListView, Dropdown } from '../component'
+import { CreditModel, ExpenseModel, FundDetailsModel } from '../model'
+import { getAllFundDetailsService } from '../services/FundDetailsServices'
+import { getExpenseDetailsByFundId } from '../repository/ExpenseDetailsRepo'
+import { getCreditDetailsByFundId } from '../repository/CreditDetailsRepo'
 const Statements = () => {
+  const [fundDetails, setFundDetails] = useState<FundDetailsModel>();
+  const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>([]);
+  const [transactionHistory, setTransactionHistory] = useState<CustomList[]>();
+
+
+  const getFundDetails = async (fundDetails: FundDetailsModel) => {
+    setFundDetails(fundDetails);
+    const expenseObj: ExpenseModel[] = await getExpenseDetailsByFundId(fundDetails.fund_id);
+    const creditObj: CreditModel[] = await getCreditDetailsByFundId(fundDetails.fund_id);
+    console.log(expenseObj)
+    setTransactionHistory(await getTransactionHistoryService(expenseObj, creditObj));
+  };
+  useEffect(() => {
+    getAllFundDetailsService().then((data) => {
+      setDbFundDetails(data)
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Statement"} />
+      <View style={styles.filtersView}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={[styles.dropdownView, { marginLeft: moderateScale(15) }]}>
+            <Dropdown
+              dropDownValues={dbFundDetails}
+              dropDownType={"fundDetails"}
+              getFundDetails={getFundDetails}
+              fundValuetype="getFundDetails"
+            />
+          </View>
+        </View>
+      </View>
+      <View style={styles.card1}>
+        <CustomListView listData={transactionHistory} pageName='history'
+        />
+      </View>
+
     </View>
   )
 }
@@ -59,7 +97,7 @@ const styles = StyleSheet.create({
   },
   card1: {
     width: '94%',
-    height: '50%',
+    height: '70%',
     backgroundColor: 'white',
     marginTop: moderateVerticalScale(15),
 

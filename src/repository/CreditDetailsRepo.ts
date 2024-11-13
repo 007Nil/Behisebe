@@ -101,6 +101,12 @@ async function deleteCreditDetails(creditId: number) {
     await db.runAsync('DELETE FROM credits WHERE credit_id = ?', creditId);
 }
 
+async function getCreditDetailsByFundId(fundId:number) {
+    const db = await openDBConnection();
+    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE fund_id_fk = ?",fundId);
+    return creditDetails;
+}
+
 export {
     getAllCreditReasonDetails,
     addCreditReasonDetails,
@@ -114,5 +120,6 @@ export {
     getCreditDetailsById,
     deleteCreditData,
     updateCreditDetails,
-    deleteCreditDetails
+    deleteCreditDetails,
+    getCreditDetailsByFundId
 }
