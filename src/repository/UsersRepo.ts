@@ -8,6 +8,13 @@ async function getUserCount(): Promise<number> {
     return count["count(*)"];
 }
 
+async function saveUserData(userObj: UserModel) {
+    const db = await openDBConnection();
+    await db.runAsync('INSERT INTO user (user_name, passwd) VALUES (?,?)',
+        userObj.username, userObj.passwd);
+}
+
 export {
-    getUserCount
+    getUserCount,
+    saveUserData
 }

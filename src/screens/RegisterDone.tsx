@@ -10,83 +10,28 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { UserModel } from "../model";
-import { convertToMD5 } from "../utils/AllUtils";
-import { saveUserData } from "../repository/UsersRepo";
 import { type StackNavigation } from "../navigation/AppNavigator";
 import { useNavigation } from '@react-navigation/native'
-const LoginScreen = () => {
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { moderateScale } from "react-native-size-matters";
+const RegisterDone = () => {
     const { navigate } = useNavigation<StackNavigation>();
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
-
-    const [passwordVisible, setPasswordVisible] = useState(false);
-
-    const togglePasswordVisibility = () => {
-        setPasswordVisible(!passwordVisible);
-    };
-
-    const registerUser = async () => {
-        if (userName === "") {
-            alert("Username is Empty!")
-            return
-        }
-        if (password === "") {
-            alert("PIN is emply");
-            return
-        }
-
-        const userObj: UserModel = {
-            username: userName,
-            passwd: convertToMD5(password)
-        }
-        // console.log(userObj);
-        saveUserData(userObj)
-    }
-
     return (
         <View style={styles.container}>
-
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={setUserName}
-                    value={userName}
-                    placeholder="User Name"
-                />
-            </View>
-
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={setPassword}
-                    value={password}
-                    placeholder="4-digit PIN"
-                    keyboardType="phone-pad"
-                    secureTextEntry={!passwordVisible}
-                />
-                <TouchableOpacity
-                    onPress={togglePasswordVisibility}
-                    style={styles.eyeIcon}
-                >
-                    <Ionicons
-                        name={passwordVisible ? "eye-outline" : "eye-off-outline"}
-                        size={24}
-                        color="grey"
-                    />
-                </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity style={styles.button} onPress={() => { 
-                registerUser();
-                navigate("RegisterDone");
-                  }}>
-                <Text style={styles.buttonText}>Register</Text>
+            <Text style={{ textAlign: "center", justifyContent: "center", paddingTop: moderateScale(200), }}>
+                <Ionicons name="checkmark-circle" size={100} color="green" />
+            </Text>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                // registerUser();
+                navigate("App");
+            }}>
+                <Text style={styles.buttonText}>Let's Be Hisebi</Text>
             </TouchableOpacity>
         </View>
-    );
-};
+    )
+}
+
+export default RegisterDone
 
 const styles = StyleSheet.create({
     container: {
@@ -118,7 +63,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         padding: wp("3%"),
         alignItems: "center",
-        marginTop: hp("2.5%"),
+        marginTop: hp("10%"),
         width: '100%',
     },
     buttonText: {
@@ -171,5 +116,3 @@ const styles = StyleSheet.create({
         padding: wp("2.5%"),
     },
 });
-
-export default LoginScreen;

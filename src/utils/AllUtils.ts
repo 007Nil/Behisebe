@@ -1,3 +1,5 @@
+import MD5 from "crypto-js/md5";
+
 function dateConvert(date: Date) {
     let dateString: string = date.toLocaleString("en-GB");
     let dateSlice: string[] = dateString.split(",")[0].split("/");
@@ -18,7 +20,12 @@ function getDayName(date: string, locale = 'en-US'): string {
 
 }
 
+function convertToMD5(item: string): string {
+    return MD5(item).toString();
+}
+
 export {
     dateConvert,
-    getDayName
+    getDayName,
+    convertToMD5
 }

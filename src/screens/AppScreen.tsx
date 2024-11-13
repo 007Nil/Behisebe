@@ -5,19 +5,38 @@ import { scale, verticalScale } from "react-native-size-matters";
 
 import { Home, Repay, Statements, History, WelcomeScreen } from "./index";
 import { getUserCount } from "../repository/UsersRepo";
+import { useIsFocused } from "@react-navigation/native";
 
 const AppScreen = () => {
+  const isFocused = useIsFocused();
   const [userCount, setUserCount] = useState<number>(-1);
   const [selectedTab, setSelectedTab] = useState<number>(-1);
 
   useEffect(() => {
-    getUserCount().then(data => setUserCount(data))
-  }, [userCount])
+    (async () => {
+      const dbUserCount = await getUserCount();
+      console.log(dbUserCount);
+      if (dbUserCount > 0) {
+        setUserCount(dbUserCount);
+        setSelectedTab(0);
+      }
+    })();
 
+  }, [userCount, selectedTab])
+
+  useEffect(() => {
+    if (isFocused) {
+      // reset state
+      getUserCount().then((data) => {
+        setUserCount(data);
+        setSelectedTab(0);
+      })
+    }
+  }, [isFocused]);
   return (
     <View style={styles.container}>
 
-      {selectedTab == 0 ? (
+      {selectedTab == 0 && userCount > 0 ? (
         <Home />
       ) : selectedTab == 1 ? (
         <Repay />
@@ -26,7 +45,7 @@ const AppScreen = () => {
       ) : selectedTab == 3 ? (
         <History />
       ) : null}
-      {userCount != 0 ?
+      {userCount > 0 ?
         <View style={[styles.bottomNav]}>
           <View style={styles.bottomNav2}>
             <TouchableOpacity
@@ -116,7 +135,7 @@ const AppScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-        : <WelcomeScreen/>}
+        : <WelcomeScreen />}
     </View>
   );
 };
