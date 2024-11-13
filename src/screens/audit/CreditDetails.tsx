@@ -23,8 +23,6 @@ const CreditDetails = () => {
 
   const updateTotalAmount = (amount: number, openartion: string) => {
     if (openartion === "plus") {
-      console.log(totalCredit)
-      console.log(amount)
       setTotalCredit(totalCredit + amount)
     } else {
       setTotalCredit(totalCredit - amount)

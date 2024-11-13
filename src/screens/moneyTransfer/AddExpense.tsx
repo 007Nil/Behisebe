@@ -158,7 +158,6 @@ const AddExpense = () => {
 
     return true;
   };
-  console.log(creditCardDetails.fund_id)
   const saveExpenseDetails = () => {
     let expenseObject: ExpenseModel = {
       fund_id_fk: fundDetails.fund_id,

@@ -44,7 +44,6 @@ const LoginScreen = () => {
             username: userName,
             passwd: convertToMD5(password)
         }
-        // console.log(userObj);
         if (isValid) {
             saveUserData(userObj);
         }

@@ -30,8 +30,6 @@ const ExpenseDetails = () => {
   };
   const updateTotalAmount = (amount: number, openartion: string) => {
     if (openartion === "plus") {
-      console.log(totalExpense)
-      console.log(amount)
       setTotalExpense(totalExpense + amount)
     } else {
       setTotalExpense(totalExpense - amount)

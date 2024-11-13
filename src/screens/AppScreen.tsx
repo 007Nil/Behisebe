@@ -15,7 +15,6 @@ const AppScreen = () => {
   useEffect(() => {
     (async () => {
       const dbUserCount = await getUserCount();
-      console.log(dbUserCount);
       if (dbUserCount > 0) {
         setUserCount(dbUserCount);
       }
