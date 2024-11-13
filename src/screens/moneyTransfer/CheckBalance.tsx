@@ -7,6 +7,7 @@ import { AddFundCustomFlatList } from "../../component";
 import CommonHeader from "../../common/CommonHeader";
 import { FundDetailsModel } from "../../model";
 import { getValidFundDetailsService } from "../../services/FundDetailsServices";
+import UPIPass from "../UPIPass";
 
 const CheckBalance = () => {
   const [fundData, setFundData] = useState<FundDetailsModel[]>([]);
@@ -21,6 +22,7 @@ const CheckBalance = () => {
           data={fundData}
           screenName="checkBalance" />
       </View>
+     
     </View>
   )
 }

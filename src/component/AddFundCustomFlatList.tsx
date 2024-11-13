@@ -21,6 +21,9 @@ import { updateFundDetailsService } from "../services/FundDetailsServices";
 
 import { FundDetailsModel } from "../model";
 import { getFundDetailsById } from "../repository/FundDetailsRepo";
+import UPIPass from "../screens/UPIPass";
+import { convertToMD5 } from "../utils/AllUtils";
+import { getUserPasswd } from "../repository/UsersRepo";
 
 type AddFundFlatListProps = {
   data: FundDetailsModel[];
@@ -39,6 +42,9 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
   const [creditLimit, setCreditLimit] = useState<number>(0);
   const [newCreditLimit, setNewCreditLimit] = useState<number>(0);
   const [flatListIndex, setFlatListIndex] = useState<number>(-1);
+  const [upiModelVisable, setUpiModealVisable] = useState<boolean>(false);
+
+  const [currentFundBalance, setCurrentFundBalance] = useState<number>(-1);
 
   const toggleSwitch = () => setAccountState((previousState) => !previousState);
 
@@ -86,7 +92,8 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
   };
 
   const viewBalance = (item: FundDetailsModel) => {
-    alert(item.balance);
+    setCurrentFundBalance(item.balance);
+    setUpiModealVisable(true);
   }
   const editForm = (item: FundDetailsModel) => {
     setIsModalVisible(true);
@@ -102,6 +109,18 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
 
   };
 
+  const getPin = async (data: string) => {
+    const passwdHash : string = convertToMD5(data);
+    const dbPasswd : string = await getUserPasswd();
+    if (passwdHash === dbPasswd){
+      alert(currentFundBalance);
+      setUpiModealVisable(false);
+    }else{
+      alert("PIN does not match");
+    }
+
+
+  }
   return (
     <View>
       <FlatList
@@ -145,6 +164,25 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
           );
         }}
       />
+      <Modal isVisible={upiModelVisable} backdropOpacity={0.2}>
+        <View style={styles.mainView2}>
+          <View style={styles.modalTopView}>
+            <Text style={styles.payable}>Enter Pin</Text>
+            <View style={styles.modalTopRightView}>
+              <TouchableOpacity onPress={() => setUpiModealVisable(false)}>
+                <Image
+                  source={require("../images/close.png")}
+                  style={[
+                    styles.backIcon,
+                    { tintColor: "black", width: scale(16) },
+                  ]}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <UPIPass getAuthPin={getPin} />
+        </View>
+      </Modal>
       {screenName !== "checkBalance" ?
         <Modal isVisible={isModalVisible} backdropOpacity={0.2}>
           <View style={styles.mainView}>

@@ -146,6 +146,15 @@ const FlatlistStyles = StyleSheet.create({
         borderTopRightRadius: moderateScale(20),
         padding: moderateScale(10),
     },
+    mainView2: {
+        backgroundColor: "white",
+        width: "100%",
+        position: "absolute",
+        height: "80%",
+        borderTopLeftRadius: moderateScale(20),
+        borderTopRightRadius: moderateScale(20),
+        padding: moderateScale(10),
+    },
     modalTopView: {
         flexDirection: "row",
         justifyContent: "space-between",

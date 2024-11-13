@@ -14,7 +14,14 @@ async function saveUserData(userObj: UserModel) {
         userObj.username, userObj.passwd);
 }
 
+async function getUserPasswd(): Promise<string> {
+    const db = await openDBConnection();
+    const passwd : string = await db.getFirstAsync('SELECT passwd FROM user WHERE user_id = 1');
+    return passwd["passwd"];
+}
+
 export {
     getUserCount,
-    saveUserData
+    saveUserData,
+    getUserPasswd
 }
