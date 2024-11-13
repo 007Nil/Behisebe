@@ -158,7 +158,7 @@ const AddExpense = () => {
 
     return true;
   };
-
+  console.log(creditCardDetails.fund_id)
   const saveExpenseDetails = () => {
     let expenseObject: ExpenseModel = {
       fund_id_fk: fundDetails.fund_id,
@@ -240,8 +240,9 @@ const AddExpense = () => {
           <View style={[styles.amountView]}>
             <Dropdown
               dropDownValues={dbCreditCardFundDetails}
-              dropDownType={"creditCardDetails"}
-              getCreditCardFundDetails={getCreditCardFundDetails}
+              dropDownType={"fundDetails"}
+              fundValuetype={"getFundDetails"}
+              getFundDetails={getCreditCardFundDetails}
             />
           </View>
         ) : null}

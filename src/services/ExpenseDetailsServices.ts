@@ -36,6 +36,7 @@ async function saveExpenseDetailsService(expenseObj: ExpenseModel): Promise<numb
     if (expenseObj.expense_reason_id_fk == 4){
         // Credit Card Payment
         const creditCardDetails = await getFundDetailsById(expenseObj.credit_card_fund_id);
+        console.log(creditCardDetails)
         const updatedAmount = creditCardDetails.balance + expenseObj.amount;
         await updateFundBalance(updatedAmount, creditCardDetails.fund_id);
     }

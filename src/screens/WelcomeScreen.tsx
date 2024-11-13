@@ -15,7 +15,7 @@ const sliders = [
   {
     key: 'two',
     title: 'Let\'s be Hisebi',
-    text: 'If you are new user please click on "check sign" to Register. \n This is a one time activity',
+    text: 'If you are new user please click on "check sign" to Register. \n This is a one time activity\n (All info is stored in your phone storage)',
     backgroundColor: '#febe29',
   },
 ];
