@@ -23,6 +23,8 @@ import {
   UpdateProfile
 } from "../screens/settings/index";
 
+import { WelcomeScreen } from "../screens";
+
 import { ExpenseDetails, CreditDetails, CreditAnalyze, ExpenseAnalyze } from "../screens/audit";
 
 export type ScreenNames = ["App", "AddExpense", "ProfileAndSettings",
@@ -31,7 +33,7 @@ export type ScreenNames = ["App", "AddExpense", "ProfileAndSettings",
   "ExpenseDetails", "AddCredit", "CreditTransferSuccessful",
   "ToSelfTransfer", "SelfTransferSuccessful", "CheckBalance",
   "FundType", "CreditAnalyze", "ExpenseAnalyze",
-  "AllCredit", "AllExpense", "UpdateProfile"];
+  "AllCredit", "AllExpense", "UpdateProfile", "WelcomeScreen"];
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -155,6 +157,12 @@ const AppNavigator = () => {
         <stack.Screen
           name="UpdateProfile"
           component={UpdateProfile}
+          options={{ headerShown: false }}
+        />
+
+        <stack.Screen
+          name="WelcomeScreen"
+          component={WelcomeScreen}
           options={{ headerShown: false }}
         />
 
