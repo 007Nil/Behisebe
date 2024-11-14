@@ -51,6 +51,16 @@ async function generateWeeklyBarChartData(): Promise<BarChartModel[]> {
     return WeeklyBarChartData;
 }
 
+
+async function generateBarChartData(startDate:string, endDate:string): Promise<BarChartModel[]> {
+    return []
+}
+
+async function generatePieChartData(startDate:string, endDate:string): Promise<BarChartModel[]> {
+    return []
+}
 export {
-    generateWeeklyBarChartData
+    generateWeeklyBarChartData,
+    generateBarChartData,
+    generatePieChartData
 }

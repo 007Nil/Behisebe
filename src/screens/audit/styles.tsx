@@ -11,6 +11,49 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f2f2f2'
     },
+    moneyTransferCard: {
+        width: "94%",
+        height: verticalScale(130),
+        backgroundColor: "white",
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(10),
+        borderRadius: moderateScale(10),
+    },
+    transferView: {
+        width: "100%",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        flexDirection: "row",
+        marginTop: moderateScale(20),
+    },
+    transferTab: {
+        width: "25%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    transferCard: {
+        width: scale(36),
+        height: scale(36),
+        borderRadius: moderateScale(10),
+        backgroundColor: "purple",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    icons: {
+        width: scale(22),
+        height: scale(22),
+        tintColor: "white",
+    },
+    tranferText: {
+        marginTop: moderateScale(5),
+        textAlign: "center",
+    },
+    heading: {
+        fontSize: moderateScale(16),
+        fontWeight: "600",
+        marginLeft: moderateScale(15),
+        marginTop: moderateVerticalScale(15),
+    },
     input: {
         backgroundColor: "#f2f2f2",
         width: "100%",

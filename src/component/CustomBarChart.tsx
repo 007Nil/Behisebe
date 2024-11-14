@@ -5,14 +5,12 @@ import styles from './styles';
 import { generateWeeklyBarChartData } from '../services/ChartsServices';
 import BarChartModel from '../model/BarChartModel';
 
-const CustomBarChart = () => {
-  const [barChartData, setBarChartData] = useState<BarChartModel[]>();
-  useEffect(() => {
-    (async () => {
-      setBarChartData(await generateWeeklyBarChartData());
-    }
-    )()
-  }, []);
+type BarChartProps = {
+  barChartData: BarChartModel[]
+}
+
+const CustomBarChart = ({barChartData}: BarChartProps) => {
+
 
   return (
     <View style={styles.cardView}>
