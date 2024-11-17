@@ -248,7 +248,7 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
                 </View>
               </View>
             </View>
-            {creditLimit ?
+            {creditLimit || formEditType === "Credit Card" ?
               <View style={styles.bankView}>
                 <View style={styles.bankLeftView}>
                   <View style={{ marginLeft: moderateScale(15) }}>

@@ -17,8 +17,18 @@ import HomeCommonHeader from "../common/HomeCommonHeader";
 import { type StackNavigation } from "../navigation/AppNavigator";
 import styles from "./styles";
 import { CustomBarChart } from "../component";
+import { useEffect, useState } from "react";
+import BarChartModel from "../model/BarChartModel";
+import { generateWeeklyBarChartData } from "../services/ChartsServices";
 const Home = () => {
   const { navigate } = useNavigation<StackNavigation>();
+  const [barChartData, setBarChartData] = useState<BarChartModel[]>();
+  useEffect(() => {
+    (async () => {
+      setBarChartData(await generateWeeklyBarChartData());
+    }
+    )()
+  }, []);
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Home"} />
@@ -164,7 +174,7 @@ const Home = () => {
           ]}
         >
           <Text style={styles.heading}>Weekely Expense Charts</Text>
-          <CustomBarChart />
+          <CustomBarChart barChartData={barChartData} />
         </View>
       </ScrollView>
     </View>
