@@ -104,7 +104,7 @@ async function getLendMoneyExpenseDetails(): Promise<ExpenseModel[]> {
 
 async function getWeekExpense(): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
-    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE DATE(timeStamp) >= DATE('now', 'weekday 0', '-7 days')");
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE DATE(timeStamp) >= DATE('now', 'weekday 0', '-6 days')");
     return expenseDetails;
 }
 

@@ -25,10 +25,17 @@ async function getUserName(): Promise<string> {
     const username : string = await db.getFirstAsync('SELECT user_name FROM user WHERE user_id = 1');
     return username["user_name"];
 }
+// It should return one user
+async function getAllusers() : Promise<UserModel[]> {
+    const db = await openDBConnection();
+    const allRows: UserModel[] = await db.getAllAsync('SELECT * FROM user');
+    return allRows;
+}
 
 export {
     getUserCount,
     saveUserData,
     getUserPasswd,
-    getUserName
+    getUserName,
+    getAllusers
 }

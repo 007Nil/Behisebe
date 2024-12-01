@@ -6,7 +6,31 @@ import { moderateScale } from 'react-native-size-matters';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button } from '@ant-design/react-native';
 
+import { populateBackup } from '../../services/BackupServices';
+import { setupSignIn } from '../../services/AuthServices';
+
 const UpdateProfile = () => {
+
+  const triggerBackup = async () => {
+    const accessToken: string = await setupSignIn();
+    if (accessToken !== "") {
+      await populateBackup(accessToken);
+    }
+
+  };
+
+  const updateUserName = () => {
+
+  };
+
+  const updatePin = () => {
+
+  };
+
+  const getLastBackupTime = () => {
+
+  }
+
   return (
     <View style={styles.container}>
       <CommonHeader title={"User Settings"} />
@@ -32,12 +56,30 @@ const UpdateProfile = () => {
           </View>
         </View>
       </View>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: 'row' }}>
         <View style={styles.topLeftView}>
-          <TouchableOpacity><Text>Update Username</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.appButtonContainer}>
+            <Text style={styles.appButtonText}>Update Username</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.topLeftView}>
-          <TouchableOpacity><Text>Update PIN</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.appButtonContainer}>
+            <Text style={styles.appButtonText}>Update PIN</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
+        <View style={styles.topLeftView}>
+          <TouchableOpacity style={styles.appButtonContainer}
+            onPress={triggerBackup}>
+            <Text style={styles.appButtonText}>Backup Data</Text>
+          </TouchableOpacity>
+        </View>
+
+      </View>
+      <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
+        <View style={styles.topLeftView}>
+          <Text style={styles.appButtonContainer}>Last Backup time:{ }</Text>
         </View>
       </View>
     </View>

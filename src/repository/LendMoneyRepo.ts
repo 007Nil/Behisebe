@@ -14,7 +14,14 @@ async function getLendMoneyByExpenseId(expenseId:number): Promise<LendMoneyModel
     return allRows;
 }
 
+async function getAllLendMoney(): Promise<LendMoneyModel[]> {
+    const db = await openDBConnection();
+    const allRows : LendMoneyModel[] = await db.getAllAsync('SELECT * FROM money_lends');
+    return allRows;
+}
+
 export {
     addLendMoneyDetails,
-    getLendMoneyByExpenseId
+    getLendMoneyByExpenseId,
+    getAllLendMoney
 }

@@ -12,7 +12,7 @@ import {
   scale,
   verticalScale,
 } from "react-native-size-matters";
-import { useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 import HomeCommonHeader from "../common/HomeCommonHeader";
 import { type StackNavigation } from "../navigation/AppNavigator";
 import styles from "./styles";
@@ -21,6 +21,8 @@ import { useEffect, useState } from "react";
 import BarChartModel from "../model/BarChartModel";
 import { generateWeeklyBarChartData } from "../services/ChartsServices";
 const Home = () => {
+  const isFocused = useIsFocused();
+
   const { navigate } = useNavigation<StackNavigation>();
   const [barChartData, setBarChartData] = useState<BarChartModel[]>();
   useEffect(() => {
@@ -29,6 +31,17 @@ const Home = () => {
     }
     )()
   }, []);
+
+  useEffect(() => {
+    {
+      (async () => {
+        if (isFocused) {
+          setBarChartData(await generateWeeklyBarChartData());
+        }
+      }
+      )()
+    }
+  }, [isFocused]);
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Home"} />
