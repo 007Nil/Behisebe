@@ -45,8 +45,34 @@ async function populateBackup(accessToken: string) {
     const timestamp = Date.now();
     const savedDBFilePath: string = await saveBackupData(backupObj, "behisebi_backup_" + timestamp);
     // Upload to google drive 
+    // createGoogleDriveFolder(accessToken);
     await uploadToGoogleDrive(savedDBFilePath, accessToken);
 
+
+
+}
+
+async function createGoogleDriveFolder(accessToken: string) {
+    const folderName = 'Behisebi';
+    try {
+        const response = await axios.post(
+            'https://www.googleapis.com/drive/v3/files',
+            {
+                name: folderName,
+                mimeType: 'application/vnd.google-apps.folder',
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        console.log('Folder created successfully:', response.data);
+    } catch (error) {
+        console.error('Error creating folder:', error.response?.data || error.message);
+    }
 
 
 }
@@ -63,7 +89,8 @@ async function uploadToGoogleDrive(filePath: string, accessToken: string) {
         var contentType = 'text/plain'
         var metadata = {
             'name': "behisebi.db",
-            'mimeType': contentType
+            'mimeType': contentType,
+            'parents': ['1bWCQ-xnvq1GJlE045morOWjjcLd3xEjM']
         };
 
         var multipartRequestBody =

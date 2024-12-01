@@ -174,6 +174,8 @@ CREATE TABLE IF NOT EXISTS backup_details (
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
 
+ALTER TABLE backup_details ADD backup_file_id TEXT;
+
 `);
 
 // 
