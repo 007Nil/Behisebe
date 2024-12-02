@@ -13,6 +13,11 @@ async function saveUserData(userObj: UserModel) {
     await db.runAsync('INSERT INTO user (user_name, passwd) VALUES (?,?)',
         userObj.username, userObj.passwd);
 }
+async function restoreUserData(userObj: UserModel) {
+    const db = await openDBConnection();
+    await db.runAsync('INSERT INTO user (user_name, passwd, timestamp) VALUES (?,?,?)',
+        userObj.username, userObj.passwd, userObj.timestamp);
+}
 
 async function getUserPasswd(): Promise<string> {
     const db = await openDBConnection();
@@ -37,5 +42,6 @@ export {
     saveUserData,
     getUserPasswd,
     getUserName,
-    getAllusers
+    getAllusers,
+    restoreUserData
 }

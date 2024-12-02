@@ -6,6 +6,7 @@ type FundDetailsModel = {
     is_active?: boolean,
     notes?: string,
     credit_limit?: number,
+    timestamp?: string
 };
 
 export default FundDetailsModel;

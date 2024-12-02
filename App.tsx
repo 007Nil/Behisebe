@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS credit_reasons (
     credit_reason_catagory TEXT NOT NULL
 );
 
+
 INSERT INTO credit_reasons(credit_reason_name,credit_reason_catagory) 
 SELECT 'Self Transfer', 'Self Transfer'
 WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 1 AND credit_reason_name = 'Self Transfer' AND credit_reason_catagory='Self Transfer');
@@ -174,6 +175,8 @@ CREATE TABLE IF NOT EXISTS backup_details (
     backup_dir_id TEXT NULL,
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
+
+
 
 `);
 

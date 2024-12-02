@@ -1,24 +1,24 @@
 import { CreditModel, CreditReasonModel, ExpenseModel, ExpenseReasonModel, FundDetailsModel, FundTypeModel, LendMoneyModel, MoneyBorrowModel, MoneyRepayModel, PersonModel, UserModel } from "../model"
-import { getAllCreditReasonDetails, getCreditDetails } from "../repository/CreditDetailsRepo";
-import { getAllExpenseReasonDetails, getExpenseDetails } from "../repository/ExpenseDetailsRepo";
-import { getAllFundDetails, getAllFundTypes } from "../repository/FundDetailsRepo";
+import { addCreditReasonDetails, getAllCreditReasonDetails, getCreditDetails } from "../repository/CreditDetailsRepo";
+import { addExpenseDetails, addExpenseReasonDetails, getAllExpenseReasonDetails, getExpenseDetails } from "../repository/ExpenseDetailsRepo";
+import { addFundDetails, getAllFundDetails, getAllFundTypes, restoreFundDetails, saveFundTypes } from "../repository/FundDetailsRepo";
 import { getAllLendMoney } from "../repository/LendMoneyRepo";
 import { getAllBorrowMoney } from "../repository/MoneyBorrowRepo";
 import { getAllPersonDetails } from "../repository/PersonDetailsRepo";
-import { getAllusers, getUserPasswd } from "../repository/UsersRepo"
+import { getAllusers, getUserPasswd, restoreUserData } from "../repository/UsersRepo"
 import axios from 'axios';
 
 import * as FileSystem from 'expo-file-system';
 import CryptoJS from 'crypto-js';
 import { convertToMD5 } from "../utils/AllUtils";
-import { INFINITE_TIMEOUT, GDrive } from '@robinbobin/react-native-google-drive-api-wrapper'
-import { statusCodes } from "@react-native-google-signin/google-signin";
-import { err } from "react-native-svg";
 import { addBackupFileId, addBackupFolderId, getBackupCount, getBackupInfo, updateTimeStamp } from "../repository/BackupRepo";
 import BackupModel from "../model/BackupModel";
 import moment from "moment";
+import { err } from "react-native-svg";
+import { dropAllData } from "../repository/common";
+import { saveExpenseDetailsService } from "./ExpenseDetailsServices";
 
-async function populateBackup(accessToken: string) : Promise<boolean> {
+async function populateBackup(accessToken: string): Promise<boolean> {
 
     try {
         const userDetails: UserModel[] = await getAllusers();
@@ -60,7 +60,7 @@ async function populateBackup(accessToken: string) : Promise<boolean> {
         } else {
             const backupDetails: BackupModel = await getBackupInfo();
             // console.log(backupDetails);
-            await updateToGoogleDrive(savedDBFilePath, accessToken,backupDetails.backup_dir_id, backupDetails.backup_file_id);
+            await updateToGoogleDrive(savedDBFilePath, accessToken, backupDetails.backup_dir_id, backupDetails.backup_file_id);
             await updateTimeStamp(moment().format("DD/MM/YYYY HH:mm:ss"))
         }
 
@@ -69,6 +69,62 @@ async function populateBackup(accessToken: string) : Promise<boolean> {
     } catch (error) {
         return false;
     }
+}
+
+
+async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, number]> {
+    try {
+        const response = await axios.get(
+            'https://www.googleapis.com/drive/v3/files?q: mimeType = "application/vnd.google-apps.folder" ',
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        const backupData: BackupModel = {
+
+        }
+        const fileLength: number = response.data["files"].length;
+        if (fileLength > 0) {
+            for (const file of response.data["files"]) {
+                if (file["mimeType"] === "text/plain") {
+                    backupData.backup_file_id = file["id"];
+                    continue;
+                }
+                if (file["mimeType"] === "application/vnd.google-apps.folder") {
+                    backupData.backup_dir_id = file["id"];
+                    continue;
+                }
+            }
+        }
+
+        // console.log(backupData);
+        return [backupData, fileLength]
+
+        // return response.data["id"];
+    } catch (error) {
+        console.error('Error creating folder:', error.response?.data || error.message);
+        return [{}, 0];
+    }
+}
+
+async function restoreFromGoogleDrive(accessToken: string, fileID: string): Promise<string> {
+    try {
+        const response = await axios.get(`https://www.googleapis.com/drive/v3/files/${fileID}?alt=media`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        return response["data"];
+    }
+    catch (error) {
+        console.error(error);
+        return "";
+    }
+
 }
 
 async function createGoogleDriveFolder(accessToken: string): Promise<string> {
@@ -165,7 +221,7 @@ async function updateToGoogleDrive(filePath: string, accessToken: string, dirId:
             encryptedContent + '\r\n' +
             close_delim;
 
-        console.log(fileId);
+        // console.log(fileId);
         const response = await axios.patch(
             'https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=multipart',
             multipartRequestBody,
@@ -226,11 +282,95 @@ async function encryptData(jsonObj: any): Promise<string> {
     return encryptedData;
 }
 
-function decryptData(encryptedData: string, userPin: string): any {
-    const secretKey = convertToMD5(userPin);
-    const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
-    const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
-    return JSON.parse(decryptedString);
+function decryptData(encryptedData: string, userPin: string): [any, boolean] {
+    try {
+        const secretKey = convertToMD5(userPin);
+        const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+        const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
+        // console.log(decryptedString);
+        return [JSON.parse(decryptedString), true];
+    } catch (error) {
+        return [{}, false];
+    }
+}
+
+async function restoreDatabase(databaseDumpObj: any) {
+    // Need to emply all tables
+    await dropAllData();
+
+
+    const userObj: UserModel = {
+        username: databaseDumpObj["user"][0]["user_name"],
+        passwd: databaseDumpObj["user"][0]["passwd"],
+        timestamp: databaseDumpObj["user"][0]["timestamp"],
+    }
+    await restoreUserData(userObj);
+
+    for (const eachFundType of databaseDumpObj["fund_types"]) {
+        let fundType: FundTypeModel = {
+            fund_type_name: eachFundType["fund_type_name"]
+        }
+        // Save to DB
+        await saveFundTypes(fundType)
+    }
+
+    let sortedFunds = databaseDumpObj["fund_details"].sort(function(a, b){
+        return a.fund_id - b.fund_id;
+    });
+    for (const eachFund of sortedFunds) {
+        let eachFundDetails: FundDetailsModel = {
+            fund_name: eachFund["fund_name"],
+            fund_type: eachFund["fund_type"],
+            credit_limit: eachFund["credit_limit"],
+            is_active: eachFund["is_active"],
+            balance: eachFund["balance"],
+            notes: eachFund["notes"]
+        }
+        await restoreFundDetails(eachFundDetails);
+    }
+
+    let sortedExpenseReason = databaseDumpObj["expense_reasons"].sort(function(a, b){
+        return a.expense_reason_id - b.expense_reason_id;
+    });
+    for (const eachExpenseReason of sortedExpenseReason) {
+        let expenseReason : ExpenseReasonModel = {
+            expense_reason_catagory: eachExpenseReason["expense_reason_catagory"],
+            expense_reason_name: eachExpenseReason["expense_reason_name"]
+        }
+        await addExpenseReasonDetails(expenseReason);
+    }
+
+    let sortedCreditReason = databaseDumpObj["credit_reasons"].sort(function(a, b){
+        return a.expense_reason_id - b.expense_reason_id;
+    });
+
+    for (const eachCreditReason of sortedCreditReason){
+        let creditReason: CreditReasonModel = {
+            credit_reason_name: eachCreditReason["credit_reason_name"],
+            credit_reason_catagory: eachCreditReason["credit_reason_catagory"]
+        }
+
+        await addCreditReasonDetails(creditReason);
+    }
+
+    
+    for(const eachExpense of databaseDumpObj["expenses"]){
+        let expenseObj : ExpenseModel = {
+            expense_reason_id_fk: eachExpense["expense_reason_id_fk"],
+            fund_id_fk: eachExpense["fund_id_fk"],
+            amount: eachExpense["amount"],
+            timestamp: eachExpense["timestamp"],
+            credit_id: eachExpense["credit_id"],
+            message: eachExpense["message"],
+            person_id_fk: eachExpense["person_id_fk"]
+        }
+        await addExpenseDetails(expenseObj);
+    }
+
+    for(const eachCredit of databaseDumpObj["credits"]){
+
+    }
 
 }
-export { populateBackup }
+
+export { populateBackup, getGoogleDriveFiles, restoreFromGoogleDrive, decryptData,restoreDatabase }
