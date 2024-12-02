@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import CommonHeader from '../../common/CommonHeader';
 import styles from "./styles";
 import { moderateScale } from 'react-native-size-matters';
@@ -8,13 +8,26 @@ import { Button } from '@ant-design/react-native';
 
 import { populateBackup } from '../../services/BackupServices';
 import { setupSignIn } from '../../services/AuthServices';
+import BackupModel from '../../model/BackupModel';
+import { getBackupInfo } from '../../repository/BackupRepo';
 
 const UpdateProfile = () => {
+  const [backuptime, setBackupTime] = useState<string>("");
 
+  useEffect(() => {
+    getBackupInfo().then((data) => setBackupTime(data.timestamp));
+  }, []);
   const triggerBackup = async () => {
     const accessToken: string = await setupSignIn();
     if (accessToken !== "") {
-      await populateBackup(accessToken);
+      const backupState: boolean = await populateBackup(accessToken);
+      if (backupState) {
+        await getLastBackupTime()
+        Alert.alert("Backup Done")
+      } else {
+        Alert.alert("Error")
+      }
+
     }
 
   };
@@ -27,8 +40,9 @@ const UpdateProfile = () => {
 
   };
 
-  const getLastBackupTime = () => {
-
+  const getLastBackupTime = async () => {
+    const backupInfo: BackupModel = await getBackupInfo()
+    setBackupTime(backupInfo.timestamp);
   }
 
   return (
@@ -79,7 +93,7 @@ const UpdateProfile = () => {
       </View>
       <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
         <View style={styles.topLeftView}>
-          <Text style={styles.appButtonContainer}>Last Backup time:{ }</Text>
+          <Text style={styles.appButtonContainer}>Last Backup time: {backuptime}</Text>
         </View>
       </View>
     </View>

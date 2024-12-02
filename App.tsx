@@ -6,11 +6,11 @@ import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 // Add investments and goals
 export default function App() {
 
-  return (
-    <SQLiteProvider databaseName="behisebe.db" onInit={migrateDbIfNeeded}>
-      <AppNavigator />
-    </SQLiteProvider>
-  );
+    return (
+        <SQLiteProvider databaseName="behisebe.db" onInit={migrateDbIfNeeded}>
+            <AppNavigator />
+        </SQLiteProvider>
+    );
 }
 // DROP TABLE IF EXISTS user;
 // DROP TABLE IF EXISTS money_lends;
@@ -27,10 +27,9 @@ export default function App() {
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
-  await db.execAsync(`
+    await db.execAsync(`
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
-
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -171,17 +170,17 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS backup_details (
     backup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    backup_file_id TEXT NULL,
+    backup_dir_id TEXT NULL,
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
 
-ALTER TABLE backup_details ADD backup_file_id TEXT;
-
 `);
 
-// 
-const count = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ',"fund_details","credit_limit");
-if (count["count(*)"] < 1){
-    await db.runAsync("ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL)");
-}
+    // 
+    const count = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ', "fund_details", "credit_limit");
+    if (count["count(*)"] < 1) {
+        await db.runAsync("ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL)");
+    }
 
 }
