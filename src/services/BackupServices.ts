@@ -32,7 +32,7 @@ async function populateBackup(accessToken: string): Promise<boolean> {
         const allBorrowMoneyDetails: MoneyBorrowModel[] = await getAllBorrowMoney();
         const allExpenseDetails: ExpenseModel[] = await getExpenseDetails();
         const allCreditDetails: CreditModel[] = await getCreditDetails();
-        const backupDetails : BackupModel = await getBackupInfo();
+        const backupDetails: BackupModel = await getBackupInfo();
 
         const backupObj: any = {
             user: userDetails,
@@ -65,7 +65,7 @@ async function populateBackup(accessToken: string): Promise<boolean> {
             const backupDetails: BackupModel = await getBackupInfo();
             // console.log(backupDetails);
             await updateToGoogleDrive(savedDBFilePath, accessToken, backupDetails.backup_dir_id, backupDetails.backup_file_id);
-            await updateTimeStamp(moment().format("DD/MM/YYYY HH:mm:ss"))
+            await updateTimeStamp(moment().format("YYYY-MM-DD HH:mm:ss"))
         }
 
         await deleteBackupFile(savedDBFilePath);
@@ -88,8 +88,6 @@ async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, n
             }
         );
         const backupData: BackupModel = {};
-
-        console.log(response.data["files"])
 
         const fileLength: number = response.data["files"].length;
         if (fileLength > 0) {
@@ -122,8 +120,6 @@ async function restoreFromGoogleDrive(accessToken: string, fileID: string): Prom
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        console.log("HIT")
-        console.log(response)
         return response["data"];
     }
     catch (error) {
@@ -252,7 +248,6 @@ async function saveBackupData(jsonObj: any, filename: string): Promise<string> {
         const directory = FileSystem.documentDirectory;
         const filePath = `${directory}${filename}`;
         const jsonString: string = await encryptData(jsonObj);
-
         // Write the file
         await FileSystem.writeAsStringAsync(filePath, jsonString, {
             encoding: FileSystem.EncodingType.UTF8,
@@ -278,20 +273,29 @@ async function deleteBackupFile(filePath: string) {
 
 async function encryptData(jsonObj: any): Promise<string> {
     const secretKey: string = await getUserPasswd();
-    console.log(jsonObj)
-    const encryptedData: string = CryptoJS.AES.encrypt(JSON.stringify(jsonObj), secretKey).toString();
+    const keyutf = CryptoJS.enc.Utf8.parse(secretKey);
+    const iv = CryptoJS.enc.Utf8.parse('678025308de70905');
+    console.log(JSON.stringify(jsonObj))
+    const encryptedData: string = CryptoJS.AES.encrypt(JSON.stringify(jsonObj), keyutf, { iv: iv }).toString();
     return encryptedData;
 }
 
 function decryptData(encryptedData: string, userPin: string): [any, boolean] {
     try {
         const secretKey = convertToMD5(userPin);
-        const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
-        const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log(encryptedData);
-        // console.log(decryptedString.replace(',"backup_deta','}'))
-        console.log(decryptedString)
-        return [{}, true];
+        const keyutf = CryptoJS.enc.Utf8.parse(secretKey);
+        const iv = CryptoJS.enc.Utf8.parse('678025308de70905');
+        const decryptedString = CryptoJS.AES.decrypt(
+            { ciphertext: CryptoJS.enc.Base64.parse(encryptedData) },
+            keyutf,
+            {
+                iv: iv
+            });
+        const decStr = CryptoJS.enc.Utf8.stringify(decryptedString)
+
+        console.log(decStr);
+
+        return [decStr, true];
     } catch (error) {
         console.log(error)
         return [{}, false];
@@ -301,10 +305,6 @@ function decryptData(encryptedData: string, userPin: string): [any, boolean] {
 async function restoreDatabase(databaseDumpObj: any) {
     // Need to emply all tables
     await dropAllData();
-
-    // console.log(databaseDumpObj)
-    // console.log("HIT")
-
 
     const userObj: UserModel = {
         username: databaseDumpObj["user"][0]["user_name"],
@@ -321,7 +321,7 @@ async function restoreDatabase(databaseDumpObj: any) {
         await saveFundTypes(fundType)
     }
 
-    let sortedFunds = databaseDumpObj["fund_details"].sort(function(a, b){
+    let sortedFunds = databaseDumpObj["fund_details"].sort(function (a, b) {
         return a.fund_id - b.fund_id;
     });
     for (const eachFund of sortedFunds) {
@@ -336,22 +336,22 @@ async function restoreDatabase(databaseDumpObj: any) {
         await restoreFundDetails(eachFundDetails);
     }
 
-    let sortedExpenseReason = databaseDumpObj["expense_reasons"].sort(function(a, b){
+    let sortedExpenseReason = databaseDumpObj["expense_reasons"].sort(function (a, b) {
         return a.expense_reason_id - b.expense_reason_id;
     });
     for (const eachExpenseReason of sortedExpenseReason) {
-        let expenseReason : ExpenseReasonModel = {
+        let expenseReason: ExpenseReasonModel = {
             expense_reason_catagory: eachExpenseReason["expense_reason_catagory"],
             expense_reason_name: eachExpenseReason["expense_reason_name"]
         }
         await addExpenseReasonDetails(expenseReason);
     }
 
-    let sortedCreditReason = databaseDumpObj["credit_reasons"].sort(function(a, b){
+    let sortedCreditReason = databaseDumpObj["credit_reasons"].sort(function (a, b) {
         return a.expense_reason_id - b.expense_reason_id;
     });
 
-    for (const eachCreditReason of sortedCreditReason){
+    for (const eachCreditReason of sortedCreditReason) {
         let creditReason: CreditReasonModel = {
             credit_reason_name: eachCreditReason["credit_reason_name"],
             credit_reason_catagory: eachCreditReason["credit_reason_catagory"]
@@ -360,9 +360,9 @@ async function restoreDatabase(databaseDumpObj: any) {
         await addCreditReasonDetails(creditReason);
     }
 
-    
-    for(const eachExpense of databaseDumpObj["expenses"]){
-        let expenseObj : ExpenseModel = {
+
+    for (const eachExpense of databaseDumpObj["expenses"]) {
+        let expenseObj: ExpenseModel = {
             expense_reason_id_fk: eachExpense["expense_reason_id_fk"],
             fund_id_fk: eachExpense["fund_id_fk"],
             amount: eachExpense["amount"],
@@ -374,10 +374,10 @@ async function restoreDatabase(databaseDumpObj: any) {
         await addExpenseDetails(expenseObj);
     }
 
-    for(const eachCredit of databaseDumpObj["credits"]){
+    for (const eachCredit of databaseDumpObj["credits"]) {
 
     }
 
 }
 
-export { populateBackup, getGoogleDriveFiles, restoreFromGoogleDrive, decryptData,restoreDatabase }
+export { populateBackup, getGoogleDriveFiles, restoreFromGoogleDrive, decryptData, restoreDatabase }

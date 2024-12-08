@@ -42,13 +42,6 @@ const UpdateProfile = () => {
       const encriptedData: string = await restoreFromGoogleDrive(accessToken, backupData.backup_file_id);
       ToastAndroid.show("Decrypting Database", ToastAndroid.SHORT);
       const [decryptedData, result] = decryptData(encriptedData, "8474");
-      // if (result) {
-      //   ToastAndroid.show("Database restore in Progress", ToastAndroid.SHORT);
-      //   await restoreDatabase(decryptedData);
-      //   ToastAndroid.show("Database Restored", ToastAndroid.SHORT);
-      // } else {
-      //   ToastAndroid.show("Unable to decrypting Database PIN Incorrect", ToastAndroid.SHORT);
-      // }
     } else {
       ToastAndroid.show("Behisebi Database not found on G Drive", ToastAndroid.SHORT);
     }
