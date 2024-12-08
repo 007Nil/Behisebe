@@ -32,6 +32,7 @@ async function populateBackup(accessToken: string): Promise<boolean> {
         const allBorrowMoneyDetails: MoneyBorrowModel[] = await getAllBorrowMoney();
         const allExpenseDetails: ExpenseModel[] = await getExpenseDetails();
         const allCreditDetails: CreditModel[] = await getCreditDetails();
+        const backupDetails : BackupModel = await getBackupInfo();
 
         const backupObj: any = {
             user: userDetails,
@@ -43,8 +44,11 @@ async function populateBackup(accessToken: string): Promise<boolean> {
             expenses: allExpenseDetails,
             credits: allCreditDetails,
             money_lends: allMoneyLendDetails,
-            money_borrows: allBorrowMoneyDetails
+            money_borrows: allBorrowMoneyDetails,
+            backup_details: backupDetails
         };
+
+        console.log(backupObj)
 
         // Save this to json file and encript the files using userpassword md5
         const timestamp = Date.now();
@@ -83,9 +87,10 @@ async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, n
                 },
             }
         );
-        const backupData: BackupModel = {
+        const backupData: BackupModel = {};
 
-        }
+        console.log(response.data["files"])
+
         const fileLength: number = response.data["files"].length;
         if (fileLength > 0) {
             for (const file of response.data["files"]) {
@@ -117,7 +122,8 @@ async function restoreFromGoogleDrive(accessToken: string, fileID: string): Prom
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-
+        console.log("HIT")
+        console.log(response)
         return response["data"];
     }
     catch (error) {
@@ -246,7 +252,6 @@ async function saveBackupData(jsonObj: any, filename: string): Promise<string> {
         const directory = FileSystem.documentDirectory;
         const filePath = `${directory}${filename}`;
         const jsonString: string = await encryptData(jsonObj);
-        // console.log(jsonString)
 
         // Write the file
         await FileSystem.writeAsStringAsync(filePath, jsonString, {
@@ -259,11 +264,6 @@ async function saveBackupData(jsonObj: any, filename: string): Promise<string> {
         console.error("Error saving JSON file:", error);
         return "";
     }
-
-    // const decryptObj : any = decryptData(jsonString, "8474");
-
-    // console.log(decryptObj["credit_reasons"])
-
 }
 
 async function deleteBackupFile(filePath: string) {
@@ -278,7 +278,8 @@ async function deleteBackupFile(filePath: string) {
 
 async function encryptData(jsonObj: any): Promise<string> {
     const secretKey: string = await getUserPasswd();
-    const encryptedData: string = CryptoJS.AES.encrypt(JSON.stringify(jsonObj), secretKey).toString();;
+    console.log(jsonObj)
+    const encryptedData: string = CryptoJS.AES.encrypt(JSON.stringify(jsonObj), secretKey).toString();
     return encryptedData;
 }
 
@@ -287,9 +288,12 @@ function decryptData(encryptedData: string, userPin: string): [any, boolean] {
         const secretKey = convertToMD5(userPin);
         const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
         const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log(decryptedString);
-        return [JSON.parse(decryptedString), true];
+        // console.log(encryptedData);
+        // console.log(decryptedString.replace(',"backup_deta','}'))
+        console.log(decryptedString)
+        return [{}, true];
     } catch (error) {
+        console.log(error)
         return [{}, false];
     }
 }
@@ -297,6 +301,9 @@ function decryptData(encryptedData: string, userPin: string): [any, boolean] {
 async function restoreDatabase(databaseDumpObj: any) {
     // Need to emply all tables
     await dropAllData();
+
+    // console.log(databaseDumpObj)
+    // console.log("HIT")
 
 
     const userObj: UserModel = {

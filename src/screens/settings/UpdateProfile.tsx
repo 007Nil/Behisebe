@@ -1,4 +1,4 @@
-import { View, Text, Alert } from 'react-native'
+import { View, Text, Alert, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CommonHeader from '../../common/CommonHeader';
 import styles from "./styles";
@@ -6,7 +6,7 @@ import { moderateScale } from 'react-native-size-matters';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button } from '@ant-design/react-native';
 
-import { populateBackup } from '../../services/BackupServices';
+import { decryptData, getGoogleDriveFiles, populateBackup, restoreFromGoogleDrive } from '../../services/BackupServices';
 import { setupSignIn } from '../../services/AuthServices';
 import BackupModel from '../../model/BackupModel';
 import { getBackupInfo } from '../../repository/BackupRepo';
@@ -31,6 +31,28 @@ const UpdateProfile = () => {
     }
 
   };
+
+  const testFunc = async () => {
+    const accessToken: string = await setupSignIn();
+    ToastAndroid.show("Google Drive Authentication done", ToastAndroid.SHORT);
+    // console.log(accessToken);
+    const [backupData, listLength] = await getGoogleDriveFiles(accessToken);
+    if (listLength > 0) {
+      ToastAndroid.show("Behisebi Database found on G Drive", ToastAndroid.SHORT);
+      const encriptedData: string = await restoreFromGoogleDrive(accessToken, backupData.backup_file_id);
+      ToastAndroid.show("Decrypting Database", ToastAndroid.SHORT);
+      const [decryptedData, result] = decryptData(encriptedData, "8474");
+      // if (result) {
+      //   ToastAndroid.show("Database restore in Progress", ToastAndroid.SHORT);
+      //   await restoreDatabase(decryptedData);
+      //   ToastAndroid.show("Database Restored", ToastAndroid.SHORT);
+      // } else {
+      //   ToastAndroid.show("Unable to decrypting Database PIN Incorrect", ToastAndroid.SHORT);
+      // }
+    } else {
+      ToastAndroid.show("Behisebi Database not found on G Drive", ToastAndroid.SHORT);
+    }
+  }
 
   const updateUserName = () => {
 
@@ -91,6 +113,17 @@ const UpdateProfile = () => {
         </View>
 
       </View>
+
+      <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
+        <View style={styles.topLeftView}>
+          <TouchableOpacity style={styles.appButtonContainer}
+            onPress={testFunc}>
+            <Text style={styles.appButtonText}>Test Data</Text>
+          </TouchableOpacity>
+        </View>
+
+      </View>
+
       <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
         <View style={styles.topLeftView}>
           <Text style={styles.appButtonContainer}>Last Backup time: {backuptime}</Text>

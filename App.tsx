@@ -177,7 +177,6 @@ CREATE TABLE IF NOT EXISTS backup_details (
 );
 
 
-
 `);
 
     // 
