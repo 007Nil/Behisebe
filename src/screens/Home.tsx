@@ -25,6 +25,8 @@ const Home = () => {
 
   const { navigate } = useNavigation<StackNavigation>();
   const [barChartData, setBarChartData] = useState<BarChartModel[]>();
+  const [todayExpesne, setTodayExpense] = useState<number>(0);
+  const [todayCredit,setTodayCredit] = useState<number>(0);
   useEffect(() => {
     (async () => {
       setBarChartData(await generateWeeklyBarChartData());
@@ -179,6 +181,17 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* <View
+          style={[
+            styles.moneyTransferCard,
+            { marginBottom: moderateVerticalScale(10) },
+          ]}
+        >
+          <Text style={styles.heading}>Today Details</Text>
+          <Text style={styles.heading}>Today Expense</Text>
+          <Text style={styles.heading}>Today Credit</Text>
+        </View> */}
 
         <View
           style={[

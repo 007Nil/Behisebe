@@ -15,7 +15,13 @@ const UpdateProfile = () => {
   const [backuptime, setBackupTime] = useState<string>("");
 
   useEffect(() => {
-    getBackupInfo().then((data) => setBackupTime(data.timestamp));
+    getBackupInfo().then((data) => {
+      if (!data) {
+        setBackupTime("");
+      } else {
+        setBackupTime(data.timestamp)
+      }
+    });
   }, []);
   const triggerBackup = async () => {
     const accessToken: string = await setupSignIn();
@@ -107,7 +113,7 @@ const UpdateProfile = () => {
 
       </View>
 
-      <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
+      {/* <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
         <View style={styles.topLeftView}>
           <TouchableOpacity style={styles.appButtonContainer}
             onPress={testFunc}>
@@ -115,7 +121,7 @@ const UpdateProfile = () => {
           </TouchableOpacity>
         </View>
 
-      </View>
+      </View> */}
 
       <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
         <View style={styles.topLeftView}>

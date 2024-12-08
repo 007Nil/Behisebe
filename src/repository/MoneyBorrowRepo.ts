@@ -8,20 +8,29 @@ async function addBorrowMoneyDetails(borrowMoneyObj: MoneyBorrowModel): Promise<
     );
 }
 
-async function getBorrowMoneyByCreditId(expenseId:number): Promise<MoneyBorrowModel[]> {
+async function getBorrowMoneyByCreditId(expenseId: number): Promise<MoneyBorrowModel[]> {
     const db = await openDBConnection();
-    const allRows: MoneyBorrowModel[] = await db.getAllAsync('SELECT * FROM money_borrows WHERE credit_id_fk = ? ORDER BY timestamp DESC;',expenseId);
+    const allRows: MoneyBorrowModel[] = await db.getAllAsync('SELECT * FROM money_borrows WHERE credit_id_fk = ? ORDER BY timestamp DESC;', expenseId);
     return allRows;
 }
 
 async function getAllBorrowMoney() {
     const db = await openDBConnection();
-    const allRows : MoneyBorrowModel[] = await db.getAllAsync('SELECT * FROM money_borrows');
+    const allRows: MoneyBorrowModel[] = await db.getAllAsync('SELECT * FROM money_borrows');
     return allRows;
 }
+
+async function saveBorrowMoneyFromBackup(borrowMoneyObj: MoneyBorrowModel): Promise<void> {
+    const db = await openDBConnection();
+    await db.runAsync('INSERT INTO money_borrows (credit_id_fk, paid_amount, timestamp) VALUES (?, ?, ?)',
+        borrowMoneyObj.credit_id_fk, borrowMoneyObj.paid_amount, borrowMoneyObj.timestamp
+    );
+}
+
 
 export {
     addBorrowMoneyDetails,
     getBorrowMoneyByCreditId,
-    getAllBorrowMoney
+    getAllBorrowMoney,
+    saveBorrowMoneyFromBackup
 }

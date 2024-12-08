@@ -1,16 +1,20 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ToastAndroid,Animated } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ToastAndroid, Animated } from 'react-native'
 import React, { useRef, useState } from 'react'
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { setupSignIn } from '../services/AuthServices';
+import { type StackNavigation } from "../navigation/AppNavigator";
+import { useNavigation } from '@react-navigation/native'
 import { decryptData, getGoogleDriveFiles, restoreDatabase, restoreFromGoogleDrive } from '../services/BackupServices';
 
 const ImportData = () => {
     const [password, setPassword] = useState<string>("");
     const [progress, setProgress] = useState(0);
+    const [backupState, setBackupState] = useState<boolean>(false);
     const animation = useRef(new Animated.Value(0)).current;
+    const { navigate } = useNavigation<StackNavigation>();
 
     const validPin = (): boolean => {
         let isValid = true
@@ -38,8 +42,13 @@ const ImportData = () => {
             const [decryptedData, result] = decryptData(encriptedData, password);
             if (result) {
                 ToastAndroid.show("Database restore in Progress", ToastAndroid.SHORT);
-                await restoreDatabase(decryptedData);
-                ToastAndroid.show("Database Restored", ToastAndroid.SHORT);
+                const status = await restoreDatabase(decryptedData);
+                if (status) {
+                    ToastAndroid.show("Database Restored", ToastAndroid.SHORT);
+                    setBackupState(true);
+                } else {
+                    ToastAndroid.show("Error while restoring data", ToastAndroid.SHORT);
+                }
             } else {
                 ToastAndroid.show("Unable to decrypting Database PIN Incorrect", ToastAndroid.SHORT);
             }
@@ -69,7 +78,12 @@ const ImportData = () => {
             }}>
                 <Text style={styles.buttonText}>Authenticate to G Drive</Text>
             </TouchableOpacity>
-            
+
+            <TouchableOpacity style={!backupState ? styles.button2 : styles.button}
+                disabled={!backupState} onPress={() => { navigate("App"); }}>
+                <Text style={styles.buttonText}>Done</Text>
+            </TouchableOpacity>
+
         </View>
     )
 }
@@ -89,22 +103,22 @@ const styles = StyleSheet.create({
         marginBottom: hp("3%"),
         fontWeight: "bold",
     },
-      progressBarContainer: {
+    progressBarContainer: {
         width: '100%',
         height: 20,
         backgroundColor: '#e0e0df',
         borderRadius: 10,
         overflow: 'hidden',
         marginVertical: 10,
-      },
-      progressBar: {
+    },
+    progressBar: {
         height: '100%',
         backgroundColor: '#76c7c0',
-      },
-      progressText: {
+    },
+    progressText: {
         marginVertical: 10,
         fontSize: 16,
-      },
+    },
     logo: {
         marginBottom: hp("6%"),
     },
@@ -119,6 +133,14 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "#01a5fc",
+        borderRadius: 25,
+        padding: wp("3%"),
+        alignItems: "center",
+        marginTop: hp("2.5%"),
+        width: '100%',
+    },
+    button2: {
+        backgroundColor: "#808080",
         borderRadius: 25,
         padding: wp("3%"),
         alignItems: "center",

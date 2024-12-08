@@ -1,17 +1,17 @@
 import { CreditModel, CreditReasonModel, ExpenseModel, ExpenseReasonModel, FundDetailsModel, FundTypeModel, LendMoneyModel, MoneyBorrowModel, MoneyRepayModel, PersonModel, UserModel } from "../model"
-import { addCreditReasonDetails, getAllCreditReasonDetails, getCreditDetails } from "../repository/CreditDetailsRepo";
+import { addCreditDetails, addCreditReasonDetails, getAllCreditReasonDetails, getCreditDetails } from "../repository/CreditDetailsRepo";
 import { addExpenseDetails, addExpenseReasonDetails, getAllExpenseReasonDetails, getExpenseDetails } from "../repository/ExpenseDetailsRepo";
 import { addFundDetails, getAllFundDetails, getAllFundTypes, restoreFundDetails, saveFundTypes } from "../repository/FundDetailsRepo";
-import { getAllLendMoney } from "../repository/LendMoneyRepo";
-import { getAllBorrowMoney } from "../repository/MoneyBorrowRepo";
-import { getAllPersonDetails } from "../repository/PersonDetailsRepo";
+import { getAllLendMoney, saveLendMoneyDetailsFromBackup } from "../repository/LendMoneyRepo";
+import { getAllBorrowMoney, saveBorrowMoneyFromBackup } from "../repository/MoneyBorrowRepo";
+import { addPersonDetails, getAllPersonDetails } from "../repository/PersonDetailsRepo";
 import { getAllusers, getUserPasswd, restoreUserData } from "../repository/UsersRepo"
 import axios from 'axios';
 
 import * as FileSystem from 'expo-file-system';
 import CryptoJS from 'crypto-js';
 import { convertToMD5 } from "../utils/AllUtils";
-import { addBackupFileId, addBackupFolderId, getBackupCount, getBackupInfo, updateTimeStamp } from "../repository/BackupRepo";
+import { addBackupFileId, addBackupFolderId, getBackupCount, getBackupInfo, restoreBackupInfo, updateTimeStamp } from "../repository/BackupRepo";
 import BackupModel from "../model/BackupModel";
 import moment from "moment";
 import { err } from "react-native-svg";
@@ -295,89 +295,153 @@ function decryptData(encryptedData: string, userPin: string): [any, boolean] {
 
         console.log(decStr);
 
-        return [decStr, true];
+        return [JSON.parse(decStr), true];
     } catch (error) {
         console.log(error)
         return [{}, false];
     }
 }
 
-async function restoreDatabase(databaseDumpObj: any) {
+async function restoreDatabase(databaseDumpObj: any) : Promise<boolean> {
     // Need to emply all tables
-    await dropAllData();
+    try {
+        await dropAllData();
 
-    const userObj: UserModel = {
-        username: databaseDumpObj["user"][0]["user_name"],
-        passwd: databaseDumpObj["user"][0]["passwd"],
-        timestamp: databaseDumpObj["user"][0]["timestamp"],
-    }
-    await restoreUserData(userObj);
-
-    for (const eachFundType of databaseDumpObj["fund_types"]) {
-        let fundType: FundTypeModel = {
-            fund_type_name: eachFundType["fund_type_name"]
+        const userObj: UserModel = {
+            username: databaseDumpObj["user"][0]["user_name"],
+            passwd: databaseDumpObj["user"][0]["passwd"],
+            timestamp: databaseDumpObj["user"][0]["timestamp"],
         }
-        // Save to DB
-        await saveFundTypes(fundType)
-    }
+        await restoreUserData(userObj);
 
-    let sortedFunds = databaseDumpObj["fund_details"].sort(function (a, b) {
-        return a.fund_id - b.fund_id;
-    });
-    for (const eachFund of sortedFunds) {
-        let eachFundDetails: FundDetailsModel = {
-            fund_name: eachFund["fund_name"],
-            fund_type: eachFund["fund_type"],
-            credit_limit: eachFund["credit_limit"],
-            is_active: eachFund["is_active"],
-            balance: eachFund["balance"],
-            notes: eachFund["notes"]
-        }
-        await restoreFundDetails(eachFundDetails);
-    }
-
-    let sortedExpenseReason = databaseDumpObj["expense_reasons"].sort(function (a, b) {
-        return a.expense_reason_id - b.expense_reason_id;
-    });
-    for (const eachExpenseReason of sortedExpenseReason) {
-        let expenseReason: ExpenseReasonModel = {
-            expense_reason_catagory: eachExpenseReason["expense_reason_catagory"],
-            expense_reason_name: eachExpenseReason["expense_reason_name"]
-        }
-        await addExpenseReasonDetails(expenseReason);
-    }
-
-    let sortedCreditReason = databaseDumpObj["credit_reasons"].sort(function (a, b) {
-        return a.expense_reason_id - b.expense_reason_id;
-    });
-
-    for (const eachCreditReason of sortedCreditReason) {
-        let creditReason: CreditReasonModel = {
-            credit_reason_name: eachCreditReason["credit_reason_name"],
-            credit_reason_catagory: eachCreditReason["credit_reason_catagory"]
+        for (const eachFundType of databaseDumpObj["fund_types"]) {
+            let fundType: FundTypeModel = {
+                fund_type_name: eachFundType["fund_type_name"]
+            }
+            // Save to DB
+            await saveFundTypes(fundType)
         }
 
-        await addCreditReasonDetails(creditReason);
-    }
-
-
-    for (const eachExpense of databaseDumpObj["expenses"]) {
-        let expenseObj: ExpenseModel = {
-            expense_reason_id_fk: eachExpense["expense_reason_id_fk"],
-            fund_id_fk: eachExpense["fund_id_fk"],
-            amount: eachExpense["amount"],
-            timestamp: eachExpense["timestamp"],
-            credit_id: eachExpense["credit_id"],
-            message: eachExpense["message"],
-            person_id_fk: eachExpense["person_id_fk"]
+        let sortedFunds = databaseDumpObj["fund_details"].sort(function (a, b) {
+            return a.fund_id - b.fund_id;
+        });
+        for (const eachFund of sortedFunds) {
+            let eachFundDetails: FundDetailsModel = {
+                fund_name: eachFund["fund_name"],
+                fund_type: eachFund["fund_type"],
+                credit_limit: eachFund["credit_limit"],
+                is_active: eachFund["is_active"],
+                balance: eachFund["balance"],
+                notes: eachFund["notes"]
+            }
+            await restoreFundDetails(eachFundDetails);
         }
-        await addExpenseDetails(expenseObj);
+
+        let sortedExpenseReason = databaseDumpObj["expense_reasons"].sort(function (a, b) {
+            return a.expense_reason_id - b.expense_reason_id;
+        });
+        for (const eachExpenseReason of sortedExpenseReason) {
+            let expenseReason: ExpenseReasonModel = {
+                expense_reason_catagory: eachExpenseReason["expense_reason_catagory"],
+                expense_reason_name: eachExpenseReason["expense_reason_name"]
+            }
+            await addExpenseReasonDetails(expenseReason);
+        }
+
+        let sortedCreditReason = databaseDumpObj["credit_reasons"].sort(function (a, b) {
+            return a.expense_reason_id - b.expense_reason_id;
+        });
+
+        for (const eachCreditReason of sortedCreditReason) {
+            let creditReason: CreditReasonModel = {
+                credit_reason_name: eachCreditReason["credit_reason_name"],
+                credit_reason_catagory: eachCreditReason["credit_reason_catagory"]
+            }
+
+            await addCreditReasonDetails(creditReason);
+        }
+
+        let sortedPerson = databaseDumpObj["persons"].sort(function (a, b) {
+            return a.person_id - b.person_id;
+        });
+        for (const eachPerson of sortedPerson) {
+            const personObj: PersonModel = {
+                person_name: eachPerson["person_name"]
+            }
+            await addPersonDetails(personObj);
+        }
+
+        let sortedExpense = databaseDumpObj["expenses"].sort(function (a, b) {
+            return a.expense_id - b.expense_id;
+        });
+        for (const eachExpense of sortedExpense) {
+            console.log(eachExpense);
+            let expenseObj: ExpenseModel = {
+                expense_reason_id_fk: eachExpense["expense_reason_id_fk"],
+                fund_id_fk: eachExpense["fund_id_fk"],
+                amount: eachExpense["amount"],
+                timestamp: eachExpense["timestamp"],
+                credit_id: eachExpense["credit_id"],
+                message: eachExpense["message"],
+                person_id_fk: eachExpense["person_id_fk"]
+            }
+            await addExpenseDetails(expenseObj);
+        }
+
+
+        let sortedCredit = databaseDumpObj["credits"].sort(function (a, b) {
+            return a.credit_id - b.credit_id;
+        });
+        for (const eachCredit of sortedCredit) {
+            let creditObj: CreditModel = {
+                fund_id_fk: eachCredit["fund_id_fk"],
+                credit_reason_id_fk: eachCredit["credit_reason_id_fk"],
+                person_id_fk: eachCredit["person_id_fk"],
+                amount: eachCredit["amount"],
+                message: eachCredit["message"],
+                expense_id: eachCredit["expense_id"],
+                timestamp: eachCredit["timestamp"]
+            }
+            await addCreditDetails(creditObj);
+        }
+
+        let sortedMoneyLends = databaseDumpObj["money_lends"].sort(function (a, b) {
+            return a.lend_id - b.lend_id;
+        });
+        for (const eachLend of sortedMoneyLends) {
+            let lendMoneyObj: LendMoneyModel = {
+                expense_id_fk: eachLend["expense_id_fk"],
+                paid_amount: eachLend["paid_amount"],
+                timestamp: eachLend["timestamp"]
+            }
+            await saveLendMoneyDetailsFromBackup(lendMoneyObj);
+        }
+
+        let sortedMoneyBorrows = databaseDumpObj["money_borrows"].sort(function (a, b) {
+            return a.borrow_id - b.borrow_id;
+        });
+
+        for (const eachBorrow of sortedMoneyBorrows) {
+            let borrowMoney: MoneyBorrowModel = {
+                credit_id_fk: eachBorrow["credit_id_fk"],
+                paid_amount: eachBorrow["paid_amount"],
+                timestamp: eachBorrow["timestamp"]
+            }
+            await saveBorrowMoneyFromBackup(borrowMoney);
+        }
+
+        const backupData: BackupModel = {
+            backup_dir_id: databaseDumpObj["backup_details"]["backup_dir_id"],
+            backup_file_id: databaseDumpObj["backup_details"]["backup_file_id"],
+            timestamp: databaseDumpObj["backup_details"]["timestamp"]
+        }
+
+        await restoreBackupInfo(backupData);
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
     }
-
-    for (const eachCredit of databaseDumpObj["credits"]) {
-
-    }
-
 }
 
 export { populateBackup, getGoogleDriveFiles, restoreFromGoogleDrive, decryptData, restoreDatabase }

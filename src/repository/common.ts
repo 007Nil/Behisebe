@@ -1,8 +1,9 @@
 import { openDBConnection } from './OpenSqllite';
 
 async function dropAllData() {
-    const db = await openDBConnection();
-    await db.execAsync(`
+    try {
+        const db = await openDBConnection();
+        await db.execAsync(`
 DELETE FROM money_lends;
 DELETE FROM sqlite_sequence WHERE name = 'money_lends';
 DELETE FROM money_borrows;
@@ -24,7 +25,9 @@ DELETE FROM sqlite_sequence WHERE name = 'fund_types';
 DELETE FROM user;
 DELETE FROM sqlite_sequence WHERE name = 'user';
 `);
-
+    } catch {
+        console.log("Error")
+    }
 }
 
-export {dropAllData}
+export { dropAllData }

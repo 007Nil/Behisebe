@@ -26,11 +26,17 @@ async function getBackupInfo(): Promise<BackupModel> {
     return backupObj;
 }
 
-async function updateTimeStamp(date : string) {
+async function updateTimeStamp(date: string) {
     // (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')
     const db = await openDBConnection();
-    await db.runAsync("UPDATE backup_details SET timestamp = ? WHERE backup_id = 1",date)
-    
+    await db.runAsync("UPDATE backup_details SET timestamp = ? WHERE backup_id = 1", date)
+
+}
+
+async function restoreBackupInfo(backupObj: BackupModel) {
+    const db = await openDBConnection();
+    await db.runAsync('INSERT INTO backup_details (backup_file_id,backup_dir_id,timestamp) VALUES ( ?,?,? )',
+        backupObj.backup_file_id, backupObj.backup_dir_id, backupObj.timestamp);
 }
 
 export {
@@ -38,5 +44,6 @@ export {
     addBackupFolderId,
     addBackupFileId,
     getBackupInfo,
-    updateTimeStamp
+    updateTimeStamp,
+    restoreBackupInfo
 }
