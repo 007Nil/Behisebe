@@ -34,12 +34,13 @@ const ImportData = () => {
         const accessToken: string = await setupSignIn();
         ToastAndroid.show("Google Drive Authentication done", ToastAndroid.SHORT);
         // console.log(accessToken);
-        const [backupData, listLength] = await getGoogleDriveFiles(accessToken);
+        const [backupData, listLength,error] = await getGoogleDriveFiles(accessToken);
+        // ToastAndroid.show(error, ToastAndroid.LONG);
         if (listLength > 0) {
             ToastAndroid.show("Behisebi Database found on G Drive", ToastAndroid.SHORT);
             const encriptedData: string = await restoreFromGoogleDrive(accessToken, backupData.backup_file_id);
             ToastAndroid.show("Decrypting Database", ToastAndroid.SHORT);
-            const [decryptedData, result] = decryptData(encriptedData, password);
+            const [decryptedData, result] = await decryptData(encriptedData, password);
             if (result) {
                 ToastAndroid.show("Database restore in Progress", ToastAndroid.SHORT);
                 const status = await restoreDatabase(decryptedData);

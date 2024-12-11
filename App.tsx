@@ -42,9 +42,9 @@ export const initializeBackupTask = () => {
 };
 export default function App() {
 
-    useEffect(() => {
-        initializeBackupTask();
-    }, []);
+    // useEffect(() => {
+    //     initializeBackupTask();
+    // }, []);
 
     return (
         <SQLiteProvider databaseName="behisebe.db" onInit={migrateDbIfNeeded}>
@@ -70,6 +70,8 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
     await db.execAsync(`
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
+
+
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,

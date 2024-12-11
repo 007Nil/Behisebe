@@ -76,7 +76,7 @@ async function populateBackup(accessToken: string): Promise<boolean> {
 }
 
 
-async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, number]> {
+async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, number, any]> {
     try {
         const response = await axios.get(
             'https://www.googleapis.com/drive/v3/files?q: mimeType = "application/vnd.google-apps.folder" ',
@@ -104,12 +104,12 @@ async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, n
         }
 
         // console.log(backupData);
-        return [backupData, fileLength]
+        return [backupData, fileLength,""]
 
         // return response.data["id"];
     } catch (error) {
         console.error('Error creating folder:', error.response?.data || error.message);
-        return [{}, 0];
+        return [{}, 0,error.message];
     }
 }
 
@@ -261,6 +261,7 @@ async function saveBackupData(jsonObj: any, filename: string): Promise<string> {
     }
 }
 
+
 async function deleteBackupFile(filePath: string) {
     try {
         await FileSystem.deleteAsync(filePath);
@@ -280,7 +281,7 @@ async function encryptData(jsonObj: any): Promise<string> {
     return encryptedData;
 }
 
-function decryptData(encryptedData: string, userPin: string): [any, boolean] {
+async function decryptData(encryptedData: string, userPin: string): Promise <[any, boolean]> {
     try {
         const secretKey = convertToMD5(userPin);
         const keyutf = CryptoJS.enc.Utf8.parse(secretKey);
@@ -290,19 +291,17 @@ function decryptData(encryptedData: string, userPin: string): [any, boolean] {
             keyutf,
             {
                 iv: iv
-            });
-        const decStr = CryptoJS.enc.Utf8.stringify(decryptedString)
+            }).toString(CryptoJS.enc.Utf8).trim().replace(/^\ufeff/, '');
 
-        console.log(decStr);
-
-        return [JSON.parse(decStr), true];
+        return [JSON.parse(decryptedString.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/gu, '').replace(/[^\x20-\x7E]/g, '')), true];
     } catch (error) {
-        console.log(error)
+        console.error(error);
         return [{}, false];
     }
 }
 
 async function restoreDatabase(databaseDumpObj: any) : Promise<boolean> {
+    
     // Need to emply all tables
     try {
         await dropAllData();
