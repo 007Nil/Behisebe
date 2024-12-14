@@ -7,39 +7,39 @@ import * as TaskManager from 'expo-task-manager';
 import { setupSignIn } from "./src/services/AuthServices";
 import { populateBackup } from "./src/services/BackupServices";
 // Add investments and goals
-const BACKUP_TASK_NAME = 'database-backup-task';
-const defineBackupTask = () => {
-    TaskManager.defineTask(BACKUP_TASK_NAME, async () => {
-        try {
-            console.log('Running background backup task...');
-            const accessToken: string = await setupSignIn();
-            await populateBackup(accessToken);
-            return BackgroundFetch.BackgroundFetchResult.NewData;
+// const BACKUP_TASK_NAME = 'database-backup-task';
+// const defineBackupTask = () => {
+//     TaskManager.defineTask(BACKUP_TASK_NAME, async () => {
+//         try {
+//             console.log('Running background backup task...');
+//             const accessToken: string = await setupSignIn();
+//             await populateBackup(accessToken);
+//             return BackgroundFetch.BackgroundFetchResult.NewData;
 
-        } catch (error) {
-            console.error('Error in background backup task:', error);
-            return BackgroundFetch.BackgroundFetchResult.Failed;
-        }
-    });
-};
+//         } catch (error) {
+//             console.error('Error in background backup task:', error);
+//             return BackgroundFetch.BackgroundFetchResult.Failed;
+//         }
+//     });
+// };
 
-const registerBackupTask = async () => {
-    try {
-        await BackgroundFetch.registerTaskAsync(BACKUP_TASK_NAME, {
-            minimumInterval: (60 * 60)*12, // Run every 12 hour
-            stopOnTerminate: false,
-            startOnBoot: true,
-        });
-        console.log('Background task registered successfully!');
-    } catch (error) {
-        console.error('Error registering background task:', error);
-    }
-};
+// const registerBackupTask = async () => {
+//     try {
+//         await BackgroundFetch.registerTaskAsync(BACKUP_TASK_NAME, {
+//             minimumInterval: (60 * 60)*12, // Run every 12 hour
+//             stopOnTerminate: false,
+//             startOnBoot: true,
+//         });
+//         console.log('Background task registered successfully!');
+//     } catch (error) {
+//         console.error('Error registering background task:', error);
+//     }
+// };
 
-export const initializeBackupTask = () => {
-    defineBackupTask();
-    registerBackupTask();
-};
+// export const initializeBackupTask = () => {
+//     defineBackupTask();
+//     registerBackupTask();
+// };
 export default function App() {
 
     // useEffect(() => {
@@ -70,8 +70,6 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
     await db.execAsync(`
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
-
-
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -18,7 +18,7 @@ import { err } from "react-native-svg";
 import { dropAllData } from "../repository/common";
 import { saveExpenseDetailsService } from "./ExpenseDetailsServices";
 
-async function populateBackup(accessToken: string): Promise<boolean> {
+async function populateBackup(accessToken: string, backupType: string): Promise<[boolean, string]> {
 
     try {
         const userDetails: UserModel[] = await getAllusers();
@@ -48,32 +48,45 @@ async function populateBackup(accessToken: string): Promise<boolean> {
             backup_details: backupDetails
         };
 
-        console.log(backupObj)
+        // console.log(backupObj)
 
         // Save this to json file and encript the files using userpassword md5
         const timestamp = Date.now();
         const savedDBFilePath: string = await saveBackupData(backupObj, "behisebi_backup_" + timestamp);
 
-        const count: number = await getBackupCount();
+        if (accessToken !== "" && backupType == "gDrive") {
+            const count: number = await getBackupCount();
 
-        if (count == 0) {
-            const dirId: string = await createGoogleDriveFolder(accessToken);
-            await addBackupFolderId(dirId);
-            const fileId: string = await uploadToGoogleDrive(savedDBFilePath, accessToken, dirId);
-            await addBackupFileId(fileId);
-        } else {
-            const backupDetails: BackupModel = await getBackupInfo();
-            // console.log(backupDetails);
-            await updateToGoogleDrive(savedDBFilePath, accessToken, backupDetails.backup_dir_id, backupDetails.backup_file_id);
-            await updateTimeStamp(moment().format("YYYY-MM-DD HH:mm:ss"))
+            if (count == 0) {
+                const dirId: string = await createGoogleDriveFolder(accessToken);
+                await addBackupFolderId(dirId);
+                const fileId: string = await uploadToGoogleDrive(savedDBFilePath, accessToken, dirId);
+                await addBackupFileId(fileId);
+            } else {
+                const backupDetails: BackupModel = await getBackupInfo();
+                // console.log(backupDetails);
+                await updateToGoogleDrive(savedDBFilePath, accessToken, backupDetails.backup_dir_id, backupDetails.backup_file_id);
+                await updateTimeStamp(moment().format("YYYY-MM-DD HH:mm:ss"))
+            }
+
+            await deleteBackupFile(savedDBFilePath);
+            return [true, ""];
         }
-
-        await deleteBackupFile(savedDBFilePath);
-        return true;
+        else if (accessToken === "" && backupType == "local") {
+            return [true, savedDBFilePath];
+        }
     } catch (error) {
-        return false;
+        return [false, ""];
     }
 }
+
+
+const ensureFileExtension = (uri, extension) => {
+    if (!uri.endsWith(`.${extension}`)) {
+      return `${uri}.${extension}`;
+    }
+    return uri;
+  };
 
 
 async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, number, any]> {
@@ -92,24 +105,25 @@ async function getGoogleDriveFiles(accessToken: string): Promise<[BackupModel, n
         const fileLength: number = response.data["files"].length;
         if (fileLength > 0) {
             for (const file of response.data["files"]) {
-                if (file["mimeType"] === "text/plain") {
+                // console.log(file)
+                if (file["mimeType"] === "text/plain" && file["name"]=== "behisebi.db" ) {
                     backupData.backup_file_id = file["id"];
                     continue;
                 }
-                if (file["mimeType"] === "application/vnd.google-apps.folder") {
+                if (file["mimeType"] === "application/vnd.google-apps.folder" && file["name"]=== "behisebi.db" ) {
                     backupData.backup_dir_id = file["id"];
                     continue;
                 }
             }
         }
 
-        // console.log(backupData);
-        return [backupData, fileLength,""]
+        console.log(backupData);
+        return [backupData, fileLength, ""]
 
         // return response.data["id"];
     } catch (error) {
         console.error('Error creating folder:', error.response?.data || error.message);
-        return [{}, 0,error.message];
+        return [{}, 0, error.message];
     }
 }
 
@@ -247,14 +261,15 @@ async function saveBackupData(jsonObj: any, filename: string): Promise<string> {
     try {
         const directory = FileSystem.documentDirectory;
         const filePath = `${directory}${filename}`;
+        const uriWithExtension = ensureFileExtension(filePath, 'txt');
         const jsonString: string = await encryptData(jsonObj);
         // Write the file
-        await FileSystem.writeAsStringAsync(filePath, jsonString, {
+        await FileSystem.writeAsStringAsync(uriWithExtension, jsonString, {
             encoding: FileSystem.EncodingType.UTF8,
         });
 
-        console.log(`File saved successfully at ${filePath}`);
-        return filePath;
+        console.log(`File saved successfully at ${uriWithExtension}`);
+        return uriWithExtension;
     } catch (error) {
         console.error("Error saving JSON file:", error);
         return "";
@@ -276,32 +291,34 @@ async function encryptData(jsonObj: any): Promise<string> {
     const secretKey: string = await getUserPasswd();
     const keyutf = CryptoJS.enc.Utf8.parse(secretKey);
     const iv = CryptoJS.enc.Utf8.parse('678025308de70905');
-    console.log(JSON.stringify(jsonObj))
     const encryptedData: string = CryptoJS.AES.encrypt(JSON.stringify(jsonObj), keyutf, { iv: iv }).toString();
     return encryptedData;
 }
 
-async function decryptData(encryptedData: string, userPin: string): Promise <[any, boolean]> {
+async function decryptData(encryptedData: string, userPin: string): Promise<[any, boolean]> {
     try {
         const secretKey = convertToMD5(userPin);
         const keyutf = CryptoJS.enc.Utf8.parse(secretKey);
         const iv = CryptoJS.enc.Utf8.parse('678025308de70905');
         const decryptedString = CryptoJS.AES.decrypt(
-            { ciphertext: CryptoJS.enc.Base64.parse(encryptedData) },
+            { ciphertext: CryptoJS.enc.Base64.parse(encryptedData.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/gu, '').replace(/[^\x20-\x7E]/g, '')) },
             keyutf,
             {
                 iv: iv
-            }).toString(CryptoJS.enc.Utf8).trim().replace(/^\ufeff/, '');
+            })
 
-        return [JSON.parse(decryptedString.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/gu, '').replace(/[^\x20-\x7E]/g, '')), true];
+        const decStr = CryptoJS.enc.Utf8.stringify(decryptedString)
+        // console.log(decStr)
+
+        return [JSON.parse(decStr.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/gu, '').replace(/[^\x20-\x7E]/g, '')), true];
     } catch (error) {
         console.error(error);
         return [{}, false];
     }
 }
 
-async function restoreDatabase(databaseDumpObj: any) : Promise<boolean> {
-    
+async function restoreDatabase(databaseDumpObj: any): Promise<boolean> {
+
     // Need to emply all tables
     try {
         await dropAllData();
@@ -374,7 +391,7 @@ async function restoreDatabase(databaseDumpObj: any) : Promise<boolean> {
             return a.expense_id - b.expense_id;
         });
         for (const eachExpense of sortedExpense) {
-            console.log(eachExpense);
+            // console.log(eachExpense);
             let expenseObj: ExpenseModel = {
                 expense_reason_id_fk: eachExpense["expense_reason_id_fk"],
                 fund_id_fk: eachExpense["fund_id_fk"],
@@ -438,7 +455,7 @@ async function restoreDatabase(databaseDumpObj: any) : Promise<boolean> {
         await restoreBackupInfo(backupData);
         return true;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return false;
     }
 }

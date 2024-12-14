@@ -4,12 +4,11 @@ import CommonHeader from '../../common/CommonHeader';
 import styles from "./styles";
 import { moderateScale } from 'react-native-size-matters';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Button } from '@ant-design/react-native';
-
 import { decryptData, getGoogleDriveFiles, populateBackup, restoreFromGoogleDrive } from '../../services/BackupServices';
 import { setupSignIn } from '../../services/AuthServices';
 import BackupModel from '../../model/BackupModel';
 import { getBackupInfo } from '../../repository/BackupRepo';
+
 
 const UpdateProfile = () => {
   const [backuptime, setBackupTime] = useState<string>("");
@@ -23,20 +22,32 @@ const UpdateProfile = () => {
       }
     });
   }, []);
-  const triggerBackup = async () => {
-    const accessToken: string = await setupSignIn();
-    if (accessToken !== "") {
-      const backupState: boolean = await populateBackup(accessToken);
-      if (backupState) {
-        await getLastBackupTime()
-        Alert.alert("Backup Done")
-      } else {
-        Alert.alert("Error")
-      }
 
+
+  const triggerBackup = async (backupType: string) => {
+    let accessToken: string = "";
+    let backupState: boolean = false;
+    let filePath: string = "";
+    if (backupType === "gDrive") {
+      accessToken = await setupSignIn();
     }
-
+    if (accessToken !== "") {
+      [backupState] = await populateBackup(accessToken, backupType);
+    } else if (backupType === "local") {
+      // [backupState, filePath] = await populateBackup("", backupType);
+      Alert.prompt("It doet not work for the time")
+    }
+    if (backupState && backupType === "gDrive") {
+      await getLastBackupTime();
+      Alert.alert("Backup Done");
+    } else if (backupType === "local" && filePath !== "" && backupState) {
+    }
+    else {
+      Alert.alert("Error")
+    }
   };
+
+
 
   const testFunc = async () => {
     const accessToken: string = await setupSignIn();
@@ -47,7 +58,7 @@ const UpdateProfile = () => {
       ToastAndroid.show("Behisebi Database found on G Drive", ToastAndroid.SHORT);
       const encriptedData: string = await restoreFromGoogleDrive(accessToken, backupData.backup_file_id);
       ToastAndroid.show("Decrypting Database", ToastAndroid.SHORT);
-      const [decryptedData, result] = decryptData(encriptedData, "8474");
+      const [decryptedData, result] = await decryptData(encriptedData, "8474");
     } else {
       ToastAndroid.show("Behisebi Database not found on G Drive", ToastAndroid.SHORT);
     }
@@ -65,6 +76,8 @@ const UpdateProfile = () => {
     const backupInfo: BackupModel = await getBackupInfo()
     setBackupTime(backupInfo.timestamp);
   }
+
+
 
   return (
     <View style={styles.container}>
@@ -106,14 +119,24 @@ const UpdateProfile = () => {
       <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
         <View style={styles.topLeftView}>
           <TouchableOpacity style={styles.appButtonContainer}
-            onPress={triggerBackup}>
-            <Text style={styles.appButtonText}>Backup Data</Text>
+            onPress={() => {
+              triggerBackup("gDrive")
+            }}>
+            <Text style={styles.appButtonText}>Backup Data to G Drive</Text>
           </TouchableOpacity>
+          {/* <View style={styles.topLeftView}>
+            <TouchableOpacity style={styles.appButtonContainer}
+              onPress={() => {
+                triggerBackup("local")
+              }}>
+              <Text style={styles.appButtonText}>Backup to File</Text>
+            </TouchableOpacity>
+          </View> */}
         </View>
 
       </View>
-
-      {/* <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
+{/* 
+      <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'flex-start' }}>
         <View style={styles.topLeftView}>
           <TouchableOpacity style={styles.appButtonContainer}
             onPress={testFunc}>

@@ -7,7 +7,7 @@ async function setupSignIn(): Promise<string> {
     GoogleSignin.configure({
         webClientId:
             "137462762449-paj114fuodcmd22rgegs81rfqsru229t.apps.googleusercontent.com",
-        offlineAccess: true,
+        // offlineAccess: true,
         scopes: ['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/drive.file']
     });
     try {

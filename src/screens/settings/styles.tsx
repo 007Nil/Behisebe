@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12
   },
   appButtonText: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#fff",
     fontWeight: "bold",
     alignSelf: "center",
-    textTransform: "uppercase"
+    // textTransform: "uppercase"
   },
   searchBox: {
     width: "94%",
