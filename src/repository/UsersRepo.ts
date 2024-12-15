@@ -13,6 +13,11 @@ async function saveUserData(userObj: UserModel) {
     await db.runAsync('INSERT INTO user (user_name, passwd) VALUES (?,?)',
         userObj.username, userObj.passwd);
 }
+async function restoreUserData(userObj: UserModel) {
+    const db = await openDBConnection();
+    await db.runAsync('INSERT INTO user (user_name, passwd, timestamp) VALUES (?,?,?)',
+        userObj.username, userObj.passwd, userObj.timestamp);
+}
 
 async function getUserPasswd(): Promise<string> {
     const db = await openDBConnection();
@@ -25,10 +30,18 @@ async function getUserName(): Promise<string> {
     const username : string = await db.getFirstAsync('SELECT user_name FROM user WHERE user_id = 1');
     return username["user_name"];
 }
+// It should return one user
+async function getAllusers() : Promise<UserModel[]> {
+    const db = await openDBConnection();
+    const allRows: UserModel[] = await db.getAllAsync('SELECT * FROM user');
+    return allRows;
+}
 
 export {
     getUserCount,
     saveUserData,
     getUserPasswd,
-    getUserName
+    getUserName,
+    getAllusers,
+    restoreUserData
 }

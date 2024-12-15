@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
-import { useState, useEffect } from "react";
 import CommonHeader from "../../common/CommonHeader";
 import {
   moderateScale,

@@ -50,7 +50,7 @@ async function deleteExpenseData(expID: number) {
 
 async function addExpenseDetails(expenseModel: ExpenseModel): Promise<number> {
     const db = await openDBConnection();
-    if ( expenseModel.timestamp  !== "") {
+    if (expenseModel.timestamp !== "") {
         let sqlResult: SQLiteRunResult = await db.runAsync(
             'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)',
             expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk,
@@ -104,13 +104,13 @@ async function getLendMoneyExpenseDetails(): Promise<ExpenseModel[]> {
 
 async function getWeekExpense(): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
-    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE DATE(timeStamp) >= DATE('now', 'weekday 0', '-7 days')");
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE DATE(timeStamp) >= DATE('now', 'weekday 0', '-6 days')");
     return expenseDetails;
 }
 
-async function getExpenseDetailsByFundId(fundId: number): Promise<ExpenseModel[]>{
+async function getExpenseDetailsByFundId(fundId: number): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
-    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE fund_id_fk = ?",fundId);
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE fund_id_fk = ?", fundId);
     return expenseDetails;
 }
 

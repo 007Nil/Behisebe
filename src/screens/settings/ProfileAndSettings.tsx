@@ -62,7 +62,7 @@ const ProfileAndSettings = () => {
             </View>
             <View
               style={{
-                marginLeft: moderateScale(120),
+                marginLeft: moderateScale(80),
                 marginTop: moderateScale(35),
                 justifyContent: "space-between",
               }}

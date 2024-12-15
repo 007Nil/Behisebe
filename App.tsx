@@ -1,16 +1,56 @@
 import "react-native-gesture-handler";
-import React from "react";
+import React, { useEffect } from "react";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
-
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+import { setupSignIn } from "./src/services/AuthServices";
+import { populateBackup } from "./src/services/BackupServices";
 // Add investments and goals
+// const BACKUP_TASK_NAME = 'database-backup-task';
+// const defineBackupTask = () => {
+//     TaskManager.defineTask(BACKUP_TASK_NAME, async () => {
+//         try {
+//             console.log('Running background backup task...');
+//             const accessToken: string = await setupSignIn();
+//             await populateBackup(accessToken);
+//             return BackgroundFetch.BackgroundFetchResult.NewData;
+
+//         } catch (error) {
+//             console.error('Error in background backup task:', error);
+//             return BackgroundFetch.BackgroundFetchResult.Failed;
+//         }
+//     });
+// };
+
+// const registerBackupTask = async () => {
+//     try {
+//         await BackgroundFetch.registerTaskAsync(BACKUP_TASK_NAME, {
+//             minimumInterval: (60 * 60)*12, // Run every 12 hour
+//             stopOnTerminate: false,
+//             startOnBoot: true,
+//         });
+//         console.log('Background task registered successfully!');
+//     } catch (error) {
+//         console.error('Error registering background task:', error);
+//     }
+// };
+
+// export const initializeBackupTask = () => {
+//     defineBackupTask();
+//     registerBackupTask();
+// };
 export default function App() {
 
-  return (
-    <SQLiteProvider databaseName="behisebe.db" onInit={migrateDbIfNeeded}>
-      <AppNavigator />
-    </SQLiteProvider>
-  );
+    // useEffect(() => {
+    //     initializeBackupTask();
+    // }, []);
+
+    return (
+        <SQLiteProvider databaseName="behisebe.db" onInit={migrateDbIfNeeded}>
+            <AppNavigator />
+        </SQLiteProvider>
+    );
 }
 // DROP TABLE IF EXISTS user;
 // DROP TABLE IF EXISTS money_lends;
@@ -27,10 +67,9 @@ export default function App() {
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
-  await db.execAsync(`
+    await db.execAsync(`
 PRAGMA journal_mode = 'wal';
 PRAGMA foreign_keys = ON;
-
 
 CREATE TABLE IF NOT EXISTS fund_details (
     fund_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -101,6 +140,7 @@ CREATE TABLE IF NOT EXISTS credit_reasons (
     credit_reason_catagory TEXT NOT NULL
 );
 
+
 INSERT INTO credit_reasons(credit_reason_name,credit_reason_catagory) 
 SELECT 'Self Transfer', 'Self Transfer'
 WHERE NOT EXISTS(SELECT 1 FROM credit_reasons WHERE credit_reason_id = 1 AND credit_reason_name = 'Self Transfer' AND credit_reason_catagory='Self Transfer');
@@ -169,12 +209,19 @@ CREATE TABLE IF NOT EXISTS user (
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
 
+CREATE TABLE IF NOT EXISTS backup_details (
+    backup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    backup_file_id TEXT NULL,
+    backup_dir_id TEXT NULL,
+    timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
+);
+
 `);
 
-// 
-const count = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ',"fund_details","credit_limit");
-if (count["count(*)"] < 1){
-    await db.runAsync("ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL)");
-}
+    // 
+    const count = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ', "fund_details", "credit_limit");
+    if (count["count(*)"] < 1) {
+        await db.runAsync("ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL)");
+    }
 
 }

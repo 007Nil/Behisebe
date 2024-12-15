@@ -168,6 +168,14 @@ const styles = StyleSheet.create({
         height: verticalScale(200),
         width: "94%",
     },
+    rechargeAndBills2: {
+        backgroundColor: "white",
+        borderRadius: moderateScale(5),
+        marginTop: moderateVerticalScale(10),
+        alignSelf: "center",
+        height: verticalScale(150),
+        width: "94%",
+    },
     rechargeAndBills1: {
         backgroundColor: "white",
         borderRadius: moderateScale(5),

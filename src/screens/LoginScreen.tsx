@@ -91,6 +91,14 @@ const LoginScreen = () => {
             }}>
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => {
+
+                navigate("ImportData");
+
+            }}>
+                <Text style={styles.buttonText}>Existing user? Import Data</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -157,15 +165,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         width: "100%",
-    },
-    input: {
-        flex: 1,
-        height: 50,
-        marginVertical: 10,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 5,
-        borderColor: "#ddd",
     },
     eyeIcon: {
         position: "absolute",

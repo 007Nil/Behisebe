@@ -22,6 +22,13 @@ async function addFundDetails(fundObj: FundDetailsModel): Promise<void> {
     );
 }
 
+async function restoreFundDetails(fundObj: FundDetailsModel): Promise<void> {
+    const db = await openDBConnection();
+    await db.runAsync('INSERT INTO fund_details (fund_name, fund_type,notes,is_active,balance, credit_limit, timestamp) VALUES (?, ?,?,?,?,?,?)',
+        fundObj.fund_name, fundObj.fund_type, fundObj.notes, fundObj.is_active, fundObj.balance, fundObj.credit_limit, fundObj.timestamp
+    );
+}
+
 async function updateFundDetails(fundObj: FundDetailsModel, fundStatus: number): Promise<void> {
     const db = await openDBConnection();
     await db.runAsync('UPDATE fund_details SET is_active =?, balance = ?, credit_limit = ?  WHERE fund_id = ?', fundStatus, fundObj.balance, fundObj.credit_limit, fundObj.fund_id);
@@ -76,5 +83,6 @@ export {
     getFundBalance,
     getAllFundTypes,
     saveFundTypes,
-    updateFundTypes
+    updateFundTypes,
+    restoreFundDetails
 };

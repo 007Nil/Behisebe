@@ -23,6 +23,8 @@ import {
 
 } from "../screens/settings/index";
 
+import ImportData from "../screens/ImportData";
+
 import { WelcomeScreen, Home, RegisterDone } from "../screens";
 import AppScreen from "../screens/AppScreen";
 
@@ -34,7 +36,7 @@ export type ScreenNames = ["App", "AddExpense", "ProfileAndSettings",
   "ExpenseDetails", "AddCredit", "CreditTransferSuccessful",
   "ToSelfTransfer", "SelfTransferSuccessful", "CheckBalance",
   "FundType", "CreditAnalyze", "ExpenseAnalyze",
-  "AllCredit", "AllExpense", "UpdateProfile", "WelcomeScreen", "Home", "RegisterDone"];
+  "AllCredit", "AllExpense", "UpdateProfile", "WelcomeScreen", "Home", "RegisterDone", "ImportData"];
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -166,7 +168,7 @@ const AppNavigator = () => {
           component={WelcomeScreen}
           options={{ headerShown: false }}
         />
-        
+
         <stack.Screen
           name="RegisterDone"
           component={RegisterDone}
@@ -176,6 +178,12 @@ const AppNavigator = () => {
         <stack.Screen
           name="Home"
           component={Home}
+          options={{ headerShown: false }}
+        />
+
+        <stack.Screen
+          name="ImportData"
+          component={ImportData}
           options={{ headerShown: false }}
         />
       </stack.Navigator>

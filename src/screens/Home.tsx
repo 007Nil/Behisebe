@@ -12,7 +12,7 @@ import {
   scale,
   verticalScale,
 } from "react-native-size-matters";
-import { useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 import HomeCommonHeader from "../common/HomeCommonHeader";
 import { type StackNavigation } from "../navigation/AppNavigator";
 import styles from "./styles";
@@ -20,15 +20,60 @@ import { CustomBarChart } from "../component";
 import { useEffect, useState } from "react";
 import BarChartModel from "../model/BarChartModel";
 import { generateWeeklyBarChartData } from "../services/ChartsServices";
+import { dateConvert } from "../utils/AllUtils";
+import { getExpenseByDateService } from "../services/ExpenseDetailsServices";
+import { getCreditByDateService } from "../services/CreditDetailsServices";
 const Home = () => {
+  const isFocused = useIsFocused();
+
   const { navigate } = useNavigation<StackNavigation>();
   const [barChartData, setBarChartData] = useState<BarChartModel[]>();
+  const [todayExpesne, setTodayExpense] = useState<number>(0);
+  const [todayCredit, setTodayCredit] = useState<number>(0);
+  const todayDate : Date = new Date();
   useEffect(() => {
     (async () => {
       setBarChartData(await generateWeeklyBarChartData());
+      const expenseDetails = await getExpenseByDateService(dateConvert(todayDate), dateConvert(todayDate));
+      const creditDetails = await getCreditByDateService(dateConvert(todayDate), dateConvert(todayDate));
+      let totalExpense = 0;
+      let totalCredit = 0;
+      for (const eachExp of expenseDetails) {
+        totalExpense = totalExpense + Number(eachExp.amount);
+      }
+      setTodayExpense(totalExpense);
+
+      for (const eachCre of creditDetails) {
+        totalCredit = totalCredit + Number(eachCre.amount);
+      }
+      setTodayCredit(totalCredit);
     }
     )()
-  }, []);
+  }, [todayExpesne,todayCredit]);
+
+  useEffect(() => {
+    {
+      (async () => {
+        if (isFocused) {
+          setBarChartData(await generateWeeklyBarChartData());
+          const expenseDetails = await getExpenseByDateService(dateConvert(todayDate), dateConvert(todayDate));
+          const creditDetails = await getCreditByDateService(dateConvert(todayDate), dateConvert(todayDate));
+          let totalExpense = 0;
+          let totalCredit = 0;
+          for (const eachExp of expenseDetails) {
+            totalExpense = totalExpense + Number(eachExp.amount);
+          }
+          setTodayExpense(totalExpense);
+    
+          for (const eachCre of creditDetails) {
+            totalCredit = totalCredit + Number(eachCre.amount);
+          }
+          setTodayCredit(totalCredit);
+        }
+      }
+      )()
+    }
+  }, [isFocused]);
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Home"} />
@@ -165,6 +210,17 @@ const Home = () => {
               <Text style={styles.tranferText}>{"Credit\n Analyze"}</Text>
             </TouchableOpacity>
           </View>
+        </View>
+
+        <View
+          style={[
+            styles.moneyTransferCard,
+            { marginBottom: moderateVerticalScale(10) },
+          ]}
+        >
+          <Text style={[styles.heading, { textDecorationLine: "underline" }]}>Daily Details</Text>
+          <Text style={styles.heading}>{"Today Expense:   "+todayExpesne}</Text>
+          <Text style={styles.heading}>{"Today Credit:       "+todayCredit}</Text>
         </View>
 
         <View
