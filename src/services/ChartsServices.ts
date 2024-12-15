@@ -1,3 +1,4 @@
+import { ExpenseModel } from "../model";
 import BarChartModel from "../model/BarChartModel";
 import { getWeekExpense } from "../repository/ExpenseDetailsRepo";
 import { getDayName } from "../utils/AllUtils";
@@ -52,9 +53,19 @@ async function generateWeeklyBarChartData(): Promise<BarChartModel[]> {
 }
 
 
-async function generateBarChartData(startDate:string, endDate:string): Promise<BarChartModel[]> {
-    return []
+async function generateBarChartData(expenseObj: ExpenseModel[]): Promise<BarChartModel[]> {
+    const barChartData: BarChartModel[] = [];
+    for (const eachExp of expenseObj) {
+        
+        const dayName: string = getDayName(eachExp.timestamp);
+        let eachBarChartData: BarChartModel = { value: eachExp.amount, label: eachExp.timestamp.split(" ")[0]+"("+dayName+")", };
+        barChartData.push(eachBarChartData);
+    }
+    return barChartData;
 }
+
+
+
 
 async function generatePieChartData(startDate:string, endDate:string): Promise<BarChartModel[]> {
     return []

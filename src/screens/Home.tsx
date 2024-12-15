@@ -230,7 +230,7 @@ const Home = () => {
           ]}
         >
           <Text style={styles.heading}>Weekely Expense Charts</Text>
-          <CustomBarChart barChartData={barChartData} />
+          <CustomBarChart barChartData={barChartData} xwidth={16} />
         </View>
       </ScrollView>
     </View>
