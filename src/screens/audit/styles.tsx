@@ -19,6 +19,14 @@ const styles = StyleSheet.create({
         marginTop: moderateVerticalScale(10),
         borderRadius: moderateScale(10),
     },
+    rechargeAndBills1: {
+        backgroundColor: "white",
+        borderRadius: moderateScale(5),
+        marginTop: moderateVerticalScale(10),
+        alignSelf: "center",
+        height: verticalScale(350),
+        width: "94%",
+    },
     transferView: {
         width: "100%",
         justifyContent: "space-evenly",
@@ -145,7 +153,7 @@ const styles = StyleSheet.create({
     },
     card1: {
         width: "94%",
-        height: "18%",
+        // height: "38%",
         backgroundColor: "white",
         marginTop: moderateVerticalScale(10),
 
@@ -186,7 +194,6 @@ const styles = StyleSheet.create({
         width: '90%',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: moderateVerticalScale(15),
         flexDirection: 'row',
         alignSelf: 'center'
     },
