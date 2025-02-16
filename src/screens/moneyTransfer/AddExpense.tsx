@@ -144,7 +144,7 @@ const AddExpense = () => {
           alert("Credit Card Balance: " + creditFundAmount + " and limit: " + creditCardDetails.credit_limit + " is same. Do not give extra money to Credit Card company!!!..");
           return false;
         } else if ((Number(amount) + Number(creditFundAmount)) > creditCardDetails.credit_limit) {
-          alert("Credit Card expense is " + creditFundAmount + ". You need to pay" + (Number(creditCardDetails.credit_limit) - creditFundAmount) + ". Do not give extra money to Credit Card company!!!..");
+          alert("Credit Card available balance is " + creditFundAmount + ". Your outstanding balance is " + (Number(creditCardDetails.credit_limit) - creditFundAmount) + ". Do not give extra money to Credit Card company!!!..");
           return false;
         } else if (fundDetails.fund_type === creditCardDetails.fund_type) {
           alert("Select a differnet fund for payment. Always pay Credit Card using Saving Account/Debit Card. Credit card to Credit card payment does not make sense...");

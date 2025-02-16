@@ -237,7 +237,7 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
               <View style={styles.bankLeftView}>
                 <View style={{ marginLeft: moderateScale(15) }}>
                   <View style={styles.upi_view}>
-                    <Text style={styles.bankAccount}>{"Amount"}</Text>
+                    <Text style={styles.bankAccount}>{creditLimit || formEditType === "Credit Card" ? "Available Credit Limit": ""}</Text>
                   </View>
                   <TextInput
                     style={styles.bankAccount}
@@ -248,7 +248,24 @@ const AddFundCustomFlatList = ({ data, screenName }: AddFundFlatListProps) => {
                 </View>
               </View>
             </View>
+            {creditLimit ?
+            <View style={styles.bankView}>
+              <View style={styles.bankLeftView}>
+                <View style={{ marginLeft: moderateScale(15) }}>
+                  <View style={styles.upi_view}>
+                    <Text style={styles.bankAccount}>{"Total Outstanding"}</Text>
+                  </View>
+                  <TextInput
+                    style={styles.bankAccount}
+                    keyboardType="number-pad"
+                    value={(creditLimit-editAmount).toString()}
+                  />
+                </View>
+              </View>
+            </View>
+            : null}
             {creditLimit || formEditType === "Credit Card" ?
+            
               <View style={styles.bankView}>
                 <View style={styles.bankLeftView}>
                   <View style={{ marginLeft: moderateScale(15) }}>
