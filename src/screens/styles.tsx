@@ -18,14 +18,21 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         textTransform: "uppercase"
     },
+    lineStyle:{
+        borderWidth: 0.5,
+        borderColor:'black',
+        margin:10,
+   },
     appButtonContainer: {
         elevation: 8,
         backgroundColor: "#009688",
         borderRadius: 10,
         paddingVertical: 5,
-        paddingHorizontal: 12
+        paddingHorizontal: 10,
+        marginLeft: 6
     },
     bankView1: {
+        justifyContent: 'center',
         flexDirection: 'row',
         marginTop: moderateVerticalScale(10)
     },
@@ -186,7 +193,6 @@ const styles = StyleSheet.create({
     },
     transactionItem: {
         width: '94%',
-        height: 150,
         justifyContent: 'space-between',
         flexDirection: 'row'
     },
@@ -209,6 +215,12 @@ const styles = StyleSheet.create({
         color: "black",
         fontSize: moderateScale(16),
     },
+    payable2: {
+        fontWeight: "500",
+        color: "black",
+        fontSize: moderateScale(14),
+        marginLeft: 10
+    },
     modalTopRightView: {
         flexDirection: "row",
         alignItems: "center",
@@ -217,6 +229,17 @@ const styles = StyleSheet.create({
         width: scale(24),
         height: scale(24),
         tintColor: "white",
+    },
+    delete: {
+        width: "94%",
+        height: verticalScale(40),
+        backgroundColor: "red",
+        borderRadius: moderateScale(30),
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(20),
+        marginBottom: moderateVerticalScale(40),
+        justifyContent: "center",
+        alignItems: "center",
     },
     divider: {
         width: "100%",

@@ -5,4 +5,10 @@ type LendMoneyModel = {
     timestamp?: string
 }
 
-export default LendMoneyModel;
+type InvalidRepay = {
+    formId: number,
+    expense_id: number | null,
+    credit_id: number | null
+}
+
+export { LendMoneyModel, InvalidRepay };

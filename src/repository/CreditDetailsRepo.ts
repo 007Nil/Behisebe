@@ -84,7 +84,7 @@ async function getCreditReasonByName(creditReasonName: string) {
 
 async function getBorrowMoneyCreditDetails(): Promise<CreditModel[]> {
     const db = await openDBConnection();
-    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE credit_reason_id_fk = ? ORDER BY timestamp DESC;", 2);
+    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE credit_reason_id_fk = ? AND dismiss_borrow != ? ORDER BY timestamp DESC;", 2,1);
     return creditDetails;
 }
 
@@ -101,10 +101,18 @@ async function deleteCreditDetails(creditId: number) {
     await db.runAsync('DELETE FROM credits WHERE credit_id = ?', creditId);
 }
 
-async function getCreditDetailsByFundId(fundId:number) {
+async function getCreditDetailsByFundId(fundId: number) {
     const db = await openDBConnection();
-    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE fund_id_fk = ?",fundId);
+    const creditDetails: CreditModel[] = await db.getAllAsync("SELECT * FROM credits WHERE fund_id_fk = ?", fundId);
     return creditDetails;
+}
+
+async function dismissBorrow(creditId: number) {
+    const db = await openDBConnection();
+    db.runAsync(
+        'UPDATE credits SET dismiss_borrow = ? WHERE expense_id = ?',
+        1, creditId
+    );
 }
 
 export {
@@ -121,5 +129,6 @@ export {
     deleteCreditData,
     updateCreditDetails,
     deleteCreditDetails,
-    getCreditDetailsByFundId
+    getCreditDetailsByFundId,
+    dismissBorrow
 }

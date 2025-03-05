@@ -98,7 +98,7 @@ async function getExpenseReasonByName(expReasonName: string) {
 
 async function getLendMoneyExpenseDetails(): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
-    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE expense_reason_id_fk = 1");
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE expense_reason_id_fk = 1 AND dismiss_lend != 1 ORDER BY timestamp DESC;");
     return expenseDetails;
 }
 
@@ -112,6 +112,15 @@ async function getExpenseDetailsByFundId(fundId: number): Promise<ExpenseModel[]
     const db = await openDBConnection();
     const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE fund_id_fk = ?", fundId);
     return expenseDetails;
+}
+
+async function dismissLendEntry(expenseId: number) {
+    const db = await openDBConnection();
+    db.runAsync(
+        'UPDATE expenses SET dismiss_lend = ? WHERE expense_id = ?',
+        1, expenseId
+    );
+
 }
 
 export {
@@ -130,4 +139,5 @@ export {
     getExpenseByID,
     getWeekExpense,
     getExpenseDetailsByFundId,
+    dismissLendEntry
 }

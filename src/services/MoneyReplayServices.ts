@@ -1,6 +1,7 @@
 import { CreditModel, ExpenseModel, LendMoneyModel, MoneyBorrowModel, MoneyRepayModel } from "../model";
-import { getBorrowMoneyCreditDetails } from "../repository/CreditDetailsRepo";
-import { getLendMoneyExpenseDetails } from "../repository/ExpenseDetailsRepo";
+import { InvalidRepay } from "../model/LendMoneyModel";
+import { dismissBorrow, getBorrowMoneyCreditDetails } from "../repository/CreditDetailsRepo";
+import { dismissLendEntry, getLendMoneyExpenseDetails } from "../repository/ExpenseDetailsRepo";
 import { getFundDetailsById } from "../repository/FundDetailsRepo";
 import { addLendMoneyDetails, getLendMoneyByExpenseId } from "../repository/LendMoneyRepo";
 import { addBorrowMoneyDetails, getBorrowMoneyByCreditId } from "../repository/MoneyBorrowRepo";
@@ -106,9 +107,9 @@ async function updateLendMoneyDetailsService(moneyRepayObj: MoneyRepayModel, ope
             paid_amount: moneyRepayObj.paid_amount
         }
         savelendMoneDetails(lendMoneyObj);
-    }else if (operationMode === "getBorrowInfo"){
+    } else if (operationMode === "getBorrowInfo") {
         // Save the expense
-        let expenseObj : ExpenseModel ={
+        let expenseObj: ExpenseModel = {
             amount: moneyRepayObj.paid_amount,
             expense_reason_id_fk: 3,
             fund_id_fk: moneyRepayObj.transaction_fund_id,
@@ -118,7 +119,7 @@ async function updateLendMoneyDetailsService(moneyRepayObj: MoneyRepayModel, ope
 
         await saveExpenseDetailsService(expenseObj);
 
-        let borrorMoneyObj : MoneyBorrowModel ={
+        let borrorMoneyObj: MoneyBorrowModel = {
             credit_id_fk: moneyRepayObj.credit_id,
             paid_amount: moneyRepayObj.paid_amount
         }
@@ -127,7 +128,15 @@ async function updateLendMoneyDetailsService(moneyRepayObj: MoneyRepayModel, ope
     }
 }
 
-async function saveBorrowMoneyDetails(borrowObj:MoneyBorrowModel) {
+function dismissLendMoneyService(invalidRepayObj: InvalidRepay) {
+    if (invalidRepayObj.credit_id){
+        dismissBorrow(invalidRepayObj.credit_id);
+    }else if (invalidRepayObj.expense_id){
+        dismissLendEntry(invalidRepayObj.expense_id);        
+    }
+}
+
+async function saveBorrowMoneyDetails(borrowObj: MoneyBorrowModel) {
     await addBorrowMoneyDetails(borrowObj);
 }
 
@@ -137,5 +146,6 @@ async function savelendMoneDetails(lendMoneyObj: LendMoneyModel) {
 
 export {
     getMoneyRepayDetailsService,
-    updateLendMoneyDetailsService
+    updateLendMoneyDetailsService,
+    dismissLendMoneyService
 }

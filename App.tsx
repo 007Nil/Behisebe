@@ -224,4 +224,14 @@ CREATE TABLE IF NOT EXISTS backup_details (
         await db.runAsync("ALTER TABLE fund_details ADD credit_limit INTEGER DEFAULT (NULL)");
     }
 
+    const expenseCount = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ', "expenses", "dismiss_lend");
+    if (expenseCount["count(*)"] < 1) {
+        await db.runAsync("ALTER TABLE expenses ADD dismiss_lend INTEGER DEFAULT (0)");
+    }
+
+    const creditCount = await db.getFirstAsync('SELECT count(*) FROM pragma_table_info(?) WHERE name=? ', "credits", "dismiss_borrow");
+    if (creditCount["count(*)"] < 1) {
+        await db.runAsync("ALTER TABLE credits ADD dismiss_borrow INTEGER DEFAULT (0)");
+    }
+
 }
