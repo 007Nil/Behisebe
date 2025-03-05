@@ -110,7 +110,7 @@ async function getCreditDetailsByFundId(fundId: number) {
 async function dismissBorrow(creditId: number) {
     const db = await openDBConnection();
     db.runAsync(
-        'UPDATE credits SET dismiss_borrow = ? WHERE expense_id = ?',
+        'UPDATE credits SET dismiss_borrow = ? WHERE credit_id = ?',
         1, creditId
     );
 }
