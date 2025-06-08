@@ -17,17 +17,15 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
     await db.execAsync('BEGIN TRANSACTION;');
     try {
 
+
+        await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS migrations (
+                name TEXT PRIMARY KEY,
+                applied_at DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
+            );
+        `)
         // 1. List of migrations (add more as needed)
         const migrations = [
-            {
-                name: 'create_migrations_table',
-                sql: `
-                    CREATE TABLE IF NOT EXISTS migrations (
-                        name TEXT PRIMARY KEY,
-                        applied_at DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
-                    );
-                `
-            },
             {
                 name: 'create_app_meta',
                 sql: `
@@ -88,6 +86,7 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
                 'SELECT 1 FROM migrations WHERE name = ?',
                 migration.name
             );
+
             let shouldApply = !alreadyApplied;
             if (shouldApply && migration.check) {
                 shouldApply = await migration.check();
