@@ -56,7 +56,7 @@ const Funds = () => {
       alert("Fund Type cannot emply");
       return;
     }
-    if (fundAmount == 0) {
+    if (fundAmount == 0 && selectFundType.fund_type_id !== 4) {
       alert("Balance cannot 0");
       return;
     }
