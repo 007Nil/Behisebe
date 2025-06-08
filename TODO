@@ -3,3 +3,16 @@
 3. Implement Search functions for all pages.
 4. Implement View details for Replay
 5. Implement Statements
+
+
+// DROP TABLE IF EXISTS user;
+// DROP TABLE IF EXISTS money_lends;
+// DROP TABLE IF EXISTS money_borrows;
+// DROP TABLE IF EXISTS expenses;
+// DROP TABLE IF EXISTS credits;
+// DROP TABLE IF EXISTS expenses;
+// DROP TABLE IF EXISTS fund_details;
+// DROP TABLE IF EXISTS expense_reasons;
+// DROP TABLE IF EXISTS credit_reasons;
+// DROP TABLE IF EXISTS persons;
+// DROP TABLE IF EXISTS fund_types;
