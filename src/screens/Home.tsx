@@ -30,7 +30,11 @@ const Home = () => {
   const [barChartData, setBarChartData] = useState<BarChartModel[]>();
   const [todayExpesne, setTodayExpense] = useState<number>(0);
   const [todayCredit, setTodayCredit] = useState<number>(0);
-  const todayDate : Date = new Date();
+  const [monthlyExpense, setMonthlyExpense] = useState<number>(0);
+  const [monthlyCredit, setMonthlyCredit] = useState<number>(0);
+  const [monthyInvestment, setMonthlyInvestment] = useState<number>(0);
+  const [monthlySelfTransfer, setMonthlySelfTransfer] = useState<number>(0);
+  const todayDate: Date = new Date();
   useEffect(() => {
     (async () => {
       setBarChartData(await generateWeeklyBarChartData());
@@ -39,17 +43,23 @@ const Home = () => {
       let totalExpense = 0;
       let totalCredit = 0;
       for (const eachExp of expenseDetails) {
-        totalExpense = totalExpense + Number(eachExp.amount);
+        // Exclude the expense reason with id 2 (which is Self Tranfer)
+        if (eachExp.expense_reason_id_fk !== 2) {
+          totalExpense = totalExpense + Number(eachExp.amount);
+        }
       }
       setTodayExpense(totalExpense);
 
-      for (const eachCre of creditDetails) {
-        totalCredit = totalCredit + Number(eachCre.amount);
+      for (const eachCredit of creditDetails) {
+        // Exclude the credit reason with id 1 (which is Self Tranfer)
+        if (eachCredit.credit_reason_id_fk !== 1) {
+          totalCredit = totalCredit + Number(eachCredit.amount);
+        }
       }
       setTodayCredit(totalCredit);
     }
     )()
-  }, [todayExpesne,todayCredit]);
+  }, [todayExpesne, todayCredit]);
 
   useEffect(() => {
     {
@@ -64,7 +74,7 @@ const Home = () => {
             totalExpense = totalExpense + Number(eachExp.amount);
           }
           setTodayExpense(totalExpense);
-    
+
           for (const eachCre of creditDetails) {
             totalCredit = totalCredit + Number(eachCre.amount);
           }
@@ -147,7 +157,7 @@ const Home = () => {
 
         <View
           style={[
-            styles.moneyTransferCard,
+            styles.showDetailsCard,
             {
               marginBottom: moderateVerticalScale(10),
               marginTop: moderateVerticalScale(10),
@@ -214,13 +224,44 @@ const Home = () => {
 
         <View
           style={[
-            styles.moneyTransferCard,
+            styles.dailyReport,
             { marginBottom: moderateVerticalScale(10) },
           ]}
         >
           <Text style={[styles.heading, { textDecorationLine: "underline" }]}>Daily Details</Text>
-          <Text style={styles.heading}>{"Today Expense:   "+todayExpesne}</Text>
-          <Text style={styles.heading}>{"Today Credit:       "+todayCredit}</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: moderateVerticalScale(5) }}>
+            <Text style={[styles.heading, { flex: 1 }]}>Expense</Text>
+            <Text style={[styles.heading, { flex: 1, textAlign: "right" }]}>{todayExpesne}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: moderateVerticalScale(5) }}>
+            <Text style={[styles.heading, { flex: 1 }]}>Credit</Text>
+            <Text style={[styles.heading, { flex: 1, textAlign: "right" }]}>{todayCredit}</Text>
+          </View>
+        </View>
+
+        <View
+          style={[
+            styles.monthlyReport,
+            { marginBottom: moderateVerticalScale(10) },
+          ]}
+        >
+          <Text style={[styles.heading, { textDecorationLine: "underline" }]}>Monthly Details</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: moderateVerticalScale(5) }}>
+            <Text style={[styles.heading, { flex: 1 }]}>Expense</Text>
+            <Text style={[styles.heading, { flex: 1, textAlign: "right" }]}>{monthlyExpense}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: moderateVerticalScale(5) }}>
+            <Text style={[styles.heading, { flex: 1 }]}>Credit</Text>
+            <Text style={[styles.heading, { flex: 1, textAlign: "right" }]}>{monthlyCredit}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: moderateVerticalScale(5) }}>
+            <Text style={[styles.heading, { flex: 1 }]}>Self Transfer</Text>
+            <Text style={[styles.heading, { flex: 1, textAlign: "right" }]}>{monthlySelfTransfer}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: moderateVerticalScale(5) }}>
+            <Text style={[styles.heading, { flex: 1 }]}>Investment</Text>
+            <Text style={[styles.heading, { flex: 1, textAlign: "right" }]}>{monthyInvestment}</Text>
+          </View>
         </View>
 
         <View
