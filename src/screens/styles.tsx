@@ -1,10 +1,13 @@
 import { StyleSheet } from "react-native";
+import { Dimensions } from "react-native";
 import {
     moderateScale,
     moderateVerticalScale,
     scale,
     verticalScale,
 } from "react-native-size-matters";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
     container: {
@@ -18,14 +21,21 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         textTransform: "uppercase"
     },
+    lineStyle:{
+        borderWidth: 0.5,
+        borderColor:'black',
+        margin:10,
+   },
     appButtonContainer: {
         elevation: 8,
         backgroundColor: "#009688",
         borderRadius: 10,
         paddingVertical: 5,
-        paddingHorizontal: 12
+        paddingHorizontal: 10,
+        marginLeft: 6
     },
     bankView1: {
+        justifyContent: 'center',
         flexDirection: 'row',
         marginTop: moderateVerticalScale(10)
     },
@@ -35,8 +45,8 @@ const styles = StyleSheet.create({
         tintColor: "white",
     },
     updateCard: {
-        width: "90%",
-        height: verticalScale(100),
+        width: SCREEN_WIDTH * 0.9,
+        height: SCREEN_HEIGHT * 0.13,
         borderRadius: moderateScale(10),
         alignSelf: "center",
         marginTop: moderateVerticalScale(10),
@@ -95,15 +105,39 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(16),
     },
     banner: {
-        width: "94%",
-        height: verticalScale(100),
+        width: SCREEN_WIDTH * 0.96,
+        height: SCREEN_HEIGHT * 0.13,
         alignSelf: "center",
         marginTop: moderateVerticalScale(10),
         borderRadius: moderateScale(10),
     },
     moneyTransferCard: {
-        width: "94%",
-        height: verticalScale(130),
+        width: SCREEN_WIDTH * 0.96,
+        height: SCREEN_HEIGHT * 0.22,
+        backgroundColor: "white",
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(10),
+        borderRadius: moderateScale(10),
+    },
+    showDetailsCard: {
+        width: SCREEN_WIDTH * 0.96,
+        height: SCREEN_HEIGHT * 0.17,
+        backgroundColor: "white",
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(10),
+        borderRadius: moderateScale(10),
+    },
+    dailyReport: {
+        width: SCREEN_WIDTH * 0.98,
+        height: SCREEN_HEIGHT * 0.20,
+        backgroundColor: "white",
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(10),
+        borderRadius: moderateScale(10),
+    },
+    monthlyReport: {
+        width: SCREEN_WIDTH * 0.98,
+        height: SCREEN_HEIGHT * 0.30,
         backgroundColor: "white",
         alignSelf: "center",
         marginTop: moderateVerticalScale(10),
@@ -148,8 +182,8 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     otherOptionTab: {
-        width: "31%",
-        height: verticalScale(60),
+        width: SCREEN_WIDTH * 0.31,
+        height: SCREEN_HEIGHT * 0.08,
         backgroundColor: "#277be8",
         borderRadius: moderateScale(18),
         justifyContent: "center",
@@ -165,28 +199,27 @@ const styles = StyleSheet.create({
         borderRadius: moderateScale(5),
         marginTop: moderateVerticalScale(10),
         alignSelf: "center",
-        height: verticalScale(200),
-        width: "94%",
+        height: SCREEN_HEIGHT * 0.26,
+        width: SCREEN_WIDTH * 0.96,
     },
     rechargeAndBills2: {
         backgroundColor: "white",
         borderRadius: moderateScale(5),
         marginTop: moderateVerticalScale(10),
         alignSelf: "center",
-        height: verticalScale(150),
-        width: "94%",
+        height: SCREEN_HEIGHT * 0.195,
+        width: SCREEN_WIDTH * 0.96,
     },
     rechargeAndBills1: {
         backgroundColor: "white",
         borderRadius: moderateScale(5),
         marginTop: moderateVerticalScale(10),
         alignSelf: "center",
-        height: verticalScale(350),
-        width: "94%",
+        height: SCREEN_HEIGHT * 0.46,
+        width: SCREEN_WIDTH * 0.96,
     },
     transactionItem: {
         width: '94%',
-        height: 150,
         justifyContent: 'space-between',
         flexDirection: 'row'
     },
@@ -209,6 +242,12 @@ const styles = StyleSheet.create({
         color: "black",
         fontSize: moderateScale(16),
     },
+    payable2: {
+        fontWeight: "500",
+        color: "black",
+        fontSize: moderateScale(14),
+        marginLeft: 10
+    },
     modalTopRightView: {
         flexDirection: "row",
         alignItems: "center",
@@ -217,6 +256,17 @@ const styles = StyleSheet.create({
         width: scale(24),
         height: scale(24),
         tintColor: "white",
+    },
+    delete: {
+        width: SCREEN_WIDTH * 0.96,
+        height: SCREEN_HEIGHT * 0.055,
+        backgroundColor: "red",
+        borderRadius: moderateScale(30),
+        alignSelf: "center",
+        marginTop: moderateVerticalScale(20),
+        marginBottom: moderateVerticalScale(40),
+        justifyContent: "center",
+        alignItems: "center",
     },
     divider: {
         width: "100%",
@@ -242,8 +292,8 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(12),
     },
     confirmPayNow: {
-        width: "94%",
-        height: verticalScale(40),
+        width: SCREEN_WIDTH * 0.96,
+        height: SCREEN_HEIGHT * 0.055,
         backgroundColor: "purple",
         borderRadius: moderateScale(30),
         alignSelf: "center",
@@ -266,8 +316,8 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(16)
     },
     card: {
-        width: '94%',
-        height: '15%',
+        width: SCREEN_WIDTH * 0.96,
+        height: SCREEN_HEIGHT * 0.15,
         backgroundColor: 'white',
         marginTop: moderateVerticalScale(15),
         alignSelf: 'center',
@@ -280,8 +330,8 @@ const styles = StyleSheet.create({
         }
     },
     card2: {
-        width: '94%',
-        height: '68%',
+        width: SCREEN_WIDTH * 0.96,
+        height: SCREEN_HEIGHT * 0.68,
         backgroundColor: 'white',
         marginTop: moderateVerticalScale(15),
         alignSelf: 'center',

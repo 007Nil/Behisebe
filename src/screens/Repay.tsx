@@ -1,17 +1,20 @@
-import { View, Text, Button, TouchableOpacity, Image } from 'react-native'
+import { View, Text, Button, TouchableOpacity, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import styles from "./styles";
 import { useNavigation } from '@react-navigation/native'
 import HomeCommonHeader from "../common/HomeCommonHeader";
 import { type StackNavigation } from "../navigation/AppNavigator";
 import { ExpenseModel, FundDetailsModel, MoneyRepayModel } from '../model';
-import { getMoneyRepayDetailsService, updateLendMoneyDetailsService } from '../services/MoneyReplayServices';
+import { dismissLendMoneyService, getMoneyRepayDetailsService, updateLendMoneyDetailsService } from '../services/MoneyReplayServices';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import { moderateScale, moderateVerticalScale, scale } from 'react-native-size-matters';
 import Modal from "react-native-modal";
 import usePrevious from '../utils/usePrevious';
 import { getValidFundDetailsService } from '../services/FundDetailsServices';
 import { Dropdown } from '../component';
+import { InvalidRepay } from '../model/LendMoneyModel';
+
+
 const Repay = () => {
   const { navigate } = useNavigation<StackNavigation>();
 
@@ -32,6 +35,7 @@ const Repay = () => {
   const [dbFundDetails, setDbFundDetails] = useState<FundDetailsModel[]>();
   const [fundetails, setFundDetails] = useState<FundDetailsModel>();
   const [viewDetailsModel, setViewDetailsModal] = useState<boolean>(false);
+  const [viewDismissModal, setViewDismissModal] = useState<boolean>(false);
   const prevAlreadyPay: number = usePrevious(alreadyPaid);
 
 
@@ -75,7 +79,13 @@ const Repay = () => {
     if (clicktype === "closeClick") {
       setViewDetailsModal(() => !viewDetailsModel);
     } else {
-      
+
+    }
+  }
+
+  const handleDismissModal = (clicktype?: string) => {
+    if (clicktype === "closeClick") {
+      setViewDismissModal(() => !viewDismissModal)
     }
   }
 
@@ -120,6 +130,32 @@ const Repay = () => {
     setIsModalVisible(() => !isModalVisible);
   }
 
+  const dismissForm = (item: MoneyRepayModel) => {
+    setFromId(btnPressValue === "getLendInfo" ? item.expense_id : item.credit_id);
+    setExpenseId(item.expense_id);
+    setCreditId(item.credit_id);
+    setFlatListIndex(dbMoneyReplayDetails.indexOf(item));
+    setViewDismissModal(true)
+  }
+  const makeInvalidRepay = () => {
+    const invalidRepayObj : InvalidRepay = {
+      formId: formId,
+      expense_id: expenseId,
+      credit_id: creditId
+    }
+
+    dismissLendMoneyService(invalidRepayObj);
+    let tmpFlatlistData = dbMoneyReplayDetails;
+    const updatedArray = tmpFlatlistData.filter(function (ele) {
+      return btnPressValue === "getLendInfo" ? ele.expense_id !== formId : ele.credit_id != formId;
+    });
+    updatedArray.splice(flatListIndex, 0);
+    setDbMoneyReplayDetails(updatedArray);
+    setViewDismissModal(() => !viewDismissModal);
+    Alert.alert("","Updated Data")
+
+
+  }
   return (
     <View style={styles.container}>
       <HomeCommonHeader title={"Repay"} />
@@ -135,59 +171,65 @@ const Repay = () => {
         <View style={styles.card2}>
           <View>
             <FlatList
-              contentContainerStyle={{ marginTop: moderateVerticalScale(30) }}
+              contentContainerStyle={{ marginTop: moderateVerticalScale(30), paddingBottom: 50 }}
               data={dbMoneyReplayDetails}
               renderItem={({ item }) => {
                 return (
-                  <View style={styles.transactionItem}>
-                    <View>
-                      <Text style={[styles.paidTo, {
-                        marginLeft: moderateScale(20),
-                        marginTop: moderateVerticalScale(5),
-                      }]}>
-                        {btnPressValue === "getLendInfo" ? "Lend To" : "Borrow From"}</Text>
+                  <View>
+                    <View style={styles.transactionItem}>
+                      <View>
+                        <Text style={[styles.paidTo, {
+                          marginLeft: moderateScale(20),
+                          marginTop: moderateVerticalScale(5),
+                        }]}>
+                          {btnPressValue === "getLendInfo" ? "Lend To" : "Borrow From"}</Text>
 
-                      <Text style={[styles.paidTo, {
-                        marginLeft: moderateScale(20),
-                        marginTop: moderateVerticalScale(5),
-                      }]}>{"On Date"}</Text>
-                      <Text style={[styles.paidTo, {
-                        marginLeft: moderateScale(20),
-                        marginTop: moderateVerticalScale(5),
-                      }]}>{"Due Amount"}</Text>
-                      <Text style={[styles.paidTo, {
-                        marginLeft: moderateScale(20),
-                        marginTop: moderateVerticalScale(5),
-                      }]}>{"Already paid"}</Text>
-                    </View>
-
-                    <View style={{ alignItems: "flex-start", paddingTop: 5 }}>
-                      <Text style={[styles.paidTo, {
-                        marginLeft: moderateScale(20), marginEnd: moderateVerticalScale(50)
-                      }]}>{item.personName}</Text>
-                      {/* <View style={styles.bankView}> */}
-                      <Text
-                        style={[styles.paidTo, { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
-                        {item.date}</Text>
-                      <Text
-                        style={[styles.paidTo, { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
-                        {(item.amount - item.paid_amount)}</Text>
-                      <Text
-                        style={[styles.paidTo,
-                        { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
-                        {(item.paid_amount)}</Text>
-
-                      <View style={styles.bankView1}>
-                        <TouchableOpacity style={styles.appButtonContainer}
-                          onPress={() => viewDetails(item)}>
-                          <Text style={styles.appButtonText}>{"View Details"}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.appButtonContainer}
-                          onPress={() => updateData(item)}>
-                          <Text style={styles.appButtonText}>{"Update Data"}</Text>
-                        </TouchableOpacity>
+                        <Text style={[styles.paidTo, {
+                          marginLeft: moderateScale(20),
+                          marginTop: moderateVerticalScale(5),
+                        }]}>{"On Date"}</Text>
+                        <Text style={[styles.paidTo, {
+                          marginLeft: moderateScale(20),
+                          marginTop: moderateVerticalScale(5),
+                        }]}>{"Due Amount"}</Text>
+                        <Text style={[styles.paidTo, {
+                          marginLeft: moderateScale(20),
+                          marginTop: moderateVerticalScale(5),
+                        }]}>{"Already paid"}</Text>
                       </View>
-                    </View >
+
+                      <View style={{ alignItems: "flex-start", paddingTop: 5 }}>
+                        <Text style={[styles.paidTo, {
+                          marginLeft: moderateScale(20), marginEnd: moderateVerticalScale(50)
+                        }]}>{item.personName}</Text>
+                        {/* <View style={styles.bankView}> */}
+                        <Text
+                          style={[styles.paidTo, { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
+                          {item.date}</Text>
+                        <Text
+                          style={[styles.paidTo, { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
+                          {(item.amount - item.paid_amount)}</Text>
+                        <Text
+                          style={[styles.paidTo,
+                          { marginLeft: moderateScale(20), marginTop: moderateVerticalScale(5) }]}>
+                          {(item.paid_amount)}</Text>
+                      </View >
+                    </View>
+                    <View style={styles.bankView1}>
+                      <TouchableOpacity style={styles.appButtonContainer}
+                        onPress={() => dismissForm(item)}>
+                        <Text style={styles.appButtonText}>{"Dismiss"}</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.appButtonContainer}
+                        onPress={() => viewDetails(item)}>
+                        <Text style={styles.appButtonText}>{"View Details"}</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.appButtonContainer}
+                        onPress={() => updateData(item)}>
+                        <Text style={styles.appButtonText}>{"Update Data"}</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.lineStyle} />
                   </View>
                 );
               }}
@@ -328,7 +370,6 @@ const Repay = () => {
             </View>
           </Modal>
 
-
           <Modal isVisible={viewDetailsModel} backdropOpacity={0.2}>
             <View style={styles.mainView}>
               <View style={styles.modalTopView}>
@@ -347,6 +388,40 @@ const Repay = () => {
               </View>
               <View style={styles.divider}></View>
 
+            </View>
+          </Modal>
+
+          <Modal
+            isVisible={viewDismissModal}
+            backdropOpacity={0.2}>
+            <View style={styles.mainView}>
+              <View style={styles.modalTopView}>
+                <Text style={styles.payable}>Delete Confirm</Text>
+                <View style={styles.modalTopRightView}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleDismissModal("closeClick");
+                    }}
+                  >
+                    <Image
+                      source={require("../images/close.png")}
+                      style={[
+                        styles.backIcon,
+                        { tintColor: "black", width: scale(16) },
+                      ]}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <Text style={styles.payable2}>This cannot be undone</Text>
+              <TouchableOpacity
+                style={styles.delete}
+                onPress={() => {
+                  makeInvalidRepay();
+                }}
+              >
+                <Text style={styles.title}>{"Dismiss"}</Text>
+              </TouchableOpacity>
             </View>
           </Modal>
         </View>

@@ -22,11 +22,16 @@ const ExpenseDetails = () => {
   }, [expenseDetails]);
 
   const getExpenseDetails = async (data: ExpenseModel[]) => {
-    setExpenseDetails(await prepareCustomList({
+    let expsnes = (await prepareCustomList({
       listType: "expenseDetails",
       expenseObj: data,
       creditObj: []
     }));
+    // Exclude self-tranfer as expense
+    // It will be in account statement
+    const filteredExpenses = expsnes.filter(
+      exp => exp.reason_id !== 2);
+    setExpenseDetails(filteredExpenses)
   };
   const updateTotalAmount = (amount: number, openartion: string) => {
     if (openartion === "plus") {

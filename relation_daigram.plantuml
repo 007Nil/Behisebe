@@ -1,0 +1,136 @@
+@startuml relation_diagram
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+left to right direction
+skinparam roundcorner 5
+skinparam linetype ortho
+skinparam shadowing false
+skinparam handwritten false
+
+table( fund_details ) {
+    primary_key( fund_id ): INTEGER AUTOINCREMENT
+    --
+    column( fund_name ): TEXT NOT NULL UNIQUE
+    column(fund_type): TEXT NOT NULL
+    column(notes): TEXT
+    column(is_active): BOOLEAN NOT NULL
+    column(balance): INTEGER NOT NULL
+    column(credit_limit): INTEGER DEFAULT NULL
+    column(timestamp): DATETIME
+}
+
+table( fund_types ) {
+    primary_key(fund_type_id): INTEGER AUTOINCREMENT
+    --
+    column(fund_type_name): TEXT NOT NULL UNIQUE
+}
+
+table( expense_reasons ) {
+    primary_key(expense_reason_id): INTEGER AUTOINCREMENT
+    --
+    column(expense_reason_name): TEXT NOT NULL UNIQUE
+    column(expense_reason_catagory): TEXT NOT NULL
+}
+
+table(credit_reasons) {
+    primary_key(credit_reason_id): INTEGER AUTOINCREMENT
+    --
+    column(credit_reason_name): TEXT NOT NULL UNIQUE
+    column(credit_reason_catagory): TEXT NOT NULL
+}
+
+table( persons){
+    primary_key( person_id ): INTEGER AUTOINCREMENT
+    --
+    column(person_name): TEXT NOT NULL UNIQUE
+}
+
+table( expenses ) {
+    primary_key( expense_id ): INTEGER AUTOINCREMENT
+    --
+    foreign_key(fund_id_fk): INTEGER <<FK>>
+    foreign_key(expense_reason_id_fk): INTEGER <<FK>>
+    foreign_key(person_id_fk): INTEGER <<FK>>
+    column(amount): INTEGER NOT NULL
+    column(message): TEXT
+    column(credit_id): INTEGER DEFAULT NULL
+    column(dismiss_lend): BOOLEAN DEFAULT FALSE
+    column(timestamp): DATETIME
+}
+
+table(money_lends){
+    primary_key(lend_id): INTEGER AUTOINCREMENT
+    --
+    foreign_key(expense_id_fk): INTEGER <<FK>>
+    column(paid_amount): INTEGER NOT NULL
+    column(timestamp): DATETIME
+
+}
+
+table(credits) {
+    primary_key(credit_id): INTEGER AUTOINCREMENT
+    --
+    foreign_key(fund_id_fk): INTEGER <<FK>>
+    foreign_key(credit_reason_id_fk): INTEGER <<FK>>
+    foreign_key(person_id_fk): INTEGER <<FK>>
+    column(amount): INTEGER NOT NULL
+    column(message): TEXT
+    column(expense_id): INTEGER DEFAULT NULL
+    column(dismiss_borrow): BOOLEAN DEFAULT FALSE
+    column(timestamp): DATETIME
+}
+
+table(money_borrows){
+    primary_key(borrow_id): INTEGER AUTOINCREMENT
+    --
+    foreign_key(credit_id_fk): INTEGER <<FK>>
+    column(paid_amount): INTEGER NOT NULL
+    column(timestamp): DATETIME
+}
+
+
+table(user){
+    primary_key(user_id): INTEGER AUTOINCREMENT
+    --
+    column(username): TEXT NOT NULL UNIQUE
+    column(password): TEXT NOT NULL
+    column(is_admin): BOOLEAN NOT NULL
+}
+
+table(backup_details){
+    primary_key(backup_id): INTEGER AUTOINCREMENT
+    --
+    column(backup_file_id): TEXT NULL
+    column(backup_dir_id): TEXT NULL
+    column(backup_timestamp): DATETIME
+}
+
+table(migrations){
+    primary_key(name): TEXT
+    --
+    column(applied_at): DATETIME
+}
+
+table(app_meta){
+    primary_key(key): TEXT
+    --
+    column(value): TEXT
+}
+
+
+fund_details ||--o{expenses
+expenses ||--||expense_reasons
+persons ||--||expenses
+
+expenses ||--o{money_lends
+
+fund_details ||--o{credits
+credits ||--||credit_reasons
+persons ||--||credits
+
+credits ||--o{money_borrows
+
+@enduml

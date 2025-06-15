@@ -87,7 +87,9 @@ const AddExpense = () => {
       setDbExpenseReason(data)
     });
     getValidFundDetailsService().then((data) => {
-      setDbFundDetails(data)
+      // Filter out Investment type funds
+      const validFundDetails = data.filter(obj => obj.fund_type !== "Investment");
+      setDbFundDetails(validFundDetails);
       // setCreditCardFundDetail
       data = data.filter(obj => obj.fund_type === "Credit Card");
       setDbCreditCardFundDetail(data);

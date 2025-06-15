@@ -31,41 +31,46 @@ const CreditDetails = () => {
 
 
   const getCreditDetails = async (data: CreditModel[]) => {
-    setCreditDetails(await prepareCustomList({
+    let creditDetails = (await prepareCustomList({
       listType: "creditDetails",
       expenseObj: [],
       creditObj: data
     }));
-  };
-  return (
-    <View style={styles.container}>
-      <HomeCommonHeader title={"Credit Details"} />
-      <View style={styles.searchBox}>
-        <Image source={require('../../images/search.png')} style={styles.search} />
-        <Text style={styles.searchText}>Search by Fund Name or amount</Text>
-      </View>
-      <View style={styles.card1}>
-        <View style={styles.filtersView}>
-          <CustomDateTimePicker
-            getCreditDetails={getCreditDetails}
-            datePickerScreen={"creditDetails"}
-          />
-        </View>
-      </View>
-      <View style={styles.card}>
-        <CustomListView
-          listData={creditDetails}
-          updateTotalAmount={updateTotalAmount}
+    // Exclude self-tranfer as credit
+    // It will be in account statement
+    const filterCreditDetails = creditDetails.filter(
+      credit => credit.reason_id !== 1);
+    setCreditDetails(filterCreditDetails);
+};
+return (
+  <View style={styles.container}>
+    <HomeCommonHeader title={"Credit Details"} />
+    <View style={styles.searchBox}>
+      <Image source={require('../../images/search.png')} style={styles.search} />
+      <Text style={styles.searchText}>Search by Fund Name or amount</Text>
+    </View>
+    <View style={styles.card1}>
+      <View style={styles.filtersView}>
+        <CustomDateTimePicker
+          getCreditDetails={getCreditDetails}
+          datePickerScreen={"creditDetails"}
         />
       </View>
-      <View style={styles.card3}>
-        <View style={styles.filtersView}>
-          <Text style={{ fontSize: 20 }}>{"Total Credit:  " + totalCredit}</Text>
-        </View>
-      </View>
-
     </View>
-  )
+    <View style={styles.card}>
+      <CustomListView
+        listData={creditDetails}
+        updateTotalAmount={updateTotalAmount}
+      />
+    </View>
+    <View style={styles.card3}>
+      <View style={styles.filtersView}>
+        <Text style={{ fontSize: 20 }}>{"Total Credit:  " + totalCredit}</Text>
+      </View>
+    </View>
+
+  </View>
+)
 }
 
 export default CreditDetails
