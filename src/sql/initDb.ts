@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS expenses (
     amount INTEGER NOT NULL,
     message TEXT,
     credit_id INTEGER DEFAULT NUll,
+    is_investment INTEGER DEFAULT (0),
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')),
     FOREIGN KEY (fund_id_fk) REFERENCES fund_details(fund_id),
     FOREIGN KEY (expense_reason_id_fk) REFERENCES expense_reasons(expense_reason_id),
@@ -146,4 +147,4 @@ CREATE TABLE IF NOT EXISTS backup_details (
     backup_dir_id TEXT NULL,
     timestamp DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME'))
 );
-`
+` 

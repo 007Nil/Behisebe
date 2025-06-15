@@ -77,6 +77,18 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
                     );
                     return count["count(*)"] < 1;
                 }
+            },
+            {
+                name: 'add investment_details in expenses',
+                sql: `ALTER TABLE expenses ADD COLUMN is_investment INTEGER DEFAULT (0);`,
+                check: async () => {
+                    const count = await db.getFirstAsync(
+                        'SELECT count(*) FROM pragma_table_info(?) WHERE name=?',
+                        "expenses", "is_investment"
+                    );
+                    // console.log(count)
+                    return count["count(*)"] < 1;
+                }
             }
         ];
 
@@ -86,6 +98,8 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
                 'SELECT 1 FROM migrations WHERE name = ?',
                 migration.name
             );
+
+            // console.log(alreadyApplied);
 
             let shouldApply = !alreadyApplied;
             if (shouldApply && migration.check) {

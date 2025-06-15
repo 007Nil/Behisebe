@@ -63,6 +63,7 @@ async function getExpenseByDateService(fromDate: string, toDate: string): Promis
 async function deleteExpenseDataService(expId:number) {
     await deleteExpenseData(expId);
 }
+
 export {
     getAllExpenseReasonDetailsService,
     addExpenseReasonService,

@@ -23,6 +23,7 @@ import { generateWeeklyBarChartData } from "../services/ChartsServices";
 import { dateConvert } from "../utils/AllUtils";
 import { getExpenseByDateService } from "../services/ExpenseDetailsServices";
 import { getCreditByDateService } from "../services/CreditDetailsServices";
+import { getFirstDayOfMonth,fetchToday } from "../utils/AllUtils";
 const Home = () => {
   const isFocused = useIsFocused();
 
@@ -57,8 +58,48 @@ const Home = () => {
         }
       }
       setTodayCredit(totalCredit);
-    }
-    )()
+
+      const todayString = fetchToday(new Date());
+      const firstDayOfMonth = getFirstDayOfMonth(todayDate);
+
+      // console.log("Today String: ", todayString);
+      // console.log("First Day of Month: ", firstDayOfMonth);
+      const monthlyExpenseDetails = await getExpenseByDateService(firstDayOfMonth, todayString);
+      const monthlyCreditDetails = await getCreditByDateService(firstDayOfMonth, todayString);
+
+      //console.log("Monthly Expense Details: ", monthlyExpenseDetails);
+      let totalMonthlyExpense = 0;
+      let totalMonthlyCredit = 0;
+      let totalMonthlyInvestment = 0;
+      let totalMonthlySelfTransfer = 0;
+
+      for (const eachExp of monthlyExpenseDetails) {
+        // console.log(eachExp.is_investment)
+        if (eachExp.expense_reason_id_fk === 2 && eachExp.is_investment === 0) {
+          // Self Transfer
+          totalMonthlySelfTransfer += Number(eachExp.amount);
+        } else if (eachExp.expense_reason_id_fk === 2 && eachExp.is_investment === 1) {
+          // Investment
+          totalMonthlyInvestment += Number(eachExp.amount);
+        } else {
+          totalMonthlyExpense += Number(eachExp.amount);
+        }
+      }
+      setMonthlyExpense(totalMonthlyExpense);
+
+      for (const eachCredit of monthlyCreditDetails) {
+        if (eachCredit.credit_reason_id_fk === 1) {
+          // Self Transfer
+          totalMonthlySelfTransfer += Number(eachCredit.amount);
+        } else {
+          totalMonthlyCredit += Number(eachCredit.amount);
+        }
+      }
+      setMonthlyCredit(totalMonthlyCredit);
+      setMonthlySelfTransfer(totalMonthlySelfTransfer);
+      setMonthlyInvestment(totalMonthlyInvestment);
+
+    })()
   }, [todayExpesne, todayCredit]);
 
   useEffect(() => {

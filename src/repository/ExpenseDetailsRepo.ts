@@ -49,20 +49,40 @@ async function deleteExpenseData(expID: number) {
 }
 
 async function addExpenseDetails(expenseModel: ExpenseModel): Promise<number> {
+    // TODO: Need to refactor this function, there is repeated code
     const db = await openDBConnection();
     if (expenseModel.timestamp !== "") {
-        let sqlResult: SQLiteRunResult = await db.runAsync(
-            'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk,
-            expenseModel.amount, expenseModel.message, expenseModel.credit_id, expenseModel.timestamp
-        );
-        return sqlResult.lastInsertRowId;
+        if (expenseModel.is_investment === 0) {
+            let sqlResult: SQLiteRunResult = await db.runAsync(
+                'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk,
+                expenseModel.amount, expenseModel.message, expenseModel.credit_id, expenseModel.timestamp
+            );
+            return sqlResult.lastInsertRowId;
+        } else {
+            let sqlResult: SQLiteRunResult = await db.runAsync(
+                'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id, timestamp, is_investment) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk,
+                expenseModel.amount, expenseModel.message, expenseModel.credit_id, expenseModel.timestamp, 1
+            );
+            return sqlResult.lastInsertRowId;
+        }
+
     } else {
-        let sqlResult: SQLiteRunResult = await db.runAsync(
-            'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id) VALUES (?, ?, ?, ?, ?, ?)',
-            expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id
-        );
-        return sqlResult.lastInsertRowId;
+        if (expenseModel.is_investment === 0) {
+            let sqlResult: SQLiteRunResult = await db.runAsync(
+                'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id) VALUES (?, ?, ?, ?, ?, ?)',
+                expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id
+            );
+
+            return sqlResult.lastInsertRowId;
+        } else {
+            let sqlResult: SQLiteRunResult = await db.runAsync(
+                'INSERT INTO expenses (fund_id_fk,expense_reason_id_fk,	person_id_fk, amount, message, credit_id, is_investment) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                expenseModel.fund_id_fk, expenseModel.expense_reason_id_fk, expenseModel.person_id_fk, expenseModel.amount, expenseModel.message, expenseModel.credit_id, 1
+            );
+            return sqlResult.lastInsertRowId;
+        }
     }
 }
 async function getExpenseDetails(): Promise<ExpenseModel[]> {
@@ -87,6 +107,15 @@ async function getExpenseByID(expId: number): Promise<ExpenseModel> {
 async function getExpenseByDate(fromDate: string, toDate: string): Promise<ExpenseModel[]> {
     const db = await openDBConnection();
     const expenseDetails: ExpenseModel[] = await db.getAllAsync("SELECT * FROM expenses WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC;", fromDate, toDate);
+    return expenseDetails;
+}
+
+async function getExpenseDetailsForMonth(month: string, year: string): Promise<ExpenseModel[]> {
+    const db = await openDBConnection();
+    const expenseDetails: ExpenseModel[] = await db.getAllAsync(
+        "SELECT * FROM expenses WHERE strftime('%Y-%m', timestamp) = ? ORDER BY timestamp DESC;",
+        `${year}-${month.padStart(2, '0')}`
+    );
     return expenseDetails;
 }
 
@@ -139,5 +168,6 @@ export {
     getExpenseByID,
     getWeekExpense,
     getExpenseDetailsByFundId,
-    dismissLendEntry
+    dismissLendEntry,
+    getExpenseDetailsForMonth
 }
