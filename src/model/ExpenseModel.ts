@@ -8,6 +8,7 @@ type ExpenseModel = {
     timestamp: string,
     credit_id? : number,
     credit_card_fund_id?: number
+    is_investment?: number 
 }
 
 export default ExpenseModel;

@@ -81,11 +81,13 @@ const ToSelfTransfer = () => {
   }
 
   const startSelfTransfer = () => {
+
     let selfTransferObj: SelfTransferModel = {
       transferFromFundId: tranferFromFundDetails.fund_id,
       transferToFundId: tranferToFundDetails.fund_id,
       amount: Number(transferAmount),
-      message: "Self Transfer of " + transferAmount + " from " + tranferFromFundDetails.fund_name + " to " + tranferToFundDetails.fund_name
+      message: "Self Transfer of " + transferAmount + " from " + tranferFromFundDetails.fund_name + " to " + tranferToFundDetails.fund_name,
+      is_investment: tranferToFundDetails.fund_type === "Investment" ? 1 : 0
     }
     startSelfTransaction(selfTransferObj);
     setIsSubmit(true);

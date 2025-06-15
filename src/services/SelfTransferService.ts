@@ -18,7 +18,8 @@ async function startSelfTransaction(selfTransferObj: SelfTransferModel) {
         person_id_fk: null,
         amount: selfTransferObj.amount,
         message: selfTransferObj.message,
-        timestamp: ""
+        timestamp: "",
+        is_investment: selfTransferObj.is_investment 
     }
     const expId : number = await saveExpenseDetailsService(expenseObj);
 
