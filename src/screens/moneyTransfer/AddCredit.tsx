@@ -68,7 +68,7 @@ const AddCredit = () => {
     });
     getValidFundDetailsService().then((data) => {
       // Remove Credit Card
-      data = data.filter(obj => obj.fund_type !== "Credit Card");
+      data = data.filter(obj => obj.fund_type !== "Credit Card" && obj.fund_type !== "Investment");
       setDbFundDetails(data)
     });
   }, []);
