@@ -30,7 +30,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nil.behisebe.data.model.Category
@@ -56,10 +58,16 @@ private val presetColors = listOf(
 fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
     val categories by viewModel.categories.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
+    var editingCategory by remember { mutableStateOf<Category?>(null) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(title = { Text("Categories", style = MaterialTheme.typography.titleLarge) })
+            CenterAlignedTopAppBar(
+                title = { Text("Categories") },
+                scrollBehavior = scrollBehavior,
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddDialog = true }) {
@@ -77,14 +85,20 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
         ) {
             item { Spacer(Modifier.height(8.dp)) }
             items(categories, key = { it.id }) { cat ->
-                CategoryRow(category = cat, onDelete = { viewModel.deleteCategory(cat) })
+                CategoryRow(
+                    category = cat,
+                    onEdit = { editingCategory = cat },
+                    onDelete = { viewModel.deleteCategory(cat) },
+                )
             }
             item { Spacer(Modifier.height(8.dp)) }
         }
     }
 
     if (showAddDialog) {
-        AddCategoryDialog(
+        CategoryDialog(
+            title = "New Category",
+            confirmLabel = "Add",
             onDismiss = { showAddDialog = false },
             onConfirm = { name, icon, color ->
                 viewModel.addCategory(name, icon, color)
@@ -92,15 +106,31 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
             }
         )
     }
+
+    editingCategory?.let { cat ->
+        CategoryDialog(
+            title = "Edit Category",
+            confirmLabel = "Save",
+            initialName = cat.name,
+            initialIcon = cat.icon,
+            initialColor = cat.color,
+            onDismiss = { editingCategory = null },
+            onConfirm = { name, icon, color ->
+                viewModel.updateCategory(cat.copy(name = name, icon = icon, color = color))
+                editingCategory = null
+            }
+        )
+    }
 }
 
 @Composable
-private fun CategoryRow(category: Category, onDelete: () -> Unit) {
+private fun CategoryRow(category: Category, onEdit: () -> Unit, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
+            .clickable(onClick = onEdit)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -130,17 +160,22 @@ private fun CategoryRow(category: Category, onDelete: () -> Unit) {
 }
 
 @Composable
-private fun AddCategoryDialog(
+private fun CategoryDialog(
+    title: String,
+    confirmLabel: String,
+    initialName: String = "",
+    initialIcon: String = "📦",
+    initialColor: Int = presetColors.first(),
     onDismiss: () -> Unit,
     onConfirm: (name: String, icon: String, color: Int) -> Unit,
 ) {
-    var name by remember { mutableStateOf("") }
-    var icon by remember { mutableStateOf("📦") }
-    var selectedColor by remember { mutableIntStateOf(presetColors.first()) }
+    var name by remember { mutableStateOf(initialName) }
+    var icon by remember { mutableStateOf(initialIcon) }
+    var selectedColor by remember { mutableIntStateOf(initialColor) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New Category") },
+        title = { Text(title) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
@@ -180,7 +215,7 @@ private fun AddCategoryDialog(
             TextButton(
                 onClick = { if (name.isNotBlank()) onConfirm(name.trim(), icon.trim(), selectedColor) },
                 enabled = name.isNotBlank(),
-            ) { Text("Add") }
+            ) { Text(confirmLabel) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancel") }
