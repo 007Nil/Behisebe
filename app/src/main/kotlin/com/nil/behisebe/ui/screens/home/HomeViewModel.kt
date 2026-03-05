@@ -7,6 +7,8 @@ import com.nil.behisebe.BehisebeApp
 import com.nil.behisebe.data.model.Expense
 import com.nil.behisebe.data.model.ExpenseWithCategory
 import com.nil.behisebe.data.repository.ExpenseRepository
+import com.nil.behisebe.utils.toIso
+import java.time.LocalDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +22,7 @@ data class HomeUiState(
     val selectedMonth: String = "",
     val expenses: List<ExpenseWithCategory> = emptyList(),
     val monthTotal: Double = 0.0,
+    val todayTotal: Double = 0.0,
 )
 
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -42,11 +45,13 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
             months,
             repo.getByMonthWithCategory(activeMonth),
         ) { monthList, expenses ->
+            val today = LocalDate.now().toIso()
             HomeUiState(
                 months = monthList,
                 selectedMonth = activeMonth,
                 expenses = expenses,
                 monthTotal = expenses.sumOf { it.expense.amount },
+                todayTotal = expenses.filter { it.expense.date == today }.sumOf { it.expense.amount },
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState())
