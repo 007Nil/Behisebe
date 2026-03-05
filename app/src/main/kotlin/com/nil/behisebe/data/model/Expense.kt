@@ -3,6 +3,7 @@ package com.nil.behisebe.data.model
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 
@@ -15,7 +16,8 @@ import androidx.room.Relation
             childColumns = ["categoryId"],
             onDelete = ForeignKey.SET_NULL,
         )
-    ]
+    ],
+    indices = [Index("categoryId")],
 )
 data class Expense(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

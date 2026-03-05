@@ -1,7 +1,6 @@
 package com.nil.behisebe.ui.screens.stats
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,12 +16,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,7 +36,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nil.behisebe.ui.components.DonutChart
+import com.nil.behisebe.ui.components.DonutSlice
 import com.nil.behisebe.utils.toCurrency
 import com.nil.behisebe.utils.toDisplayMonth
 
@@ -41,9 +48,18 @@ import com.nil.behisebe.utils.toDisplayMonth
 fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsState()
 
+    val currentIndex = state.months.indexOf(state.selectedMonth)
+    val canGoPrev = currentIndex < state.months.size - 1
+    val canGoNext = currentIndex > 0
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(title = { Text("Stats", style = MaterialTheme.typography.titleLarge) })
+            CenterAlignedTopAppBar(
+                title = { Text("Stats") },
+                scrollBehavior = scrollBehavior,
+            )
         }
     ) { padding ->
         Column(
@@ -52,40 +68,43 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
                 .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Month picker
-            if (state.months.isNotEmpty()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    state.months.forEach { month ->
-                        FilterChip(
-                            selected = month == state.selectedMonth,
-                            onClick = { viewModel.selectMonth(month) },
-                            label = { Text(month.toDisplayMonth()) },
-                        )
-                    }
-                }
-                Spacer(Modifier.height(8.dp))
-            }
+            Spacer(Modifier.height(8.dp))
 
-            // Total
-            Text(
-                text = state.grandTotal.toCurrency(),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-            Text(
-                text = "total in ${state.selectedMonth.toDisplayMonth()}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
+            // Month navigator: <- March 2026 ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                IconButton(
+                    onClick = { if (canGoPrev) viewModel.selectMonth(state.months[currentIndex + 1]) },
+                    enabled = canGoPrev,
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous month")
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = state.selectedMonth.toDisplayMonth(),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        text = state.grandTotal.toCurrency(),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                IconButton(
+                    onClick = { if (canGoNext) viewModel.selectMonth(state.months[currentIndex - 1]) },
+                    enabled = canGoNext,
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next month")
+                }
+            }
 
             Spacer(Modifier.height(24.dp))
 
@@ -97,16 +116,32 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        "No data for this month.",
+                        "No expenses this month.",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             } else {
-                // Category breakdown
+                // Donut chart
+                val slices = state.categoryTotals.map { ct ->
+                    DonutSlice(
+                        color = ct.category?.let { Color(it.color) } ?: Color(0xFF94A3B8),
+                        fraction = if (state.grandTotal > 0) (ct.total / state.grandTotal).toFloat() else 0f,
+                    )
+                }
+                DonutChart(
+                    slices = slices,
+                    centerLabel = "${state.categoryTotals.size} categories",
+                )
+
+                Spacer(Modifier.height(28.dp))
+
+                // Category breakdown list
                 Text(
-                    text = "By category",
+                    text = "Breakdown",
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                 )
                 Spacer(Modifier.height(8.dp))
 
@@ -151,7 +186,6 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                             )
                         }
                         Spacer(Modifier.height(8.dp))
-                        // Progress bar
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()

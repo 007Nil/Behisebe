@@ -27,8 +27,9 @@ data class AddEditUiState(
 )
 
 class AddEditViewModel(app: Application) : AndroidViewModel(app) {
-    private val expenseRepo: ExpenseRepository = (app as BehisebeApp).expenseRepository
-    private val categoryRepo: CategoryRepository = app.categoryRepository
+    private val appInstance: BehisebeApp = app as BehisebeApp
+    private val expenseRepo: ExpenseRepository = appInstance.expenseRepository
+    private val categoryRepo: CategoryRepository = appInstance.categoryRepository
 
     val categories: StateFlow<List<Category>> = categoryRepo.getAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())

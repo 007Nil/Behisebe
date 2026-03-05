@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run on Device (Debug)",
+      "type": "shell",
+      "command": "./gradlew installDebug && adb shell am start -n com.nil.behisebe/.MainActivity",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build APK & Export",
+      "type": "shell",
+      "command": "./gradlew assembleDebug && cp app/build/outputs/apk/debug/app-debug.apk /home/sagniks/Behisebe.apk && echo 'APK saved to /home/sagniks/Behisebe.apk'",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

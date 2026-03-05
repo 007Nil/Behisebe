@@ -23,6 +23,7 @@ data class StatsUiState(
     val grandTotal: Double = 0.0,
 )
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class StatsViewModel(app: Application) : AndroidViewModel(app) {
     private val repo: ExpenseRepository = (app as BehisebeApp).expenseRepository
     private val selectedMonth = MutableStateFlow("")

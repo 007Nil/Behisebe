@@ -61,7 +61,7 @@ fun AddEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (expenseId != null) "Edit Expense" else "Add Expense") },
+                title = { Text(if (expenseId != null) "Edit expense" else "New expense") },
                 navigationIcon = {
                     IconButton(onClick = onDone) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

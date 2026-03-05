@@ -22,6 +22,7 @@ data class HomeUiState(
     val monthTotal: Double = 0.0,
 )
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val repo: ExpenseRepository = (app as BehisebeApp).expenseRepository
 
