@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.nil.behisebe.ui.screens.about.AboutScreen
 import com.nil.behisebe.ui.screens.addedit.AddEditScreen
 import com.nil.behisebe.ui.screens.categories.CategoriesScreen
 import com.nil.behisebe.ui.screens.home.HomeScreen
@@ -32,6 +33,7 @@ sealed class Screen(val route: String, val label: String) {
     object Stats : Screen("stats", "Stats")
     object Categories : Screen("categories", "Categories")
     object AddEdit : Screen("add_edit?expenseId={expenseId}", "Add")
+    object About : Screen("about", "About")
 }
 
 @Composable
@@ -84,6 +86,7 @@ fun AppNavigation() {
                 HomeScreen(
                     onAddExpense = { navController.navigate("add_edit") },
                     onEditExpense = { id -> navController.navigate("add_edit?expenseId=$id") },
+                    onAbout = { navController.navigate(Screen.About.route) },
                 )
             }
             composable(Screen.Stats.route) {
@@ -104,6 +107,9 @@ fun AppNavigation() {
                     expenseId = if (expenseId == -1L) null else expenseId,
                     onDone = { navController.popBackStack() },
                 )
+            }
+            composable(Screen.About.route) {
+                AboutScreen(onBack = { navController.popBackStack() })
             }
         }
     }

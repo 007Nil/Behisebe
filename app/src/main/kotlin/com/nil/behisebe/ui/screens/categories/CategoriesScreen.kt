@@ -2,7 +2,6 @@ package com.nil.behisebe.ui.screens.categories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,11 +45,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nil.behisebe.data.model.Category
-
-private val presetColors = listOf(
-    0xFFFF6B6B, 0xFF4ECDC4, 0xFFA78BFA, 0xFF34D399,
-    0xFFFB923C, 0xFF60A5FA, 0xFF94A3B8, 0xFFF472B6,
-).map { it.toInt() }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,8 +93,8 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
             title = "New Category",
             confirmLabel = "Add",
             onDismiss = { showAddDialog = false },
-            onConfirm = { name, icon, color ->
-                viewModel.addCategory(name, icon, color)
+            onConfirm = { name, icon ->
+                viewModel.addCategory(name, icon)
                 showAddDialog = false
             }
         )
@@ -113,10 +106,9 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
             confirmLabel = "Save",
             initialName = cat.name,
             initialIcon = cat.icon,
-            initialColor = cat.color,
             onDismiss = { editingCategory = null },
-            onConfirm = { name, icon, color ->
-                viewModel.updateCategory(cat.copy(name = name, icon = icon, color = color))
+            onConfirm = { name, icon ->
+                viewModel.updateCategory(cat.copy(name = name, icon = icon))
                 editingCategory = null
             }
         )
@@ -165,13 +157,11 @@ private fun CategoryDialog(
     confirmLabel: String,
     initialName: String = "",
     initialIcon: String = "📦",
-    initialColor: Int = presetColors.first(),
     onDismiss: () -> Unit,
-    onConfirm: (name: String, icon: String, color: Int) -> Unit,
+    onConfirm: (name: String, icon: String) -> Unit,
 ) {
     var name by remember { mutableStateOf(initialName) }
     var icon by remember { mutableStateOf(initialIcon) }
-    var selectedColor by remember { mutableIntStateOf(initialColor) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -192,28 +182,11 @@ private fun CategoryDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                Text("Color", style = MaterialTheme.typography.labelMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    presetColors.forEach { color ->
-                        val isSelected = color == selectedColor
-                        Box(
-                            modifier = Modifier
-                                .size(if (isSelected) 34.dp else 28.dp)
-                                .clip(CircleShape)
-                                .background(Color(color))
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    onClick = { selectedColor = color },
-                                ),
-                        )
-                    }
-                }
             }
         },
         confirmButton = {
             TextButton(
-                onClick = { if (name.isNotBlank()) onConfirm(name.trim(), icon.trim(), selectedColor) },
+                onClick = { if (name.isNotBlank()) onConfirm(name.trim(), icon.trim()) },
                 enabled = name.isNotBlank(),
             ) { Text(confirmLabel) }
         },
