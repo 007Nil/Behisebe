@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.stickyHeader
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,6 +41,7 @@ import com.nil.behisebe.ui.components.ExpenseItem
 import com.nil.behisebe.utils.toCurrency
 import com.nil.behisebe.utils.toDisplayDate
 import com.nil.behisebe.utils.toDisplayMonth
+import com.nil.behisebe.utils.toIso
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -158,19 +160,54 @@ fun HomeScreen(
                     )
                 }
             } else {
+                val today = LocalDate.now().toIso()
+                val yesterday = LocalDate.now().minusDays(1).toIso()
+                val grouped = state.expenses
+                    .groupBy { it.expense.date }
+                    .toSortedMap(reverseOrder())
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
                         horizontal = 16.dp, vertical = 8.dp
                     ),
                 ) {
-                    items(state.expenses, key = { it.expense.id }) { item ->
-                        ExpenseItem(
-                            item = item,
-                            onClick = { onEditExpense(item.expense.id) },
-                            onDelete = { viewModel.deleteExpense(item.expense) },
-                        )
+                    grouped.forEach { (date, expensesForDate) ->
+                        stickyHeader(key = "header_$date") {
+                            val label = when (date) {
+                                today -> "Today"
+                                yesterday -> "Yesterday"
+                                else -> date.toDisplayDate()
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                Text(
+                                    text = expensesForDate.sumOf { it.expense.amount }.toCurrency(),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                        items(expensesForDate, key = { it.expense.id }) { item ->
+                            ExpenseItem(
+                                item = item,
+                                onClick = { onEditExpense(item.expense.id) },
+                                onDelete = { viewModel.deleteExpense(item.expense) },
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
                     }
                 }
             }
