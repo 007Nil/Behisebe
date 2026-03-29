@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nil.behisebe.data.model.ExpenseWithCategory
 import com.nil.behisebe.utils.toCurrency
-import com.nil.behisebe.utils.toDisplayDate
 
 @Composable
 fun ExpenseItem(
@@ -71,11 +70,6 @@ fun ExpenseItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Text(
-                text = item.expense.date.toDisplayDate(),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
 
         Text(

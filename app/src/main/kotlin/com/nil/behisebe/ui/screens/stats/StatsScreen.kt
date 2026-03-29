@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +21,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +34,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +47,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nil.behisebe.ui.components.DonutChart
 import com.nil.behisebe.ui.components.DonutSlice
+import com.nil.behisebe.ui.components.WeekBarChart
 import com.nil.behisebe.utils.toCurrency
 import com.nil.behisebe.utils.toDisplayMonth
 
@@ -47,6 +55,7 @@ import com.nil.behisebe.utils.toDisplayMonth
 @Composable
 fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsState()
+    var chartExpanded by remember { mutableStateOf(true) }
 
     val currentIndex = state.months.indexOf(state.selectedMonth)
     val canGoPrev = currentIndex < state.months.size - 1
@@ -106,7 +115,38 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            // Last 7 days bar chart
+            if (state.weeklyTotals.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { chartExpanded = !chartExpanded }
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = "Last 7 Days",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Icon(
+                        imageVector = if (chartExpanded) Icons.Default.KeyboardArrowUp
+                                      else Icons.Default.KeyboardArrowDown,
+                        contentDescription = if (chartExpanded) "Collapse" else "Expand",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                AnimatedVisibility(visible = chartExpanded) {
+                    Column {
+                        WeekBarChart(
+                            days = state.weeklyTotals,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                        )
+                        Spacer(Modifier.height(24.dp))
+                    }
+                }
+            }
 
             if (state.categoryTotals.isEmpty()) {
                 Box(
